@@ -41,12 +41,7 @@
 	
     // Initialize parameters
     mCubeSize = 10;
-    if ([[BBAudioManager bbAudioManager] thresholding]) {
-        numSecondsMax = 1.5;
-    }
-    else {
-        numSecondsMax = 6;
-    }
+    numSecondsMax = 6;
     
     numSecondsMin = 0.02;
     numSecondsVisible = 0.1;
@@ -285,7 +280,8 @@
         // (why? we always want the x-axis to be centered on the threshold value)
         if ([[BBAudioManager bbAudioManager] thresholding]) {
             // slightly tigher bounds on the thresholding view (don't need to see whole second and a half in this view)
-            numSecondsVisible = (numSecondsVisible < numSecondsMax - 0.25) ? numSecondsVisible : (numSecondsMax-0.25);
+            float thisNumSecondsMax = 1.5;
+            numSecondsVisible = (numSecondsVisible < thisNumSecondsMax - 0.25) ? numSecondsVisible : (thisNumSecondsMax-0.25);
             numSecondsVisible = (numSecondsVisible > numSecondsMin) ? numSecondsVisible : numSecondsMin;
         }
         
@@ -306,7 +302,6 @@
             float distance = abs(touchPos.y - screenThresholdPos.y);
             if (distance < 20) // set via experimentation
             {
-                NSLog(@"OOH OOH TOUCH ME BABY");
                 [[BBAudioManager bbAudioManager] setThreshold:worldTouchPos.y];
             }
 

@@ -8,6 +8,16 @@
 
 /* Begin PBXBuildFile section */
 		FA042A1116C89C6D00278FE2 /* SensibleTableView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA042A1016C89C6D00278FE2 /* SensibleTableView.framework */; };
+		FA042A1C16C89EC000278FE2 /* FileNeuron.png in Resources */ = {isa = PBXBuildFile; fileRef = FA042A1216C89EC000278FE2 /* FileNeuron.png */; };
+		FA042A1D16C89EC000278FE2 /* FileNeuronx2.png in Resources */ = {isa = PBXBuildFile; fileRef = FA042A1316C89EC000278FE2 /* FileNeuronx2.png */; };
+		FA042A1E16C89EC000278FE2 /* record.png in Resources */ = {isa = PBXBuildFile; fileRef = FA042A1416C89EC000278FE2 /* record.png */; };
+		FA042A1F16C89EC000278FE2 /* recordx2.png in Resources */ = {isa = PBXBuildFile; fileRef = FA042A1516C89EC000278FE2 /* recordx2.png */; };
+		FA042A2016C89EC000278FE2 /* stim_config.png in Resources */ = {isa = PBXBuildFile; fileRef = FA042A1616C89EC000278FE2 /* stim_config.png */; };
+		FA042A2116C89EC000278FE2 /* stim_conifgx2.png in Resources */ = {isa = PBXBuildFile; fileRef = FA042A1716C89EC000278FE2 /* stim_conifgx2.png */; };
+		FA042A2216C89EC000278FE2 /* stimulate.png in Resources */ = {isa = PBXBuildFile; fileRef = FA042A1816C89EC000278FE2 /* stimulate.png */; };
+		FA042A2316C89EC000278FE2 /* stimulateAlt.png in Resources */ = {isa = PBXBuildFile; fileRef = FA042A1916C89EC000278FE2 /* stimulateAlt.png */; };
+		FA042A2416C89EC000278FE2 /* stimulateAltx2.png in Resources */ = {isa = PBXBuildFile; fileRef = FA042A1A16C89EC000278FE2 /* stimulateAltx2.png */; };
+		FA042A2516C89EC000278FE2 /* stimulatex2.png in Resources */ = {isa = PBXBuildFile; fileRef = FA042A1B16C89EC000278FE2 /* stimulatex2.png */; };
 		FA14EC5C15D04AD700B0FB71 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = FA14EC5B15D04AD700B0FB71 /* Settings.bundle */; };
 		FA14EC5F15D05DD800B0FB71 /* StimulationParameterView.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA14EC5E15D05DD800B0FB71 /* StimulationParameterView.xib */; };
 		FA14EC6215D1FF0000B0FB71 /* RecordingOverlay.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA14EC6115D1FF0000B0FB71 /* RecordingOverlay.mm */; };
@@ -137,6 +147,16 @@
 
 /* Begin PBXFileReference section */
 		FA042A1016C89C6D00278FE2 /* SensibleTableView.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SensibleTableView.framework; sourceTree = "<group>"; };
+		FA042A1216C89EC000278FE2 /* FileNeuron.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = FileNeuron.png; path = "BYB Icons/FileNeuron.png"; sourceTree = "<group>"; };
+		FA042A1316C89EC000278FE2 /* FileNeuronx2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = FileNeuronx2.png; path = "BYB Icons/FileNeuronx2.png"; sourceTree = "<group>"; };
+		FA042A1416C89EC000278FE2 /* record.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = record.png; path = "BYB Icons/record.png"; sourceTree = "<group>"; };
+		FA042A1516C89EC000278FE2 /* recordx2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = recordx2.png; path = "BYB Icons/recordx2.png"; sourceTree = "<group>"; };
+		FA042A1616C89EC000278FE2 /* stim_config.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = stim_config.png; path = "BYB Icons/stim_config.png"; sourceTree = "<group>"; };
+		FA042A1716C89EC000278FE2 /* stim_conifgx2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = stim_conifgx2.png; path = "BYB Icons/stim_conifgx2.png"; sourceTree = "<group>"; };
+		FA042A1816C89EC000278FE2 /* stimulate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = stimulate.png; path = "BYB Icons/stimulate.png"; sourceTree = "<group>"; };
+		FA042A1916C89EC000278FE2 /* stimulateAlt.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = stimulateAlt.png; path = "BYB Icons/stimulateAlt.png"; sourceTree = "<group>"; };
+		FA042A1A16C89EC000278FE2 /* stimulateAltx2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = stimulateAltx2.png; path = "BYB Icons/stimulateAltx2.png"; sourceTree = "<group>"; };
+		FA042A1B16C89EC000278FE2 /* stimulatex2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = stimulatex2.png; path = "BYB Icons/stimulatex2.png"; sourceTree = "<group>"; };
 		FA14EC5B15D04AD700B0FB71 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = Settings.bundle; path = "New Focus/Settings.bundle"; sourceTree = "<group>"; };
 		FA14EC5E15D05DD800B0FB71 /* StimulationParameterView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StimulationParameterView.xib; sourceTree = "<group>"; };
 		FA14EC6015D1FF0000B0FB71 /* RecordingOverlay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecordingOverlay.h; sourceTree = "<group>"; };
@@ -208,7 +228,6 @@
 		FA90598915A9F4E20013688B /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = usr/lib/libsqlite3.0.dylib; sourceTree = SDKROOT; };
 		FA9059B115AA15840013688B /* BBFileListTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BBFileListTableView.h; sourceTree = "<group>"; };
 		FA9059B215AA15840013688B /* BBFileListTableView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BBFileListTableView.mm; sourceTree = "<group>"; };
-		FA9059B415AA16A00013688B /* SensibleTableView.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SensibleTableView.framework; path = "../../Utilities/SimpleTableView/Static Frameworks/SensibleTableView.framework"; sourceTree = "<group>"; };
 		FA9059B615AA76590013688B /* BBFileDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BBFileDetailViewController.h; sourceTree = "<group>"; };
 		FA9059B715AA76590013688B /* BBFileDetailViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BBFileDetailViewController.mm; sourceTree = "<group>"; };
 		FA9059BA15AA8AC70013688B /* BBFileViewControllerTBV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BBFileViewControllerTBV.h; sourceTree = "<group>"; };
@@ -342,6 +361,16 @@
 				FA2DAF7A16C85D7500EFF9D6 /* Icon-Small@2x.png */,
 				FA2DAF7B16C85D7500EFF9D6 /* iTunesArtwork.png */,
 				FA2DAF7C16C85D7600EFF9D6 /* iTunesArtwork@2x.png */,
+				FA042A1216C89EC000278FE2 /* FileNeuron.png */,
+				FA042A1316C89EC000278FE2 /* FileNeuronx2.png */,
+				FA042A1416C89EC000278FE2 /* record.png */,
+				FA042A1516C89EC000278FE2 /* recordx2.png */,
+				FA042A1616C89EC000278FE2 /* stim_config.png */,
+				FA042A1716C89EC000278FE2 /* stim_conifgx2.png */,
+				FA042A1816C89EC000278FE2 /* stimulate.png */,
+				FA042A1916C89EC000278FE2 /* stimulateAlt.png */,
+				FA042A1A16C89EC000278FE2 /* stimulateAltx2.png */,
+				FA042A1B16C89EC000278FE2 /* stimulatex2.png */,
 			);
 			name = Artwork;
 			sourceTree = "<group>";
@@ -567,7 +596,6 @@
 				FA905A7915AA8F0B0013688B /* CFNetwork.framework */,
 				FA905A4715AA8BBA0013688B /* Security.framework */,
 				FAAC8E7C15A3738D003EB28A /* Accelerate.framework */,
-				FA9059B415AA16A00013688B /* SensibleTableView.framework */,
 				FADF26541596362F006C87BA /* UIKit.framework */,
 				FADF26561596362F006C87BA /* Foundation.framework */,
 				FADF26581596362F006C87BA /* CoreGraphics.framework */,
@@ -764,6 +792,16 @@
 				FA2DAF8916C89AD600EFF9D6 /* Icon-72@2x.png in Resources */,
 				FA2DAF8A16C89AD600EFF9D6 /* Icon.png in Resources */,
 				FA2DAF8B16C89AD600EFF9D6 /* Icon@2x.png in Resources */,
+				FA042A1C16C89EC000278FE2 /* FileNeuron.png in Resources */,
+				FA042A1D16C89EC000278FE2 /* FileNeuronx2.png in Resources */,
+				FA042A1E16C89EC000278FE2 /* record.png in Resources */,
+				FA042A1F16C89EC000278FE2 /* recordx2.png in Resources */,
+				FA042A2016C89EC000278FE2 /* stim_config.png in Resources */,
+				FA042A2116C89EC000278FE2 /* stim_conifgx2.png in Resources */,
+				FA042A2216C89EC000278FE2 /* stimulate.png in Resources */,
+				FA042A2316C89EC000278FE2 /* stimulateAlt.png in Resources */,
+				FA042A2416C89EC000278FE2 /* stimulateAltx2.png in Resources */,
+				FA042A2516C89EC000278FE2 /* stimulatex2.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
