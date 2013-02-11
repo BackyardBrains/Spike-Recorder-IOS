@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>stimulationPulseFrequency</key>
+	<integer>20</integer>
+	<key>stimulationDigitalMessageFrequency</key>
+	<integer>20000</integer>
+	<key>numPulsesInDigitalStimulation</key>
+	<integer>100</integer>
+	<key>stimulationDigitalDuration</key>
+	<integer>1</integer>
+	<key>stimulationDigitalDutyCycle</key>
+	<real>0.5</real>
+	<key>stimulationPulseDuration</key>
+	<integer>1</integer>
+	<key>stimulationDigitalFrequency</key>
+	<integer>100</integer>
+	<key>stimulationToneFrequency</key>
+	<integer>100</integer>
+	<key>stimulationToneDuration</key>
+	<real>1</real>
+	<key>pulseDutyCycle</key>
+	<real>0.5</real>
+	<key>numPulsesInBiphasicStimulation</key>
+	<integer>100</integer>
+	<key>maxStimulationAmplitude</key>
+	<real>1</real>
+	<key>minStimulationAmplitude</key>
+	<integer>-1</integer>
+	<key>stimulationType</key>
+	<integer>2</integer>
+	<key>gain</key>
+	<integer>1</integer>
+	<key>tabIndex</key>
+	<integer>0</integer>
+</dict>
+</plist>
