@@ -136,8 +136,8 @@
     
     // Figure out what we want to say
     std::ostringstream yStringStream;
-    yStringStream.precision(3);
-    yStringStream << yScale << " mV";
+    yStringStream.precision(2);
+    yStringStream << fixed << yScale << " mV";
     std::stringstream xStringStream;
     xStringStream.precision(1);
     xStringStream << fixed << xScale << " msec";
