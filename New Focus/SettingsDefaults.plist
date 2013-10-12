@@ -32,7 +32,33 @@
 	<integer>2</integer>
 	<key>gain</key>
 	<integer>1</integer>
+	<key>threshold</key>
+	<real>0.025</real>
 	<key>tabIndex</key>
 	<integer>0</integer>
+	<key>numSecondsMax</key>
+	<integer>6</integer>
+	<key>numSecondsMin</key>
+	<integer>0</integer>
+	<key>numSecondsVisible</key>
+	<real>0.1</real>
+	<key>numVoltsMin</key>
+	<real>0.05</real>
+	<key>numVoltsMax</key>
+	<real>1.6</real>
+	<key>numVoltsVisible</key>
+	<real>1.6</real>
+	<key>numSecondsMaxThreshold</key>
+	<integer>6</integer>
+	<key>numSecondsMinThreshold</key>
+	<integer>0</integer>
+	<key>numSecondsVisibleThreshold</key>
+	<real>0.1</real>
+	<key>numVoltsMinThreshold</key>
+	<real>0.05</real>
+	<key>numVoltsMaxThreshold</key>
+	<real>1.6</real>
+	<key>numVoltsVisibleThreshold</key>
+	<real>1.6</real>
 </dict>
 </plist>

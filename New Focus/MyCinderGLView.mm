@@ -39,15 +39,7 @@
     // Setup the camera
 	mCam.lookAt( Vec3f(0.0f, 0.0f, 40.0f), Vec3f::zero() );
 	
-    // Initialize parameters
-    numSecondsMax = 6;
-    
-    numSecondsMin = 0.00;
-    numSecondsVisible = 0.1;
-    
-    numVoltsMin = 0.05;
-    numVoltsMax = 1.6;
-    numVoltsVisible = numVoltsMax;
+    [self loadSettings:FALSE];
     
     // Setup multitouch
     [self enableMultiTouch:YES];
@@ -70,9 +62,67 @@
     self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     
     // Set up our font, which we'll use to display the unit scales
-
     mScaleFont = gl::TextureFont::create( Font("Helvetica", 18) );
+    
 
+}
+
+- (void)loadSettings:(BOOL)useThresholdSettings
+{
+    
+    NSDictionary *defaultsDict = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"SettingsDefaults" ofType:@"plist"]];
+    [[NSUserDefaults standardUserDefaults] registerDefaults:defaultsDict];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    // Initialize parameters
+    if (useThresholdSettings) {
+        NSLog(@"Setting threshold defaults");
+        numSecondsMax = [[defaults valueForKey:@"numSecondsMaxThreshold"] floatValue];
+        numSecondsMin = [[defaults valueForKey:@"numSecondsMinThreshold"] floatValue];
+        numSecondsVisible = [[defaults valueForKey:@"numSecondsVisibleThreshold"] floatValue];
+        numVoltsMin = [[defaults valueForKey:@"numVoltsMinThreshold"] floatValue];
+        numVoltsMax = [[defaults valueForKey:@"numVoltsMaxThreshold"] floatValue];
+        numVoltsVisible = [[defaults valueForKey:@"numVoltsVisibleThreshold"] floatValue];
+    }
+    else {
+        numSecondsMax = [[defaults valueForKey:@"numSecondsMax"] floatValue];
+        numSecondsMin = [[defaults valueForKey:@"numSecondsMin"] floatValue];
+        numSecondsVisible = [[defaults valueForKey:@"numSecondsVisible"] floatValue];
+        numVoltsMin = [[defaults valueForKey:@"numVoltsMin"] floatValue];
+        numVoltsMax = [[defaults valueForKey:@"numVoltsMax"] floatValue];
+        numVoltsVisible = [[defaults valueForKey:@"numVoltsVisible"] floatValue];
+    }
+
+}
+
+- (void)saveSettings:(BOOL)useThresholdSettings
+{
+    NSDictionary *defaultsDict = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"SettingsDefaults" ofType:@"plist"]];
+    [[NSUserDefaults standardUserDefaults] registerDefaults:defaultsDict];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    // Save parameters
+    // Initialize parameters
+    if (useThresholdSettings) {
+        NSLog(@"Saving threshold settings");
+        [defaults setValue:[NSNumber numberWithFloat:numSecondsMax] forKey:@"numSecondsMaxThreshold"];
+        [defaults setValue:[NSNumber numberWithFloat:numSecondsMin] forKey:@"numSecondsMinThreshold"];
+        [defaults setValue:[NSNumber numberWithFloat:numSecondsVisible] forKey:@"numSecondsVisibleThreshold"];
+        [defaults setValue:[NSNumber numberWithFloat:numVoltsMin] forKey:@"numVoltsMinThreshold"];
+        [defaults setValue:[NSNumber numberWithFloat:numVoltsMax] forKey:@"numVoltsMaxThreshold"];
+        [defaults setValue:[NSNumber numberWithFloat:numVoltsVisible] forKey:@"numVoltsVisibleThreshold"];
+    }
+    else {
+        NSLog(@"Saving non-threshold settings");
+        [defaults setValue:[NSNumber numberWithFloat:numSecondsMax] forKey:@"numSecondsMax"];
+        [defaults setValue:[NSNumber numberWithFloat:numSecondsMin] forKey:@"numSecondsMin"];
+        [defaults setValue:[NSNumber numberWithFloat:numSecondsVisible] forKey:@"numSecondsVisible"];
+        [defaults setValue:[NSNumber numberWithFloat:numVoltsMin] forKey:@"numVoltsMin"];
+        [defaults setValue:[NSNumber numberWithFloat:numVoltsMax] forKey:@"numVoltsMax"];
+        [defaults setValue:[NSNumber numberWithFloat:numVoltsVisible] forKey:@"numVoltsVisible"];
+    }
+    
+    [defaults synchronize];
 }
 
 - (void)draw {
@@ -103,9 +153,7 @@
         // Draw a line from left to right at the voltage threshold value.
         float threshval = [[BBAudioManager bbAudioManager] threshold];
         gl::drawLine(Vec2f(-numSecondsVisible, threshval), Vec2f(-numSecondsMin, threshval));
-        
     }
-            
     
     // Put a little grid on the screen.
     [self drawGrid];
@@ -128,8 +176,6 @@
     Vec2f xFarLeft = [self screenToWorld:Vec2f(0.0, 0.0)];
     Vec2f xMiddle  = [self screenToWorld:Vec2f(self.frame.size.width/2.0f, 0.0)];
     Vec2f yScaleWorldPosition = [self screenToWorld:yScaleTextPosition];
-    
-    NSLog(@"Far left: (%f), Middle: (%f)", xFarLeft.x,xMiddle.x);
     
     float xScale = 1000.0*(xMiddle.x - xFarLeft.x);
     float yScale = yScaleWorldPosition.y;
@@ -221,7 +267,6 @@
     }
     
     // Aight, now that we've got our ranges correct, let's ask for the audio.
-//    NSLog(@"Drawing %d/%d points, offset: %d", numPoints, (int)(numSecondsMax * audioManager.samplingRate), offset);
     [audioManager fetchAudio:(float *)&(displayVector.getPoints()[offset])+1 numFrames:numPoints whichChannel:0 stride:2];
 
 }

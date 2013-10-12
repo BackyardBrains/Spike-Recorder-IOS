@@ -12,13 +12,17 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    NSLog(@"Starting threshold view");
     [super viewWillAppear:animated];
     [[BBAudioManager bbAudioManager] startThresholding:8192];
+    [glView loadSettings:TRUE];
     [glView startAnimation];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
+    [glView saveSettings:TRUE];
+    [[BBAudioManager bbAudioManager] saveSettingsToUserDefaults];
     [[BBAudioManager bbAudioManager] stopThresholding];
     [glView stopAnimation];
 }
@@ -27,21 +31,31 @@
 {
     [super viewDidLoad];
     
+    
     // our CCGLTouchView being added as a subview
-	MyCinderGLView *aView = [[MyCinderGLView alloc] init];
-	glView = aView;
-	[aView release];
+//	MyCinderGLView *aView = [[MyCinderGLView alloc] init];
+//	glView = aView;
+//	[aView release];
     glView = [[MyCinderGLView alloc] initWithFrame:self.view.frame];
     
 	[self.view addSubview:glView];
     [self.view sendSubviewToBack:glView];
-    
 	
     // set our view controller's prop that will hold a pointer to our newly created CCGLTouchView
     [self setGLView:glView];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate:) name:UIApplicationWillTerminateNotification object:nil];
 
 }
+
+- (void)applicationWillTerminate:(UIApplication *)application {
+    NSLog(@"Terminating from threshold app...");
+    [glView saveSettings:TRUE];
+    [[BBAudioManager bbAudioManager] saveSettingsToUserDefaults];
+    [glView stopAnimation];
+    [[BBAudioManager bbAudioManager] stopThresholding];
+}
+
 
 - (void)setGLView:(MyCinderGLView *)view
 {

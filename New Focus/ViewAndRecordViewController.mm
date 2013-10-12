@@ -47,6 +47,8 @@
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
+    NSLog(@"Stopping regular view");
+    [glView saveSettings:FALSE]; // save non-threshold settings
     [glView stopAnimation];
 }
 
@@ -69,6 +71,14 @@
     
     stimulateButton.selected = NO;
     
+    // Listen for going down
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate:) name:UIApplicationWillTerminateNotification object:nil];
+}
+
+- (void)applicationWillTerminate:(UIApplication *)application {
+    NSLog(@"Terminating...");
+    [glView saveSettings:FALSE];
+    [glView stopAnimation];
 }
 
 - (void)setGLView:(MyCinderGLView *)view
@@ -77,10 +87,6 @@
     callbackTimer = nil;
 }
 
-
-/**
- *  Cocoa UI methods
- */
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
 {

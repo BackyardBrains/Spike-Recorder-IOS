@@ -53,5 +53,7 @@
 
 - (void)setRecording:(BOOL)recordOrNot;
 - (void)setStimulating:(BOOL)stimulateOrNot;
+- (void)saveSettings:(BOOL)useThresholdSettings;
+- (void)loadSettings:(BOOL)useThresholdSettings;
 
 @end

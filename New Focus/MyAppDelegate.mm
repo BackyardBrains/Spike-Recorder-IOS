@@ -21,7 +21,7 @@
 {    
 
     // Hide the status bar
-    [[UIApplication sharedApplication] setStatusBarHidden:YES animated:NO];
+//    [[UIApplication sharedApplication] setStatusBarHidden:YES animated:NO];
     
     // viewController as the root view for our window
     // This works for iOS 5, but not iOS 6. Very confusing.
@@ -50,13 +50,14 @@
     [DBSession setSharedSession:dbSession];
 }
 
-- (void)applicationWillTerminate:(UIApplication *)app {
 
+- (void)applicationWillTerminate:(UIApplication *)application {
+    
+    NSLog(@"Going into background.");
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setValue:[NSNumber numberWithInt:tabBarController.selectedIndex] forKey:@"tabIndex"];
     [defaults synchronize];
     
-
 }
 
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
@@ -71,17 +72,8 @@
     return NO;
 }
 
-
-
-- (NSUInteger)application:(UIApplication *)application supportedInterfaceOrientationsForWindow:(UIWindow *)window
-{
-    NSUInteger orientations = UIInterfaceOrientationMaskAll;
-    return orientations;
-}
-
 - (void)dealloc
 {
-    NSLog(@"AHAAAA");
     [tabBarController release];
     [window release];
     [super dealloc];

@@ -17,6 +17,7 @@ static BBAudioManager *bbAudioManager = nil;
     __block BBAudioFileReader *fileReader;
     DSPThreshold *dspThresholder;
     dispatch_queue_t seekingQueue;
+    float _threshold;
     
     // We need a special flag for seeking around in a file
     // The audio file reader is very sensitive to threading issues,
@@ -130,7 +131,7 @@ static BBAudioManager *bbAudioManager = nil;
 
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-
+    
     self.numPulsesInDigitalStimulation = [[defaults valueForKey:@"numPulsesInDigitalStimulation"] intValue];
     self.stimulationDigitalMessageFrequency = [[defaults valueForKey:@"stimulationDigitalMessageFrequency"] floatValue];
     self.stimulationDigitalDuration = [[defaults valueForKey:@"stimulationDigitalDuration"] floatValue];
@@ -144,6 +145,8 @@ static BBAudioManager *bbAudioManager = nil;
     self.numPulsesInBiphasicStimulation = [[defaults valueForKey:@"numPulsesInBiphasicStimulation"] intValue];
     self.maxStimulationAmplitude = [[defaults valueForKey:@"maxStimulationAmplitude"] floatValue];
     self.minStimulationAmplitude = [[defaults valueForKey:@"minStimulationAmplitude"] floatValue];
+    _threshold = [[defaults valueForKey:@"threshold"] floatValue];
+    NSLog(@"_threshold = %f", _threshold);
     self.stimulationType = (BBStimulationType)[[defaults valueForKey:@"stimulationType"] intValue];
 
 }
@@ -167,6 +170,7 @@ static BBAudioManager *bbAudioManager = nil;
     [defaults setValue:[NSNumber numberWithFloat:maxStimulationAmplitude] forKey:@"maxStimulationAmplitude"];
     [defaults setValue:[NSNumber numberWithFloat:minStimulationAmplitude] forKey:@"minStimulationAmplitude"];
     [defaults setValue:[NSNumber numberWithInt:stimulationType] forKey:@"stimulationType"];
+    [defaults setValue:[NSNumber numberWithFloat:_threshold] forKey:@"threshold"];
     [defaults synchronize];
 }
 
@@ -198,7 +202,7 @@ static BBAudioManager *bbAudioManager = nil;
     
     if (!dspThresholder) {
         dspThresholder = new DSPThreshold(ringBuffer, numPointsToSavePerThreshold, 50);
-        dspThresholder->SetThreshold(0.025);
+        dspThresholder->SetThreshold(_threshold);
     }
     
     audioManager.inputBlock = ^(float *data, UInt32 numFrames, UInt32 numChannels) {
@@ -606,6 +610,7 @@ static BBAudioManager *bbAudioManager = nil;
 #pragma mark - State
 - (void)setThreshold:(float)newThreshold
 {
+    _threshold = newThreshold;
     
     if (dspThresholder)
         dspThresholder->SetThreshold(newThreshold);
@@ -613,8 +618,10 @@ static BBAudioManager *bbAudioManager = nil;
 
 - (float)threshold
 {
+    
     if (dspThresholder) {
-        return dspThresholder->GetThreshold();
+        _threshold = dspThresholder->GetThreshold();
+        return _threshold;
     }
     else {
         return 0;

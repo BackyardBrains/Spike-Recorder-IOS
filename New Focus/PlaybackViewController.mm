@@ -110,12 +110,14 @@
 
 - (void)viewWillDisappear:(BOOL)animated
 {
+    
+    [super viewWillDisappear:animated];
+    
     dispatch_suspend(callbackTimer);
     [[BBAudioManager bbAudioManager] stopPlaying];
     [[Novocaine audioManager] removeObserver:self forKeyPath:@"numOutputChannels"];
     [self restoreAudioOutputRouteToDefault];
     dispatch_suspend(callbackTimer);
-    [glView stopAnimation];
     
 }
 
