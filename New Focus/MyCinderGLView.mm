@@ -40,10 +40,10 @@
 	mCam.lookAt( Vec3f(0.0f, 0.0f, 40.0f), Vec3f::zero() );
 	
     // Initialize parameters
-    mCubeSize = 10;
+//    mCubeSize = 10;
     numSecondsMax = 6;
     
-    numSecondsMin = 0.02;
+    numSecondsMin = 0.00;
     numSecondsVisible = 0.1;
     
     numVoltsMin = 0.05;
@@ -130,16 +130,18 @@
     Vec2f xMiddle  = [self screenToWorld:Vec2f(self.frame.size.width/2.0f, 0.0)];
     Vec2f yScaleWorldPosition = [self screenToWorld:yScaleTextPosition];
     
-    float xScale = xMiddle.x - xFarLeft.x;
+    NSLog(@"Far left: (%f), Middle: (%f)", xFarLeft.x,xMiddle.x);
+    
+    float xScale = 1000.0*(xMiddle.x - xFarLeft.x);
     float yScale = yScaleWorldPosition.y;
     
     // Figure out what we want to say
     std::ostringstream yStringStream;
     yStringStream.precision(3);
     yStringStream << yScale << " mV";
-    std::ostringstream xStringStream;
-    xStringStream.precision(3);
-    xStringStream << xScale << " sec";
+    std::stringstream xStringStream;
+    xStringStream.precision(1);
+    xStringStream << fixed << xScale << " msec";
     
     // Now that we have the string, calculate the position of the x-scale text
     // (we'll be horizontally centering by hand)
@@ -149,6 +151,7 @@
     xScaleTextPosition.y =0.95*self.frame.size.height + (mScaleFont->getAscent() / 2.0f);
     
 	gl::color( ColorA( 1.0, 1.0f, 1.0f, 1.0f ) );
+    
     
     // Draw the y-axis scale text
     mScaleFont->drawString(yStringStream.str(), yScaleTextPosition);
@@ -280,6 +283,7 @@
         // (why? we always want the x-axis to be centered on the threshold value)
         if ([[BBAudioManager bbAudioManager] thresholding]) {
             // slightly tigher bounds on the thresholding view (don't need to see whole second and a half in this view)
+            // TODO: this is a hack to get thresholding to have a separate number of seconds visible. I weep for how awful this is. I am so sorry.
             float thisNumSecondsMax = 1.5;
             numSecondsVisible = (numSecondsVisible < thisNumSecondsMax - 0.25) ? numSecondsVisible : (thisNumSecondsMax-0.25);
             numSecondsVisible = (numSecondsVisible > numSecondsMin) ? numSecondsVisible : numSecondsMin;

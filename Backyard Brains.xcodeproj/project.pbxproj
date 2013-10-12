@@ -105,6 +105,7 @@
 		FA905A7A15AA8F0C0013688B /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA905A7915AA8F0B0013688B /* CFNetwork.framework */; };
 		FA905A7C15AA8F370013688B /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA905A7B15AA8F360013688B /* MessageUI.framework */; };
 		FA905A7E15AA8FFF0013688B /* BBFileDownloadView.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA905A7D15AA8FFF0013688B /* BBFileDownloadView.xib */; };
+		FA9A5B311809A5DA00FF01A0 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FA9A5B301809A5DA00FF01A0 /* Default-568h@2x.png */; };
 		FA9A665215BA3DC100CF1697 /* MainWindow-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA9A665115BA3DC100CF1697 /* MainWindow-iPad.xib */; };
 		FA9A665915BA412600CF1697 /* BBTabBarViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA9A665815BA412600CF1697 /* BBTabBarViewController.mm */; };
 		FA9A665B15BB19B000CF1697 /* SettingsDefaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = FA9A665A15BB19B000CF1697 /* SettingsDefaults.plist */; };
@@ -263,6 +264,7 @@
 		FA905A7915AA8F0B0013688B /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		FA905A7B15AA8F360013688B /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		FA905A7D15AA8FFF0013688B /* BBFileDownloadView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BBFileDownloadView.xib; sourceTree = "<group>"; };
+		FA9A5B301809A5DA00FF01A0 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		FA9A665115BA3DC100CF1697 /* MainWindow-iPad.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = "MainWindow-iPad.xib"; path = "iPad/MainWindow-iPad.xib"; sourceTree = "<group>"; };
 		FA9A665715BA412600CF1697 /* BBTabBarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BBTabBarViewController.h; sourceTree = "<group>"; };
 		FA9A665815BA412600CF1697 /* BBTabBarViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BBTabBarViewController.mm; sourceTree = "<group>"; };
@@ -567,6 +569,7 @@
 		FADF26451596362E006C87BA = {
 			isa = PBXGroup;
 			children = (
+				FA9A5B301809A5DA00FF01A0 /* Default-568h@2x.png */,
 				FA042A1016C89C6D00278FE2 /* SensibleTableView.framework */,
 				FA2DAF8316C85D7E00EFF9D6 /* Artwork */,
 				FA14EC5B15D04AD700B0FB71 /* Settings.bundle */,
@@ -734,6 +737,11 @@
 			attributes = {
 				LastUpgradeCheck = 0430;
 				ORGANIZATIONNAME = "Datta Lab, Harvard University";
+				TargetAttributes = {
+					FADF264F1596362F006C87BA = {
+						DevelopmentTeam = G4W97M7754;
+					};
+				};
 			};
 			buildConfigurationList = FADF264A1596362E006C87BA /* Build configuration list for PBXProject "Backyard Brains" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -774,6 +782,7 @@
 				FA35CF0A15ABBC680082FBC3 /* pause@2x.png in Resources */,
 				FA35CF0B15ABBC680082FBC3 /* stim.png in Resources */,
 				FA35CF0C15ABBC680082FBC3 /* stim@2x.png in Resources */,
+				FA9A5B311809A5DA00FF01A0 /* Default-568h@2x.png in Resources */,
 				FA35CF0F15ABBC8C0082FBC3 /* ThresholdImage.png in Resources */,
 				FA35CF1015ABBC8C0082FBC3 /* WaveImage.png in Resources */,
 				FAA27C1E15AD01CA00DCC60B /* ThresholdViewController.xib in Resources */,
@@ -950,8 +959,10 @@
 		FADF268D15963630006C87BA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				CINDER_PATH = /Users/Alex/Dropbox/iPhone/Utilities/Cinder/;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVICE_FAMILY = iPhone/iPad;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -969,19 +980,20 @@
 					"$(CINDER_PATH)/boost",
 				);
 				INFOPLIST_FILE = "New Focus/Backyard Brains-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(CINDER_PATH)/lib",
 					"$(CINDER_PATH)/lib/ios",
 					"$(CINDER_PATH)/lib/ios-sim",
 				);
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					/usr/lib/libz.dylib,
 					"$(CINDER_PATH)/lib/libcinder-iphone_d.a",
 					"$(CINDER_PATH)/lib/libcinder-iphone-sim_d.a",
 				);
 				PRODUCT_NAME = BYB2;
+				PROVISIONING_PROFILE = "";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "$(CINDER_PATH)/include";
@@ -993,9 +1005,10 @@
 		FADF268E15963630006C87BA /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				CINDER_PATH = /Users/Alex/Dropbox/iPhone/Utilities/Cinder/;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Alexander Wiltschko";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVICE_FAMILY = iPhone/iPad;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1014,18 +1027,21 @@
 					"$(CINDER_PATH)/boost",
 				);
 				INFOPLIST_FILE = "New Focus/Backyard Brains-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(CINDER_PATH)/lib",
 					"$(CINDER_PATH)/lib/ios",
 					"$(CINDER_PATH)/lib/ios-sim",
 				);
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					/usr/lib/libz.dylib,
 					"$(CINDER_PATH)/lib/libcinder-iphone.a",
 					"$(CINDER_PATH)/lib/libcinder-iphone-sim.a",
 				);
 				PRODUCT_NAME = BYB2;
+				PROVISIONING_PROFILE = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "$(CINDER_PATH)/include";
