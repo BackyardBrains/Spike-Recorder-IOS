@@ -22,7 +22,6 @@
 
 @interface MyCinderGLView : CCGLTouchView {
     CameraOrtho mCam;
-    float mCubeSize;
     gl::Texture mColorScale;
     gl::TextureFontRef mScaleFont;
     
@@ -52,7 +51,6 @@
 @property (nonatomic) BOOL recording;
 
 
-- (void)setCubeSize:(float)size;
 - (void)setRecording:(BOOL)recordOrNot;
 - (void)setStimulating:(BOOL)stimulateOrNot;
 

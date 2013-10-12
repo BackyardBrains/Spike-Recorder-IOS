@@ -40,7 +40,6 @@
 	mCam.lookAt( Vec3f(0.0f, 0.0f, 40.0f), Vec3f::zero() );
 	
     // Initialize parameters
-//    mCubeSize = 10;
     numSecondsMax = 6;
     
     numSecondsMin = 0.00;
@@ -313,17 +312,6 @@
         
     }
 
-}
-
-
-
-
-
-
-
-- (void)setCubeSize:(float)size
-{
-    numSecondsVisible = size;
 }
 
 
