@@ -104,7 +104,6 @@
     // Save parameters
     // Initialize parameters
     if (useThresholdSettings) {
-        NSLog(@"Saving threshold settings");
         [defaults setValue:[NSNumber numberWithFloat:numSecondsMax] forKey:@"numSecondsMaxThreshold"];
         [defaults setValue:[NSNumber numberWithFloat:numSecondsMin] forKey:@"numSecondsMinThreshold"];
         [defaults setValue:[NSNumber numberWithFloat:numSecondsVisible] forKey:@"numSecondsVisibleThreshold"];
@@ -113,7 +112,6 @@
         [defaults setValue:[NSNumber numberWithFloat:numVoltsVisible] forKey:@"numVoltsVisibleThreshold"];
     }
     else {
-        NSLog(@"Saving non-threshold settings");
         [defaults setValue:[NSNumber numberWithFloat:numSecondsMax] forKey:@"numSecondsMax"];
         [defaults setValue:[NSNumber numberWithFloat:numSecondsMin] forKey:@"numSecondsMin"];
         [defaults setValue:[NSNumber numberWithFloat:numSecondsVisible] forKey:@"numSecondsVisible"];
@@ -186,7 +184,14 @@
     yStringStream << fixed << yScale << " mV";
     std::stringstream xStringStream;
     xStringStream.precision(1);
-    xStringStream << fixed << xScale << " msec";
+    if (xScale >= 1000) {
+        xScale /= 1000.0;
+        xStringStream << fixed << xScale << " s";
+    }
+    else {
+        xStringStream << fixed << xScale << " msec";
+    }
+    
     
     // Now that we have the string, calculate the position of the x-scale text
     // (we'll be horizontally centering by hand)
