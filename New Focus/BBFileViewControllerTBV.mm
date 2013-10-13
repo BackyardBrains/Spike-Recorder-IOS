@@ -493,15 +493,14 @@
 
 - (void)dbButtonPressed
 {
-    NSLog(@"That infernal button has been pressed!");
-//    if ([[self.preferences valueForKey:@"isDBLinked"] boolValue])
     if ([[DBSession sharedSession] isLinked])
     {
         //push action sheet
         UIActionSheet *mySheet = [[UIActionSheet alloc] initWithTitle:@"Dropbox" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Disconnect from Dropbox" otherButtonTitles:@"Change login settings", @"Upload now", nil];
         
         mySheet.actionSheetStyle = UIActionSheetStyleBlackOpaque;
-        [mySheet showInView:self.view];//showFromTabBar:self.tabBarController.tabBar];
+//        [mySheet showInView:self.view];
+        [mySheet showFromTabBar:self.tabBarController.tabBar];
         [mySheet release];
         
     }
@@ -512,12 +511,6 @@
 - (void)pushDropboxSettings
 {
      [[DBSession sharedSession] linkFromController:self];
-    NSLog(@"PUSH IT PUSH IT PUSH IT");
-//    DBLoginController* controller = [[DBLoginController new] autorelease];
-//    controller.delegate = self;
-//    UINavigationController *nav = [[[UINavigationController alloc] initWithRootViewController:controller] autorelease];
-//    [self presentModalViewController:nav animated:YES];
-    
 }
 
 
@@ -525,25 +518,29 @@
 {
     self.preferences = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:NO] forKey:@"isDBLinked"];
     [self setStatus:@"Disconnected from Dropbox"];
-    [NSTimer scheduledTimerWithTimeInterval:1.0f target:self selector:@selector(dbUpdate) userInfo:nil repeats:NO];
+    
+    // IF YOU DISCONNECT
+    // WHY WOULD YOU THEN TRY TO UPLOAD FILES
+    // I AM CONFUSED
+    [NSTimer scheduledTimerWithTimeInterval:1.0f target:self selector:@selector(clearStatus) userInfo:nil repeats:NO];
 }
+
 
 - (void)dbUpdate
 {
-//    if ([[self.preferences valueForKey:@"isDBLinked"] boolValue])
+    
     if ([[DBSession sharedSession] isLinked])
     {
-        [self setStatus:@"Uploading to dropbox..."];
+        [self setStatus:@"Synchronizing..."];
+        [self.restClient loadMetadata:@"/" withHash:filesHash];
         
-        [self.restClient loadMetadata:@"/BYB files" withHash:filesHash];
-        
-        //create a timer here that restClient:(DBRestClient*)client loadedMetadata: can invalidate
-        //timer will call status=@"sync failed"
-        self.syncTimer = [NSTimer scheduledTimerWithTimeInterval:kSyncWaitTime
-                                                          target:self
-                                                        selector:@selector(dbUpdateTimedOut)
-                                                        userInfo:nil
-                                                         repeats:NO];
+//        //create a timer here that restClient:(DBRestClient*)client loadedMetadata: can invalidate
+//        //timer will call status=@"sync failed"
+//        self.syncTimer = [NSTimer scheduledTimerWithTimeInterval:kSyncWaitTime
+//                                                          target:self
+//                                                        selector:@selector(dbUpdateTimedOut)
+//                                                        userInfo:nil
+//                                                         repeats:NO];
         
     } else {
         [self setStatus:@""];
@@ -558,21 +555,24 @@
                                    selector:@selector(clearStatus)
                                    userInfo:nil
                                     repeats:NO];
+    
+    // NO LONGER PUTTING M4As IN SEPARATE FOLDER
+    // COMMENTING IN CASE IT BECOMES DESIRABLE IN THE FUTURE
     //try creating the folder and updating again
-    if (!self.triedCreatingFolder) {
-        [self setStatus:@"Creating folder 'BYB files'"];
-        [self.restClient createFolder:@"BYB files"];
-        self.triedCreatingFolder = YES;
-        self.syncTimer = [NSTimer scheduledTimerWithTimeInterval:kSyncWaitTime
-                                                          target:self
-                                                        selector:@selector(dbUpdateTimedOut)
-                                                        userInfo:nil
-                                                         repeats:NO];
-    }
-    else
-    {
-        [self setStatus:@"Upload failed"];
-    }
+//    if (!self.triedCreatingFolder) {
+//        [self setStatus:@"Creating folder 'BYB files'"];
+//        [self.restClient createFolder:@"BYB files"];
+//        self.triedCreatingFolder = YES;
+//        self.syncTimer = [NSTimer scheduledTimerWithTimeInterval:kSyncWaitTime
+//                                                          target:self
+//                                                        selector:@selector(dbUpdateTimedOut)
+//                                                        userInfo:nil
+//                                                         repeats:NO];
+//    }
+//    else
+//    {
+//        [self setStatus:@"Upload failed"];
+//    }
 }
 
 - (void)dbStopUpdate
@@ -646,7 +646,6 @@
 
 - (void)compareBBFilesToNewFilePaths:(NSArray *)newPaths
 {
-    NSLog(@"Are we uploading???");
     NSMutableArray *filesNeedingUpload   = [NSMutableArray arrayWithCapacity:[self.allFiles count]];
     for (int i = 0; i < [self.allFiles count]; ++i)
         [filesNeedingUpload addObject:[NSNumber numberWithBool:YES]];  //assume all uploads
@@ -679,14 +678,15 @@
         {
             NSString *theFile = [[self.allFiles objectAtIndex:m] filename];
             NSString *theFilePath = [self.docPath stringByAppendingPathComponent:theFile]; 
-            NSString *dbPath = [NSString stringWithString:@"/BYB files"];
-            [self.restClient uploadFile:theFile toPath:dbPath fromPath:theFilePath];
+            NSString *dbPath = @"/";
+            NSLog(@"Uploading %@ from %@", theFile, theFilePath);
+            [self.restClient uploadFile:theFile toPath:dbPath withParentRev:nil fromPath:theFilePath];
             ++count;
         }
     }
     
     
-    NSString *uploadStatus = [NSString stringWithFormat:@"Uploaded %d files", count];
+    NSString *uploadStatus = [NSString stringWithFormat:@"Updated %d files", count];
     [self setStatus:uploadStatus];
     [self.syncTimer invalidate];
     [NSTimer scheduledTimerWithTimeInterval:1.0f target:self selector:@selector(clearStatus) userInfo:nil repeats:NO];
@@ -696,11 +696,12 @@
 #pragma mark DBRestClientDelegate methods
 
 
-- (void)restClient:(DBRestClient*)client loadedMetadata:(DBMetadata*)metadata {
+- (void)restClient:(DBRestClient*)client loadedMetadata:(DBMetadata*)metadata
+{
     [filesHash release];
     filesHash = [metadata.hash retain];
     
-    NSArray* validExtensions = [NSArray arrayWithObjects:@"aif", @"aiff", nil];
+    NSArray* validExtensions = [NSArray arrayWithObjects:@"aif", @"aiff", @"mp4", @"m4a", nil];
     NSMutableArray* newFilePaths = [NSMutableArray new];
     for (DBMetadata* child in metadata.contents) {
     	NSString* extension = [[child.path pathExtension] lowercaseString];
@@ -709,9 +710,49 @@
         }
     }
     
-    
     [self compareBBFilesToNewFilePaths:(NSArray *)newFilePaths];
     self.lastFilePaths = newFilePaths;
+    [newFilePaths release];
+}
+
+
+- (void)restClient:(DBRestClient *)client loadMetadataFailedWithError:(NSError *)error
+{
+    self.preferences = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:NO] forKey:@"isDBLinked"];
+    NSLog(@"Error loading metadata: %@", error);
+    [self clearStatus];
+    
+    // If we have unlinked, and we get an error, don't worry about it.
+    BOOL isLinked = [[self.preferences valueForKey:@"isDBLinked"] boolValue];
+//    NSString *pathStr = [[NSBundle mainBundle] bundlePath];
+//    NSString *finalPath = [pathStr stringByAppendingPathComponent:@"BBFileViewController.plist"];
+//    NSDictionary *pref = [NSDictionary dictionaryWithContentsOfFile:finalPath];
+//    BOOL isLinked = [[pref objectForKey:@"isDBLinked"] boolValue];
+    
+    if (isLinked)
+    {
+        NSLog(@"We're supposed to be LINKED");
+        // If we think we're linked, we need to ask the user to reauthenticate.
+        [[DBSession sharedSession] linkFromController:self];
+    }
+    else
+    {
+        NSLog(@"We're not linked, we don't think we are, no big deal.");
+        // If we don't think we're linked, then we have nothing to do here.
+        return;
+    }
+
+}
+
+
+- (void)restClient:(DBRestClient*)client uploadedFile:(NSString*)destPath from:(NSString*)srcPath metadata:(DBMetadata*)metadata
+{
+    NSLog(@"File uploaded successfully to path: %@", metadata.path);
+}
+
+- (void)restClient:(DBRestClient*)client uploadFileFailedWithError:(NSError*)error
+{
+    NSLog(@"File upload failed with error - %@", error);
 }
 
 
@@ -721,7 +762,8 @@
 }
 
 
-- (DBRestClient*)restClient { //getter
+- (DBRestClient*)restClient
+{ //getter
     NSLog(@"Getting that rest client");
     if (restClient == nil) {
     	restClient = [[DBRestClient alloc] initWithSession: [DBSession sharedSession]];
@@ -732,10 +774,6 @@
 }
 
 
-- (void)restClient:(DBRestClient*)client createdFolder:(DBMetadata*)folder
-{
-    [self dbUpdate];
-}
 
 #pragma mark DBLoginControllerDelegate methods
 
@@ -744,33 +782,16 @@
         
         if ([[DBSession sharedSession] isLinked]) {
             NSLog(@"App linked successfully!");
-            // [controller.navigationController dismissModalViewControllerAnimated:YES];
             self.preferences = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:@"isDBLinked"];
             [self dbUpdate];
         }
         else {
-            //[controller.navigationController dismissModalViewControllerAnimated:YES];
-            NSLog(@"AIGHT COOL");
             [self dbUpdate];
         }
         return YES;
     }
     return NO;
 }
-
-
-//- (void)loginControllerDidLogin:(DBLoginController*)controller {
-//    [controller.navigationController dismissModalViewControllerAnimated:YES];
-//    self.preferences = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:@"isDBLinked"];
-//    [self dbUpdate];
-//    NSLog(@"Dropbox is linked!");
-//}
-//
-//- (void)loginControllerDidCancel:(DBLoginController*)controller {
-//    [controller.navigationController dismissModalViewControllerAnimated:YES];
-//    NSLog(@"AIGHT COOL");
-//    [self dbUpdate];
-//}
 
 #pragma mark - Action Sheet delegate
 
