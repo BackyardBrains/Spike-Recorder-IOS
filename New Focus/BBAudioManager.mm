@@ -146,7 +146,6 @@ static BBAudioManager *bbAudioManager = nil;
     self.maxStimulationAmplitude = [[defaults valueForKey:@"maxStimulationAmplitude"] floatValue];
     self.minStimulationAmplitude = [[defaults valueForKey:@"minStimulationAmplitude"] floatValue];
     _threshold = [[defaults valueForKey:@"threshold"] floatValue];
-    NSLog(@"_threshold = %f", _threshold);
     self.stimulationType = (BBStimulationType)[[defaults valueForKey:@"stimulationType"] intValue];
 
 }

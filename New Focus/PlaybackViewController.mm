@@ -168,9 +168,14 @@
 
 - (IBAction)sliderValueChanged:(id)sender {
     
-//    bbAudioManager.currentFileTime = (float)self.timeSlider.value;
-    [bbAudioManager resumePlaying];
-    [bbAudioManager pausePlaying];
+    if (bbAudioManager.playing) {
+        [bbAudioManager pausePlaying];
+        bbAudioManager.currentFileTime = (float)self.timeSlider.value;
+        [bbAudioManager resumePlaying];
+    }
+    else {
+        bbAudioManager.currentFileTime = (float)self.timeSlider.value;
+    }
     return;
     
 }
