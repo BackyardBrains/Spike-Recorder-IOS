@@ -223,7 +223,6 @@
 					break;
 				}
 			}
-            
 		}
 		
 		BBFile *thisFile = [allFiles objectAtIndex:indexPath.row];
@@ -660,7 +659,6 @@
             // if there is a match
             if ([[[self.allFiles objectAtIndex:m] filename] isEqualToString:[[newPaths objectAtIndex:l] stringByReplacingOccurrencesOfString:@"/BYB files/" withString:@""]])
             {
-                match = TRUE;
                 [filesNeedingUpload replaceObjectAtIndex:m withObject:[NSNumber numberWithBool:NO]]; //don't upload that file
             }
         }
@@ -676,11 +674,19 @@
     {
         if ([[filesNeedingUpload objectAtIndex:m] boolValue])
         {
-            NSString *theFile = [[self.allFiles objectAtIndex:m] filename];
-            NSString *theFilePath = [self.docPath stringByAppendingPathComponent:theFile]; 
+            NSString *shortName = [[self.allFiles objectAtIndex:m] shortname];
+            NSString *actualFilePath = [[self.allFiles objectAtIndex:m] filename];
+            NSString *theFile = [shortName stringByAppendingString:@".m4a"];
+
+            NSString *theFilePath = [self.docPath stringByAppendingPathComponent:actualFilePath];
             NSString *dbPath = @"/";
             NSLog(@"Uploading %@ from %@", theFile, theFilePath);
-            [self.restClient uploadFile:theFile toPath:dbPath withParentRev:nil fromPath:theFilePath];
+            
+            // This is actually where we're uploading
+            [self.restClient uploadFile:theFile
+                                 toPath:dbPath
+                          withParentRev:nil
+                               fromPath:theFilePath];
             ++count;
         }
     }
