@@ -281,7 +281,7 @@
 		FAA43D2915AB5FBC0024E445 /* TickMarks.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TickMarks.png; sourceTree = "<group>"; };
 		FAA43D2A15AB5FBC0024E445 /* TickMarksBig.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TickMarksBig.png; sourceTree = "<group>"; };
 		FAAC8E7C15A3738D003EB28A /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
-		FADF26501596362F006C87BA /* BYB2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BYB2.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		FADF26501596362F006C87BA /* Backyard Brains.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Backyard Brains.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FADF26541596362F006C87BA /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		FADF26561596362F006C87BA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		FADF26581596362F006C87BA /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -590,7 +590,7 @@
 		FADF26511596362F006C87BA /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				FADF26501596362F006C87BA /* BYB2.app */,
+				FADF26501596362F006C87BA /* Backyard Brains.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -729,7 +729,7 @@
 			);
 			name = "Backyard Brains";
 			productName = "New Focus";
-			productReference = FADF26501596362F006C87BA /* BYB2.app */;
+			productReference = FADF26501596362F006C87BA /* Backyard Brains.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -997,7 +997,7 @@
 					"$(CINDER_PATH)/lib/libcinder-iphone_d.a",
 					"$(CINDER_PATH)/lib/libcinder-iphone-sim_d.a",
 				);
-				PRODUCT_NAME = BYB2;
+				PRODUCT_NAME = "Backyard Brains";
 				PROVISIONING_PROFILE = "";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1045,9 +1045,8 @@
 					"$(CINDER_PATH)/lib/libcinder-iphone.a",
 					"$(CINDER_PATH)/lib/libcinder-iphone-sim.a",
 				);
-				PRODUCT_NAME = BYB2;
-				PROVISIONING_PROFILE = "964BE008-BC77-45D6-B3E6-BEAF5B0A16F1";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "964BE008-BC77-45D6-B3E6-BEAF5B0A16F1";
+				PRODUCT_NAME = "Backyard Brains";
+				PROVISIONING_PROFILE = "1F05C6D5-4632-471B-A820-2B3DF9D42B50";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "$(CINDER_PATH)/include";
