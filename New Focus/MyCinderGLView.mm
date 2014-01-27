@@ -317,6 +317,7 @@
 - (void)updateActiveTouches
 {
     [super updateActiveTouches];
+    NSLog(@"Num volts visible: %f", numVoltsVisible);
 
     std::vector<ci::app::TouchEvent::Touch> touches = [self getActiveTouches];
     
@@ -324,8 +325,14 @@
     if (touches.size() == 2)
     {
         Vec2f touchDistanceDelta = [self calculateTouchDistanceChange:touches];
+        float oldNumSecondsVisible = numSecondsVisible;
+        float oldNumVoltsVisible = numVoltsVisible;
         numSecondsVisible /= (touchDistanceDelta.x - 1) + 1;
         numVoltsVisible /= (touchDistanceDelta.y - 1) + 1;
+        
+        // Make sure that we don't go out of bounds
+        if (numSecondsVisible < 0.001) { numSecondsVisible = oldNumSecondsVisible; }
+        if (numVoltsVisible < 0.001)   { numVoltsVisible = oldNumVoltsVisible; }
         
         // If we are thresholding,
         // we will not allow the springy x-axis effect to occur
@@ -334,7 +341,7 @@
             // slightly tigher bounds on the thresholding view (don't need to see whole second and a half in this view)
             // TODO: this is a hack to get thresholding to have a separate number of seconds visible. I weep for how awful this is. I am so sorry.
             float thisNumSecondsMax = 1.5;
-            numSecondsVisible = (numSecondsVisible < thisNumSecondsMax - 0.25) ? numSecondsVisible : (thisNumSecondsMax-0.25);
+            numSecondsVisible = (numSecondsVisible < thisNumSecondsMax - 0.25) ? numSecondsVisible : (thisNumSecondsMax - 0.25);
             numSecondsVisible = (numSecondsVisible > numSecondsMin) ? numSecondsVisible : numSecondsMin;
         }
         
