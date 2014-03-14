@@ -177,7 +177,8 @@
         navController.modalPresentationStyle = UIModalPresentationFormSheet;
     }
 
-    [self.tabBarController presentModalViewController:navController animated:YES];
+    [self.tabBarController presentViewController:navController animated:YES completion:nil];
+    
     [spvc release];
     [navController release];
     

@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		243E89EF18CFA5AC00E5887B /* AudioFileReader.mm in Sources */ = {isa = PBXBuildFile; fileRef = 243E89E818CFA5AC00E5887B /* AudioFileReader.mm */; };
+		243E89F018CFA5AC00E5887B /* AudioFileWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 243E89EA18CFA5AC00E5887B /* AudioFileWriter.m */; };
+		243E89F118CFA5AC00E5887B /* Novocaine.m in Sources */ = {isa = PBXBuildFile; fileRef = 243E89EC18CFA5AC00E5887B /* Novocaine.m */; };
+		243E89F218CFA5AC00E5887B /* RingBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 243E89EE18CFA5AC00E5887B /* RingBuffer.mm */; };
 		FA042A1116C89C6D00278FE2 /* SensibleTableView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA042A1016C89C6D00278FE2 /* SensibleTableView.framework */; };
 		FA042A1C16C89EC000278FE2 /* FileNeuron.png in Resources */ = {isa = PBXBuildFile; fileRef = FA042A1216C89EC000278FE2 /* FileNeuron.png */; };
 		FA042A1D16C89EC000278FE2 /* FileNeuronx2.png in Resources */ = {isa = PBXBuildFile; fileRef = FA042A1316C89EC000278FE2 /* FileNeuronx2.png */; };
@@ -21,7 +25,6 @@
 		FA14EC5C15D04AD700B0FB71 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = FA14EC5B15D04AD700B0FB71 /* Settings.bundle */; };
 		FA14EC5F15D05DD800B0FB71 /* StimulationParameterView.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA14EC5E15D05DD800B0FB71 /* StimulationParameterView.xib */; };
 		FA14EC6215D1FF0000B0FB71 /* RecordingOverlay.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA14EC6115D1FF0000B0FB71 /* RecordingOverlay.mm */; };
-		FA14EC6B15D20ECF00B0FB71 /* RecordingOverlayController.h in Sources */ = {isa = PBXBuildFile; fileRef = FA14EC6915D20E3E00B0FB71 /* RecordingOverlayController.h */; };
 		FA14EC6C15D20ED000B0FB71 /* RecordingOverlayController.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA14EC6A15D20E3E00B0FB71 /* RecordingOverlayController.mm */; };
 		FA2DAF7D16C85D7600EFF9D6 /* Icon-Small-50.png in Resources */ = {isa = PBXBuildFile; fileRef = FA2DAF7716C85D7500EFF9D6 /* Icon-Small-50.png */; };
 		FA2DAF7E16C85D7600EFF9D6 /* Icon-Small-50@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FA2DAF7816C85D7500EFF9D6 /* Icon-Small-50@2x.png */; };
@@ -50,37 +53,21 @@
 		FA6921C015A4C81400199CCB /* BBAudioManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6921BC15A4AA8100199CCB /* BBAudioManager.mm */; };
 		FA72CBC615A8820E00CE407B /* DSPThreshold.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA6921BF15A4C0F100199CCB /* DSPThreshold.mm */; };
 		FA90598A15A9F4E20013688B /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = FA90598915A9F4E20013688B /* libsqlite3.0.dylib */; };
-		FA90598C15A9F9830013688B /* NSData-SQLitePersistence.h in Sources */ = {isa = PBXBuildFile; fileRef = FA90596915A9F4B40013688B /* NSData-SQLitePersistence.h */; };
 		FA90598D15A9F9830013688B /* NSData-SQLitePersistence.m in Sources */ = {isa = PBXBuildFile; fileRef = FA90596A15A9F4B40013688B /* NSData-SQLitePersistence.m */; };
-		FA90598E15A9F9830013688B /* NSDate-SQLitePersistence.h in Sources */ = {isa = PBXBuildFile; fileRef = FA90596B15A9F4B40013688B /* NSDate-SQLitePersistence.h */; };
 		FA90598F15A9F9830013688B /* NSDate-SQLitePersistence.m in Sources */ = {isa = PBXBuildFile; fileRef = FA90596C15A9F4B40013688B /* NSDate-SQLitePersistence.m */; };
-		FA90599015A9F9830013688B /* NSMutableArray-MultipleSort.h in Sources */ = {isa = PBXBuildFile; fileRef = FA90596D15A9F4B40013688B /* NSMutableArray-MultipleSort.h */; };
 		FA90599115A9F9830013688B /* NSMutableArray-MultipleSort.m in Sources */ = {isa = PBXBuildFile; fileRef = FA90596E15A9F4B40013688B /* NSMutableArray-MultipleSort.m */; };
-		FA90599215A9F9830013688B /* NSMutableData-SQLitePersistence.h in Sources */ = {isa = PBXBuildFile; fileRef = FA90596F15A9F4B40013688B /* NSMutableData-SQLitePersistence.h */; };
 		FA90599315A9F9830013688B /* NSMutableData-SQLitePersistence.m in Sources */ = {isa = PBXBuildFile; fileRef = FA90597015A9F4B40013688B /* NSMutableData-SQLitePersistence.m */; };
-		FA90599415A9F9830013688B /* NSNumber-SQLitePersistence.h in Sources */ = {isa = PBXBuildFile; fileRef = FA90597115A9F4B40013688B /* NSNumber-SQLitePersistence.h */; };
 		FA90599515A9F9830013688B /* NSNumber-SQLitePersistence.m in Sources */ = {isa = PBXBuildFile; fileRef = FA90597215A9F4B40013688B /* NSNumber-SQLitePersistence.m */; };
-		FA90599615A9F9830013688B /* NSObject-ClassName.h in Sources */ = {isa = PBXBuildFile; fileRef = FA90597315A9F4B40013688B /* NSObject-ClassName.h */; };
 		FA90599715A9F9830013688B /* NSObject-ClassName.m in Sources */ = {isa = PBXBuildFile; fileRef = FA90597415A9F4B40013688B /* NSObject-ClassName.m */; };
-		FA90599815A9F9830013688B /* NSObject-MissingKV.h in Sources */ = {isa = PBXBuildFile; fileRef = FA90597515A9F4B40013688B /* NSObject-MissingKV.h */; };
 		FA90599915A9F9830013688B /* NSObject-MissingKV.m in Sources */ = {isa = PBXBuildFile; fileRef = FA90597615A9F4B40013688B /* NSObject-MissingKV.m */; };
-		FA90599A15A9F9830013688B /* NSObject-SQLitePersistence.h in Sources */ = {isa = PBXBuildFile; fileRef = FA90597715A9F4B40013688B /* NSObject-SQLitePersistence.h */; };
 		FA90599B15A9F9830013688B /* NSObject-SQLitePersistence.m in Sources */ = {isa = PBXBuildFile; fileRef = FA90597815A9F4B40013688B /* NSObject-SQLitePersistence.m */; };
-		FA90599C15A9F9830013688B /* NSString-NumberStuff.h in Sources */ = {isa = PBXBuildFile; fileRef = FA90597915A9F4B40013688B /* NSString-NumberStuff.h */; };
 		FA90599D15A9F9830013688B /* NSString-NumberStuff.m in Sources */ = {isa = PBXBuildFile; fileRef = FA90597A15A9F4B40013688B /* NSString-NumberStuff.m */; };
-		FA90599E15A9F9830013688B /* NSString-SQLiteColumnName.h in Sources */ = {isa = PBXBuildFile; fileRef = FA90597B15A9F4B40013688B /* NSString-SQLiteColumnName.h */; };
 		FA90599F15A9F9830013688B /* NSString-SQLiteColumnName.m in Sources */ = {isa = PBXBuildFile; fileRef = FA90597C15A9F4B40013688B /* NSString-SQLiteColumnName.m */; };
-		FA9059A015A9F9830013688B /* NSString-SQLitePersistence.h in Sources */ = {isa = PBXBuildFile; fileRef = FA90597D15A9F4B40013688B /* NSString-SQLitePersistence.h */; };
 		FA9059A115A9F9830013688B /* NSString-SQLitePersistence.m in Sources */ = {isa = PBXBuildFile; fileRef = FA90597E15A9F4B40013688B /* NSString-SQLitePersistence.m */; };
-		FA9059A215A9F9830013688B /* NSString-UppercaseFirst.h in Sources */ = {isa = PBXBuildFile; fileRef = FA90597F15A9F4B40013688B /* NSString-UppercaseFirst.h */; };
 		FA9059A315A9F9830013688B /* NSString-UppercaseFirst.m in Sources */ = {isa = PBXBuildFile; fileRef = FA90598015A9F4B40013688B /* NSString-UppercaseFirst.m */; };
-		FA9059A415A9F9830013688B /* SQLiteInstanceManager.h in Sources */ = {isa = PBXBuildFile; fileRef = FA90598115A9F4B40013688B /* SQLiteInstanceManager.h */; };
 		FA9059A515A9F9830013688B /* SQLiteInstanceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = FA90598215A9F4B40013688B /* SQLiteInstanceManager.m */; };
-		FA9059A615A9F9830013688B /* SQLitePersistentObject.h in Sources */ = {isa = PBXBuildFile; fileRef = FA90598315A9F4B40013688B /* SQLitePersistentObject.h */; };
 		FA9059A715A9F9830013688B /* SQLitePersistentObject.m in Sources */ = {isa = PBXBuildFile; fileRef = FA90598415A9F4B40013688B /* SQLitePersistentObject.m */; };
-		FA9059A815A9F9830013688B /* UIColor-SQLitePersistentObject.h in Sources */ = {isa = PBXBuildFile; fileRef = FA90598515A9F4B40013688B /* UIColor-SQLitePersistentObject.h */; };
 		FA9059A915A9F9830013688B /* UIColor-SQLitePersistentObject.m in Sources */ = {isa = PBXBuildFile; fileRef = FA90598615A9F4B40013688B /* UIColor-SQLitePersistentObject.m */; };
-		FA9059AA15A9F9830013688B /* UIImage-SQLitePersistence.h in Sources */ = {isa = PBXBuildFile; fileRef = FA90598715A9F4B40013688B /* UIImage-SQLitePersistence.h */; };
 		FA9059AB15A9F9830013688B /* UIImage-SQLitePersistence.m in Sources */ = {isa = PBXBuildFile; fileRef = FA90598815A9F4B40013688B /* UIImage-SQLitePersistence.m */; };
 		FA9059B315AA15840013688B /* BBFileListTableView.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA9059B215AA15840013688B /* BBFileListTableView.mm */; };
 		FA9059B815AA76590013688B /* BBFileDetailViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA9059B715AA76590013688B /* BBFileDetailViewController.mm */; };
@@ -90,11 +77,8 @@
 		FA905A4C15AA8CF00013688B /* BBFileTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA905A4B15AA8CF00013688B /* BBFileTableCell.xib */; };
 		FA905A4F15AA8D420013688B /* BBFileActionViewControllerTBV.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA905A4E15AA8D420013688B /* BBFileActionViewControllerTBV.mm */; };
 		FA905A5215AA8DA60013688B /* BBFileDownloadViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FA905A5115AA8DA60013688B /* BBFileDownloadViewController.m */; };
-		FA905A5E15AA8E360013688B /* DDNumber.h in Sources */ = {isa = PBXBuildFile; fileRef = FA905A5815AA8E1C0013688B /* DDNumber.h */; };
 		FA905A5F15AA8E360013688B /* DDNumber.m in Sources */ = {isa = PBXBuildFile; fileRef = FA905A5915AA8E1C0013688B /* DDNumber.m */; };
-		FA905A6015AA8E360013688B /* DDRange.h in Sources */ = {isa = PBXBuildFile; fileRef = FA905A5A15AA8E1C0013688B /* DDRange.h */; };
 		FA905A6115AA8E360013688B /* DDRange.m in Sources */ = {isa = PBXBuildFile; fileRef = FA905A5B15AA8E1C0013688B /* DDRange.m */; };
-		FA905A6215AA8E360013688B /* DDData.h in Sources */ = {isa = PBXBuildFile; fileRef = FA905A5C15AA8E1C0013688B /* DDData.h */; };
 		FA905A6315AA8E360013688B /* DDData.m in Sources */ = {isa = PBXBuildFile; fileRef = FA905A5D15AA8E1C0013688B /* DDData.m */; };
 		FA905A6815AA8E450013688B /* localhostAddresses.m in Sources */ = {isa = PBXBuildFile; fileRef = FA905A6515AA8E450013688B /* localhostAddresses.m */; };
 		FA905A6915AA8E450013688B /* MyHTTPConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = FA905A6715AA8E450013688B /* MyHTTPConnection.m */; };
@@ -140,14 +124,18 @@
 		FAEEE78F15ABB7890050F3E9 /* dropbox@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FAEEE78D15ABB7890050F3E9 /* dropbox@2x.png */; };
 		FAEEE79015ABB7890050F3E9 /* dropbox.png in Resources */ = {isa = PBXBuildFile; fileRef = FAEEE78E15ABB7890050F3E9 /* dropbox.png */; };
 		FAEEE79215ABB8C00050F3E9 /* RecordButton.png in Resources */ = {isa = PBXBuildFile; fileRef = FAEEE79115ABB8C00050F3E9 /* RecordButton.png */; };
-		FAFAEEE31621CB2E00632975 /* AudioFileReader.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAFAEEB71621CB2E00632975 /* AudioFileReader.mm */; };
-		FAFAEEE41621CB2E00632975 /* AudioFileWriter.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAFAEEB91621CB2E00632975 /* AudioFileWriter.mm */; };
-		FAFAEEE51621CB2E00632975 /* Novocaine.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAFAEEBB1621CB2E00632975 /* Novocaine.mm */; };
-		FAFAEEE61621CB2E00632975 /* RingBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAFAEEBD1621CB2E00632975 /* RingBuffer.mm */; };
 		FAFAEEFD1621CC0400632975 /* BBFile.mm in Sources */ = {isa = PBXBuildFile; fileRef = FAFAEEFC1621CC0400632975 /* BBFile.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		243E89E718CFA5AC00E5887B /* AudioFileReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioFileReader.h; sourceTree = "<group>"; };
+		243E89E818CFA5AC00E5887B /* AudioFileReader.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AudioFileReader.mm; sourceTree = "<group>"; };
+		243E89E918CFA5AC00E5887B /* AudioFileWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioFileWriter.h; sourceTree = "<group>"; };
+		243E89EA18CFA5AC00E5887B /* AudioFileWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioFileWriter.m; sourceTree = "<group>"; };
+		243E89EB18CFA5AC00E5887B /* Novocaine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Novocaine.h; sourceTree = "<group>"; };
+		243E89EC18CFA5AC00E5887B /* Novocaine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Novocaine.m; sourceTree = "<group>"; };
+		243E89ED18CFA5AC00E5887B /* RingBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RingBuffer.h; sourceTree = "<group>"; };
+		243E89EE18CFA5AC00E5887B /* RingBuffer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RingBuffer.mm; sourceTree = "<group>"; };
 		FA042A1016C89C6D00278FE2 /* SensibleTableView.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SensibleTableView.framework; sourceTree = "<group>"; };
 		FA042A1216C89EC000278FE2 /* FileNeuron.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = FileNeuron.png; path = "BYB Icons/FileNeuron.png"; sourceTree = "<group>"; };
 		FA042A1316C89EC000278FE2 /* FileNeuronx2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = FileNeuronx2.png; path = "BYB Icons/FileNeuronx2.png"; sourceTree = "<group>"; };
@@ -313,14 +301,6 @@
 		FAEEE78D15ABB7890050F3E9 /* dropbox@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "dropbox@2x.png"; sourceTree = "<group>"; };
 		FAEEE78E15ABB7890050F3E9 /* dropbox.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = dropbox.png; sourceTree = "<group>"; };
 		FAEEE79115ABB8C00050F3E9 /* RecordButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = RecordButton.png; sourceTree = "<group>"; };
-		FAFAEEB61621CB2E00632975 /* AudioFileReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioFileReader.h; sourceTree = "<group>"; };
-		FAFAEEB71621CB2E00632975 /* AudioFileReader.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AudioFileReader.mm; sourceTree = "<group>"; };
-		FAFAEEB81621CB2E00632975 /* AudioFileWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioFileWriter.h; sourceTree = "<group>"; };
-		FAFAEEB91621CB2E00632975 /* AudioFileWriter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AudioFileWriter.mm; sourceTree = "<group>"; };
-		FAFAEEBA1621CB2E00632975 /* Novocaine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Novocaine.h; sourceTree = "<group>"; };
-		FAFAEEBB1621CB2E00632975 /* Novocaine.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Novocaine.mm; sourceTree = "<group>"; };
-		FAFAEEBC1621CB2E00632975 /* RingBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RingBuffer.h; sourceTree = "<group>"; };
-		FAFAEEBD1621CB2E00632975 /* RingBuffer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RingBuffer.mm; sourceTree = "<group>"; };
 		FAFAEEFC1621CC0400632975 /* BBFile.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BBFile.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -352,6 +332,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		243E89E618CFA5AC00E5887B /* Novocaine */ = {
+			isa = PBXGroup;
+			children = (
+				243E89E718CFA5AC00E5887B /* AudioFileReader.h */,
+				243E89E818CFA5AC00E5887B /* AudioFileReader.mm */,
+				243E89E918CFA5AC00E5887B /* AudioFileWriter.h */,
+				243E89EA18CFA5AC00E5887B /* AudioFileWriter.m */,
+				243E89EB18CFA5AC00E5887B /* Novocaine.h */,
+				243E89EC18CFA5AC00E5887B /* Novocaine.m */,
+				243E89ED18CFA5AC00E5887B /* RingBuffer.h */,
+				243E89EE18CFA5AC00E5887B /* RingBuffer.mm */,
+			);
+			path = Novocaine;
+			sourceTree = "<group>";
+		};
 		FA2DAF8316C85D7E00EFF9D6 /* Artwork */ = {
 			isa = PBXGroup;
 			children = (
@@ -572,6 +567,7 @@
 		FADF26451596362E006C87BA = {
 			isa = PBXGroup;
 			children = (
+				243E89E618CFA5AC00E5887B /* Novocaine */,
 				FA9A5B301809A5DA00FF01A0 /* Default-568h@2x.png */,
 				FA042A1016C89C6D00278FE2 /* SensibleTableView.framework */,
 				FA2DAF8316C85D7E00EFF9D6 /* Artwork */,
@@ -580,7 +576,6 @@
 				FA658AD1180B06BF00A3890C /* DropboxSDK.framework */,
 				FA90593615A9F4680013688B /* SQLitePersistence */,
 				FA905A5315AA8DE30013688B /* CocoaHTTPServer */,
-				FAFAEEB51621CB2E00632975 /* Novocaine */,
 				FADF26681596362F006C87BA /* Backyard Brains */,
 				FADF26531596362F006C87BA /* Frameworks */,
 				FADF26511596362F006C87BA /* Products */,
@@ -696,22 +691,6 @@
 			name = MyAssets;
 			sourceTree = "<group>";
 		};
-		FAFAEEB51621CB2E00632975 /* Novocaine */ = {
-			isa = PBXGroup;
-			children = (
-				FAFAEEB61621CB2E00632975 /* AudioFileReader.h */,
-				FAFAEEB71621CB2E00632975 /* AudioFileReader.mm */,
-				FAFAEEB81621CB2E00632975 /* AudioFileWriter.h */,
-				FAFAEEB91621CB2E00632975 /* AudioFileWriter.mm */,
-				FAFAEEBA1621CB2E00632975 /* Novocaine.h */,
-				FAFAEEBB1621CB2E00632975 /* Novocaine.mm */,
-				FAFAEEBC1621CB2E00632975 /* RingBuffer.h */,
-				FAFAEEBD1621CB2E00632975 /* RingBuffer.mm */,
-			);
-			name = Novocaine;
-			path = "New Focus/novocaine/Novocaine";
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -742,7 +721,7 @@
 				ORGANIZATIONNAME = "Datta Lab, Harvard University";
 				TargetAttributes = {
 					FADF264F1596362F006C87BA = {
-						DevelopmentTeam = G4W97M7754;
+						DevelopmentTeam = 9N734F8KG4;
 					};
 				};
 			};
@@ -825,45 +804,28 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FA14EC6B15D20ECF00B0FB71 /* RecordingOverlayController.h in Sources */,
 				FA14EC6C15D20ED000B0FB71 /* RecordingOverlayController.mm in Sources */,
-				FA905A5E15AA8E360013688B /* DDNumber.h in Sources */,
 				FA905A5F15AA8E360013688B /* DDNumber.m in Sources */,
-				FA905A6015AA8E360013688B /* DDRange.h in Sources */,
 				FA905A6115AA8E360013688B /* DDRange.m in Sources */,
-				FA905A6215AA8E360013688B /* DDData.h in Sources */,
 				FA905A6315AA8E360013688B /* DDData.m in Sources */,
-				FA90598C15A9F9830013688B /* NSData-SQLitePersistence.h in Sources */,
 				FA90598D15A9F9830013688B /* NSData-SQLitePersistence.m in Sources */,
-				FA90598E15A9F9830013688B /* NSDate-SQLitePersistence.h in Sources */,
+				243E89F018CFA5AC00E5887B /* AudioFileWriter.m in Sources */,
 				FA90598F15A9F9830013688B /* NSDate-SQLitePersistence.m in Sources */,
-				FA90599015A9F9830013688B /* NSMutableArray-MultipleSort.h in Sources */,
 				FA90599115A9F9830013688B /* NSMutableArray-MultipleSort.m in Sources */,
-				FA90599215A9F9830013688B /* NSMutableData-SQLitePersistence.h in Sources */,
 				FA90599315A9F9830013688B /* NSMutableData-SQLitePersistence.m in Sources */,
-				FA90599415A9F9830013688B /* NSNumber-SQLitePersistence.h in Sources */,
+				243E89F218CFA5AC00E5887B /* RingBuffer.mm in Sources */,
 				FA90599515A9F9830013688B /* NSNumber-SQLitePersistence.m in Sources */,
-				FA90599615A9F9830013688B /* NSObject-ClassName.h in Sources */,
 				FA90599715A9F9830013688B /* NSObject-ClassName.m in Sources */,
-				FA90599815A9F9830013688B /* NSObject-MissingKV.h in Sources */,
 				FA90599915A9F9830013688B /* NSObject-MissingKV.m in Sources */,
-				FA90599A15A9F9830013688B /* NSObject-SQLitePersistence.h in Sources */,
 				FA90599B15A9F9830013688B /* NSObject-SQLitePersistence.m in Sources */,
-				FA90599C15A9F9830013688B /* NSString-NumberStuff.h in Sources */,
 				FA90599D15A9F9830013688B /* NSString-NumberStuff.m in Sources */,
-				FA90599E15A9F9830013688B /* NSString-SQLiteColumnName.h in Sources */,
 				FA90599F15A9F9830013688B /* NSString-SQLiteColumnName.m in Sources */,
-				FA9059A015A9F9830013688B /* NSString-SQLitePersistence.h in Sources */,
 				FA9059A115A9F9830013688B /* NSString-SQLitePersistence.m in Sources */,
-				FA9059A215A9F9830013688B /* NSString-UppercaseFirst.h in Sources */,
 				FA9059A315A9F9830013688B /* NSString-UppercaseFirst.m in Sources */,
-				FA9059A415A9F9830013688B /* SQLiteInstanceManager.h in Sources */,
 				FA9059A515A9F9830013688B /* SQLiteInstanceManager.m in Sources */,
-				FA9059A615A9F9830013688B /* SQLitePersistentObject.h in Sources */,
 				FA9059A715A9F9830013688B /* SQLitePersistentObject.m in Sources */,
-				FA9059A815A9F9830013688B /* UIColor-SQLitePersistentObject.h in Sources */,
 				FA9059A915A9F9830013688B /* UIColor-SQLitePersistentObject.m in Sources */,
-				FA9059AA15A9F9830013688B /* UIImage-SQLitePersistence.h in Sources */,
+				243E89EF18CFA5AC00E5887B /* AudioFileReader.mm in Sources */,
 				FA9059AB15A9F9830013688B /* UIImage-SQLitePersistence.m in Sources */,
 				FADF266F1596362F006C87BA /* main.m in Sources */,
 				FADF26741596362F006C87BA /* CCGLTouchAppDelegate.mm in Sources */,
@@ -889,15 +851,12 @@
 				FA905A7815AA8E580013688B /* HTTPAuthenticationRequest.m in Sources */,
 				FA35CEFE15ABBADC0082FBC3 /* PlaybackViewController.mm in Sources */,
 				FA4530B315ACDF3B00FA179A /* BBAudioFileReader.mm in Sources */,
+				243E89F118CFA5AC00E5887B /* Novocaine.m in Sources */,
 				FAA27C1B15AD013E00DCC60B /* ThresholdViewController.mm in Sources */,
 				FAA27C2215AD0CEF00DCC60B /* StimulationParameterViewController.mm in Sources */,
 				FAA27C2C15AD2CC800DCC60B /* DigitalSignalParameterViewController.mm in Sources */,
 				FA9A665915BA412600CF1697 /* BBTabBarViewController.mm in Sources */,
 				FA14EC6215D1FF0000B0FB71 /* RecordingOverlay.mm in Sources */,
-				FAFAEEE31621CB2E00632975 /* AudioFileReader.mm in Sources */,
-				FAFAEEE41621CB2E00632975 /* AudioFileWriter.mm in Sources */,
-				FAFAEEE51621CB2E00632975 /* Novocaine.mm in Sources */,
-				FAFAEEE61621CB2E00632975 /* RingBuffer.mm in Sources */,
 				FAFAEEFD1621CC0400632975 /* BBFile.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -964,7 +923,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
-				CINDER_PATH = /Users/Alex/Dropbox/iPhone/Utilities/Cinder/;
+				CINDER_PATH = /Users/nik/Desktop/cinder_0.8.4_mac;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVICE_FAMILY = iPhone/iPad;
@@ -972,14 +931,13 @@
 					"$(inherited)",
 					"\\\"$(SRCROOT)/../../Utilities/SimpleTableView/Static\\ Frameworks\\\"",
 					"$(SRCROOT)",
-					"/Users/Alex/Code/Backyard-Brains-iOS-App-v2",
 				);
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "New Focus/Backyard Brains-Prefix.pch";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
-				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_FUNCTION = NO;
 				HEADER_SEARCH_PATHS = (
 					"$(CINDER_PATH)/include",
 					"$(CINDER_PATH)/boost",
@@ -1011,23 +969,22 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
-				CINDER_PATH = /Users/Alex/Dropbox/iPhone/Utilities/Cinder/;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CINDER_PATH = /Users/nik/Desktop/cinder_0.8.4_mac;
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Stanislav Mircic (9N734F8KG4)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Stanislav Mircic (9N734F8KG4)";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVICE_FAMILY = iPhone/iPad;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\\\"$(SRCROOT)/../../Utilities/SimpleTableView/Static\\ Frameworks\\\"",
 					"$(SRCROOT)",
-					"/Users/Alex/Code/Backyard-Brains-iOS-App-v2",
 				);
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "New Focus/Backyard Brains-Prefix.pch";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
-				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_FUNCTION = NO;
 				HEADER_SEARCH_PATHS = (
 					"$(CINDER_PATH)/include",
 					"$(CINDER_PATH)/boost",
@@ -1046,7 +1003,7 @@
 					"$(CINDER_PATH)/lib/libcinder-iphone-sim.a",
 				);
 				PRODUCT_NAME = "Backyard Brains";
-				PROVISIONING_PROFILE = "1F05C6D5-4632-471B-A820-2B3DF9D42B50";
+				PROVISIONING_PROFILE = "B936C659-0F02-4DD3-9CAD-D0ECB3A0010D";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "$(CINDER_PATH)/include";

@@ -91,7 +91,7 @@
     //// recording text Drawing
     CGRect recordingTextRect = CGRectMake(.0875*w, .041666667*h, .81875*w, .066666667*h);
     [[UIColor whiteColor] setFill];
-    [recordingTextContent drawInRect: recordingTextRect withFont: [UIFont fontWithName: @"Helvetica" size: 18] lineBreakMode: UILineBreakModeWordWrap alignment: UITextAlignmentCenter];
+    [recordingTextContent drawInRect: recordingTextRect withFont: [UIFont fontWithName: @"Helvetica" size: 18] lineBreakMode: NSLineBreakByWordWrapping alignment: NSTextAlignmentCenter];
     
     
     //// time text Drawing
@@ -107,7 +107,7 @@
 
     CGRect timeTextRect = CGRectMake(x, y, .81875*w, .095833333);
     [[UIColor whiteColor] setFill];
-    [timeTextContent drawInRect: timeTextRect withFont: [UIFont fontWithName: @"Helvetica" size: 30] lineBreakMode: UILineBreakModeWordWrap alignment: UITextAlignmentCenter];
+    [timeTextContent drawInRect: timeTextRect withFont: [UIFont fontWithName: @"Helvetica" size: 30] lineBreakMode: NSLineBreakByWordWrapping alignment: NSTextAlignmentCenter];
     
     //// Cleanup
     CGGradientRelease(gradient);

@@ -20,7 +20,6 @@
     bbAudioManager = [BBAudioManager bbAudioManager];
     
     // Selection section of stimulation type
-    NSString *selectedString = @"What";
     SCSelectionSection *selectionSection = [SCSelectionSection 
                                             sectionWithHeaderTitle:@"Stimulation Type"
                                             boundObject:nil

@@ -6,7 +6,8 @@
 //
 
 #import "BBAudioManager.h"
-
+#define RING_BUFFER_SIZE 524288
+//#define RING_BUFFER_SIZE 262144
 static BBAudioManager *bbAudioManager = nil;
 
 @interface BBAudioManager ()
@@ -23,6 +24,8 @@ static BBAudioManager *bbAudioManager = nil;
     // The audio file reader is very sensitive to threading issues,
     // so we have to babysit it quite closely.
     float desiredSeekTimeInAudioFile;
+    float lastSeekPosition;
+    float * displayBuffer;
 }
 
 @property BOOL playing;
@@ -56,6 +59,7 @@ static BBAudioManager *bbAudioManager = nil;
 @synthesize stimulating;
 @synthesize thresholding;
 @synthesize playing;
+@synthesize seeking;
 
 
 #pragma mark - Singleton Methods
@@ -104,8 +108,9 @@ static BBAudioManager *bbAudioManager = nil;
     if (self = [super init])
     {
         audioManager = [Novocaine audioManager];
-        ringBuffer = new RingBuffer(524288, 2);
-        
+        ringBuffer = new RingBuffer(RING_BUFFER_SIZE, 2);
+        displayBuffer = (float *)calloc(RING_BUFFER_SIZE, sizeof(float));
+        lastSeekPosition = -1;
         // Set a default input block acquiring data to a big ring buffer.
         audioManager.inputBlock = ^(float *data, UInt32 numFrames, UInt32 numChannels) {
             ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
@@ -272,16 +277,17 @@ static BBAudioManager *bbAudioManager = nil;
 
 - (void)startPlaying:(NSURL *)urlToFile
 {
-
+    
     if (self.playing == true)
         return;
+    
     
     if (self.playing == false && fileReader != nil)
         fileReader = nil;
     
     ringBuffer->Clear();
-    fileReader = [[BBAudioFileReader alloc] 
-                  initWithAudioFileURL:urlToFile 
+    fileReader = [[BBAudioFileReader alloc]
+                  initWithAudioFileURL:urlToFile
                   samplingRate:audioManager.samplingRate
                   numChannels:audioManager.numOutputChannels];
     
@@ -289,16 +295,49 @@ static BBAudioManager *bbAudioManager = nil;
     audioManager.outputBlock = ^(float *data, UInt32 numFrames, UInt32 numChannels) {
         
         if (!self.playing) {
+            //if we have new seek position
+            if(self.seeking && lastSeekPosition != fileReader.currentTime)
+            {
+                lastSeekPosition = fileReader.currentTime;
+                //clear ring buffer
+                ringBuffer->Clear();
+                ringBuffer->SeekWriteHeadPosition(0);
+                ringBuffer->SeekReadHeadPosition(0);
+                
+                //calculate begining and end of interval to display
+                UInt32 targetFrame = (UInt32)(fileReader.currentTime * ((float)fileReader.samplingRate));
+                int startFrame = targetFrame - RING_BUFFER_SIZE;
+                if(startFrame<0)
+                {
+                    startFrame = 0;
+                }
+                
+                //get the data from file into clean ring buffer
+                memset(displayBuffer, 0, RING_BUFFER_SIZE*sizeof(float));
+                if(targetFrame!=0)
+                {
+                    dispatch_sync(dispatch_get_main_queue(), ^{
+                        
+                        [fileReader retrieveFreshAudio:displayBuffer numFrames:(UInt32)(targetFrame-startFrame) numChannels:numChannels seek:(UInt32)startFrame];
+                        
+                        ringBuffer->AddNewInterleavedFloatData(displayBuffer, targetFrame-startFrame, numChannels);
+                    });
+                }
+                //set playback time to scrubber position
+                fileReader.currentTime = lastSeekPosition;
+            }
+            //set playback data to zero (silence during scrubbing)
             memset(data, 0, numChannels*numFrames*sizeof(float));
             return;
         }
         
         [fileReader retrieveFreshAudio:data numFrames:numFrames numChannels:numChannels];
-        ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
-
+        ringBuffer->AddNewInterleavedFloatData(data, numFrames-1, numChannels);
+        
         if (fileReader.fileIsDone) {
             dispatch_sync(dispatch_get_main_queue(), ^{
                 fileReader.currentTime = 0.0f;
+                ringBuffer->Clear();
                 [self pausePlaying];
             });
             return;
@@ -307,9 +346,10 @@ static BBAudioManager *bbAudioManager = nil;
     };
     
     [self resumePlaying];
-
-
+    
+    
 }
+
 
 - (void)stopPlaying
 {
@@ -333,9 +373,6 @@ static BBAudioManager *bbAudioManager = nil;
 - (void)resumePlaying
 {
     self.playing = true;
-    
-
-
 }
 
 - (void)fetchAudio:(float *)data numFrames:(UInt32)numFrames whichChannel:(UInt32)whichChannel stride:(UInt32)stride
@@ -533,7 +570,7 @@ static BBAudioManager *bbAudioManager = nil;
                     }
                 }
                 
-                float samplingRate = self.samplingRate;
+                float lsamplingRate = self.samplingRate;
                 float messageFrequency = self.stimulationDigitalMessageFrequency;
             
                 for (int i=0; i < numFrames; ++i) {
@@ -542,7 +579,7 @@ static BBAudioManager *bbAudioManager = nil;
                         data[i*numChannels+iChannel] = (pulsed_sample < numSamplesOn) ? sin(theta) : 0.0f;
                     }
 
-                    pulsed_phase += 1.0 / (samplingRate / messageFrequency);
+                    pulsed_phase += 1.0 / (lsamplingRate / messageFrequency);
                     if (pulsed_phase > 1.0) pulsed_phase -= 2; // TODO: test this thingy
                     pulsed_sample += 1;
                     if (pulsed_sample >= numSamplesInPeriod) {
@@ -571,7 +608,7 @@ static BBAudioManager *bbAudioManager = nil;
             int numSamplesInPeriod = audioManager.samplingRate / self.stimulationDigitalFrequency;
             int numSamplesOn = (int)(self.stimulationDigitalDutyCycle * audioManager.samplingRate / self.stimulationDigitalFrequency);
             
-            float samplingRate = self.samplingRate;
+            float lsamplingRate = self.samplingRate;
             float messageFrequency = self.stimulationDigitalMessageFrequency;
             
             for (int i=0; i < numFrames; ++i) {
@@ -580,7 +617,7 @@ static BBAudioManager *bbAudioManager = nil;
                     data[i*numChannels+iChannel] = (sample < numSamplesOn) ? sin(theta) : 0.0f;
                 }
                 
-                phase += 1.0 / (samplingRate / messageFrequency);
+                phase += 1.0 / (lsamplingRate / messageFrequency);
                 if (phase > 1.0) phase -= 2; // TODO: test this thingy
                 sample += 1;
                 if (sample >= numSamplesInPeriod) {
@@ -683,11 +720,11 @@ static BBAudioManager *bbAudioManager = nil;
     return audioManager.samplingRate;
 }
 
-- (void)setNumTriggersInThresholdHistory:(UInt32)numTriggersInThresholdHistory
+- (void)setNumTriggersInThresholdHistory:(UInt32)numTriggersInThresholdHistoryLocal
 {
     if (dspThresholder)
     {
-        dspThresholder->SetNumTriggersInHistory(numTriggersInThresholdHistory);
+        dspThresholder->SetNumTriggersInHistory(numTriggersInThresholdHistoryLocal);
     }
 }
 

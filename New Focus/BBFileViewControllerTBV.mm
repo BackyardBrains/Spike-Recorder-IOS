@@ -652,7 +652,6 @@
     //for each path
     for (int l = 0; l < [newPaths count]; ++l)
     {
-        BOOL match = FALSE;
         //for each file
         for (int m = 0; m < [self.allFiles count]; ++m)
         {

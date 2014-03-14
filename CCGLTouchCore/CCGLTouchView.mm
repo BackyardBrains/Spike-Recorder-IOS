@@ -782,7 +782,7 @@
 {
 	string resourcePath = [self getResourcePath:macPath];
 	if( resourcePath.empty() )
-		;//throw ResourceLoadExc( macPath );
+		throw ResourceLoadExc( macPath );
 	else
 		return DataSourcePath::create( resourcePath );
 }

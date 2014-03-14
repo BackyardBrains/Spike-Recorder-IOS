@@ -29,7 +29,6 @@
 @property (retain, nonatomic) IBOutlet UIButton *stimulatePreferenceButton;
 @property (retain, nonatomic) IBOutlet UIButton *stopButton;
 
-- (IBAction)recordButtonPressed:(id)sender;
 - (IBAction)stimulateButtonPressed:(id)sender;
 - (IBAction)stimulatePrefButtonPressed:(id)sender;
 - (IBAction)stopRecording:(id)sender;

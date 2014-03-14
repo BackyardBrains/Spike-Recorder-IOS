@@ -12,6 +12,7 @@
     dispatch_source_t callbackTimer;
     BBFile *aFile;
     BBAudioManager *bbAudioManager;
+    BOOL audioPaused;
 }
 
 - (void)togglePlayback;
@@ -67,6 +68,7 @@
 {
     [super viewWillAppear:animated];
     [glView startAnimation];
+    audioPaused = NO;
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -125,7 +127,13 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+    self.timeSlider.continuous = YES;
+    [self.timeSlider addTarget:self
+                  action:@selector(sliderTouchUpInside:)
+        forControlEvents:(UIControlEventTouchUpInside)];
+    [self.timeSlider addTarget:self
+                        action:@selector(sliderTouchDown:)
+              forControlEvents:(UIControlEventTouchDown)];
     // our CCGLTouchView being added as a subview
 	MyCinderGLView *aView = [[MyCinderGLView alloc] init];
 	glView = aView;
@@ -166,29 +174,42 @@
     [super dealloc];
 }
 
-- (IBAction)sliderValueChanged:(id)sender {
-    
-    if (bbAudioManager.playing) {
-        [bbAudioManager pausePlaying];
-        bbAudioManager.currentFileTime = (float)self.timeSlider.value;
+
+//
+// Called when user stop dragging scruber
+//
+- (void)sliderTouchUpInside:(NSNotification *)notification {
+    if(!audioPaused)
+    {
+        [bbAudioManager setSeeking:NO];
         [bbAudioManager resumePlaying];
     }
-    else {
-        bbAudioManager.currentFileTime = (float)self.timeSlider.value;
-    }
-    return;
+}
+
+//
+// Called when user start dragging scruber
+//
+- (void)sliderTouchDown:(NSNotification *)notification {
+    [bbAudioManager setSeeking:YES];
+    [bbAudioManager pausePlaying];
+}
+
+- (IBAction)sliderValueChanged:(id)sender {
     
+    bbAudioManager.currentFileTime = (float)self.timeSlider.value;
 }
 
 - (IBAction)playPauseButtonPressed:(id)sender
 {
     [self togglePlayback];
+    audioPaused = !audioPaused;
 }
 
 - (void)togglePlayback
 {
 
     if (bbAudioManager.playing == false) {
+        
         [bbAudioManager resumePlaying];
     }
     else {

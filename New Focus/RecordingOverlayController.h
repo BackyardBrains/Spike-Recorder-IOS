@@ -20,5 +20,5 @@ typedef void (^CompletionBlock)();
 
 - (id)initWithCompletionBlock:(CompletionBlock)thisCompletionBlock;
 
-@property (nonatomic, retain) CompletionBlock completionBlock;
+@property (nonatomic, copy) CompletionBlock completionBlock;
 @end

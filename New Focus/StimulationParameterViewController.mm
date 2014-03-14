@@ -446,7 +446,7 @@
 
 - (void)doneButtonAction
 {
-    [self.presentingViewController dismissModalViewControllerAnimated:YES];
+    [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 

@@ -145,6 +145,35 @@ static pthread_mutex_t threadLock;
 //    });
 }
 
+- (void)retrieveFreshAudio:(float *)buffer numFrames:(UInt32)thisNumFrames numChannels:(UInt32)thisNumChannels seek:(UInt32) position
+{
+    
+    //    dispatch_sync(dispatch_get_main_queue(), ^{
+    ExtAudioFileSeek(self.inputFile, position);
+    AudioBufferList incomingAudio;
+    incomingAudio.mNumberBuffers = 1;
+    incomingAudio.mBuffers[0].mNumberChannels = thisNumChannels;
+    incomingAudio.mBuffers[0].mDataByteSize = thisNumFrames*thisNumChannels*sizeof(float);
+    incomingAudio.mBuffers[0].mData = buffer;
+    
+    // Figure out where we are in the file
+    SInt64 frameOffset = 0;
+    ExtAudioFileTell(self.inputFile, &frameOffset);
+    self.currentFileTime = (float)frameOffset / self.samplingRate;
+    
+    // Read the audio
+    UInt32 framesRead = thisNumFrames;
+    ExtAudioFileRead(self.inputFile, &framesRead, &incomingAudio);
+    
+    
+    
+    if (framesRead == 0)
+        self.fileIsDone = true;
+    //    });
+}
+
+
+
 
 
 @end

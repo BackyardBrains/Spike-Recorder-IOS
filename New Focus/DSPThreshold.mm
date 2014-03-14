@@ -76,7 +76,6 @@ void DSPThreshold :: ProcessNewAudio(const float *incomingAudio, int numFrames, 
 	static int middlePoint = kNumPointsInTriggerBuffer/2;
     
 	TriggeredSegmentHistory *th = triggeredSegmentHistory;
-	UInt32 lastFreshSample;
 	
     //	NSLog(@"Num segments in average %d, current segments %d, num total available segments %d", th->sizeOfMovingAverage, th->currentSegment, kNumSegmentsInTriggerAverage);
 	

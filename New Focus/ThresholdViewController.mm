@@ -87,7 +87,6 @@
 }
 
 - (void)viewDidUnload {
-    [self setUpdateNumTriggersInThresholdHistory:nil];
     [triggerHistoryLabel release];
     triggerHistoryLabel = nil;
     [self setTriggerHistoryLabel:nil];

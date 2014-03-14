@@ -76,6 +76,7 @@ typedef enum BBStimulationType
 @property BOOL stimulating;
 @property (readonly) BOOL thresholding;
 @property (readonly) BOOL playing;
+@property BOOL seeking;
 
 + (BBAudioManager *) bbAudioManager;
 - (void)startMonitoring;
@@ -89,7 +90,6 @@ typedef enum BBStimulationType
 - (void)stopPlaying;
 - (void)pausePlaying;
 - (void)resumePlaying;
-
 - (void)fetchAudio:(float *)data numFrames:(UInt32)numFrames whichChannel:(UInt32)whichChannel stride:(UInt32)stride;
 
 - (void)saveSettingsToUserDefaults;

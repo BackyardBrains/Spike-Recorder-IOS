@@ -250,7 +250,7 @@
     NSMutableString *bodyText = [NSMutableString stringWithFormat:@"<p>I recorded these files:"];
     for (BBFile *thisFile in self.files)
     {
-        [bodyText appendFormat:[NSMutableString stringWithFormat:@"<p>\"%@,\" ", thisFile.shortname]];
+        [bodyText appendFormat:@"<p>\"%@,\" ", thisFile.shortname];
         
         int minutes = (int)floor(thisFile.filelength / 60.0);
         int seconds = (int)(thisFile.filelength - minutes*60.0);
@@ -270,7 +270,7 @@
     
 	[message setMessageBody:bodyText isHTML:YES];
 	
-	[self presentModalViewController:message animated:YES];
+    [self presentViewController:message animated:YES completion:nil];
 	[message release];
     
 }
@@ -282,7 +282,7 @@
 
 - (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error
 {
-	[self dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)downloadFiles
