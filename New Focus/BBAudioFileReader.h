@@ -38,7 +38,6 @@
     InputBlock readerBlock;
     
     BOOL fileIsDone;
-    BOOL fileIsReady;
 }
 
 @property (getter=getCurrentTime, setter=setCurrentTime:) float currentTime;
@@ -47,7 +46,7 @@
 @property UInt32 numChannels;
 @property (nonatomic, copy) NSURL *audioFileURL;
 @property BOOL fileIsDone;
-@property BOOL fileIsReady;
+
 
 
 - (id)initWithAudioFileURL:(NSURL *)urlToAudioFile samplingRate:(float)thisSamplingRate numChannels:(UInt32)thisNumChannels;
