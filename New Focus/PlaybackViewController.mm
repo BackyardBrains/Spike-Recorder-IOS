@@ -114,7 +114,8 @@
 {
     
     [super viewWillDisappear:animated];
-    
+    [glView saveSettings:FALSE]; // save non-threshold settings
+    [glView stopAnimation];
     dispatch_suspend(callbackTimer);
     [[BBAudioManager bbAudioManager] stopPlaying];
     [[Novocaine audioManager] removeObserver:self forKeyPath:@"numOutputChannels"];

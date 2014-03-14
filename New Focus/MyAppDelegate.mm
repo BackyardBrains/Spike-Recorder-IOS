@@ -42,10 +42,10 @@
 //      initWithConsumerKey:@"gko0ired85ogh0e"
 //      consumerSecret:@"vmxyfeju241zqpk"]
 //     autorelease];
-    DBSession *dbSession = [[DBSession alloc]
+    DBSession *dbSession = [[[DBSession alloc]
                             initWithAppKey:@"ce7f9ip8scc9xyb"
                             appSecret:@"jbvj3k3xchx7qig"
-                            root:kDBRootAppFolder];
+                            root:kDBRootAppFolder] autorelease];
 
     [DBSession setSharedSession:dbSession];
 }
