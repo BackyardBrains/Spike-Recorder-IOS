@@ -153,7 +153,7 @@
     // Digital Signal Duration cell
     int numDigitalPulses = bbAudioManager.numPulsesInDigitalStimulation;
     NSString *numDigitalPulsesString = [NSString stringWithFormat:@"%d", numDigitalPulses];
-    SCNumericTextFieldCell *numDigitalPulsesCell = [SCNumericTextFieldCell cellWithText:@"Number of Pulses" boundObject:nil boundPropertyName:nil];
+    SCNumericTextFieldCell *numDigitalPulsesCell = [[SCNumericTextFieldCell cellWithText:@"Number of Pulses" boundObject:nil boundPropertyName:nil] autorelease];
     numDigitalPulsesCell.textField.text = numDigitalPulsesString;
     numDigitalPulsesCell.cellActions.valueChanged = ^(SCTableViewCell *cell, NSIndexPath *indexPath) {
         SCNumericTextFieldCell *theCell = (SCNumericTextFieldCell *)cell;
@@ -227,8 +227,8 @@
     [digitalSignalSection addCell:pulseWidthCell];
     [digitalSignalSection addCell:numDigitalPulsesCell];
     [digitalSignalSection addCell:calibrateButtonCell];
-    [pulseWidthCell retain];
-    [frequencyCell retain];
+    //[pulseWidthCell retain];
+    //[frequencyCell retain];
     [numDigitalPulsesCell retain];
     [digitalSignalSection retain];
     

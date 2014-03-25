@@ -119,7 +119,7 @@
     //create the status bar
     if (self.dbStatusBar==nil)
     {
-        self.dbStatusBar = [[UIButton alloc] initWithFrame:CGRectMake(self.theTableView.frame.origin.x, self.toolbar.frame.size.height, self.theTableView.frame.size.width, 0)];
+        self.dbStatusBar = [[[UIButton alloc] initWithFrame:CGRectMake(self.theTableView.frame.origin.x, self.toolbar.frame.size.height, self.theTableView.frame.size.width, 0)] autorelease];
         [self.dbStatusBar setBackgroundColor:[UIColor colorWithRed:0 green:0 blue:1 alpha:0.5]];
         [self.dbStatusBar setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
         //[self.dbStatusBar setTitle:@"bar" forState:UIControlStateNormal];
