@@ -61,13 +61,16 @@ public:
 	float Max(const SInt64 whichChannel = 0);
 	float Min(const SInt64 whichChannel = 0);
 	
-private:
-	SInt64 mLastWrittenIndex[kMaxNumChannels];
-	SInt64 mLastReadIndex[kMaxNumChannels];
-    SInt64 mNumUnreadFrames[kMaxNumChannels];
-	SInt64 mSizeOfBuffer;
-	SInt64 mNumChannels;
+protected:
+	int64_t mLastWrittenIndex[kMaxNumChannels];
+	int64_t mLastReadIndex[kMaxNumChannels];
+    int64_t mNumUnreadFrames[kMaxNumChannels];
+	int64_t mSizeOfBuffer;
+	int64_t mNumChannels;
 	float **mData;
 	bool mAllocated;
+
+private:
+    void UpdateFrameCount(int numFrames, int channel);
 	
 };

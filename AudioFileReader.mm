@@ -32,42 +32,30 @@
     RingBuffer *ringBuffer;
 }
 
-@property AudioStreamBasicDescription outputFormat;
-@property ExtAudioFileRef inputFile;
-@property UInt32 outputBufferSize;
-@property float *outputBuffer;
-@property float *holdingBuffer;
-@property UInt32 numSamplesReadPerPacket;
-@property UInt32 desiredPrebufferedSamples;
-@property SInt64 currentFileTime;
-@property dispatch_source_t callbackTimer;
+// redeclaration as readwrite in class continuation
+@property (nonatomic, copy, readwrite)   NSURL *audioFileURL;
+@property (nonatomic, assign, readwrite, getter=getDuration) float duration;
+@property (nonatomic, assign, readwrite) float samplingRate;
+@property (nonatomic, assign, readwrite) UInt32 numChannels;
+@property (nonatomic, assign, readwrite) BOOL playing;
 
+@property (nonatomic, assign) AudioStreamBasicDescription outputFormat;
+@property (nonatomic, assign) ExtAudioFileRef inputFile;
+@property (nonatomic, assign) UInt32 outputBufferSize;
+@property (nonatomic, assign) float *outputBuffer;
+@property (nonatomic, assign) float *holdingBuffer;
+@property (nonatomic, assign) UInt32 numSamplesReadPerPacket;
+@property (nonatomic, assign) UInt32 desiredPrebufferedSamples;
+@property (nonatomic, assign) SInt64 currentFileTime;
+@property (nonatomic, assign) dispatch_source_t callbackTimer;
 
 - (void)bufferNewAudio;
 
 @end
 
 
-
 @implementation AudioFileReader
 
-@synthesize outputFormat = _outputFormat;
-@synthesize inputFile = _inputFile;
-@synthesize outputBuffer = _outputBuffer;
-@synthesize holdingBuffer = _holdingBuffer;
-@synthesize outputBufferSize = _outputBufferSize;
-@synthesize numSamplesReadPerPacket = _numSamplesReadPerPacket;
-@synthesize desiredPrebufferedSamples = _desiredPrebufferedSamples;
-@synthesize currentFileTime = _currentFileTime;
-@synthesize callbackTimer = _callbackTimer;
-@synthesize currentTime = _currentTime;
-@synthesize duration = _duration;
-@synthesize samplingRate = _samplingRate;
-@synthesize latency = _latency;
-@synthesize numChannels = _numChannels;
-@synthesize audioFileURL = _audioFileURL;
-@synthesize readerBlock = _readerBlock;
-@synthesize playing = _playing;
 
 - (void)dealloc
 {
@@ -85,7 +73,6 @@
     
     delete ringBuffer;
     
-    [super dealloc];
 }
 
 
@@ -98,10 +85,9 @@
         // Zero-out our timer, so we know we're not using our callback yet
         self.callbackTimer = nil;
         
-        
         // Open a reference to the audio file
         self.audioFileURL = urlToAudioFile;
-        CFURLRef audioFileRef = (CFURLRef)self.audioFileURL;
+        CFURLRef audioFileRef = (__bridge CFURLRef)self.audioFileURL;
         CheckError(ExtAudioFileOpenURL(audioFileRef, &_inputFile), "Opening file URL (ExtAudioFileOpenURL)");
 
         
@@ -180,6 +166,16 @@
     // Add the new audio to the ring buffer
     ringBuffer->AddNewInterleavedFloatData(self.outputBuffer, framesRead, self.numChannels);
     
+    if ((self.currentFileTime - self.duration) < 0.01 && framesRead == 0) {
+        // modified to allow for auto-stopping. //
+        // Need to change your output block to check for [fileReader playing] and nuke your fileReader if it is   //
+        // not playing and not paused, on the next frame. Otherwise, the sound clip's final buffer is not played. //
+//        self.currentTime = 0.0f;
+        [self stop];
+        ringBuffer->Clear();
+    }
+    
+    
 }
 
 - (float)getCurrentTime
@@ -187,15 +183,12 @@
     return self.currentFileTime - ringBuffer->NumUnreadFrames()/self.samplingRate;
 }
 
+
 - (void)setCurrentTime:(float)thisCurrentTime
 {
-    [self pause];
-    ExtAudioFileSeek(self.inputFile, thisCurrentTime*self.samplingRate);
-    
-    [self clearBuffer];
-    [self bufferNewAudio];
-    
-    [self play];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        ExtAudioFileSeek(self.inputFile, thisCurrentTime*self.samplingRate);
+    });
 }
 
 - (float)getDuration
@@ -215,36 +208,34 @@
 
 - (void)configureReaderCallback
 {
-    
     if (!self.callbackTimer)
     {
         self.callbackTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue());
-    }
-    
-    if (self.callbackTimer)
-    {
         UInt32 numSamplesPerCallback = (UInt32)( self.latency * self.samplingRate );
         dispatch_source_set_timer(self.callbackTimer, dispatch_walltime(NULL, 0), self.latency*NSEC_PER_SEC, 0);
         dispatch_source_set_event_handler(self.callbackTimer, ^{
             
+            if (self.playing) {
             
-            if (self.readerBlock) {
-                // Suck some audio down from our ring buffer
-                [self retrieveFreshAudio:self.holdingBuffer numFrames:numSamplesPerCallback numChannels:self.numChannels];
-            
-                // Call out with the audio that we've got.
-                self.readerBlock(self.holdingBuffer, numSamplesPerCallback, self.numChannels);
+                if (self.readerBlock) {
+                    // Suck some audio down from our ring buffer
+                    [self retrieveFreshAudio:self.holdingBuffer numFrames:numSamplesPerCallback numChannels:self.numChannels];
+                
+                    // Call out with the audio that we've got.
+                    self.readerBlock(self.holdingBuffer, numSamplesPerCallback, self.numChannels);
+                }
+                
+                // Asynchronously fill up the buffer (if it needs filling)
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self bufferNewAudio];
+                });
+                
             }
-
-            // Asynchronously fill up the buffer (if it needs filling)
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self bufferNewAudio];
-            });
             
          });
-
+        
+        dispatch_resume(self.callbackTimer);
     }
-    
 }
 
 
@@ -254,15 +245,12 @@
 }
 
 
-- (void)play;
+- (void)play
 {
 
-    // Configure (or if necessary, create and start) the timer for retrieving MP3 audio
-    [self configureReaderCallback];
-    
-    if (!self.playing)
-    {
-        dispatch_resume(self.callbackTimer);
+    // Configure (or if necessary, create and start) the timer for retrieving audio
+    if (!self.playing) {
+        [self configureReaderCallback];
         self.playing = TRUE;
     }
 
@@ -271,18 +259,16 @@
 - (void)pause
 {
     // Pause the dispatch timer for retrieving the MP3 audio
-    if (self.callbackTimer) {
-        dispatch_suspend(self.callbackTimer);
-        self.playing = FALSE;
-    }
+    self.playing = FALSE;
 }
 
 - (void)stop
 {
     // Release the dispatch timer because it holds a reference to this class instance
+    [self pause];
     if (self.callbackTimer) {
         dispatch_release(self.callbackTimer);
-        self.playing = FALSE;
+        self.callbackTimer = nil;
     }
 }
 

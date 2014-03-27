@@ -7,10 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		243E89EF18CFA5AC00E5887B /* AudioFileReader.mm in Sources */ = {isa = PBXBuildFile; fileRef = 243E89E818CFA5AC00E5887B /* AudioFileReader.mm */; };
-		243E89F018CFA5AC00E5887B /* AudioFileWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 243E89EA18CFA5AC00E5887B /* AudioFileWriter.m */; };
-		243E89F118CFA5AC00E5887B /* Novocaine.m in Sources */ = {isa = PBXBuildFile; fileRef = 243E89EC18CFA5AC00E5887B /* Novocaine.m */; };
-		243E89F218CFA5AC00E5887B /* RingBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 243E89EE18CFA5AC00E5887B /* RingBuffer.mm */; };
+		248C8EB018E4785D00307C4C /* AudioFileReader.mm in Sources */ = {isa = PBXBuildFile; fileRef = 248C8EA918E4785D00307C4C /* AudioFileReader.mm */; };
+		248C8EB118E4785D00307C4C /* AudioFileWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 248C8EAB18E4785D00307C4C /* AudioFileWriter.m */; };
+		248C8EB218E4785D00307C4C /* Novocaine.m in Sources */ = {isa = PBXBuildFile; fileRef = 248C8EAD18E4785D00307C4C /* Novocaine.m */; };
+		248C8EB318E4785D00307C4C /* RingBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 248C8EAF18E4785D00307C4C /* RingBuffer.mm */; };
 		FA042A1116C89C6D00278FE2 /* SensibleTableView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA042A1016C89C6D00278FE2 /* SensibleTableView.framework */; };
 		FA042A1C16C89EC000278FE2 /* FileNeuron.png in Resources */ = {isa = PBXBuildFile; fileRef = FA042A1216C89EC000278FE2 /* FileNeuron.png */; };
 		FA042A1D16C89EC000278FE2 /* FileNeuronx2.png in Resources */ = {isa = PBXBuildFile; fileRef = FA042A1316C89EC000278FE2 /* FileNeuronx2.png */; };
@@ -128,14 +128,14 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		243E89E718CFA5AC00E5887B /* AudioFileReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioFileReader.h; sourceTree = "<group>"; };
-		243E89E818CFA5AC00E5887B /* AudioFileReader.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AudioFileReader.mm; sourceTree = "<group>"; };
-		243E89E918CFA5AC00E5887B /* AudioFileWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioFileWriter.h; sourceTree = "<group>"; };
-		243E89EA18CFA5AC00E5887B /* AudioFileWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioFileWriter.m; sourceTree = "<group>"; };
-		243E89EB18CFA5AC00E5887B /* Novocaine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Novocaine.h; sourceTree = "<group>"; };
-		243E89EC18CFA5AC00E5887B /* Novocaine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Novocaine.m; sourceTree = "<group>"; };
-		243E89ED18CFA5AC00E5887B /* RingBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RingBuffer.h; sourceTree = "<group>"; };
-		243E89EE18CFA5AC00E5887B /* RingBuffer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RingBuffer.mm; sourceTree = "<group>"; };
+		248C8EA818E4785D00307C4C /* AudioFileReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioFileReader.h; sourceTree = "<group>"; };
+		248C8EA918E4785D00307C4C /* AudioFileReader.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AudioFileReader.mm; sourceTree = "<group>"; };
+		248C8EAA18E4785D00307C4C /* AudioFileWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioFileWriter.h; sourceTree = "<group>"; };
+		248C8EAB18E4785D00307C4C /* AudioFileWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioFileWriter.m; sourceTree = "<group>"; };
+		248C8EAC18E4785D00307C4C /* Novocaine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Novocaine.h; sourceTree = "<group>"; };
+		248C8EAD18E4785D00307C4C /* Novocaine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Novocaine.m; sourceTree = "<group>"; };
+		248C8EAE18E4785D00307C4C /* RingBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RingBuffer.h; sourceTree = "<group>"; };
+		248C8EAF18E4785D00307C4C /* RingBuffer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RingBuffer.mm; sourceTree = "<group>"; };
 		FA042A1016C89C6D00278FE2 /* SensibleTableView.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SensibleTableView.framework; sourceTree = "<group>"; };
 		FA042A1216C89EC000278FE2 /* FileNeuron.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = FileNeuron.png; path = "BYB Icons/FileNeuron.png"; sourceTree = "<group>"; };
 		FA042A1316C89EC000278FE2 /* FileNeuronx2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = FileNeuronx2.png; path = "BYB Icons/FileNeuronx2.png"; sourceTree = "<group>"; };
@@ -332,19 +332,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		243E89E618CFA5AC00E5887B /* Novocaine */ = {
+		248C8EA718E4783200307C4C /* Novocaine */ = {
 			isa = PBXGroup;
 			children = (
-				243E89E718CFA5AC00E5887B /* AudioFileReader.h */,
-				243E89E818CFA5AC00E5887B /* AudioFileReader.mm */,
-				243E89E918CFA5AC00E5887B /* AudioFileWriter.h */,
-				243E89EA18CFA5AC00E5887B /* AudioFileWriter.m */,
-				243E89EB18CFA5AC00E5887B /* Novocaine.h */,
-				243E89EC18CFA5AC00E5887B /* Novocaine.m */,
-				243E89ED18CFA5AC00E5887B /* RingBuffer.h */,
-				243E89EE18CFA5AC00E5887B /* RingBuffer.mm */,
+				248C8EA818E4785D00307C4C /* AudioFileReader.h */,
+				248C8EA918E4785D00307C4C /* AudioFileReader.mm */,
+				248C8EAA18E4785D00307C4C /* AudioFileWriter.h */,
+				248C8EAB18E4785D00307C4C /* AudioFileWriter.m */,
+				248C8EAC18E4785D00307C4C /* Novocaine.h */,
+				248C8EAD18E4785D00307C4C /* Novocaine.m */,
+				248C8EAE18E4785D00307C4C /* RingBuffer.h */,
+				248C8EAF18E4785D00307C4C /* RingBuffer.mm */,
 			);
-			path = Novocaine;
+			name = Novocaine;
 			sourceTree = "<group>";
 		};
 		FA2DAF8316C85D7E00EFF9D6 /* Artwork */ = {
@@ -567,7 +567,7 @@
 		FADF26451596362E006C87BA = {
 			isa = PBXGroup;
 			children = (
-				243E89E618CFA5AC00E5887B /* Novocaine */,
+				248C8EA718E4783200307C4C /* Novocaine */,
 				FA9A5B301809A5DA00FF01A0 /* Default-568h@2x.png */,
 				FA042A1016C89C6D00278FE2 /* SensibleTableView.framework */,
 				FA2DAF8316C85D7E00EFF9D6 /* Artwork */,
@@ -809,11 +809,9 @@
 				FA905A6115AA8E360013688B /* DDRange.m in Sources */,
 				FA905A6315AA8E360013688B /* DDData.m in Sources */,
 				FA90598D15A9F9830013688B /* NSData-SQLitePersistence.m in Sources */,
-				243E89F018CFA5AC00E5887B /* AudioFileWriter.m in Sources */,
 				FA90598F15A9F9830013688B /* NSDate-SQLitePersistence.m in Sources */,
 				FA90599115A9F9830013688B /* NSMutableArray-MultipleSort.m in Sources */,
 				FA90599315A9F9830013688B /* NSMutableData-SQLitePersistence.m in Sources */,
-				243E89F218CFA5AC00E5887B /* RingBuffer.mm in Sources */,
 				FA90599515A9F9830013688B /* NSNumber-SQLitePersistence.m in Sources */,
 				FA90599715A9F9830013688B /* NSObject-ClassName.m in Sources */,
 				FA90599915A9F9830013688B /* NSObject-MissingKV.m in Sources */,
@@ -825,14 +823,16 @@
 				FA9059A515A9F9830013688B /* SQLiteInstanceManager.m in Sources */,
 				FA9059A715A9F9830013688B /* SQLitePersistentObject.m in Sources */,
 				FA9059A915A9F9830013688B /* UIColor-SQLitePersistentObject.m in Sources */,
-				243E89EF18CFA5AC00E5887B /* AudioFileReader.mm in Sources */,
 				FA9059AB15A9F9830013688B /* UIImage-SQLitePersistence.m in Sources */,
 				FADF266F1596362F006C87BA /* main.m in Sources */,
+				248C8EB318E4785D00307C4C /* RingBuffer.mm in Sources */,
+				248C8EB018E4785D00307C4C /* AudioFileReader.mm in Sources */,
 				FADF26741596362F006C87BA /* CCGLTouchAppDelegate.mm in Sources */,
 				FADF26771596362F006C87BA /* CCGLTouchView.mm in Sources */,
 				FADF267A1596362F006C87BA /* CCGLTouchViewController.mm in Sources */,
 				FADF267E1596362F006C87BA /* MyAppDelegate.mm in Sources */,
 				FADF268115963630006C87BA /* MyCinderGLView.mm in Sources */,
+				248C8EB218E4785D00307C4C /* Novocaine.m in Sources */,
 				FADF268415963630006C87BA /* ViewAndRecordViewController.mm in Sources */,
 				FA6921C015A4C81400199CCB /* BBAudioManager.mm in Sources */,
 				FA72CBC615A8820E00CE407B /* DSPThreshold.mm in Sources */,
@@ -845,13 +845,13 @@
 				FA905A6815AA8E450013688B /* localhostAddresses.m in Sources */,
 				FA905A6915AA8E450013688B /* MyHTTPConnection.m in Sources */,
 				FA905A6C15AA8E4D0013688B /* AsyncSocket.m in Sources */,
+				248C8EB118E4785D00307C4C /* AudioFileWriter.m in Sources */,
 				FA905A7515AA8E580013688B /* HTTPServer.m in Sources */,
 				FA905A7615AA8E580013688B /* HTTPResponse.m in Sources */,
 				FA905A7715AA8E580013688B /* HTTPConnection.m in Sources */,
 				FA905A7815AA8E580013688B /* HTTPAuthenticationRequest.m in Sources */,
 				FA35CEFE15ABBADC0082FBC3 /* PlaybackViewController.mm in Sources */,
 				FA4530B315ACDF3B00FA179A /* BBAudioFileReader.mm in Sources */,
-				243E89F118CFA5AC00E5887B /* Novocaine.m in Sources */,
 				FAA27C1B15AD013E00DCC60B /* ThresholdViewController.mm in Sources */,
 				FAA27C2215AD0CEF00DCC60B /* StimulationParameterViewController.mm in Sources */,
 				FAA27C2C15AD2CC800DCC60B /* DigitalSignalParameterViewController.mm in Sources */,

@@ -35,7 +35,7 @@
     UInt32 numChannels;
     NSURL *audioFileURL;
     
-    InputBlock readerBlock;
+    NovocaineInputBlock readerBlock;
     
     BOOL fileIsDone;
 }
