@@ -73,6 +73,7 @@
     
     delete ringBuffer;
     
+    [super dealloc];
 }
 
 
@@ -210,10 +211,11 @@
 {
     if (!self.callbackTimer)
     {
-        self.callbackTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue());
         UInt32 numSamplesPerCallback = (UInt32)( self.latency * self.samplingRate );
-        dispatch_source_set_timer(self.callbackTimer, dispatch_walltime(NULL, 0), self.latency*NSEC_PER_SEC, 0);
-        dispatch_source_set_event_handler(self.callbackTimer, ^{
+        _callbackTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue());
+       
+        dispatch_source_set_timer(_callbackTimer, dispatch_walltime(NULL, 0), self.latency*NSEC_PER_SEC, 0);
+        dispatch_source_set_event_handler(_callbackTimer, ^{
             
             if (self.playing) {
             
@@ -262,12 +264,14 @@
     self.playing = FALSE;
 }
 
+
+
 - (void)stop
 {
     // Release the dispatch timer because it holds a reference to this class instance
     [self pause];
     if (self.callbackTimer) {
-        dispatch_release(self.callbackTimer);
+        dispatch_release(_callbackTimer);
         self.callbackTimer = nil;
     }
 }

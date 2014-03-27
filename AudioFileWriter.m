@@ -60,6 +60,7 @@ static pthread_mutex_t outputAudioFileLock;
     free(self.outputBuffer);
     free(self.holdingBuffer);
     
+    [super dealloc];
 }
 
 - (id)initWithAudioFileURL:(NSURL *)urlToAudioFile samplingRate:(float)thisSamplingRate numChannels:(UInt32)thisNumChannels
@@ -167,7 +168,7 @@ static pthread_mutex_t outputAudioFileLock;
     
     if (!self.callbackTimer)
     {
-        self.callbackTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue());
+        _callbackTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue());
     }
     
     if (self.callbackTimer)
