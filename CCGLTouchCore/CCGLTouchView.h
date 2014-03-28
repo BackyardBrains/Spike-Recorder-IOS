@@ -9,6 +9,9 @@
 //  License & disclaimer >> see license.txt file included in the distribution package
 //
 //
+//  Latest update for Cinder v0.8.5: 06/02/2013
+//
+//
 //  The Cinder source code is used under the following terms:
 //
 //
@@ -46,7 +49,6 @@
 #include "cinder/app/AppCocoaTouch.h"
 #include "cinder/app/Renderer.h"
 #include "cinder/app/TouchEvent.h"
-#include "cinder/app/AccelEvent.h"
 #include "cinder/cocoa/CinderCocoaTouch.h"
 #include "cinder/DataSource.h"
 #include "cinder/Exception.h"
@@ -79,12 +81,12 @@ using namespace std;
 	// The pixel dimensions of the CAEAGLLayer
 	GLint backingWidth;
 	GLint backingHeight;
+    
+@protected
 	// The OpenGL names for the framebuffer and renderbuffer used to render to this view
 	GLuint defaultFramebuffer, colorRenderbuffer, depthRenderbuffer;
     //Buffer definitions for the MSAA (anti-aliasing)
     GLuint ccglMsaaFramebuffer, ccglMsaaRenderBuffer, ccglMsaaDepthBuffer;
-    
-@protected
     // OpenGL sharegroup
     EAGLSharegroup *sharegroup;
     
@@ -100,6 +102,9 @@ using namespace std;
     std::map<UITouch*,uint32_t>	mTouchIdMap;
 	std::vector<ci::app::TouchEvent::Touch> mActiveTouches;
 	ci::Vec3d					mAcceleration;
+    
+    // Retina display scaling
+    size_t retinaScaling;
     
 	// Bounds of the current screen
 	CGRect bounds;
@@ -139,6 +144,7 @@ using namespace std;
 - (void)drawView:(id)sender;
 - (void)makeCurrentContext;
 - (void)flushBuffer;
+- (void)presentCurrentContext;
 - (void)enableAntiAliasing;
 - (void)enableAntiAliasing:(BOOL)flag;
 - (BOOL)isAntiAliasingEnabled;
@@ -202,9 +208,9 @@ using namespace std;
 - (void)setActiveTouches:(std::vector<ci::app::TouchEvent::Touch>&)touches;
 - (std::vector<ci::app::TouchEvent::Touch>&)getActiveTouches;
 - (void)touchesBegan:(NSSet*)touches withEvent:(UIEvent*)event;
-- (void)touchesBegan:(ci::app::TouchEvent)event;
-- (void)touchesMoved:(ci::app::TouchEvent)event;
-- (void)touchesEnded:(ci::app::TouchEvent)event;
+- (void)touchesBegan:(std::vector<ci::app::TouchEvent::Touch>&)touchList;
+- (void)touchesMoved:(std::vector<ci::app::TouchEvent::Touch>&)touchList;
+- (void)touchesEnded:(std::vector<ci::app::TouchEvent::Touch>&)touchList;
 - (void)mouseDown:(ci::app::MouseEvent)event;
 - (void)mouseDrag:(ci::app::MouseEvent)event;
 - (void)mouseUp:(ci::app::MouseEvent)event;

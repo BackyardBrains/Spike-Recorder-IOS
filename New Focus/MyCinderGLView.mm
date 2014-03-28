@@ -134,6 +134,9 @@
     mCam.setOrtho(-numSecondsVisible, -numSecondsMin, -numVoltsVisible/2.0f, numVoltsVisible/2.0f, 1, 100);;
     gl::setMatrices( mCam );
     
+    
+    //TODO: Add time measure drawing
+    
     // Set the line color and width
     glColor4f(0.0f, 1.0f, 0.0f, 1.0f);
     glLineWidth(1.0f);
@@ -378,7 +381,12 @@
 
     float windowHeight = self.frame.size.height;
     float windowWidth = self.frame.size.width;
-    
+    if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] && [[UIScreen mainScreen] scale]==2.0)
+    {
+        //if it is retina
+        windowHeight += windowHeight;
+        windowWidth += windowWidth;
+    }
 
     float worldLeft, worldTop, worldRight, worldBottom, worldNear, worldFar;
     mCam.getFrustum(&worldLeft, &worldTop, &worldRight, &worldBottom, &worldNear, &worldFar);
@@ -405,6 +413,12 @@
     float windowHeight = self.frame.size.height;
     float windowWidth = self.frame.size.width;
 
+    if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] && [[UIScreen mainScreen] scale]==2.0)
+    {
+        //if it is retina
+        windowHeight += windowHeight;
+        windowWidth += windowWidth;
+    }
     
     float worldLeft, worldTop, worldRight, worldBottom, worldNear, worldFar;
     mCam.getFrustum(&worldLeft, &worldTop, &worldRight, &worldBottom, &worldNear, &worldFar);

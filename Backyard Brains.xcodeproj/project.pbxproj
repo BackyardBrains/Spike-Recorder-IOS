@@ -11,6 +11,11 @@
 		248C8EB118E4785D00307C4C /* AudioFileWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 248C8EAB18E4785D00307C4C /* AudioFileWriter.m */; };
 		248C8EB218E4785D00307C4C /* Novocaine.m in Sources */ = {isa = PBXBuildFile; fileRef = 248C8EAD18E4785D00307C4C /* Novocaine.m */; };
 		248C8EB318E4785D00307C4C /* RingBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 248C8EAF18E4785D00307C4C /* RingBuffer.mm */; };
+		248C8EBB18E5CF5E00307C4C /* CCGLTouchAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 248C8EB618E5CF5E00307C4C /* CCGLTouchAppDelegate.mm */; };
+		248C8EBC18E5CF5E00307C4C /* CCGLTouchView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 248C8EB818E5CF5E00307C4C /* CCGLTouchView.mm */; };
+		248C8EBD18E5CF5E00307C4C /* CCGLTouchViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 248C8EBA18E5CF5E00307C4C /* CCGLTouchViewController.mm */; };
+		248C8EBF18E5D8FC00307C4C /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 248C8EBE18E5D8FC00307C4C /* MobileCoreServices.framework */; };
+		248C8EC118E5D90500307C4C /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 248C8EC018E5D90500307C4C /* ImageIO.framework */; };
 		FA042A1116C89C6D00278FE2 /* SensibleTableView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA042A1016C89C6D00278FE2 /* SensibleTableView.framework */; };
 		FA042A1C16C89EC000278FE2 /* FileNeuron.png in Resources */ = {isa = PBXBuildFile; fileRef = FA042A1216C89EC000278FE2 /* FileNeuron.png */; };
 		FA042A1D16C89EC000278FE2 /* FileNeuronx2.png in Resources */ = {isa = PBXBuildFile; fileRef = FA042A1316C89EC000278FE2 /* FileNeuronx2.png */; };
@@ -113,9 +118,6 @@
 		FADF26671596362F006C87BA /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FADF26661596362F006C87BA /* CoreText.framework */; };
 		FADF266D1596362F006C87BA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = FADF266B1596362F006C87BA /* InfoPlist.strings */; };
 		FADF266F1596362F006C87BA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FADF266E1596362F006C87BA /* main.m */; };
-		FADF26741596362F006C87BA /* CCGLTouchAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = FADF26731596362F006C87BA /* CCGLTouchAppDelegate.mm */; };
-		FADF26771596362F006C87BA /* CCGLTouchView.mm in Sources */ = {isa = PBXBuildFile; fileRef = FADF26761596362F006C87BA /* CCGLTouchView.mm */; };
-		FADF267A1596362F006C87BA /* CCGLTouchViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = FADF26791596362F006C87BA /* CCGLTouchViewController.mm */; };
 		FADF267E1596362F006C87BA /* MyAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = FADF267D1596362F006C87BA /* MyAppDelegate.mm */; };
 		FADF268115963630006C87BA /* MyCinderGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = FADF268015963630006C87BA /* MyCinderGLView.mm */; };
 		FADF268415963630006C87BA /* ViewAndRecordViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = FADF268315963630006C87BA /* ViewAndRecordViewController.mm */; };
@@ -136,6 +138,14 @@
 		248C8EAD18E4785D00307C4C /* Novocaine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Novocaine.m; sourceTree = "<group>"; };
 		248C8EAE18E4785D00307C4C /* RingBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RingBuffer.h; sourceTree = "<group>"; };
 		248C8EAF18E4785D00307C4C /* RingBuffer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RingBuffer.mm; sourceTree = "<group>"; };
+		248C8EB518E5CF5E00307C4C /* CCGLTouchAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCGLTouchAppDelegate.h; sourceTree = "<group>"; };
+		248C8EB618E5CF5E00307C4C /* CCGLTouchAppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CCGLTouchAppDelegate.mm; sourceTree = "<group>"; };
+		248C8EB718E5CF5E00307C4C /* CCGLTouchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCGLTouchView.h; sourceTree = "<group>"; };
+		248C8EB818E5CF5E00307C4C /* CCGLTouchView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CCGLTouchView.mm; sourceTree = "<group>"; };
+		248C8EB918E5CF5E00307C4C /* CCGLTouchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCGLTouchViewController.h; sourceTree = "<group>"; };
+		248C8EBA18E5CF5E00307C4C /* CCGLTouchViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CCGLTouchViewController.mm; sourceTree = "<group>"; };
+		248C8EBE18E5D8FC00307C4C /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		248C8EC018E5D90500307C4C /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		FA042A1016C89C6D00278FE2 /* SensibleTableView.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SensibleTableView.framework; sourceTree = "<group>"; };
 		FA042A1216C89EC000278FE2 /* FileNeuron.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = FileNeuron.png; path = "BYB Icons/FileNeuron.png"; sourceTree = "<group>"; };
 		FA042A1316C89EC000278FE2 /* FileNeuronx2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = FileNeuronx2.png; path = "BYB Icons/FileNeuronx2.png"; sourceTree = "<group>"; };
@@ -284,12 +294,6 @@
 		FADF266C1596362F006C87BA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		FADF266E1596362F006C87BA /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		FADF26701596362F006C87BA /* Backyard Brains-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Backyard Brains-Prefix.pch"; sourceTree = "<group>"; };
-		FADF26721596362F006C87BA /* CCGLTouchAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CCGLTouchAppDelegate.h; path = ../CCGLTouchCore/CCGLTouchAppDelegate.h; sourceTree = "<group>"; };
-		FADF26731596362F006C87BA /* CCGLTouchAppDelegate.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = CCGLTouchAppDelegate.mm; path = ../CCGLTouchCore/CCGLTouchAppDelegate.mm; sourceTree = "<group>"; };
-		FADF26751596362F006C87BA /* CCGLTouchView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CCGLTouchView.h; path = ../CCGLTouchCore/CCGLTouchView.h; sourceTree = "<group>"; };
-		FADF26761596362F006C87BA /* CCGLTouchView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = CCGLTouchView.mm; path = ../CCGLTouchCore/CCGLTouchView.mm; sourceTree = "<group>"; };
-		FADF26781596362F006C87BA /* CCGLTouchViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CCGLTouchViewController.h; path = ../CCGLTouchCore/CCGLTouchViewController.h; sourceTree = "<group>"; };
-		FADF26791596362F006C87BA /* CCGLTouchViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = CCGLTouchViewController.mm; path = ../CCGLTouchCore/CCGLTouchViewController.mm; sourceTree = "<group>"; };
 		FADF267C1596362F006C87BA /* MyAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MyAppDelegate.h; sourceTree = "<group>"; };
 		FADF267D1596362F006C87BA /* MyAppDelegate.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MyAppDelegate.mm; sourceTree = "<group>"; };
 		FADF267F1596362F006C87BA /* MyCinderGLView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MyCinderGLView.h; sourceTree = "<group>"; };
@@ -309,6 +313,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				248C8EC118E5D90500307C4C /* ImageIO.framework in Frameworks */,
+				248C8EBF18E5D8FC00307C4C /* MobileCoreServices.framework in Frameworks */,
 				FA905A7C15AA8F370013688B /* MessageUI.framework in Frameworks */,
 				FA905A7A15AA8F0C0013688B /* CFNetwork.framework in Frameworks */,
 				FA905A4815AA8BBA0013688B /* Security.framework in Frameworks */,
@@ -345,6 +351,19 @@
 				248C8EAF18E4785D00307C4C /* RingBuffer.mm */,
 			);
 			name = Novocaine;
+			sourceTree = "<group>";
+		};
+		248C8EB418E5CF5D00307C4C /* CCGLTouchCore */ = {
+			isa = PBXGroup;
+			children = (
+				248C8EB518E5CF5E00307C4C /* CCGLTouchAppDelegate.h */,
+				248C8EB618E5CF5E00307C4C /* CCGLTouchAppDelegate.mm */,
+				248C8EB718E5CF5E00307C4C /* CCGLTouchView.h */,
+				248C8EB818E5CF5E00307C4C /* CCGLTouchView.mm */,
+				248C8EB918E5CF5E00307C4C /* CCGLTouchViewController.h */,
+				248C8EBA18E5CF5E00307C4C /* CCGLTouchViewController.mm */,
+			);
+			path = CCGLTouchCore;
 			sourceTree = "<group>";
 		};
 		FA2DAF8316C85D7E00EFF9D6 /* Artwork */ = {
@@ -567,6 +586,7 @@
 		FADF26451596362E006C87BA = {
 			isa = PBXGroup;
 			children = (
+				248C8EB418E5CF5D00307C4C /* CCGLTouchCore */,
 				248C8EA718E4783200307C4C /* Novocaine */,
 				FA9A5B301809A5DA00FF01A0 /* Default-568h@2x.png */,
 				FA042A1016C89C6D00278FE2 /* SensibleTableView.framework */,
@@ -593,6 +613,8 @@
 		FADF26531596362F006C87BA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				248C8EC018E5D90500307C4C /* ImageIO.framework */,
+				248C8EBE18E5D8FC00307C4C /* MobileCoreServices.framework */,
 				FA905A7B15AA8F360013688B /* MessageUI.framework */,
 				FA905A7915AA8F0B0013688B /* CFNetwork.framework */,
 				FA905A4715AA8BBA0013688B /* Security.framework */,
@@ -621,7 +643,6 @@
 				FA9059AC15AA11BD0013688B /* UI */,
 				FA90593215A9F1350013688B /* File Management */,
 				FA6921BA15A4AA5900199CCB /* Audio I/O */,
-				FADF26711596362F006C87BA /* CCGLTouchCore */,
 				FADF267B1596362F006C87BA /* MyClasses */,
 				FADF268515963630006C87BA /* MyAssets */,
 				FADF26691596362F006C87BA /* Supporting Files */,
@@ -639,19 +660,6 @@
 				FADF26701596362F006C87BA /* Backyard Brains-Prefix.pch */,
 			);
 			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		FADF26711596362F006C87BA /* CCGLTouchCore */ = {
-			isa = PBXGroup;
-			children = (
-				FADF26721596362F006C87BA /* CCGLTouchAppDelegate.h */,
-				FADF26731596362F006C87BA /* CCGLTouchAppDelegate.mm */,
-				FADF26751596362F006C87BA /* CCGLTouchView.h */,
-				FADF26761596362F006C87BA /* CCGLTouchView.mm */,
-				FADF26781596362F006C87BA /* CCGLTouchViewController.h */,
-				FADF26791596362F006C87BA /* CCGLTouchViewController.mm */,
-			);
-			name = CCGLTouchCore;
 			sourceTree = "<group>";
 		};
 		FADF267B1596362F006C87BA /* MyClasses */ = {
@@ -827,10 +835,8 @@
 				FADF266F1596362F006C87BA /* main.m in Sources */,
 				248C8EB318E4785D00307C4C /* RingBuffer.mm in Sources */,
 				248C8EB018E4785D00307C4C /* AudioFileReader.mm in Sources */,
-				FADF26741596362F006C87BA /* CCGLTouchAppDelegate.mm in Sources */,
-				FADF26771596362F006C87BA /* CCGLTouchView.mm in Sources */,
-				FADF267A1596362F006C87BA /* CCGLTouchViewController.mm in Sources */,
 				FADF267E1596362F006C87BA /* MyAppDelegate.mm in Sources */,
+				248C8EBC18E5CF5E00307C4C /* CCGLTouchView.mm in Sources */,
 				FADF268115963630006C87BA /* MyCinderGLView.mm in Sources */,
 				248C8EB218E4785D00307C4C /* Novocaine.m in Sources */,
 				FADF268415963630006C87BA /* ViewAndRecordViewController.mm in Sources */,
@@ -849,6 +855,7 @@
 				FA905A7515AA8E580013688B /* HTTPServer.m in Sources */,
 				FA905A7615AA8E580013688B /* HTTPResponse.m in Sources */,
 				FA905A7715AA8E580013688B /* HTTPConnection.m in Sources */,
+				248C8EBD18E5CF5E00307C4C /* CCGLTouchViewController.mm in Sources */,
 				FA905A7815AA8E580013688B /* HTTPAuthenticationRequest.m in Sources */,
 				FA35CEFE15ABBADC0082FBC3 /* PlaybackViewController.mm in Sources */,
 				FA4530B315ACDF3B00FA179A /* BBAudioFileReader.mm in Sources */,
@@ -858,6 +865,7 @@
 				FA9A665915BA412600CF1697 /* BBTabBarViewController.mm in Sources */,
 				FA14EC6215D1FF0000B0FB71 /* RecordingOverlay.mm in Sources */,
 				FAFAEEFD1621CC0400632975 /* BBFile.mm in Sources */,
+				248C8EBB18E5CF5E00307C4C /* CCGLTouchAppDelegate.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -921,7 +929,9 @@
 		FADF268D15963630006C87BA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CINDER_PATH = /Users/nik/Desktop/cinder_0.8.4_mac;
+				CINDER_PATH = /Users/nik/Desktop/cinder_0.8.5_mac;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CLANG_CXX_LIBRARY = "libc++";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVICE_FAMILY = iPhone/iPad;
@@ -949,9 +959,9 @@
 				);
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
-					/usr/lib/libz.dylib,
+					"-lz",
 					"$(CINDER_PATH)/lib/libcinder-iphone_d.a",
-					"$(CINDER_PATH)/lib/libcinder-iphone-sim_d.a",
+					"$(CINDER_PATH)/lib/libcinder-iphone-sim.a",
 				);
 				PRODUCT_NAME = "Backyard Brains";
 				PROVISIONING_PROFILE = "";
@@ -966,7 +976,9 @@
 		FADF268E15963630006C87BA /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CINDER_PATH = /Users/nik/Desktop/cinder_0.8.4_mac;
+				CINDER_PATH = /Users/nik/Desktop/cinder_0.8.5_mac;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CLANG_CXX_LIBRARY = "libc++";
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Stanislav Mircic (9N734F8KG4)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Stanislav Mircic (9N734F8KG4)";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -995,12 +1007,12 @@
 				);
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
-					/usr/lib/libz.dylib,
-					"$(CINDER_PATH)/lib/libcinder-iphone.a",
+					"-lz",
 					"$(CINDER_PATH)/lib/libcinder-iphone-sim.a",
+					"$(CINDER_PATH)/lib/libcinder-iphone_d.a",
 				);
 				PRODUCT_NAME = "Backyard Brains";
-				PROVISIONING_PROFILE = "B936C659-0F02-4DD3-9CAD-D0ECB3A0010D";
+				PROVISIONING_PROFILE = "";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "$(CINDER_PATH)/include";
