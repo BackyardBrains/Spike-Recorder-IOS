@@ -66,7 +66,7 @@
 //The GL view is stored in the nib file. When it's unarchived it's sent -initWithCoder:
 - (id)initWithFrame:(CGRect)frame
 {
-    return [self initWithFrame:frame andSharegroup:[[EAGLSharegroup alloc] init]];
+    return [self initWithFrame:frame andSharegroup:[[[EAGLSharegroup alloc] init] autorelease]];
 }
 
 - (id)initWithFrame:(CGRect)frame andSharegroup:(EAGLSharegroup *)_sharegroup
@@ -437,6 +437,11 @@
     
     // then make the uiimage from that
     UIImage *myImage = [UIImage imageWithCGImage:imageRef];
+    
+    CGDataProviderRelease(provider);
+    CGImageRelease(imageRef);
+    CGColorSpaceRelease(colorSpaceRef);
+    free((GLubyte*)buffer);
     return myImage;
 }
 
@@ -715,8 +720,8 @@
 	}
 	else {
 		for( UITouch *touch in touches ) {
-			id<WindowImplCocoa>		mImpl;
-            App *app;
+			id<WindowImplCocoa>		mImpl = nil;
+            App *app = nil;
             WindowRef win = cinder::app::Window::privateCreate__( mImpl, app );
 			CGPoint pt = [touch locationInView:self];
 			int mods = 0;
@@ -745,8 +750,8 @@
 	}
 	else {
 		for( UITouch *touch in touches ) {
-			id<WindowImplCocoa>		mImpl;
-            App *app;
+			id<WindowImplCocoa>		mImpl = nil;
+            App *app = nil;
             WindowRef win = cinder::app::Window::privateCreate__( mImpl, app );
 			CGPoint pt = [touch locationInView:self];
 			int mods = 0;
@@ -776,8 +781,8 @@
 	}
 	else {
 		for( UITouch *touch in touches ) {
-			id<WindowImplCocoa>		mImpl;
-            App *app;
+			id<WindowImplCocoa>		mImpl = nil;
+            App *app = nil;
             WindowRef win = cinder::app::Window::privateCreate__( mImpl, app );
 			CGPoint pt = [touch locationInView:self];
 			int mods = 0;
@@ -809,7 +814,7 @@
 {
 	string resourcePath = [self getResourcePath:macPath];
 	if( resourcePath.empty() )
-		;//throw ResourceLoadExc( macPath );
+		throw ResourceLoadExc( macPath );
 	else
 		return DataSourcePath::create( resourcePath );
 }

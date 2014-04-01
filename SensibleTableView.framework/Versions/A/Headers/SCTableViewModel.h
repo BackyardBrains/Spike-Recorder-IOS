@@ -1,7 +1,7 @@
 /*
  *  SCTableViewModel.h
  *  Sensible TableView
- *  Version: 3.0.5
+ *  Version: 3.3.0
  *
  *
  *	THIS SOURCE CODE AND ANY ACCOMPANYING DOCUMENTATION ARE PROTECTED BY UNITED STATES 
@@ -13,7 +13,7 @@
  *	USAGE OF THIS SOURCE CODE IS BOUND BY THE LICENSE AGREEMENT PROVIDED WITH THE 
  *	DOWNLOADED PRODUCT.
  *
- *  Copyright 2012 Sensible Cocoa. All rights reserved.
+ *  Copyright 2012-2013 Sensible Cocoa. All rights reserved.
  *
  *
  *	This notice may not be removed from this file.
@@ -40,22 +40,20 @@
  
  Sensible TableView provides an alternative easy way to create sophisticated table views very quickly. 
  The sophistication of these table views can range from simple text cells, to cells with controls, to
- cells that get automatically generated from your own classes. 'SCTableViewModel' also automatically
+ custom cells that get automatically generated from your own classes. SCTableViewModel also automatically
  generates detail views for common tasks such as selecting cell values or creating new objects.
- Using 'SCTableViewModel', you can simply create full functioning applications in a matter of minutes.
+ Using SCTableViewModel, you can easily create full functioning applications in a matter of minutes.
  
- 'SCTableViewModel' is designed to be loosely coupled with your user interface elements. What this
- means is that you can use 'SCTableViewModel' with Apple's default UITableView or with any of your 
- custom UITableView subclasses. Similarly, you can use 'SCTableViewModel' with any UIViewController, or
- any of its subclasses, including UITableViewController or your own subclasses. In addition,
- 'SCTableViewModel''s auto generated detail views will work whether you use a navigation controller or not.
+ SCTableViewModel is designed to be loosely coupled with your user interface elements. What this
+ means is that you can use SCTableViewModel with Apple's default UITableView or with any of your 
+ custom UITableView subclasses. Similarly, you can use SCTableViewModel with any UIViewController, or
+ any of its subclasses, including UITableViewController or your own subclasses. 
  
  Architecture:
  
- An 'SCTableViewModel' defines a table view model with several sections, each section being of type 
+ An SCTableViewModel defines a table view model with several sections, each section being of type 
  SCTableViewSection. Each SCTableViewSection can contain several cells, each cell being of type
- SCTableViewCell. 'SCTableViewModel''s functionality can also be extended using 
- SCTableViewModelDataSource and SCTableViewModelDelegate.
+ SCTableViewCell. 
  */
 
 @interface SCTableViewModel : NSObject <UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate, SCInputAccessoryViewDelegate>
@@ -63,14 +61,15 @@
 	//internal
     NSIndexPath *lastReturnedCellIndexPath;     // used for optimization
     SCTableViewCell *lastReturnedCell;          // used for optimization
-	__unsafe_unretained id target;
+    NSIndexPath *lastVisibleCellIndexPath;      // user for optimization
+	__weak id target;
 	SEL action;
-	__unsafe_unretained SCTableViewModel *masterModel;
-    SCTableViewModel *activeDetailModel;
+	__weak SCTableViewModel *masterModel;
+    __weak SCTableViewModel *activeDetailModel;
 	
-	__unsafe_unretained UITableView *modeledTableView;
-	__unsafe_unretained id dataSource;
-	__unsafe_unretained id delegate;
+	__weak UITableView *_tableView;
+	__weak id dataSource;
+	__weak id delegate;
 	UIBarButtonItem *editButtonItem;
 	BOOL autoResizeForKeyboard;
 	BOOL keyboardShown;
@@ -100,6 +99,8 @@
     BOOL swipeToDeleteActive;
     
     SCModelActions *_modelActions;
+    SCSectionActions *_sectionActions;
+    SCCellActions *_cellActions;
     
     SCTheme *_theme;
 }
@@ -108,27 +109,34 @@
 /// @name Creation and Initialization
 //////////////////////////////////////////////////////////////////////////////////////////
 
-/** Allocates and returns an initialized 'SCTableViewModel' bound to a UITableView. 
+/** Allocates and returns an initialized SCTableViewModel bound to a UITableView. 
  *
- *	Upon the model's initialization, the model sets itself as the modeledTableView's dataSource and delegate, and starts providing it with its sections and cells.
+ * Upon the model's initialization, the model sets itself as the table view's dataSource and delegate, and starts providing it with its sections and cells.
  *
- *	@param modeledTableView The UITableView to be bound to the model.
+ * @param tableView The UITableView to be bound to the model. It's ok for this value to be nil if the table view is not yet available when the model is created.
  */
-+ (id)tableViewModelWithTableView:(UITableView *)modeledTableView;
++ (id)modelWithTableView:(UITableView *)tableView;
 
 /** Returns an initialized 'SCTableViewModel' bound to a UITableView.  
  *
- *	Upon the model's initialization, the model sets itself as the modeledTableView's dataSource and delegate, and starts providing it with its sections and cells.
+ * Upon the model's initialization, the model sets itself as the table view's dataSource and delegate, and starts providing it with its sections and cells.
  *
- *	@param modeledTableView The UITableView to be bound to the model. 
+ * @param tableView The UITableView to be bound to the model. It's ok for this value to be nil if the table view is not yet available when the model is created.
  */
-- (id)initWithTableView:(UITableView *)modeledTableView;
+- (id)initWithTableView:(UITableView *)tableView;
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// @name Configuration
 //////////////////////////////////////////////////////////////////////////////////////////
 
+/** Set to TRUE to enable pull-to-refresh functionality on the table view. Default: FALSE. 
+ @see pullToRefreshView
+ */
 @property (nonatomic, readwrite) BOOL enablePullToRefresh;
+
+/** Contains a valid SCPullToRefreshView that automatically provides pull-to-refresh functionality to the table view.
+ @note enablePullToRefresh must be set to TRUE for this view to take effect. 
+ */
 @property (nonatomic, strong) SCPullToRefreshView *pullToRefreshView;
 
 /**	
@@ -139,27 +147,27 @@
 @property (nonatomic, strong) UIBarButtonItem *editButtonItem;
 
 /** 
- If TRUE, 'SCTableViewModel' will automatically resize the modeledTableView when the
+ If TRUE, SCTableViewModel will automatically resize its tableView when the
  keyboard appears. Property defualts to FALSE if viewController is a UITableViewController subclass,
  as UITableViewController will automatically handle the resizing. Otherwise, it defaults to TRUE.
  */
 @property (nonatomic, readwrite) BOOL autoResizeForKeyboard;
 
 /**
- An array of strings that serve as the title of sections in the modeledTableView and 
- appear in the index list on the right side of the modeledTableView. modeledTableView
+ An array of strings that serve as the title of sections in the tableView and
+ appear in the index list on the right side of the tableView. tableView
  must be in plain style for the index to appear.
  */
 @property (nonatomic, strong) NSArray *sectionIndexTitles;
 
 /** 
- If TRUE, 'SCTableViewModel' will automatically generate the sectionIndexTitles array from
+ If TRUE, SCTableViewModel will automatically generate the sectionIndexTitles array from
  the first letter of each section's header title. Default: FALSE. 
  */
 @property (nonatomic, readwrite) BOOL autoGenerateSectionIndexTitles;
 
 /** 
- If TRUE, 'SCTableViewModel' will automatically sort its sections alphabetically according to their header
+ If TRUE, SCTableViewModel will automatically sort its sections alphabetically according to their header
  title value. To provide custom section sorting, implement the tableViewModel:sortSections: 
  SCTableViewDataSource method instead. Default: FALSE. 
  */
@@ -168,8 +176,8 @@
 /** If TRUE, all section header titles will be hidden. Default: FALSE. */
 @property (nonatomic, readwrite) BOOL hideSectionHeaderTitles;
 
-/** If TRUE, 'SCTableViewModel' will prevent any cell from being selected. Default: FALSE. 
- *	@warning Note: for preventing individual cells from being selected, use SCTableViewCell "selectable" property. */
+/** If TRUE, SCTableViewModel will prevent any cell from being selected. Default: FALSE. 
+ *	@note for preventing individual cells from being selected, use SCTableViewCell "selectable" property. */
 @property (nonatomic, readwrite) BOOL lockCellSelection;
 
 /** An integer that you can use to identify different table view models in your application. Any detail model automatically gets its tag set to be the value of its parent model's tag plus one. Default: 0. */
@@ -178,7 +186,7 @@
 /** 
  When set to a valid view controller, the model will use this controller to display all of its automatically generated detail views. This property is typically set in iPad applications where the model and its detailViewController co-exist in a UISplitViewController. 
  
- @warning: Important: detailViewController must be of type SCViewController or SCTableViewController only.
+ @warning detailViewController must be of type SCViewController or SCTableViewController only.
  */
 @property (nonatomic, strong) UIViewController *detailViewController;
 
@@ -190,6 +198,16 @@
 
 /** The set of model action blocks. */
 @property (nonatomic, readonly) SCModelActions *modelActions;
+
+/** The set of section action blocks that get applied to all the model's sections.
+ @note Section actions defined in the model's individual sections will override any actions set here.
+ */
+@property (nonatomic, readonly) SCSectionActions *sectionActions;
+
+/** The set of cell action blocks that get applied to all the model's cells.
+ @note Cell actions defined in the model's individual cells will override any actions set here.
+ */
+@property (nonatomic, readonly) SCCellActions *cellActions;
 
 /** The theme used to style the model's views. Default: nil. */
 @property (nonatomic, strong) SCTheme *theme;
@@ -238,7 +256,6 @@
  */
 - (void)generateSectionsForObject:(NSObject *)object withDefinition:(SCDataDefinition *)definition;
 
-
 /** Generates sections using the given object and its data definition. The method fully utilizes the definition's groups feature by generating a section for each group. 
  *  @param object The object that the sections will be generated for.
  *  @param definition The object's definition.
@@ -248,6 +265,12 @@
 - (void)generateSectionsForObject:(NSObject *)object withDefinition:(SCDataDefinition *)definition newObject:(BOOL)newObject;
 
 /** Generates sections using the given object and its data store.  
+ *  @param object The object that the sections will be generated for.
+ *  @param store The object's data store.
+ */
+- (void)generateSectionsForObject:(NSObject *)object withDataStore:(SCDataStore *)store;
+
+/** Generates sections using the given object and its data store.
  *  @param object The object that the sections will be generated for.
  *  @param store The object's data store.
  *  @param newObject Set to TRUE if the generated sections are used represent a newly created fresh object, otherwise set to FALSE.
@@ -306,22 +329,33 @@
 /** Returns the indexPath of the cell that comes before the specified cell in the model.
  *	@param cell Must be a valid non nil SCTableViewCell.
  *	@param rewind If TRUE and cell is the very first cell in the model, method returns the indexPath of the last cell.
- *	@return Returns nil if cell is the last cell in the model and rewind is FALSE, or if cell does not exist in the model. */
+ *	@return Returns nil if cell is the last cell in the model and rewind is FALSE, or if cell does not exist in the model. 
+ *  @see moveToNextCellControl:
+ */
 - (NSIndexPath *)indexPathForCellBeforeCell:(SCTableViewCell *)cell rewind:(BOOL)rewind;
 
 /** Returns the cell that comes before the specified cell in the model.
  *	@param cell Must be a valid non nil SCTableViewCell.
  *	@param rewind If TRUE and cell is the very first cell in the model, method returns the last cell.
- *	@return Returns nil if cell is the last cell in the model and rewind is FALSE, or if cell does not exist in the model. */
+ *	@return Returns nil if cell is the last cell in the model and rewind is FALSE, or if cell does not exist in the model. 
+ *  @see moveToPreviousCellControl:
+ */
 - (SCTableViewCell *)cellBeforeCell:(SCTableViewCell *)cell rewind:(BOOL)rewind;
 
+/** Moves the first responder to the next cell control, automatically scrolling the table view as needed. If rewind is TRUE, the first responder is moved to the very first cell after the last cell has been reached.
+ @note This method is typically used when you're overriding the framework's automatic handling of the keyboard's 'Return' button.
+ */
 - (void)moveToNextCellControl:(BOOL)rewind;
+
+/** Moves the first responder to the previous cell control, automatically scrolling the table view as needed. If rewind is TRUE, the first responder is moved to the very last cell after the first cell has been reached.
+ */
 - (void)moveToPreviousCellControl:(BOOL)rewind;
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// @name Managing Detail Views
 //////////////////////////////////////////////////////////////////////////////////////////
 
+/** Dismisses all detail views, commiting all changes when commit is TRUE, otherwise it will ignore all changes. */
 - (void)dismissAllDetailViewsWithCommit:(BOOL)commit;
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -331,8 +365,14 @@
 /** TRUE if all the model's section and cell values are valid. */
 @property (nonatomic, readonly) BOOL valuesAreValid;
 
+/**	This property is TRUE if any of the model's cells or sections needs to be commited, otherwise it's FALSE. */
+@property (nonatomic, readonly) BOOL needsCommit;
+
 /** 'SCTableViewModel' will automatically enable/disable the commitButton based on the valuesAreValid property, where commitButton is enabled if valuesAreValid is TRUE. */
 @property (nonatomic, strong) UIBarButtonItem *commitButton;
+
+/** Forces the commit of all section and cell values into their respective bound objects. There is usually no need to call this method manually as it's typically called by the framework when the user is ready to commit changes. */
+- (void)commitChanges;
 
 /** Reload's the model's bound values in case the associated bound objects or keys valuea has changed by means other than the cells themselves (e.g. external custom code). */
 - (void)reloadBoundValues;
@@ -342,27 +382,42 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 
 /** The object that acts as the data source of 'SCTableViewModel'. The object must adopt the SCTableViewModelDataSource protocol. */
-@property (nonatomic, unsafe_unretained) id dataSource;
+@property (nonatomic, weak) id dataSource;
 
 /** The object that acts as the delegate of 'SCTableViewModel'. The object must adopt the SCTableViewModelDelegate protocol. */
-@property (nonatomic, unsafe_unretained) id delegate;
+@property (nonatomic, weak) id delegate;
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// @name Miscellaneous
 //////////////////////////////////////////////////////////////////////////////////////////
 
 /**	The UITableView bound to 'SCTableViewModel'. */
-@property (nonatomic, unsafe_unretained) UITableView *modeledTableView;
+@property (nonatomic, weak) UITableView *tableView;
 
-/**	The UIViewController of modeledTableView. */
+/**	
+ The UITableView bound to 'SCTableViewModel'.
+ 
+ @warning This property has been deprecated. Use tableView instead.
+ */
+@property (nonatomic, weak) UITableView *modeledTableView;
+
+/**	The UIViewController of tableView. */
 @property (nonatomic, readonly) UIViewController *viewController;
 
+/** The keyboard input accessory view responsible for providing keyboard navigation between the different responders. Set to nil to disable the accessory view functionality. */
 @property (nonatomic, strong) SCInputAccessoryView *inputAccessoryView;
 
 /** Clears all contents of the model. */
 - (void)clear;
 
-/** Sets the editing mode of the modeledTableView. */
+/** Sets the editing mode for tableView. */
+- (void)setTableViewEditing:(BOOL)editing animated:(BOOL)animate;
+
+/** 
+ Sets the editing mode for tableView.
+ 
+ @warning This method has been deprecated. Use setTableViewEditing:animated: instead.
+ */
 - (void)setModeledTableViewEditing:(BOOL)editing animated:(BOOL)animate;
  
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -376,15 +431,24 @@
 @property (nonatomic, readonly) BOOL swipeToDeleteActive;
 
 /** Property is used internally by the framework to set the master model in a master-detail relationship. */
-@property (nonatomic, unsafe_unretained) SCTableViewModel *masterModel;
+@property (nonatomic, weak) SCTableViewModel *masterModel;
 
-@property (nonatomic, strong) SCTableViewModel *activeDetailModel;
+/** Holds the currently active detail model.
+ @warning Property must only be set internally by the framework.
+ */
+@property (nonatomic, weak) SCTableViewModel *activeDetailModel;
 
 /** Warning: Method must only be called internally by the framework. */
 - (void)setActiveCell:(SCTableViewCell *)cell;
 
 /** Warning: Method must only be called internally by the framework. */
 - (void)setActiveCellControl:(UIResponder *)control;
+
+/** Warning: Method must only be called internally by the framework. */
+- (void)enterLoadingMode;
+
+/** Warning: Method must only be called internally by the framework. */
+- (void)exitLoadingMode;
 
 /** Warning: Method must only be called internally by the framework. */
 - (void)clearLastReturnedCellData;
@@ -441,7 +505,7 @@
 - (void)styleViews;
 
 /** Method called internally. */
-- (void)styleCell:(SCTableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
+- (void)styleCell:(SCTableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath onlyStylePropertyNamesInSet:(NSSet *)propertyNames;
 
 /** Method called internally. */
 - (void)configureCell:(SCTableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath;
@@ -469,7 +533,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 
 /** Asks the dataSource to provide custom sorting for the model's sections. 
- *	@warning Note: If you just need to sort the sections alphabetically, just set your model's autoSortSections property to TRUE.
+ *	@note If you just need to sort the sections alphabetically, just set your model's autoSortSections property to TRUE.
  *	@param tableModel The model requesting the sorted sections array.
  *	@param sectionsArray The array containing the sections to be sorted. All objects of the array are of type SCTableViewSection.
  */
@@ -483,12 +547,12 @@
  Asks the dataSource to provide a custom cell for the specified indexPath. Implement
  this method to provide your own custom cells instead of the automatically generated cells
  by SCArrayOfItemsSection and its subclasses.
- @warning Note: Returning "nil" will have the section provide an automatically generated cell.
- @warning Important: If more than one cell type is returned (including returning "nil"), then
+ @note Returning "nil" will have the section provide an automatically generated cell.
+ @warning If more than one cell type is returned (including returning "nil"), then
  the tableViewModel:customReuseIdentifierForRowAtIndexPath: method must be implemented, returning
  a unique reuse identifier for each cell type used.
- *	@param tableModel The model requesting the custom cell.
- *	@param indexPath The index path of the row whose custom cell is requested.
+ @param tableModel The model requesting the custom cell.
+ @param indexPath The index path of the row whose custom cell is requested.
  */
 - (SCCustomCell *)tableViewModel:(SCTableViewModel *)tableModel
            cellForRowAtIndexPath:(NSIndexPath *)indexPath;
@@ -497,12 +561,12 @@
  Asks the dataSource to provide a custom reuse identifier for the specified indexPath. 
  Implement this method to provide your own custom reuse identifiers for cells generated
  by SCArrayOfItemsSection and its subclasses.
- @warning Important: This method must be implemented if more than one type of cell is returned in
+ @warning This method must be implemented if more than one type of cell is returned in
  tableViewModel:cellForRowAtIndexPath: (including returning "nil"), where it should
  return a unique reuse identifier for each cell type used. If only one cell type is returned
  in tableViewModel:cellForRowAtIndexPath:, then there is no need to implement this method.
- *	@param tableModel The model requesting the custom reuse identifier.
- *	@param indexPath The index path of the row whose custom reuse identifier is requested.
+ @param tableModel The model requesting the custom reuse identifier.
+ @param indexPath The index path of the row whose custom reuse identifier is requested.
  */
 - (NSString *)tableViewModel:(SCTableViewModel *)tableModel
         reuseIdentifierForRowAtIndexPath:(NSIndexPath *)indexPath;
@@ -513,31 +577,31 @@
 
 /** 
  Asks the dataSource to provide a custom detail table view model for the specified cell. This custom table view model will be used to render the cell's details instead of the default automatically generated detail model. The returned model is typically a blank model with no sections (all content will be generated by the requesting cell).
- @warning Important: This method should only be implemented for cells that require a detail
+ @warning This method should only be implemented for cells that require a detail
  UITableView to display their contents. For cells that do not require a detail UITableView
  (e.g.: SCImagePickerCell), you should implement the tableViewModel:detailViewForRowAtIndexPath:
  method instead.
- @warning Note: This method is typically used to display the cell's details in the detail view of an
+ @note This method is typically used to display the cell's details in the detail view of an
  Pad's UISplitViewController.
- *
- *	@param tableModel The model requesting the custom detail table view model.
- *	@param indexPath The index path of the cell whose detail table view model is requested. 
- *	@return The custom detail table view model. This model should be autoreleased and is typically a blank model that the requesting cell will generate the content for.
+ 
+ @param tableModel The model requesting the custom detail table view model.
+ @param indexPath The index path of the cell whose detail table view model is requested. 
+ @return The custom detail table view model. This model should be autoreleased and is typically a blank model that the requesting cell will generate the content for.
  */
 - (SCTableViewModel *)tableViewModel:(SCTableViewModel *)tableModel detailTableViewModelForRowAtIndexPath:(NSIndexPath *)indexPath;
 
 /** 
  Asks the dataSource to provide a custom detail view controller for the specified cell. This custom detail view will be used to render the cell's details instead of the default automatically generated detail view controller.
- @warning Important: This method should only be implemented for cells that do not require a detail
+ @warning This method should only be implemented for cells that do not require a detail
  UITableView to display their contents (e.g.: SCImagePickerCell). For all other cells that do require a detail 
  UITableView, you should implement the tableViewModel:customTableViewModelForRowAtIndexPath:
  method instead.
- @warning Note: This method is typically used to display the cell's details in the detail view of an
+ @note This method is typically used to display the cell's details in the detail view of an
  iPad's UISplitViewController.
- *
- *	@param tableModel The model requesting the custom detail view controller.
- *	@param indexPath The index path of the cell whose detail view controller is requested. 
- *	@return The custom detail view controller. This view controller is typically a blank view controller that the requesting cell will generate the content for.
+ 
+ @param tableModel The model requesting the custom detail view controller.
+ @param indexPath The index path of the cell whose detail view controller is requested. 
+ @return The custom detail view controller. This view controller is typically a blank view controller that the requesting cell will generate the content for.
  */
 - (UIViewController *)tableViewModel:(SCTableViewModel *)tableModel detailViewControllerForRowAtIndexPath:(NSIndexPath *)indexPath;
 
@@ -553,7 +617,7 @@
  Asks the dataSource to handle to the insertion or deletion of the specified row in the 
  model. 
 
- @warning Important: It is very rare when you'll need to define this method. If you are using
+ @warning It is very rare when you'll need to define this method. If you are using
  an SCArrayOfItemsSection or any of its subclasses, the insertion and deletion of rows
  will be handeled for you automatically.
  
@@ -571,13 +635,13 @@
  Asks the dataSource to handle to the movement of the specified row in the 
  model from a specified location to another. 
  
- @warning Important: It is very rare when you'll need to define this method. If you are using
+ @warning It is very rare when you'll need to define this method. If you are using
  an SCArrayOfItemsSection or any of its subclasses, the movement of rows
  will be handeled for you automatically.
- *
- *	@param tableModel The model requesting the row movement.
- *	@param fromIndexPath The starting index path of the row to be moved.
- *	@param toIndexPath The destination index path of the move.
+ 
+ @param tableModel The model requesting the row movement.
+ @param fromIndexPath The starting index path of the row to be moved.
+ @param toIndexPath The destination index path of the move.
  */
 - (void)tableViewModel:(SCTableViewModel *)tableModel 
 	moveRowAtIndexPath:(NSIndexPath *)fromIndexPath 
@@ -629,10 +693,10 @@
  Asks the dataSource to handle the creation of a new item in an SCArrayOfItemsSection.
  
  When there is an attempt to create a new array item in an SCArrayOfItemsSection, the dataSource is asked to provide this new item. If the dataSource does not define this method, SCArrayOfItemsSection creates an item of the same class as the first item in the array (unless SCArrayOfObjectsSection is being used, in which case the provided class definition will be used to create the new object). If no items are in the array, and this method is not defined, no new objects can be created.
- *
- *	@param tableModel The model requesting owning the array of objects section.
- *	@param index The index of the array of items section requesting the new item.
- *	@return The method should return an autoreleased new item that is a subclass of NSObject.
+ 
+ @param tableModel The model requesting owning the array of objects section.
+ @param index The index of the array of items section requesting the new item.
+ @return The method should return an autoreleased new item that is a subclass of NSObject.
  */
 - (NSObject *)tableViewModel:(SCTableViewModel *)tableModel
 	newItemForArrayOfItemsSectionAtIndex:(NSUInteger)index;
@@ -658,27 +722,39 @@
 /// @name Managing TableView Model
 //////////////////////////////////////////////////////////////////////////////////////////
 
+/**
+ Return FALSE to prevent the model from entering into editing mode.
+ @note For this method to get fired, the SCTableViewModel editButtonItem property must be set.
+ */
+- (BOOL)tableViewModelShouldBeginEditing:(SCTableViewModel *)tableModel;
+
 /** 
  Notifies the delegate that the table view will enter editing mode. 
- @warning Note: For this method to get fired, the SCTableViewModel editButtonItem property must be set.
+ @note For this method to get fired, the SCTableViewModel editButtonItem property must be set.
  */
 - (void)tableViewModelWillBeginEditing:(SCTableViewModel *)tableModel;
 
 /** 
  Notifies the delegate that the table view did enter editing mode. 
- @warning Note: For this method to get fired, the SCTableViewModel editButtonItem property must be set.
+ @note For this method to get fired, the SCTableViewModel editButtonItem property must be set.
  */
 - (void)tableViewModelDidBeginEditing:(SCTableViewModel *)tableModel;
 
+/**
+ Return FALSE to prevent the model from exiting editing mode.
+ @note For this method to get fired, the SCTableViewModel editButtonItem property must be set.
+ */
+- (BOOL)tableViewModelShouldEndEditing:(SCTableViewModel *)tableModel;
+
 /** 
  Notifies the delegate that the table view will exit editing mode. 
- @warning Note: For this method to get fired, the SCTableViewModel editButtonItem property must be set. 
+ @note For this method to get fired, the SCTableViewModel editButtonItem property must be set. 
  */
 - (void)tableViewModelWillEndEditing:(SCTableViewModel *)tableModel;
 
 /** 
  Notifies the delegate that the table view did exit editing mode. 
- @warning Note: For this method to get fired, the SCTableViewModel editButtonItem property must be set.
+ @note For this method to get fired, the SCTableViewModel editButtonItem property must be set.
  */
 - (void)tableViewModelDidEndEditing:(SCTableViewModel *)tableModel;
 
@@ -724,46 +800,46 @@
 
 /** 
  Notifies the delegate that a new item bound cell has been created for the section at the specified index.
- @warning Note: Method usually called for SCArrayOfItemsSection's subclasses. 
- @warning Important: Although item has been created, it's still not added to the section and can be deallocated
+ @note Method usually called for SCArrayOfItemsSection's subclasses. 
+ @warning Although item has been created, it's still not added to the section and can be deallocated
  if the user cancels the item's detail view.
  
- *	@param tableModel The model informing the delegate of the event.
- *	@param index The index of the section whose a new item has been created for.
- *	@param item The item that has been created.
+ @param tableModel The model informing the delegate of the event.
+ @param index The index of the section whose a new item has been created for.
+ @param item The item that has been created.
  */
 - (void)tableViewModel:(SCTableViewModel *)tableModel
 	itemCreatedForSectionAtIndex:(NSUInteger)index item:(NSObject *)item;
 
 /** 
  Asks the delegate if a new item should be added to the section at the specified index.
- @warning Note: Method usually called for SCArrayOfItemsSection's subclasses.
- *	
- *	@param tableModel The model informing the delegate of the event.
- *	@param index The index of the section the new item will be added to.
- *	@param item The item that will be added.
+ @note Method usually called for SCArrayOfItemsSection's subclasses.
+ 	
+ @param tableModel The model informing the delegate of the event.
+ @param index The index of the section the new item will be added to.
+ @param item The item that will be added.
  */
 - (BOOL)tableViewModel:(SCTableViewModel *)tableModel
     willAddItemForSectionAtIndex:(NSUInteger)index item:(NSObject *)item;
 
 /** 
  Notifies the delegate that a new item bound cell has been added to a section at the specified indexPath.
- @warning Note: Method usually called for SCArrayOfItemsSection's subclasses.
- *	
- *	@param tableModel The model informing the delegate of the event.
- *	@param indexPath The index path the new item bound cell has been added to.
- *	@param item The item that has been added.
+ @note Method usually called for SCArrayOfItemsSection's subclasses.
+ 
+ @param tableModel The model informing the delegate of the event.
+ @param indexPath The index path the new item bound cell has been added to.
+ @param item The item that has been added.
  */
 - (void)tableViewModel:(SCTableViewModel *)tableModel
 	itemAddedForSectionAtIndexPath:(NSIndexPath *)indexPath item:(NSObject *)item;
 
 /** 
  Notifies the delegate that an item bound cell has been edited for a section at the specified indexPath.
- @warning Note: Method usually called for SCArrayOfItemsSection's subclasses.
- *	
- *	@param tableModel The model informing the delegate of the event.
- *	@param indexPath The index path the new item bound cell has been added to.
- *	@param item The item that has been edited.
+ @note Method usually called for SCArrayOfItemsSection's subclasses.
+ 
+ @param tableModel The model informing the delegate of the event.
+ @param indexPath The index path the new item bound cell has been added to.
+ @param item The item that has been edited.
  */
 - (void)tableViewModel:(SCTableViewModel *)tableModel
 	itemEditedForSectionAtIndexPath:(NSIndexPath *)indexPath item:(NSObject *)item;
@@ -774,36 +850,39 @@
 
 /** 
  Notifies the delegate that the cell at the specified indexPath is about to be configured in its owner UITableView. 
+ 
  This is the perfect time to do any customization to the cell's height, editable, and movable properties.
- *	
- *	@param tableModel The model informing the delegate of the event.
- *	@param cell The cell that is about to layout controls.
- *	@param indexPath The index path of the cell.
+ 
+ @param tableModel The model informing the delegate of the event.
+ @param cell The cell that is about to layout controls.
+ @param indexPath The index path of the cell.
  */
 - (void)tableViewModel:(SCTableViewModel *)tableModel 
 	   willConfigureCell:(SCTableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath;
 
 /** 
  Notifies the delegate that the cell at the specified indexPath did perform layout to its subviews. 
+ 
  This is the perfect place to do any customization to the cell's subviews' layouts/frames.
- *	
- *	@param tableModel The model informing the delegate of the event.
- *	@param cell The cell that performed layout to its subviews.
- *	@param indexPath The index path of the cell.
+ 	
+ @param tableModel The model informing the delegate of the event.
+ @param cell The cell that performed layout to its subviews.
+ @param indexPath The index path of the cell.
  */
 - (void)tableViewModel:(SCTableViewModel *)tableModel 
 	didLayoutSubviewsForCell:(SCTableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath;
 
 /** 
- Notifies the delegate that the cell at the specified indexPath will be displayed. This is 
- the perfect place to do any customization to the cell's appearance.
+ Notifies the delegate that the cell at the specified indexPath will be displayed. 
  
- @warning Note: To change cell properties like the height, editable, or movable states, 
+ This is the perfect place to do any customization to the cell's appearance.
+ 
+ @note To change cell properties like the height, editable, or movable states, 
  use the willConfigureCell delegate method instead.
- *	
- *	@param tableModel The model informing the delegate of the event.
- *	@param cell The cell that will be displayed.
- *	@param indexPath The index path of the cell that will be displayed.
+ 	
+ @param tableModel The model informing the delegate of the event.
+ @param cell The cell that will be displayed.
+ @param indexPath The index path of the cell that will be displayed.
  */
 - (void)tableViewModel:(SCTableViewModel *)tableModel 
 	   willDisplayCell:(SCTableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath;
@@ -812,10 +891,10 @@
  Implement this method if you want to lazy-load the cell's contents. This method is usually 
  used when the cell's contents are expensive to retrieve inside willDisplayCell (gets retrieved via
  web services for example).
- *
- *	@param tableModel The model informing the delegate of the event.
- *	@param cell The cell that will be displayed.
- *	@param indexPath The index path of the cell that will be lazy-loaded.
+ 
+ @param tableModel The model informing the delegate of the event.
+ @param cell The cell that will be displayed.
+ @param indexPath The index path of the cell that will be lazy-loaded.
  */
 - (void)tableViewModel:(SCTableViewModel *)tableModel 
           lazyLoadCell:(SCTableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath;
@@ -859,16 +938,15 @@
  specified indexPath has been selected. This method gets called whenever any custom
  button placed on an SCControlCell is tapped. Note: button.tag must be greater than zero
  for this method to get called.
- *	
- *	@param tableModel The model informing the delegate of the event.
- *	@param button The custom button tapped.
- *	@param indexPath The index path of the cell with the accessory button.
+ 	
+ @param tableModel The model informing the delegate of the event.
+ @param button The custom button tapped.
+ @param indexPath The index path of the cell with the accessory button.
  */
 - (void)tableViewModel:(SCTableViewModel *)tableModel 
 	customButtonTapped:(UIButton *)button forRowWithIndexPath:(NSIndexPath *)indexPath;
 
-/** 
- Requests the default title of the delete-confirmation button for the cell
+/** Requests the default title of the delete-confirmation button for the cell
  at the specified indexPath.
  *	
  *	@param tableModel The model informing the delegate of the event.
@@ -889,18 +967,17 @@
 /**	
  Asks the delegate to return a new index path to retarget a proposed move of a row. 
  
- @warning Important: It is very rare when you'll need to define this method. If you are using
+ @warning It is very rare when you'll need to define this method. If you are using
  an SCArrayOfItemsSection or any of its subclasses, this will be automatically handeled for you.
- *
- *	@param tableModel The model requesting this information.
- *	@param sourceIndexPath The index path identifying the original location of a row (in its section) that is being dragged.
- *	@param proposedDestinationIndexPath The index path identifying the currently proposed destination of the row being dragged.
- *  @return The index path locating the desired row destination for the move operation. Return proposedDestinationIndexPath if that location is suitable.
+ 
+ @param tableModel The model requesting this information.
+ @param sourceIndexPath The index path identifying the original location of a row (in its section) that is being dragged.
+ @param proposedDestinationIndexPath The index path identifying the currently proposed destination of the row being dragged.
+ @return The index path locating the desired row destination for the move operation. Return proposedDestinationIndexPath if that location is suitable.
  */
 - (NSIndexPath *)tableViewModel:(SCTableViewModel *)tableModel targetIndexPathForMoveFromRowAtIndexPath:(NSIndexPath *)sourceIndexPath toProposedIndexPath:(NSIndexPath *)proposedDestinationIndexPath;
 
-/** 
- Asks the delegate if editing should begin for the text view of the cell at the specified indexPath.
+/** Asks the delegate if editing should begin for the text view of the cell at the specified indexPath.
  *	
  *	@param tableModel The model asking the delegate.
  *	@param indexPath The index path of the cell containing the text field.
@@ -908,8 +985,7 @@
  */
 - (BOOL)tableViewModel:(SCTableViewModel *)tableModel rowAtIndexPath:(NSIndexPath *)indexPath textViewShouldBeginEditing:(UITextView *)textView;
 
-/** 
- Asks the delegate if editing should begin for the text field of the cell at the specified indexPath.
+/** Asks the delegate if editing should begin for the text field of the cell at the specified indexPath.
  *	
  *	@param tableModel The model asking the delegate.
  *	@param indexPath The index path of the cell containing the text field.
@@ -917,8 +993,7 @@
  */
 - (BOOL)tableViewModel:(SCTableViewModel *)tableModel rowAtIndexPath:(NSIndexPath *)indexPath textFieldShouldBeginEditing:(UITextField *)textField;
 
-/** 
- Asks the delegate if the specified text should be changed for the text field of the cell at the specified indexPath.
+/** Asks the delegate if the specified text should be changed for the text field of the cell at the specified indexPath.
  *	
  *	@param tableModel The model asking the delegate for validation.
  *	@param indexPath The index path of the cell containing the text field.
@@ -928,10 +1003,7 @@
  */
 - (BOOL)tableViewModel:(SCTableViewModel *)tableModel rowAtIndexPath:(NSIndexPath *)indexPath textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string;
 
-/** 
- Asks the delegate if the value is valid for the cell at the specified indexPath.
- Define this method if you want to override the cells' default value validation and provide 
- your own custom validation.
+/** Asks the delegate if the value is valid for the cell at the specified indexPath. Define this method if you want to override the cells' default value validation and provide your own custom validation.
  *	
  *	@param tableModel The model asking the delegate for validation.
  *	@param indexPath The index path of the cell whose value needs validation.
@@ -939,10 +1011,7 @@
 - (BOOL)tableViewModel:(SCTableViewModel *)tableModel 
 	valueIsValidForRowAtIndexPath:(NSIndexPath *)indexPath;
 
-/** 
- Notifies the delegate that the return keyboard button has been tapped for the cell
- at the specified indexPath. Define this method if you want to override the cells'
- default behaviour for tapping the return button.
+/** Notifies the delegate that the return keyboard button has been tapped for the cell at the specified indexPath. Define this method if you want to override the cells' default behaviour for tapping the return button.
  *	
  *	@param tableModel The model asking the delegate for validation.
  *	@param indexPath The index path of the cell whose keyboard return key has been tapped.
@@ -975,10 +1044,7 @@
 - (void)tableViewModel:(SCTableViewModel *)tableModel 
 	didRemoveRowAtIndexPath:(NSIndexPath *)indexPath;
 
-/** 
- Notifies the delegate that the detail model for the cell at the specified index path has been created.
- This is the perfect time to do any customizations to the cell's detail table view model before any
- automatically generated sections are added, including setting its dataSource and delegate properties.
+/** Notifies the delegate that the detail model for the cell at the specified index path has been created. This is the perfect time to do any customizations to the cell's detail table view model before any automatically generated sections are added, including setting its dataSource and delegate properties.
  *	
  *	@param tableModel The model informing the delegate of the event.
  *	@param indexPath The index path of the cell whose detail model has been created.
@@ -988,8 +1054,7 @@
 	detailModelCreatedForRowAtIndexPath:(NSIndexPath *)indexPath
   detailTableViewModel:(SCTableViewModel *)detailTableViewModel;	
 
-/** 
- Notifies the delegate that the detail model for the cell at the specified index path has been configured with the appropriate sections and cells. This is the perfect time to do any customizations to the cell's detail table view model after the automatically generated sections have been added.
+/** Notifies the delegate that the detail model for the cell at the specified index path has been configured with the appropriate sections and cells. This is the perfect time to do any customizations to the cell's detail table view model after the automatically generated sections have been added.
  *	
  *	@param tableModel The model informing the delegate of the event.
  *	@param indexPath The index path of the cell whose detail model has been configured.
@@ -999,10 +1064,7 @@
     detailModelConfiguredForRowAtIndexPath:(NSIndexPath *)indexPath
   detailTableViewModel:(SCTableViewModel *)detailTableViewModel;
 
-/** 
- Notifies the delegate that the detail view for the cell at the specified indexPath will be presented.
- This is the perfect time to do any customizations to the cell's detail view model after the
- automatically generated sections have been added.
+/** Notifies the delegate that the detail view for the cell at the specified indexPath will be presented. This is the perfect time to do any customizations to the cell's detail view model after the automatically generated sections have been added.
  *	
  *	@param tableModel The model informing the delegate of the event.
  *	@param indexPath The index path of the cell whose detail view will appear.
@@ -1012,8 +1074,7 @@
 	detailViewWillPresentForRowAtIndexPath:(NSIndexPath *)indexPath
 		withDetailTableViewModel:(SCTableViewModel *)detailTableViewModel;
 
-/** 
- Notifies the delegate that the detail view for the cell at the specified indexPath has been presented.
+/** Notifies the delegate that the detail view for the cell at the specified indexPath has been presented.
  *	
  *	@param tableModel The model informing the delegate of the event.
  *	@param indexPath The index path of the cell whose detail view did appear.
@@ -1052,9 +1113,7 @@
 - (void)tableViewModel:(SCTableViewModel *)tableModel
 	detailViewDidDismissForRowAtIndexPath:(NSIndexPath *)indexPath;
 
-/** 
- Asks the delegate for a new image name for the SCImagePickerCell at the specified indexPath.
- Define this method to provide a new name for the selected image, instead of using the auto generated one.
+/** Asks the delegate for a new image name for the SCImagePickerCell at the specified indexPath. Define this method to provide a new name for the selected image, instead of using the auto generated one.
  *	
  *	@param tableModel The model asking the delegate for validation.
  *	@param indexPath The index path of the SCImagePickerCell who needs a new image name.
@@ -1063,9 +1122,7 @@
 - (NSString *)tableViewModel:(SCTableViewModel *)tableModel 
 	imageNameForRowAtIndexPath:(NSIndexPath *)indexPath;
 
-/** 
- Asks the delegate to handle saving the image for the SCImagePickerCell at the specified indexPath.
- Define this method to provide your own algorithm for saving the image instead of using the default one.
+/** Asks the delegate to handle saving the image for the SCImagePickerCell at the specified indexPath. Define this method to provide your own algorithm for saving the image instead of using the default one.
  *	
  *	@param tableModel The model asking the delegate for validation.
  *  @param image The image to be saved.
@@ -1076,9 +1133,7 @@
 - (void)tableViewModel:(SCTableViewModel *)tableModel 
              saveImage:(UIImage *)image toPath:(NSString *)path forRowAtIndexPath:(NSIndexPath *)indexPath;
 
-/** 
- Asks the delegate to handle loading the image for the SCImagePickerCell at the specified indexPath.
- Define this method to provide your own algorithm for loading the image instead of using the default one.
+/** Asks the delegate to handle loading the image for the SCImagePickerCell at the specified indexPath.Define this method to provide your own algorithm for loading the image instead of using the default one.
  *	
  *	@param tableModel The model asking the delegate for validation.
  *  @param path The path that the image should be loaded from.
@@ -1142,13 +1197,10 @@ searchBarSelectedScopeButtonIndexDidChange:(NSInteger)selectedScope;
 /*	class SCArrayOfItemsModel	*/
 /****************************************************************************************/ 
 /**
- This class subclasses SCTableViewModel to represent an array
- of any kind of items and will automatically generate its cells from these items. 'SCArrayOfItemsModel 
- will automatically generate a set of SCArrayOfItemsSection(s) if the SCTableViewModelDataSource method 
- tableViewModel:sectionHeaderTitleForItem:AtIndex: is implemented, otherwise it will only generate a single 
+ This class subclasses SCTableViewModel to represent an array of any kind of items and will automatically generate its cells from these items. 'SCArrayOfItemsModel will automatically generate a set of SCArrayOfItemsSection(s) if either the sectionHeaderTitleForItem modelAction or SCTableViewModelDataSource method tableViewModel:sectionHeaderTitleForItem:AtIndex: is implemented, otherwise it will only generate a single
  SCArrayOfItemsSection.
  
- @warning Important: This is an abstract base class, you should never make any direct instances of it.
+ @warning This is an abstract base class, you should never make any direct instances of it.
  
  @see SCArrayOfStringsModel, SCArrayOfObjectsModel, SCArrayOfStringsSection, SCArrayOfObjectsSection.
  */
@@ -1160,7 +1212,10 @@ searchBarSelectedScopeButtonIndexDidChange:(NSInteger)selectedScope;
 	SCDataStore *dataStore;
     SCDataFetchOptions *dataFetchOptions;
     
+    BOOL _loadingContents;
+    BOOL sectionsInSync;
     NSMutableArray *items;
+    BOOL autoFetchItems;
     BOOL itemsInSync;
     UITableViewCellAccessoryType itemsAccessoryType;
 	BOOL allowAddingItems;
@@ -1181,11 +1236,11 @@ searchBarSelectedScopeButtonIndexDidChange:(NSInteger)selectedScope;
 //////////////////////////////////////////////////////////////////////////////////////////
 
 /** Returns an initialized 'SCArrayOfItemsModel given a UITableView and a data store.
- *
- @param modeledTableView The UITableView to be bound to the model.
+ 
+ @param tableView The UITableView to be bound to the model.
  @param store The data store containing the model's items.
  */
-- (id)initWithTableView:(UITableView *)modeledTableView dataStore:(SCDataStore *)store;
+- (id)initWithTableView:(UITableView *)tableView dataStore:(SCDataStore *)store;
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// @name Configuration
@@ -1200,10 +1255,13 @@ searchBarSelectedScopeButtonIndexDidChange:(NSInteger)selectedScope;
 /** The items fetched from dataStore. */
 @property (nonatomic, readonly) NSArray *items;
 
+/** Set to FALSE to disable the section from automatically fetching its items from dataStore. Default: TRUE. */
+@property (nonatomic, readwrite) BOOL autoFetchItems;
+
 /** The accessory type of the generated cells. */
 @property (nonatomic, readwrite) UITableViewCellAccessoryType itemsAccessoryType;
 
-/**	Allows/disables adding new cells/items to the items array. Default: TRUE. */
+/** Allows/disables adding new cells/items to the items array. Default: TRUE. */
 @property (nonatomic, readwrite) BOOL allowAddingItems;
 
 /** Allows/disables deleting new cells/items from the items array. Default: TRUE. */
@@ -1243,6 +1301,20 @@ searchBarSelectedScopeButtonIndexDidChange:(NSInteger)selectedScope;
  */
 @property (nonatomic, strong) UISearchBar *searchBar;
 
+/**
+ Set to TRUE to use a UISearchDisplayController to perform searches. Default: FALSE.
+ 
+ @note: The searchBar property must be set to a valid UISearchBar control for this property to have any effect.
+ */
+@property (nonatomic, readwrite) BOOL enableSearchDisplayController;
+
+/**
+ The UISearchDisplayController used to search the model values.
+ 
+ @note: searchDisplayController only has value if enableSearchDisplayController is TRUE and a valid searchBar is set.
+ */
+@property (nonatomic, strong, readonly) UISearchDisplayController *searchDisplayController;
+
 /** Options for the generated detail view controller. */
 @property (nonatomic, readonly) SCDetailViewControllerOptions *detailViewControllerOptions;
 
@@ -1268,6 +1340,12 @@ searchBarSelectedScopeButtonIndexDidChange:(NSInteger)selectedScope;
 /// @name Internal Properties & Methods (should only be used by the framework or when subclassing)
 //////////////////////////////////////////////////////////////////////////////////////////
 
+/** Used internally by the framework. */
+- (NSMutableArray *)mutableItems;
+
+/** Used internally by the framework. */
+- (void)setMutableItems:(NSMutableArray *)mutableItems;
+
 /** Subclasses should override this method to handle section creation. */
 - (SCArrayOfItemsSection *)createSectionWithHeaderTitle:(NSString *)title;
 
@@ -1282,6 +1360,12 @@ searchBarSelectedScopeButtonIndexDidChange:(NSInteger)selectedScope;
 
 /** Method called internally by framework when a model item has been modified. */
 - (void)itemModified:(NSObject *)item inSection:(SCArrayOfItemsSection *)section;
+
+/** Method called internally by framework when a model item has been removed. */
+- (void)itemRemoved:(NSObject *)item inSection:(SCArrayOfItemsSection *)section;
+
+/** Method called internally by framework when the model's items are out of sync with the data store. */
+- (void)invalidateItems;
 
 /** Method called internally by framework. */
 - (NSUInteger)getSectionIndexForItem:(NSObject *)item;
@@ -1305,7 +1389,7 @@ searchBarSelectedScopeButtonIndexDidChange:(NSInteger)selectedScope;
 /**
  This class functions as a table view model that is able to represent an array of any kind of objects and automatically generate its cells from these objects. In addition, 'SCArrayOfObjectsModel' generates its detail views from the properties of the corresponding object in its items array. Objects in the items array need not all be of the same object type, but they must all decend from NSObject. 
  
- 'SCArrayOfItemsModel' will automatically generate a set of SCArrayOfObjectsSection(s) if the SCTableViewModelDataSource method tableViewModel:sectionHeaderTitleForItem:AtIndex: is implemented, otherwise it will only generate a single SCArrayOfObjectsSection.
+ 'SCArrayOfItemsModel' will automatically generate a set of SCArrayOfObjectsSection(s) if either the sectionHeaderTitleForItem modelAction or SCTableViewModelDataSource method tableViewModel:sectionHeaderTitleForItem:AtIndex: is implemented, otherwise it will only generate a single SCArrayOfObjectsSection.
  */
 @interface SCArrayOfObjectsModel : SCArrayOfItemsModel
 {
@@ -1319,25 +1403,25 @@ searchBarSelectedScopeButtonIndexDidChange:(NSInteger)selectedScope;
 /** 
  Allocates and returns an initialized 'SCArrayOfObjectsModel' given a UITableView and an array of objects.
  
- @param modeledTableView The UITableView to be bound to the model. 
+ @param tableView The UITableView to be bound to the model.
  @param items An array of objects that the model will use to generate its cells.
  This array must be of type NSMutableArray, as it must support the model's add, delete, and
  move operations. 
  @param definition The definition of the objects in the objects array.
  */
-+ (id)tableViewModelWithTableView:(UITableView *)modeledTableView items:(NSMutableArray *)items itemsDefinition:(SCDataDefinition *)definition;
++ (id)modelWithTableView:(UITableView *)tableView items:(NSMutableArray *)items itemsDefinition:(SCDataDefinition *)definition;
    
 
 /** 
  Returns an initialized 'SCArrayOfObjectsModel' given a UITableView and an array of objects.
  
- @param modeledTableView The UITableView to be bound to the model. 
+ @param tableView The UITableView to be bound to the model.
  @param items An array of objects that the model will use to generate its cells.
  This array must be of type NSMutableArray, as it must support the model's add, delete, and
  move operations. 
  @param definition The definition of the objects in the objects array.
  */
-- (id)initWithTableView:(UITableView *)modeledTableView items:(NSMutableArray *)items itemsDefinition:(SCDataDefinition *)definition;
+- (id)initWithTableView:(UITableView *)tableView items:(NSMutableArray *)items itemsDefinition:(SCDataDefinition *)definition;
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -1369,8 +1453,7 @@ searchBarSelectedScopeButtonIndexDidChange:(NSInteger)selectedScope;
  of string items and automatically generate its cells from these items. The class inherits
  all its funtionality from its superclass: SCArrayOfItemsModel, except that its items
  array can only contain items of type NSString. 'SCArrayOfStringsModel 
- will automatically generate a set of SCArrayOfStringsSection(s) if the SCTableViewModelDataSource method 
- tableViewModel:sectionHeaderTitleForItem:AtIndex: is implemented, otherwise it will only generate a single 
+ will automatically generate a set of SCArrayOfStringsSection(s) if either the sectionHeaderTitleForItem modelAction or SCTableViewModelDataSource method tableViewModel:sectionHeaderTitleForItem:AtIndex: is implemented, otherwise it will only generate a single
  SCArrayOfStringsSection.
  */
 
@@ -1379,22 +1462,22 @@ searchBarSelectedScopeButtonIndexDidChange:(NSInteger)selectedScope;
 /** 
  Allocates and returns an initialized 'SCArrayOfStringsModel' given a UITableView and an array of NSString objects.
  
- @param modeledTableView The UITableView to be bound to the model. 
+ @param tableView The UITableView to be bound to the model.
  @param items An array of NSStrings that the model will use to generate its cells.
  This array must be of type NSMutableArray, as it must support the model's add, delete, and
  move operations. 
  */
-+ (id)tableViewModelWithTableView:(UITableView *)modeledTableView items:(NSMutableArray *)items;
++ (id)modelWithTableView:(UITableView *)tableView items:(NSMutableArray *)items;
 
 /** 
  Returns an initialized 'SCArrayOfStringsModel' given a UITableView and an array of NSString objects.
  
- @param modeledTableView The UITableView to be bound to the model. 
+ @param tableView The UITableView to be bound to the model.
  @param items An array of NSStrings that the model will use to generate its cells.
  This array must be of type NSMutableArray, as it must support the model's add, delete, and
  move operations. 
  */
-- (id)initWithTableView:(UITableView *)modeledTableView items:(NSMutableArray *)items;
+- (id)initWithTableView:(UITableView *)tableView items:(NSMutableArray *)items;
 
 @end
 
@@ -1453,7 +1536,7 @@ searchBarSelectedScopeButtonIndexDidChange:(NSInteger)selectedScope;
  Returns an initialized 'SCSelectionModel' given a table view, a bound object,
  an NSNumber bound property name, and an array of selection items.
  
- @param _modeledTableView The UITableView to be bound to the model. 
+ @param tableView The UITableView to be bound to the model. 
  @param object The object the model will bind to.
  @param propertyName The property name present in the bound object that the section will bind to and
  will automatically change the value of to reflect the model's current selection. This property must
@@ -1462,7 +1545,7 @@ searchBarSelectedScopeButtonIndexDidChange:(NSInteger)selectedScope;
  @param sectionItems An array of the items that the user will choose from. All items must be of
  an NSString type.
  */
-- (id)initWithTableView:(UITableView *)_modeledTableView
+- (id)initWithTableView:(UITableView *)tableView
             boundObject:(NSObject *)object 
     selectedIndexPropertyName:(NSString *)propertyName 
                   items:(NSArray *)sectionItems;
@@ -1471,7 +1554,7 @@ searchBarSelectedScopeButtonIndexDidChange:(NSInteger)selectedScope;
  Returns an initialized 'SCSelectionModel' given a table view, a bound object,
  a bound property name, an array of selection items, and whether to allow multiple selection.
  
- @param _modeledTableView The UITableView to be bound to the model. 
+ @param tableView The UITableView to be bound to the model.
  @param object The object the model will bind to.
  @param propertyName The property name present in the bound object that the model will bind to and
  will automatically change the value of to reflect the model's current selection(s). This property must
@@ -1481,7 +1564,7 @@ searchBarSelectedScopeButtonIndexDidChange:(NSInteger)selectedScope;
  an NSString type.
  @param multipleSelection Determines if multiple selection is allowed.
  */
-- (id)initWithTableView:(UITableView *)_modeledTableView
+- (id)initWithTableView:(UITableView *)tableView
             boundObject:(NSObject *)object 
     selectedIndexesPropertyName:(NSString *)propertyName 
                   items:(NSArray *)sectionItems 
@@ -1491,7 +1574,7 @@ searchBarSelectedScopeButtonIndexDidChange:(NSInteger)selectedScope;
  Returns an initialized 'SCSelectionModel' given a table view, a bound object,
  an NSString bound property name, and an array of selection items.
  
- @param _modeledTableView The UITableView to be bound to the model. 
+ @param tableView The UITableView to be bound to the model.
  @param object The object the model will bind to.
  @param propertyName The property name present in the bound object that the model will bind to and
  will automatically change the value of to reflect the model's current selection. This property must
@@ -1500,7 +1583,7 @@ searchBarSelectedScopeButtonIndexDidChange:(NSInteger)selectedScope;
  @param sectionItems An array of the items that the user will choose from. All items must be of
  an NSString type.
  */
-- (id)initWithTableView:(UITableView *)_modeledTableView
+- (id)initWithTableView:(UITableView *)tableView
             boundObject:(NSObject *)object 
     selectionStringPropertyName:(NSString *)propertyName 
                   items:(NSArray *)sectionItems;
@@ -1510,14 +1593,25 @@ searchBarSelectedScopeButtonIndexDidChange:(NSInteger)selectedScope;
 /// @name Configuration
 //////////////////////////////////////////////////////////////////////////////////////////
 
+/** The model's bound object. */
+@property (nonatomic, readonly) NSObject *boundObject;
+
+/** The model's bound object store. */
+@property (nonatomic, strong) SCDataStore *boundObjectStore;
+
+/** The model's bound property name. */
+@property (nonatomic, readonly) NSString *boundPropertyName;
+
+/** The model's bound value. */
+@property (nonatomic, strong) NSObject *boundValue;
+
 /** 
  This property reflects the current section's selection. You can set this property
  to define the section's selection.
  
- @warning Note: If you have bound this section to an object or a key, you can define the section's selection
+ @note If you have bound this section to an object or a key, you can define the section's selection
  using either the bound property value or the key value, respectively. 
- @warning Note: In case of no selection,
- this property will be set to an NSNumber of value -1. 
+ @note In case of no selection, this property will be set to an NSNumber of value -1. 
  */
 @property (nonatomic, copy) NSNumber *selectedItemIndex;
 
@@ -1525,7 +1619,7 @@ searchBarSelectedScopeButtonIndexDidChange:(NSInteger)selectedScope;
  This property reflects the current section's selection(s). You can add index(es) to the set
  to define the section's selection.
  
- @warning Note: If you have bound this section to an object or a key, you can define the section's selection
+ @note If you have bound this section to an object or a key, you can define the section's selection
  using either the bound property value or the key value, respectively.
  */
 @property (nonatomic, readonly) NSMutableSet *selectedItemsIndexes;
@@ -1536,29 +1630,128 @@ searchBarSelectedScopeButtonIndexDidChange:(NSInteger)selectedScope;
 /** If TRUE, the section allows no selection at all. Default: FALSE. */
 @property (nonatomic, readwrite) BOOL allowNoSelection;
 
-/** The maximum number of items that can be selected. Set to zero to allow an infinite number of selections.
- *	@warning Note: Only applicable when allowMultipleSelection is TRUE. Default: 0. */
+/** The maximum number of items that can be selected. Set to zero to allow an infinite number of selections. Default: 0.
+ @note: Only applicable when allowMultipleSelection is TRUE. */
 @property (nonatomic, readwrite) NSUInteger maximumSelections;
 
 /** If TRUE, the section automatically dismisses the current view controller when a value is selected. Default: FALSE. */
 @property (nonatomic, readwrite) BOOL autoDismissViewController;
 
 
+@end
+
+
+
+
+
+
+
+
+
+
+
+
+
+/****************************************************************************************/
+/*	class SCObjectSelectionModel	*/
+/****************************************************************************************/
+/**
+ This class functions as a model that provides the end-user with an automatically generated
+ list of objects to choose from.
+ 
+ The selection items are provided in the form of an array of
+ NSObjects, called the items array. 'SCObjectSelectionModel' can be configured to allow multiple
+ selection and to allow no selection at all. If allow multiple selection is disabled, then
+ the bound property name of this model must be of type NSObject, otherwise
+ it must be of type NSMutableSet.
+ 
+ @see SCObjectSelectionSection.
+ */
+@interface SCObjectSelectionModel : SCArrayOfObjectsModel
+{
+	NSIndexPath *lastSelectedRowIndexPath; //internal
+    
+    NSObject *boundObject;
+    SCDataStore *boundObjectStore;
+	NSString *boundPropertyName;
+	
+    NSMutableSet *selectedItemsIndexes;
+	BOOL allowMultipleSelection;
+	BOOL allowNoSelection;
+	NSUInteger maximumSelections;
+	BOOL autoDismissViewController;
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////
-/// @name Internal Properties & Methods (should only be used by the framework or when subclassing)
+/// @name Creation and Initialization
 //////////////////////////////////////////////////////////////////////////////////////////
 
-/** Provides subclasses with the framework to bind an SCTableViewSection to an NSObject */
-@property (nonatomic, readonly) NSObject *boundObject;
 
-/** The data store of the cell's bound object. */
+/** Returns an initialized 'SCObjectSelectionModel' given a table view, bound object, a bound property name, and a selection items store.
+ *	@param tableView The model's table view.
+ *	@param object	The object the model will bind to.
+ *	@param propertyName The model's bound property name corresponding to the object selection. If multiple selection is allowed, then property must be of an NSMutableSet type, otherwise, property must be of type NSObject and cannot be a readonly property.
+ *	@param store The store containing the selection objects.
+ */
+- (id)initWithTableView:(UITableView *)tableView
+            boundObject:(NSObject *)object selectedObjectPropertyName:(NSString *)propertyName
+    selectionItemsStore:(SCDataStore *)store;
+
+/** Returns an initialized 'SCObjectSelectionModel' given a table view, bound object, a bound property name, and an array of selection items.
+ *	@param tableView The model's table view.
+ *	@param object	The object the model will bind to.
+ *	@param propertyName The model's bound property name corresponding to the object selection. If multiple selection is allowed, then property must be of an NSMutableSet type, otherwise, property must be of type NSObject and cannot be a readonly property.
+ *	@param selectionItems An array of the items that the user will choose from. All items must be of an NSObject type and all items must be instances of the same class.
+ *	@param definition The definition of the selection items.
+ */
+- (id)initWithTableView:(UITableView *)tableView
+            boundObject:(NSObject *)object selectedObjectPropertyName:(NSString *)propertyName
+                  items:(NSArray *)selectionItems itemsDefintion:(SCDataDefinition *)definition;
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+/// @name Configuration
+//////////////////////////////////////////////////////////////////////////////////////////
+
+
+/** The model's bound object. */
+@property (nonatomic, strong) NSObject *boundObject;
+
+/** The model's bound object store. */
 @property (nonatomic, strong) SCDataStore *boundObjectStore;
 
-/** Provides subclasses with the framework to bind an SCTableViewSection to an NSObject */
-@property (nonatomic, readonly) NSString *boundPropertyName;
+/** The model's bound property name. */
+@property (nonatomic, copy) NSString *boundPropertyName;
 
-/** Provides subclasses with the framework to bind an SCTableViewSection to a value */
+/** The model's bound value. */
 @property (nonatomic, strong) NSObject *boundValue;
+
+/**
+ This property reflects the current model selection. You can set this property
+ to define the model's selection.
+ 
+ @note In case of no selection, this property will be set to an NSNumber of value -1.
+ */
+@property (nonatomic, copy) NSNumber *selectedItemIndex;
+
+/**
+ This property reflects the current model selection(s). You can add index(es) to the set
+ to define the section's selection.
+ */
+@property (nonatomic, readonly) NSMutableSet *selectedItemsIndexes;
+
+/** If TRUE, the model allows multiple selection. Default: FALSE. */
+@property (nonatomic, readwrite) BOOL allowMultipleSelection;
+
+/** If TRUE, the model allows no selection at all. Default: FALSE. */
+@property (nonatomic, readwrite) BOOL allowNoSelection;
+
+/** The maximum number of items that can be selected. Set to zero to allow an infinite number of selections. Default: 0.
+ *	@note Only applicable when allowMultipleSelection is TRUE. */
+@property (nonatomic, readwrite) NSUInteger maximumSelections;
+
+/** If TRUE, the model automatically dismisses the current view controller when a value is selected. Default: FALSE. */
+@property (nonatomic, readwrite) BOOL autoDismissViewController;
 
 
 @end

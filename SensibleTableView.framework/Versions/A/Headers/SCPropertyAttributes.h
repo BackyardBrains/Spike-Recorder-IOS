@@ -1,7 +1,7 @@
 /*
  *  SCPropertyAttributes.h
  *  Sensible TableView
- *  Version: 3.0.5
+ *  Version: 3.3.0
  *
  *
  *	THIS SOURCE CODE AND ANY ACCOMPANYING DOCUMENTATION ARE PROTECTED BY UNITED STATES 
@@ -13,7 +13,7 @@
  *	USAGE OF THIS SOURCE CODE IS BOUND BY THE LICENSE AGREEMENT PROVIDED WITH THE 
  *	DOWNLOADED PRODUCT.
  *
- *  Copyright 2012 Sensible Cocoa. All rights reserved.
+ *  Copyright 2012-2013 Sensible Cocoa. All rights reserved.
  *
  *
  *	This notice may not be removed from this file.
@@ -42,13 +42,15 @@
  to a subclass to be able to further customize the user interface element that will be generated for
  this property definition.
 
- @warning Note: You should never make instances of this class. Use subclasses instead.
+ @note You should never make instances of this class. Use subclasses instead.
  */
 @interface SCPropertyAttributes : NSObject 
 {
 	UIImageView *imageView;
 	NSArray *imageViewArray;
-    BOOL expandContentsInCurrentView;
+    
+    BOOL expandContentInCurrentView;
+    SCSectionActions *_expandedContentSectionActions;
 }
 
 /** The image view assigned to the generated UI element. */ 
@@ -62,10 +64,19 @@
  */
 @property (nonatomic, strong) NSArray *imageViewArray;
 
-/** When TRUE, the generated user interface element will expand its content in the current view, instead of generating its own detail view. Default: FALSE. 
- *  @warning Note: Not applicable for all property definition types.
+/** 
+ When TRUE, the generated user interface element will expand its content in the current view, instead of generating its own detail view. Default: FALSE.
+ 
+ @note Not applicable for all property definition types.
  */
 @property (nonatomic) BOOL expandContentInCurrentView;
+
+/** 
+ A set of section actions for the section containing the expanded content.
+ 
+ @note Only applicable when expandContentInCurrentView is TRUE.
+ */
+@property (nonatomic, readonly) SCSectionActions *expandedContentSectionActions;
 
 @end
 
@@ -267,7 +278,7 @@
 /** Determines if the generated numeric text field control allows float values. */
 @property (nonatomic, readwrite) BOOL allowFloatValue;
 
-/** The number formatter responsible for converting the numeric value to a string and vice versa. **/
+/** The number formatter responsible for converting the numeric value to a string and vice versa. */
 @property (nonatomic, readonly) NSNumberFormatter *numberFormatter;
 
 @end
@@ -470,7 +481,7 @@
  *	@param allowMultipleSel Determines if the generated selection control allows multiple selection.
  *	@param allowNoSel Determines if the generated selection control allows no selection.
  *	@param autoDismiss Set to TRUE to automatically dismiss the selection detail view when an item is selected.
- *	@param hideNavBar Set to TRUE to hide the detail view's navigation bar. @warning Note: Only applicable if autoDismiss is TRUE.
+ *	@param hideNavBar Set to TRUE to hide the detail view's navigation bar. @note Only applicable if autoDismiss is TRUE.
  */
 + (id)attributesWithItems:(NSArray *)_items allowMultipleSelection:(BOOL)allowMultipleSel
 		 allowNoSelection:(BOOL)allowNoSel autoDismissDetailView:(BOOL)autoDismiss
@@ -491,7 +502,7 @@
  *	@param allowMultipleSel Determines if the generated selection control allows multiple selection.
  *	@param allowNoSel Determines if the generated selection control allows no selection.
  *	@param autoDismiss Set to TRUE to automatically dismiss the selection detail view when an item is selected.
- *	@param hideNavBar Set to TRUE to hide the detail view's navigation bar. @warning Note: Only applicable if autoDismiss is TRUE.
+ *	@param hideNavBar Set to TRUE to hide the detail view's navigation bar. @note Only applicable if autoDismiss is TRUE.
  */
 - (id)initWithItems:(NSArray *)_items allowMultipleSelection:(BOOL)allowMultipleSel
 		 allowNoSelection:(BOOL)allowNoSel autoDismissDetailView:(BOOL)autoDismiss
@@ -514,13 +525,13 @@
 @property (nonatomic, readwrite) BOOL allowNoSelection;
 
 /** The maximum number of items that can be selected. Set to zero to allow an infinite number of selections. Default: 0.
- *	@warning Note: Only applicable when allowMultipleSelection is TRUE.  */
+ *	@note Only applicable when allowMultipleSelection is TRUE.  */
 @property (nonatomic, readwrite) NSUInteger maximumSelections;
 
 /** Set to TRUE to automatically dismiss the selection detail view when an item is selected. */
 @property (nonatomic, readwrite) BOOL autoDismissDetailView;
 
-/** Set to TRUE to hide the detail view's navigation bar. @warning Note: Only applicable if autoDismissDetailView is TRUE. */
+/** Set to TRUE to hide the detail view's navigation bar. @note Only applicable if autoDismissDetailView is TRUE. */
 @property (nonatomic, readwrite) BOOL hideDetailViewNavigationBar;
 
 /**	Determines if the generated control allows adding new items. Default: FALSE. */
@@ -755,7 +766,7 @@
 @property (nonatomic, strong) SCDataDefinition *defaultObjectsDefinition;
 
 /** The fetch options for the objects. */
-@property (nonatomic, strong) SCDataFetchOptions *objectsfetchOptions;
+@property (nonatomic, strong) SCDataFetchOptions *objectsFetchOptions;
 
 /**	Determines if the generated control allows adding new objects. Default: TRUE. */
 @property (nonatomic) BOOL allowAddingItems;
@@ -781,6 +792,7 @@
 /** Determines if uiElement is displayed in 'Editing Mode'. Default: TRUE. */
 @property (nonatomic) BOOL addNewObjectuiElementExistsInEditingMode;
 
+/** The actions of the generated SCArrayOfObjectsSection. */
 @property (nonatomic, readonly) SCSectionActions *sectionActions;
 
 @end

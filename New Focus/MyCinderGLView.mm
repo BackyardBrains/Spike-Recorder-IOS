@@ -13,11 +13,11 @@
     BBAudioManager *audioManager;
     float destNumSecondsVisible; // used for short animations of scaling the plot
     float touchStartTime;
+    BOOL weAreDrawingSelection;
 }
 
 - (Vec2f)calculateTouchDistanceChange:(std::vector<ci::app::TouchEvent::Touch>)touches;
 - (void)fillDisplayVector;
-- (void)drawScaleText;
 - (void)drawGrid;
 
 @end
@@ -135,7 +135,53 @@
     gl::setMatrices( mCam );
     
     
-    //TODO: Add time measure drawing
+    // Draw selection area
+    std::stringstream timeStream;
+    
+    weAreDrawingSelection = [[BBAudioManager bbAudioManager] selecting] &&  [[BBAudioManager bbAudioManager] selectionStartTime] != [[BBAudioManager bbAudioManager] selectionEndTime] && ![[BBAudioManager bbAudioManager] playing] && ![[BBAudioManager bbAudioManager] viewAndRecordFunctionalityActive];
+    if(weAreDrawingSelection)
+    {
+        glLineWidth(1.0f);
+        
+        float sStartTime;
+        float sEndTime;
+        if([[BBAudioManager bbAudioManager] selectionStartTime]>[[BBAudioManager bbAudioManager] selectionEndTime])
+        {
+            sStartTime = [[BBAudioManager bbAudioManager] selectionEndTime];
+            sEndTime = [[BBAudioManager bbAudioManager] selectionStartTime];
+        }
+        else
+        {
+            sStartTime = [[BBAudioManager bbAudioManager] selectionStartTime];
+            sEndTime = [[BBAudioManager bbAudioManager] selectionEndTime];
+        }
+        
+        //Draw time text
+        float timeToDisplay = 1000.0*(sEndTime - sStartTime);
+        //if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] && [[UIScreen mainScreen] scale]==2.0)
+        //{//if it is retina
+        //    timeToDisplay *= 2.0f;
+        //}
+        
+
+        timeStream.precision(1);
+        if (timeToDisplay >= 1000) {
+            timeToDisplay /= 1000.0;
+            timeStream << fixed << timeToDisplay << " s";
+        }
+        else {
+            timeStream << fixed << timeToDisplay << " msec";
+        }
+        
+        glColor4f(0.4, 0.4, 0.4, 0.5);
+        gl::disableDepthRead();
+        gl::drawSolidRect(Rectf(sStartTime, -numVoltsVisible, sEndTime, numVoltsVisible),false);
+        
+        glColor4f(0.8, 0.8, 0.8, 1.0);
+        gl::drawLine(Vec2f(sStartTime, -numVoltsVisible), Vec2f(sStartTime, numVoltsVisible));
+        gl::drawLine(Vec2f(sEndTime, -numVoltsVisible), Vec2f(sEndTime, numVoltsVisible));
+    }
+
     
     // Set the line color and width
     glColor4f(0.0f, 1.0f, 0.0f, 1.0f);
@@ -156,15 +202,18 @@
         gl::drawLine(Vec2f(-numSecondsVisible, threshval), Vec2f(-numSecondsMin, threshval));
     }
     
+    
     // Put a little grid on the screen.
     [self drawGrid];
     
     // Draw some text on that screen
-    [self drawScaleText];
+    [self drawScaleTextAndSelected:&timeStream];
+    
+
     
 }
 
-- (void)drawScaleText
+- (void)drawScaleTextAndSelected:(std::stringstream *) timeStream
 {
     gl::disableDepthRead();
     gl::setMatricesWindow( Vec2i(self.frame.size.width, self.frame.size.height) );
@@ -179,6 +228,10 @@
     Vec2f yScaleWorldPosition = [self screenToWorld:yScaleTextPosition];
     
     float xScale = 1000.0*(xMiddle.x - xFarLeft.x);
+    if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] && [[UIScreen mainScreen] scale]==2.0)
+    {//if it is retina
+        xScale *= 2.0f;
+    }
     float yScale = yScaleWorldPosition.y;
     
     // Figure out what we want to say
@@ -194,25 +247,59 @@
     else {
         xStringStream << fixed << xScale << " msec";
     }
-    
-    
-    // Now that we have the string, calculate the position of the x-scale text
-    // (we'll be horizontally centering by hand)
-    Vec2f xScaleTextSize = mScaleFont->measureString(xStringStream.str());
-    Vec2f xScaleTextPosition = Vec2f(0.,0.);
-    xScaleTextPosition.x = (self.frame.size.width - xScaleTextSize.x)/2.0;
-    xScaleTextPosition.y =0.95*self.frame.size.height + (mScaleFont->getAscent() / 2.0f);
-    
+
 	gl::color( ColorA( 1.0, 1.0f, 1.0f, 1.0f ) );
     
     
     // Draw the y-axis scale text
+    
     mScaleFont->drawString(yStringStream.str(), yScaleTextPosition);
     
-    // Draw the x-axis scale text
-    mScaleFont->drawString(xStringStream.str(), xScaleTextPosition);
     
-    gl::enableDepthRead();
+    // Draw the x-axis scale text
+    if (weAreDrawingSelection) {
+
+        //if we are measuring draw measure result at the bottom
+        Vec2f xScaleTextSize = mScaleFont->measureString(timeStream->str());
+        Vec2f xScaleTextPosition = Vec2f(0.,0.);
+        xScaleTextPosition.x = (self.frame.size.width - xScaleTextSize.x)/2.0;
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            xScaleTextPosition.y =0.85*self.frame.size.height + (mScaleFont->getAscent() / 2.0f);
+        }
+        else
+        {
+            xScaleTextPosition.y =0.923*self.frame.size.height + (mScaleFont->getAscent() / 2.0f);
+        }
+        glColor4f(0.0, 0.0, 1.0, 1.0);
+        float centerx = self.frame.size.width/2;
+        gl::enableDepthRead();
+         gl::drawSolidRect(Rectf(centerx-3*xScaleTextSize.y,xScaleTextPosition.y-1.1*xScaleTextSize.y,centerx+3*xScaleTextSize.y,xScaleTextPosition.y+0.4*xScaleTextSize.y));
+        gl::disableDepthRead();
+        gl::color( ColorA( 1.0, 1.0f, 1.0f, 1.0f ) );
+        
+        mScaleFont->drawString(timeStream->str(), xScaleTextPosition);
+        
+    }
+    else
+    {
+        //If we are not measuring draw x-scale text
+        // Now that we have the string, calculate the position of the x-scale text
+        // (we'll be horizontally centering by hand)
+        Vec2f xScaleTextSize = mScaleFont->measureString(xStringStream.str());
+        Vec2f xScaleTextPosition = Vec2f(0.,0.);
+        xScaleTextPosition.x = (self.frame.size.width - xScaleTextSize.x)/2.0;
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            
+            xScaleTextPosition.y =0.88*self.frame.size.height + (mScaleFont->getAscent() / 2.0f);
+        }
+        else
+        {
+            xScaleTextPosition.y =0.95*self.frame.size.height + (mScaleFont->getAscent() / 2.0f);
+        }
+        mScaleFont->drawString(xStringStream.str(), xScaleTextPosition);
+        gl::enableDepthRead();
+    }
+   
     
 }
 
@@ -225,14 +312,15 @@
     float height = top - bottom;
     float width = right - left;
     float middleX = (right - left)/2.0f + left;
-    float lineLength = 0.5*width;
-    float lineY = height*0.1 + bottom;
-    Vec2f leftPoint = Vec2f(middleX - lineLength / 2.0f, lineY);
-    Vec2f rightPoint = Vec2f(middleX + lineLength / 2.0f, lineY);
-    glColor4f(0.8, 0.8, 0.8, 1.0);
-    glLineWidth(1.0f);
-    gl::drawLine(leftPoint, rightPoint);
-
+    if (!weAreDrawingSelection) {
+        float lineLength = 0.5*width;
+        float lineY = height*0.1 + bottom;
+        Vec2f leftPoint = Vec2f(middleX - lineLength / 2.0f, lineY);
+        Vec2f rightPoint = Vec2f(middleX + lineLength / 2.0f, lineY);
+        glColor4f(0.8, 0.8, 0.8, 1.0);
+        glLineWidth(1.0f);
+        gl::drawLine(leftPoint, rightPoint);
+    }
 }
 
 
@@ -353,8 +441,11 @@
     // Touching to change the threshold value, if we're thresholding
     else if (touches.size() == 1)
     {
+        BOOL changingThreshold;
+        changingThreshold = false;
         
-        if ([[BBAudioManager bbAudioManager] thresholding]) {
+        //thresholding
+        if ([[BBAudioManager bbAudioManager] thresholding] && ![[BBAudioManager bbAudioManager] selecting]) {
             Vec2f touchPos = touches[0].getPos();
             float currentThreshold = [[BBAudioManager bbAudioManager] threshold];
             
@@ -365,13 +456,39 @@
             float distance = abs(touchPos.y - screenThresholdPos.y);
             if (distance < 20) // set via experimentation
             {
+                changingThreshold = true;
                 [[BBAudioManager bbAudioManager] setThreshold:worldTouchPos.y];
             }
-
+        }
+        
+        //selecting
+        if(!changingThreshold && ![[BBAudioManager bbAudioManager] playing] && ![[BBAudioManager bbAudioManager] viewAndRecordFunctionalityActive])
+        {
+            Vec2f touchPos = touches[0].getPos();
+            
+            // Convert into time coordinate
+            Vec2f worldTouchPos = [self screenToWorld:touchPos];
+            [[BBAudioManager bbAudioManager] updateSelection:worldTouchPos.x];
         }
         
     }
 
+}
+
+- (void)touchesBegan:(NSSet*)touches withEvent:(UIEvent*)event
+{
+    [[BBAudioManager bbAudioManager] endSelection];
+    [super touchesBegan:touches withEvent:event];
+    
+}
+
+- (void)touchesEnded:(NSSet*)touches withEvent:(UIEvent*)event
+{
+    if([[BBAudioManager bbAudioManager] selectionStartTime] == [[BBAudioManager bbAudioManager] selectionEndTime])
+    {
+        [[BBAudioManager bbAudioManager] endSelection];
+    }
+    [super touchesEnded:touches withEvent:event];
 }
 
 

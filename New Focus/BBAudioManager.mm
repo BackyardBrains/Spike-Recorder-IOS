@@ -19,7 +19,9 @@ static BBAudioManager *bbAudioManager = nil;
     DSPThreshold *dspThresholder;
     dispatch_queue_t seekingQueue;
     float _threshold;
-    
+    float _selectionStartTime;
+    float _selectionEndTime;
+
     // We need a special flag for seeking around in a file
     // The audio file reader is very sensitive to threading issues,
     // so we have to babysit it quite closely.
@@ -55,9 +57,11 @@ static BBAudioManager *bbAudioManager = nil;
 @synthesize stimulationType;
 @synthesize threshold;
 @synthesize thresholdDirection;
+@synthesize viewAndRecordFunctionalityActive;
 @synthesize recording;
 @synthesize stimulating;
 @synthesize thresholding;
+@synthesize selecting;
 @synthesize playing;
 @synthesize seeking;
 
@@ -118,10 +122,11 @@ static BBAudioManager *bbAudioManager = nil;
         
         // Initialize parameters to defaults
         [self loadSettingsFromUserDefaults];
-                
+        
         recording = false;
         stimulating = false;
         thresholding = false;
+        selecting = false;
 
     }
     
@@ -646,6 +651,42 @@ static BBAudioManager *bbAudioManager = nil;
 
 
 #pragma mark - State
+
+-(void) startSelection:(float) newSelectionStartTime
+{
+    _selectionStartTime = newSelectionStartTime;
+    _selectionEndTime = newSelectionStartTime;
+    selecting = true;
+}
+
+-(void) endSelection
+{
+    selecting = false;
+}
+
+-(void) updateSelection:(float) newSelectionTime
+{
+    if(selecting)
+    {
+        _selectionEndTime = newSelectionTime;
+    }
+    else
+    {
+        [self startSelection:newSelectionTime];
+    }
+    
+}
+
+- (float) selectionStartTime
+{
+    return _selectionStartTime;
+}
+
+- (float) selectionEndTime
+{
+    return _selectionEndTime;
+}
+
 - (void)setThreshold:(float)newThreshold
 {
     _threshold = newThreshold;

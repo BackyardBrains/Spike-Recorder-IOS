@@ -17,7 +17,7 @@
 #import "MyCinderGLView.h"
 #import "BBAudioManager.h"
 
-@interface MyAppDelegate : CCGLTouchAppDelegate {
+@interface MyAppDelegate : CCGLTouchAppDelegate <UITabBarControllerDelegate>{
     UIWindow *window;
     UITabBarController *tabBarController;
 }

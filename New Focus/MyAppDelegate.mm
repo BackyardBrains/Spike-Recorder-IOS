@@ -30,7 +30,7 @@
     // This is the line that we need for iOS 6.
     // TODO: test on iOS 5.
     window.rootViewController = tabBarController;
-
+    tabBarController.delegate = self;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     int selectThisIndex = [[defaults valueForKey:@"tabIndex"] intValue];
     tabBarController.selectedIndex = selectThisIndex;
@@ -70,6 +70,12 @@
     }
     // Add whatever other url handling code your app requires here
     return NO;
+}
+
+
+- (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController
+{
+    [[BBAudioManager bbAudioManager] endSelection];
 }
 
 - (void)dealloc

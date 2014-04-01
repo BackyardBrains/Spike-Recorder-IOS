@@ -727,8 +727,11 @@ NSMutableArray *checkedTables;
 					if (isNSSetType(className) || isNSArrayType(className))
 						for (id oneObject in (NSArray *)theProperty)
 							if ([oneObject isKindOfClass:[SQLitePersistentObject class]])
+                            {
 								if ([oneObject isDirty])
-									dirty = YES;					
+                                {
+									dirty = YES;
+                                }
 								else if (isNSDictionaryType(className))
 								{
 									for (id oneKey in [theProperty allKeys])
@@ -739,6 +742,7 @@ NSMutableArray *checkedTables;
 												dirty = YES;
 									}
 								}
+                            }
 				}
 			}
 		}

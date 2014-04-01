@@ -40,10 +40,12 @@ typedef enum BBStimulationType
     UInt32 numPointsToSavePerThreshold;
     UInt32 numTriggersInThresholdHistory;
     BBStimulationType stimulationType;
-        
+    
+    BOOL viewAndRecordFunctionalityActive;//used when app is in ViewAndRecord and not recording
     BOOL recording;
     BOOL stimulating;
     BOOL thresholding;
+    BOOL selecting;
     BOOL playing;
     
 }
@@ -72,9 +74,11 @@ typedef enum BBStimulationType
 @property float currentFileTime;
 @property (readonly) float fileDuration;
 
+@property BOOL viewAndRecordFunctionalityActive;
 @property (readonly) BOOL recording;
 @property BOOL stimulating;
 @property (readonly) BOOL thresholding;
+@property (readonly) BOOL selecting;
 @property (readonly) BOOL playing;
 @property BOOL seeking;
 
@@ -91,6 +95,10 @@ typedef enum BBStimulationType
 - (void)pausePlaying;
 - (void)resumePlaying;
 - (void)fetchAudio:(float *)data numFrames:(UInt32)numFrames whichChannel:(UInt32)whichChannel stride:(UInt32)stride;
+-(void) endSelection;
+-(void) updateSelection:(float) newSelectionTime;
+- (float) selectionStartTime;
+- (float) selectionEndTime;
 
 - (void)saveSettingsToUserDefaults;
 
