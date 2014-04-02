@@ -6,6 +6,7 @@
 //
 
 #import "BBAudioManager.h"
+#import "DSPAnalysis.h"
 #define RING_BUFFER_SIZE 524288
 
 static BBAudioManager *bbAudioManager = nil;
@@ -17,17 +18,19 @@ static BBAudioManager *bbAudioManager = nil;
     __block AudioFileWriter *fileWriter;
     __block BBAudioFileReader *fileReader;
     DSPThreshold *dspThresholder;
+    DSPAnalysis *dspAnalizer;
     dispatch_queue_t seekingQueue;
     float _threshold;
     float _selectionStartTime;
     float _selectionEndTime;
-
+    float selectionRMS;
     // We need a special flag for seeking around in a file
     // The audio file reader is very sensitive to threading issues,
     // so we have to babysit it quite closely.
     float desiredSeekTimeInAudioFile;
     float lastSeekPosition;
     float * displayBuffer;//used to load data for display while scrubbing
+    UInt32 lastNumberOfSampleDisplayed;//used to find position of selection in trigger view
 }
 
 @property BOOL playing;
@@ -115,6 +118,8 @@ static BBAudioManager *bbAudioManager = nil;
         ringBuffer = new RingBuffer(RING_BUFFER_SIZE, 2);
         displayBuffer = (float *)calloc(RING_BUFFER_SIZE, sizeof(float));
         lastSeekPosition = -1;
+        dspAnalizer = new DSPAnalysis(ringBuffer);
+        
         // Set a default input block acquiring data to a big ring buffer.
         [audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
             ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
@@ -389,6 +394,7 @@ static BBAudioManager *bbAudioManager = nil;
     }
     else if (thresholding) {
         // NOTE: this is not multi-channel
+        lastNumberOfSampleDisplayed = numFrames;
         dspThresholder->GetCenteredTriggeredData(data, numFrames, stride);
     }
     
@@ -648,10 +654,57 @@ static BBAudioManager *bbAudioManager = nil;
     audioManager.outputBlock = nil;    
 }
 
+#pragma mark - Selection analysis
+
+-(float) calculateSelectionRMS
+{
+    
+    int startSample, endSample;
+    //selection times are negative so we need oposite logic
+    if(-_selectionEndTime> -_selectionStartTime)
+    {
+        startSample = -_selectionStartTime * [self samplingRate];
+        endSample = -_selectionEndTime * [self samplingRate];
+    }
+    else
+    {
+        startSample = -_selectionEndTime * [self samplingRate];
+        endSample = -_selectionStartTime * [self samplingRate];
+    }
+    
+    
+    // Aight, now that we've got our ranges correct, let's ask for the audio.
+    memset(displayBuffer, 0, RING_BUFFER_SIZE*sizeof(float));
+    
+    if (!thresholding) {
+        //fetchAudio will put all data (from left time limit to right edge of the screen) at the begining
+        //of the display buffer. After that we just take data from begining of the buffer to the length of
+        //selected time interval and calculate RMS
+        ringBuffer->FetchFreshData2(displayBuffer, endSample, 0, 1);
+        selectionRMS =dspAnalizer->RMSSelection((displayBuffer), endSample-startSample);
+    }
+    else if (thresholding) {
+        //we first get all the data that is displayed on the screen and then we chose only segment that is selected
+        //this is done lake this because GetCenteredTriggeredData is returning always centered data
+        dspThresholder->GetCenteredTriggeredData(displayBuffer, lastNumberOfSampleDisplayed, 1);
+        selectionRMS =dspAnalizer->RMSSelection((displayBuffer+lastNumberOfSampleDisplayed-endSample), endSample-startSample);
+
+    }
+    
+    
+    
+    
+    return selectionRMS;
+}
+
+- (float)rmsOfSelection
+{
+    return selectionRMS;
+}
 
 
 #pragma mark - State
-
+//private. Starts selection functionality
 -(void) startSelection:(float) newSelectionStartTime
 {
     _selectionStartTime = newSelectionStartTime;
@@ -659,20 +712,25 @@ static BBAudioManager *bbAudioManager = nil;
     selecting = true;
 }
 
+//Ends selection functionality
 -(void) endSelection
 {
     selecting = false;
+    selectionRMS = 0;
 }
 
+//Update selection interval
 -(void) updateSelection:(float) newSelectionTime
 {
     if(selecting)
     {
         _selectionEndTime = newSelectionTime;
+        selectionRMS = [self calculateSelectionRMS];
     }
     else
     {
         [self startSelection:newSelectionTime];
+        selectionRMS = 0;
     }
     
 }

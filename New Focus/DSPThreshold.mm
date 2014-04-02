@@ -190,6 +190,8 @@ void DSPThreshold :: SetThreshold(float newThreshold)
     ClearHistory();
 }
 
+//Returns average of all triggered signal intervals. Intervals are centered so that trigger point is in the middle
+//numFrames/2 left from the center to numFrames/2 right from the center
 void DSPThreshold :: GetCenteredTriggeredData(float *outData, UInt32 numFrames, UInt32 stride)
 {
     
@@ -220,7 +222,7 @@ void DSPThreshold :: GetCenteredTriggeredData(float *outData, UInt32 numFrames, 
     // Otherwise, do all that fancy trigger averaging.
     else {
         
-        // Tqke out the oldest stuff if we've filled up our buffer
+        // Take out the oldest stuff if we've filled up our buffer
         if (th->movingAverageIncrement == th->sizeOfMovingAverage) {
             for (int i=0; i < th->lastWrittenSample[oldestIdx]; ++i) {
                 th->averageSegment[i] -= th->triggeredSegments[oldestIdx][i];

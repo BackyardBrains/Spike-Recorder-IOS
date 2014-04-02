@@ -55,7 +55,7 @@ class DSPThreshold {
         BOOL GetIsTriggered() { return isTriggered; }
         UInt32 GetNumTriggersInHistory() { return mNumTriggersInHistory; }
     
-    void SetThreshold(float newThreshold);
+        void SetThreshold(float newThreshold);
 		void SetThresholdDirection(BBThresholdType newDirection) { mThresholdDirection = newDirection; }
         void SetNumTriggersInHistory(UInt32 numTriggersInHistory);
 	

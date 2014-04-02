@@ -161,6 +161,7 @@ void RingBuffer::AddNewInterleavedFloatData(const float *newData, const SInt64 n
 	
 }
 
+//Returns fresh (last written) data and does not change mLastReadIndex or mNumUnreadFrames or mLastWrittenIndex
 void RingBuffer::FetchFreshData2(float *outData, SInt64 numFrames, SInt64 whichChannel, SInt64 stride)
 {
 
@@ -204,6 +205,7 @@ void RingBuffer::FetchFreshData2(float *outData, SInt64 numFrames, SInt64 whichC
 
 }
 
+//Returns FIFO data (not newest) and changes mLastReadIndex, mNumUnreadFrames
 void RingBuffer::FetchData(float *outData, SInt64 numFrames, SInt64 whichChannel, SInt64 stride)
 {
     int idx;
@@ -225,6 +227,8 @@ void RingBuffer::FetchData(float *outData, SInt64 numFrames, SInt64 whichChannel
 
 }
 
+//fetch data and returns interleaved form. Data is FIFO (not newest)
+//and function changes mLastReadIndex, mNumUnreadFrames
 void RingBuffer::FetchInterleavedData(float *outData, SInt64 numFrames, SInt64 numChannels)
 {
     for (int iChannel=0; iChannel < numChannels; ++iChannel) {
@@ -233,6 +237,7 @@ void RingBuffer::FetchInterleavedData(float *outData, SInt64 numFrames, SInt64 n
 
 }
 
+//Returns fresh (last written) data and change mNumUnreadFrames to zero and mLastReadIndex to mLastWrittenIndex
 void RingBuffer::FetchFreshData(float *outData, SInt64 numFrames, SInt64 whichChannel, SInt64 stride)
 {
 
@@ -252,9 +257,11 @@ void RingBuffer::SeekWriteHeadPosition(SInt64 offset, int iChannel)
     atomic_set(&mLastWrittenIndex[iChannel], (mLastWrittenIndex[iChannel] + offset) % (mSizeOfBuffer));
 }
 
+
 void RingBuffer::SeekReadHeadPosition(SInt64 offset, int iChannel)
 {
      atomic_set(&mLastReadIndex[iChannel], (mLastReadIndex[iChannel] + offset) % (mSizeOfBuffer));
+    //unread mNumUnreadFrames is inconsistent after this (Stanislav)
 }
 
 

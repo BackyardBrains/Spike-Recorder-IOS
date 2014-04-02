@@ -137,7 +137,7 @@
     
     // Draw selection area
     std::stringstream timeStream;
-    
+    std::stringstream rmstream;
     weAreDrawingSelection = [[BBAudioManager bbAudioManager] selecting] &&  [[BBAudioManager bbAudioManager] selectionStartTime] != [[BBAudioManager bbAudioManager] selectionEndTime] && ![[BBAudioManager bbAudioManager] playing] && ![[BBAudioManager bbAudioManager] viewAndRecordFunctionalityActive];
     if(weAreDrawingSelection)
     {
@@ -145,6 +145,7 @@
         
         float sStartTime;
         float sEndTime;
+        //Order time points in right way
         if([[BBAudioManager bbAudioManager] selectionStartTime]>[[BBAudioManager bbAudioManager] selectionEndTime])
         {
             sStartTime = [[BBAudioManager bbAudioManager] selectionEndTime];
@@ -156,14 +157,9 @@
             sEndTime = [[BBAudioManager bbAudioManager] selectionEndTime];
         }
         
-        //Draw time text
+        //Calculate time
         float timeToDisplay = 1000.0*(sEndTime - sStartTime);
-        //if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] && [[UIScreen mainScreen] scale]==2.0)
-        //{//if it is retina
-        //    timeToDisplay *= 2.0f;
-        //}
         
-
         timeStream.precision(1);
         if (timeToDisplay >= 1000) {
             timeToDisplay /= 1000.0;
@@ -173,10 +169,19 @@
             timeStream << fixed << timeToDisplay << " msec";
         }
         
+        //Get RMS string
+        float rmsToDisplay = [[BBAudioManager bbAudioManager] rmsOfSelection];
+        
+        rmstream.precision(3);
+        rmstream <<"RMS: "<< fixed << rmsToDisplay << " mV";
+        
+        
+        //draw background of selected region
         glColor4f(0.4, 0.4, 0.4, 0.5);
         gl::disableDepthRead();
         gl::drawSolidRect(Rectf(sStartTime, -numVoltsVisible, sEndTime, numVoltsVisible),false);
         
+        //draw limit lines
         glColor4f(0.8, 0.8, 0.8, 1.0);
         gl::drawLine(Vec2f(sStartTime, -numVoltsVisible), Vec2f(sStartTime, numVoltsVisible));
         gl::drawLine(Vec2f(sEndTime, -numVoltsVisible), Vec2f(sEndTime, numVoltsVisible));
@@ -207,13 +212,13 @@
     [self drawGrid];
     
     // Draw some text on that screen
-    [self drawScaleTextAndSelected:&timeStream];
+    [self drawScaleTextAndSelected:&timeStream andRms:&rmstream];
     
 
     
 }
 
-- (void)drawScaleTextAndSelected:(std::stringstream *) timeStream
+- (void)drawScaleTextAndSelected:(std::stringstream *) timeStream andRms:(std::stringstream *) rmsStream
 {
     gl::disableDepthRead();
     gl::setMatricesWindow( Vec2i(self.frame.size.width, self.frame.size.height) );
@@ -259,10 +264,15 @@
     // Draw the x-axis scale text
     if (weAreDrawingSelection) {
 
+        //Draw time ---------------------------------------------
+        
         //if we are measuring draw measure result at the bottom
         Vec2f xScaleTextSize = mScaleFont->measureString(timeStream->str());
         Vec2f xScaleTextPosition = Vec2f(0.,0.);
         xScaleTextPosition.x = (self.frame.size.width - xScaleTextSize.x)/2.0;
+        //if it is iPad put somewhat higher
+
+
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
             xScaleTextPosition.y =0.85*self.frame.size.height + (mScaleFont->getAscent() / 2.0f);
         }
@@ -272,12 +282,44 @@
         }
         glColor4f(0.0, 0.0, 1.0, 1.0);
         float centerx = self.frame.size.width/2;
+        
+        //draw background rectangle
         gl::enableDepthRead();
          gl::drawSolidRect(Rectf(centerx-3*xScaleTextSize.y,xScaleTextPosition.y-1.1*xScaleTextSize.y,centerx+3*xScaleTextSize.y,xScaleTextPosition.y+0.4*xScaleTextSize.y));
         gl::disableDepthRead();
         gl::color( ColorA( 1.0, 1.0f, 1.0f, 1.0f ) );
-        
+        //draw text
         mScaleFont->drawString(timeStream->str(), xScaleTextPosition);
+        
+        
+        //Draw RMS -------------------------------------------------
+        float xpositionOfCenterOfRMSBackground;
+
+        Vec2f rmsTextSize = mScaleFont->measureString(rmsStream->str());
+        xpositionOfCenterOfRMSBackground = self.frame.size.width-4.25*rmsTextSize.y;
+        Vec2f rmsTextPosition = Vec2f(0.,0.);
+        rmsTextPosition.x = (xpositionOfCenterOfRMSBackground - 0.5*rmsTextSize.x);
+        //if it is iPad put it on the right
+                UIInterfaceOrientation interfaceOrientation = [[UIApplication sharedApplication] statusBarOrientation];
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad || UIInterfaceOrientationIsLandscape(interfaceOrientation)) {
+            rmsTextPosition.y =xScaleTextPosition.y;
+        }
+        else
+        {
+           rmsTextPosition.y =0.23*self.frame.size.height + (mScaleFont->getAscent() / 2.0f);
+        }
+        glColor4f(1.0, 0.1, 0.1, 1.0);
+
+        
+        //draw background rectangle
+        gl::enableDepthRead();
+        gl::drawSolidRect(Rectf(self.frame.size.width-8*rmsTextSize.y,rmsTextPosition.y-1.1*rmsTextSize.y,self.frame.size.width-0.5*rmsTextSize.y,rmsTextPosition.y+0.4*rmsTextSize.y));
+        gl::disableDepthRead();
+        gl::color( ColorA( 1.0, 1.0f, 1.0f, 1.0f ) );
+        //draw text
+        mScaleFont->drawString(rmsStream->str(), rmsTextPosition);
+        
+        
         
     }
     else
@@ -306,12 +348,13 @@
 
 - (void)drawGrid
 {
-    
+    //draw line for x-axis
     float left, top, right, bottom, near, far;
     mCam.getFrustum(&left, &top, &right, &bottom, &near, &far);
     float height = top - bottom;
     float width = right - left;
     float middleX = (right - left)/2.0f + left;
+    //draw line for x-axis if we are not displaying time interval measure
     if (!weAreDrawingSelection) {
         float lineLength = 0.5*width;
         float lineY = height*0.1 + bottom;
@@ -338,7 +381,7 @@
         offset = 0;
         
         if ([self getActiveTouches].size() != 2)
-            numSecondsVisible += 0.6 * (numSecondsMax - numSecondsVisible);
+            numSecondsVisible += 0.6 * (numSecondsMax - numSecondsVisible);//animation to max seconds
     }
     
     // See if we're asking for TOO FEW points
@@ -348,21 +391,23 @@
         offset = 0;
         
         if ([self getActiveTouches].size() != 2)
-            numSecondsVisible += 0.6 * (numSecondsMin*2.0 - numSecondsVisible);
+            numSecondsVisible += 0.6 * (numSecondsMin*2.0 - numSecondsVisible);//animation to min sec
         
     }
     
     // If we haven't set off any of the alarms above,
     // then we're asking for a normal range of points.
     else {
-        numPoints = numSecondsVisible * audioManager.samplingRate;
-        offset = numSecondsMax * audioManager.samplingRate - numPoints;
+        numPoints = numSecondsVisible * audioManager.samplingRate;//visible part
+        offset = numSecondsMax * audioManager.samplingRate - numPoints;//nonvisible part
         if ([[BBAudioManager bbAudioManager] thresholding]) {
             offset -= (numSecondsMin * audioManager.samplingRate)/2.0f;
         }
     }
     
     // Aight, now that we've got our ranges correct, let's ask for the audio.
+    //Only fetch visible part (numPoints samples) and put it after offset.
+    //Stride is equal to 2 since we have x and y coordinatesand we want to set only y
     [audioManager fetchAudio:(float *)&(displayVector.getPoints()[offset])+1 numFrames:numPoints whichChannel:0 stride:2];
 
 }
@@ -439,6 +484,7 @@
     }
     
     // Touching to change the threshold value, if we're thresholding
+    //Selecting time interval and thresholding are mutualy exclusive
     else if (touches.size() == 1)
     {
         BOOL changingThreshold;
@@ -461,7 +507,7 @@
             }
         }
         
-        //selecting
+        //selecting time interval
         if(!changingThreshold && ![[BBAudioManager bbAudioManager] playing] && ![[BBAudioManager bbAudioManager] viewAndRecordFunctionalityActive])
         {
             Vec2f touchPos = touches[0].getPos();
@@ -475,8 +521,10 @@
 
 }
 
+
 - (void)touchesBegan:(NSSet*)touches withEvent:(UIEvent*)event
 {
+    //if touch begins remove old time interval selection
     [[BBAudioManager bbAudioManager] endSelection];
     [super touchesBegan:touches withEvent:event];
     
@@ -484,6 +532,8 @@
 
 - (void)touchesEnded:(NSSet*)touches withEvent:(UIEvent*)event
 {
+    //if user just tapped on screen start and end point will
+    //be the same so we will remove time interval selection
     if([[BBAudioManager bbAudioManager] selectionStartTime] == [[BBAudioManager bbAudioManager] selectionEndTime])
     {
         [[BBAudioManager bbAudioManager] endSelection];

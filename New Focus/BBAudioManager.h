@@ -71,6 +71,8 @@ typedef enum BBStimulationType
 @property float threshold;
 @property BBThresholdType thresholdDirection;
 
+@property (readonly) float rmsOfSelection;
+
 @property float currentFileTime;
 @property (readonly) float fileDuration;
 
