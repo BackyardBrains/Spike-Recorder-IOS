@@ -12,7 +12,6 @@
 #import <MessageUI/MFMailComposeViewController.h>
 #import "BBFileDetailViewController.h"
 #import "BBFileTableCell.h"
-#import "BBFileDownloadViewController.h"
 #import "BBFileDetailViewController.h"
 #import "PlaybackViewController.h"
 
@@ -24,7 +23,7 @@
 
 
 @interface BBFileActionViewControllerTBV : UITableViewController  
-        <UIActionSheetDelegate, MFMailComposeViewControllerDelegate, BBFileDownloadViewControllerDelegate>
+        <UIActionSheetDelegate, MFMailComposeViewControllerDelegate>
 
 @property (nonatomic, retain) NSArray *actionOptions;
 

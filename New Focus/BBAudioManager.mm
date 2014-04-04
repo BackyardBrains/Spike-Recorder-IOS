@@ -29,7 +29,7 @@ static BBAudioManager *bbAudioManager = nil;
     // so we have to babysit it quite closely.
     float desiredSeekTimeInAudioFile;
     float lastSeekPosition;
-    float * displayBuffer;//used to load data for display while scrubbing
+    float * tempCalculationBuffer;//used to load data for display while scrubbing
     UInt32 lastNumberOfSampleDisplayed;//used to find position of selection in trigger view
 }
 
@@ -116,7 +116,7 @@ static BBAudioManager *bbAudioManager = nil;
     {
         audioManager = [Novocaine audioManager];
         ringBuffer = new RingBuffer(RING_BUFFER_SIZE, 2);
-        displayBuffer = (float *)calloc(RING_BUFFER_SIZE, sizeof(float));
+        tempCalculationBuffer = (float *)calloc(RING_BUFFER_SIZE, sizeof(float));
         lastSeekPosition = -1;
         dspAnalizer = new DSPAnalysis(ringBuffer);
         
@@ -325,14 +325,14 @@ static BBAudioManager *bbAudioManager = nil;
                 }
                 
                 //get the data from file into clean ring buffer
-                memset(displayBuffer, 0, RING_BUFFER_SIZE*sizeof(float));
+                memset(tempCalculationBuffer, 0, RING_BUFFER_SIZE*sizeof(float));
                 if(targetFrame!=0)
                 {
                     dispatch_sync(dispatch_get_main_queue(), ^{
                         
-                        [fileReader retrieveFreshAudio:displayBuffer numFrames:(UInt32)(targetFrame-startFrame) numChannels:numChannels seek:(UInt32)startFrame];
+                        [fileReader retrieveFreshAudio:tempCalculationBuffer numFrames:(UInt32)(targetFrame-startFrame) numChannels:numChannels seek:(UInt32)startFrame];
                         
-                        ringBuffer->AddNewInterleavedFloatData(displayBuffer, targetFrame-startFrame, numChannels);
+                        ringBuffer->AddNewInterleavedFloatData(tempCalculationBuffer, targetFrame-startFrame, numChannels);
                     });
                 }
                 //set playback time to scrubber position
@@ -674,20 +674,20 @@ static BBAudioManager *bbAudioManager = nil;
     
     
     // Aight, now that we've got our ranges correct, let's ask for the audio.
-    memset(displayBuffer, 0, RING_BUFFER_SIZE*sizeof(float));
+    memset(tempCalculationBuffer, 0, RING_BUFFER_SIZE*sizeof(float));
     
     if (!thresholding) {
         //fetchAudio will put all data (from left time limit to right edge of the screen) at the begining
         //of the display buffer. After that we just take data from begining of the buffer to the length of
         //selected time interval and calculate RMS
-        ringBuffer->FetchFreshData2(displayBuffer, endSample, 0, 1);
-        selectionRMS =dspAnalizer->RMSSelection((displayBuffer), endSample-startSample);
+        ringBuffer->FetchFreshData2(tempCalculationBuffer, endSample, 0, 1);
+        selectionRMS =dspAnalizer->RMSSelection((tempCalculationBuffer), endSample-startSample);
     }
     else if (thresholding) {
         //we first get all the data that is displayed on the screen and then we chose only segment that is selected
         //this is done lake this because GetCenteredTriggeredData is returning always centered data
-        dspThresholder->GetCenteredTriggeredData(displayBuffer, lastNumberOfSampleDisplayed, 1);
-        selectionRMS =dspAnalizer->RMSSelection((displayBuffer+lastNumberOfSampleDisplayed-endSample), endSample-startSample);
+        dspThresholder->GetCenteredTriggeredData(tempCalculationBuffer, lastNumberOfSampleDisplayed, 1);
+        selectionRMS =dspAnalizer->RMSSelection((tempCalculationBuffer+lastNumberOfSampleDisplayed-endSample), endSample-startSample);
 
     }
     

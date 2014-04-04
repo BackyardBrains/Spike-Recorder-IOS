@@ -72,8 +72,8 @@
                               @"File Details",
                               @"Play",
                               //@"Analyze",
-                              @"Email",
-                              @"Download",
+                              //@"Email",
+                              @"Share",
                               @"Delete", nil];
     }
     else //multiple files
@@ -83,7 +83,7 @@
         self.actionOptions = [NSArray arrayWithObjects:
                               @"File Details",
                               @"Email",
-                              @"Download",
+                              @"Share",
                               @"Delete", nil];
     }
     
@@ -161,28 +161,26 @@
         [bbdvc release];
         
 	}
-     
-	else if ([cell.textLabel.text isEqualToString:@"Email"])
-	{
-        
-		[self emailFiles];
-
-	}
-	else if ([cell.textLabel.text isEqualToString:@"Download"])
+	else if ([cell.textLabel.text isEqualToString:@"Share"])
 	{
         //grab just the filenames
         NSMutableArray *theFilenames = [[NSMutableArray alloc] initWithObjects:nil];
 		for (BBFile *thisFile in self.files)
         {
-            [theFilenames addObject:thisFile.filename];
+            [theFilenames addObject:[NSURL fileURLWithPath:[[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingPathComponent:thisFile.filename]]];
+
         }
         self.fileNamesToShare = (NSArray *)theFilenames;
         [theFilenames release];
         
-        BBFileDownloadViewController *downloadViewController = [[BBFileDownloadViewController alloc] initWithNibName:@"BBFileDownloadView" bundle:nil];
-        downloadViewController.delegate = self;
-        [[self navigationController] pushViewController:downloadViewController animated:YES];
-        [downloadViewController release];
+
+        UIActivityViewController * activities = [[[UIActivityViewController alloc]
+                                                 initWithActivityItems:theFilenames
+                                                 applicationActivities:nil] autorelease];
+        
+        [self presentViewController:activities
+                           animated:YES
+                         completion:nil];
 
 	}
 	else if ([cell.textLabel.text isEqualToString:@"Delete"])

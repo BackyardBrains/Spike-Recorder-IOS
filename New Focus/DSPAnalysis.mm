@@ -19,7 +19,9 @@ DSPAnalysis::DSPAnalysis (RingBuffer *externalRingBuffer)
 	mExternalRingBuffer = externalRingBuffer;
 }
 
-
+//
+// Calculate RMS of signal in data
+//
 float DSPAnalysis::RMSSelection(const float *data, int64_t mSizeOfBuffer)
 {
     float rms;

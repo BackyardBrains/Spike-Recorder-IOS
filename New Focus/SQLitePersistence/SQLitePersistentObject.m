@@ -244,7 +244,7 @@ NSMutableArray *checkedTables;
 		{
 			int pk = sqlite3_column_int(statement, 0);
 			NSString* memoryMapKey = [[self class] memoryMapKeyForObject:pk];
-			id oneItem = [objectMap objectForKey:memoryMapKey];
+			id oneItem = [[objectMap objectForKey:memoryMapKey] autorelease];
 			if (oneItem)
 			{
 				[ret addObject:[oneItem retain]];
