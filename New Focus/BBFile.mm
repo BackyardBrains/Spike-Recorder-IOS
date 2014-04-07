@@ -127,6 +127,8 @@
 }
 
 
+
+
 //- (void)setFilename:(NSString *)newFilename
 //{
 //    NSLog(@"New filename: %@", newFilename);
@@ -170,6 +172,41 @@
 //    
 //}
 
+-(void)save
+{
+    NSString * newNameFromShortName = [NSString stringWithFormat:@"%@.%@", [self shortname], [[self fileURL] pathExtension]];
+    if(![newNameFromShortName isEqualToString:[[self filename] stringByDeletingPathExtension]])
+    {
+        
+        // If there's a file with same filename
+        BOOL isThereAFileAlready = YES;
+        
+        // If there is, let's change the name
+        int i;
+        i=2;
+        while (isThereAFileAlready) {
+            
+            
+            isThereAFileAlready = [[NSFileManager defaultManager] fileExistsAtPath:[[self docPath] stringByAppendingPathComponent:newNameFromShortName]];
+            
+            if(isThereAFileAlready)
+            {
+                NSLog(@"There's a file already");
+                newNameFromShortName = [NSString stringWithFormat:@"%@ %d.%@", [self shortname], i, [[self fileURL] pathExtension]];
+                i++;
+            }
+        }
+        //copy file with new name
+        [[NSFileManager defaultManager] copyItemAtURL:[self fileURL] toURL:[NSURL fileURLWithPath:[[self docPath] stringByAppendingPathComponent:newNameFromShortName]] error:nil];
+        //remove old file
+        [[NSFileManager defaultManager] removeItemAtPath:[[self docPath] stringByAppendingPathComponent:self.filename] error:nil];
+        
+        self.filename = newNameFromShortName;
+    }
+    
+    
+    [super save];
+}
 
 - (void)deleteObject {
 	[super deleteObject];

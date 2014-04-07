@@ -337,6 +337,13 @@ static BBAudioManager *bbAudioManager = nil;
                 }
                 //set playback time to scrubber position
                 fileReader.currentTime = lastSeekPosition;
+                
+                //if we have active selection recalculate RMS
+                if(selecting)
+                {
+                    [self updateSelection:_selectionEndTime];
+                
+                }
             }
             //set playback data to zero (silence during scrubbing)
             memset(data, 0, numChannels*numFrames*sizeof(float));
@@ -396,6 +403,12 @@ static BBAudioManager *bbAudioManager = nil;
         // NOTE: this is not multi-channel
         lastNumberOfSampleDisplayed = numFrames;
         dspThresholder->GetCenteredTriggeredData(data, numFrames, stride);
+        //if we have active selection recalculate RMS
+        if(selecting)
+        {
+            [self updateSelection:_selectionEndTime];
+            
+        }
     }
     
 }
