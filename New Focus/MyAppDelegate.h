@@ -20,7 +20,11 @@
 @interface MyAppDelegate : CCGLTouchAppDelegate <UITabBarControllerDelegate>{
     UIWindow *window;
     UITabBarController *tabBarController;
+    BOOL sharedFileIsWaiting;
 }
 @property (retain, nonatomic) IBOutlet UITabBarController *tabBarController;
 @property (retain, nonatomic) IBOutlet UIWindow *window;
+
+-(BOOL) sharedFileShouldBeOpened;
+-(void) sharedFileIsOpened;
 @end

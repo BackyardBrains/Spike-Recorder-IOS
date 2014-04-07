@@ -61,9 +61,71 @@
 		self.gain           = [[defaults valueForKey:@"gain"] floatValue];
 		
 	}
-	
+    
 	return self;
 }
+
+
+-(id) initWithUrl:(NSURL *) urlOfExistingFile
+{
+    if ((self = [super init])) {
+		
+		self.date = [NSDate date];
+        NSString *onlyFilename = [[urlOfExistingFile path] lastPathComponent];
+        NSString *testFileName;
+        testFileName = [NSString stringWithFormat:@"Shared %@",onlyFilename];
+        
+
+    
+        // If there's a file with same filename
+        BOOL isThereAFileAlready = YES;
+    
+        // If there is, let's change the name
+        int i;
+        i=2;
+        while (isThereAFileAlready) {
+            
+            
+             isThereAFileAlready = [[NSFileManager defaultManager] fileExistsAtPath:[[self docPath] stringByAppendingPathComponent:testFileName]];
+        
+            if(isThereAFileAlready)
+            {
+                NSLog(@"There's a file already");
+                testFileName = [NSString stringWithFormat:@"Shared %d %@", i, onlyFilename];
+                i++;
+            }
+        }
+        onlyFilename = testFileName;
+
+        
+		//Format date into the filename
+		NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        
+		self.filename = onlyFilename;
+        NSLog(@"Filename: %@", self.filename);
+		
+		self.shortname = [onlyFilename stringByDeletingPathExtension];
+		NSLog(@"Shortname: %@", self.shortname);
+        
+		[dateFormatter setDateFormat:@"M'/'d'/'yyyy',' h':'mm a"];
+		self.subname = [dateFormatter stringFromDate:self.date];
+        
+		[dateFormatter release];
+		
+		self.comment = @"";
+		
+		// Grab the sampling rate from NSUserDefaults
+		NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        self.samplingrate   = [[BBAudioManager bbAudioManager] samplingRate];
+        //        self.samplingrate = [[Novocaine audioManager] samplingrate];
+		self.gain           = [[defaults valueForKey:@"gain"] floatValue];
+		
+	}
+    
+	return self;
+    
+}
+
 
 //- (void)setFilename:(NSString *)newFilename
 //{

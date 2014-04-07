@@ -12,6 +12,10 @@
 #import "MyAppDelegate.h"
 #import <DropboxSDK/DropboxSDK.h>
 
+#define kViewRecordTabBarIndex 0
+#define kThresholdTabBarIndex 1
+#define kRecordingsTabBarIndex 2
+
 @implementation MyAppDelegate
 @synthesize tabBarController;
 @synthesize window;
@@ -32,9 +36,18 @@
     window.rootViewController = tabBarController;
     tabBarController.delegate = self;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    int selectThisIndex = [[defaults valueForKey:@"tabIndex"] intValue];
-    tabBarController.selectedIndex = selectThisIndex;
-    
+    if(sharedFileIsWaiting)
+    {
+        NSLog(@"Shared file notification in lounch");
+        tabBarController.selectedIndex = kRecordingsTabBarIndex;
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"FileReceivedViaShare" object:self];
+    }
+    else
+    {
+        NSLog(@"No shared files detected");
+        int selectThisIndex = [[defaults valueForKey:@"tabIndex"] intValue];
+        tabBarController.selectedIndex = selectThisIndex;
+    }
     [window makeKeyAndVisible];
     
 //    DBSession* dbSession =
@@ -76,6 +89,44 @@
 - (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController
 {
     [[BBAudioManager bbAudioManager] endSelection];
+}
+
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
+{
+    if (url) {
+        NSLog(@"Scheme: %@", url.scheme);
+        if (url.scheme && [url.scheme isEqualToString:@"file"]) {
+            BBFile * aFile = [[BBFile alloc] initWithUrl:url];
+            if ( [[NSFileManager defaultManager] isReadableFileAtPath:[url path]] )
+            {
+
+                NSURL * newUrl = [aFile fileURL];
+                [[NSFileManager defaultManager] copyItemAtURL:url toURL:newUrl error:nil];
+
+                //aFile.filelength = 2.0f;
+                [aFile save];
+                sharedFileIsWaiting = YES;
+                NSLog(@"Shared file notification in openURL");
+                tabBarController.selectedIndex = kRecordingsTabBarIndex;
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"FileReceivedViaShare" object:self];
+
+            }
+            [aFile release];
+        }
+    }
+    return YES;
+}
+
+//
+-(BOOL) sharedFileShouldBeOpened
+{
+    return sharedFileIsWaiting;
+}
+
+-(void) sharedFileIsOpened
+{
+    sharedFileIsWaiting = NO;
 }
 
 - (void)dealloc

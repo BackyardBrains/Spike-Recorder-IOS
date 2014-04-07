@@ -65,6 +65,8 @@
         [cell addSubview:time];
         [time release];
         
+
+        
     };
     
     filesSection.cellActions.didSelect = ^(SCTableViewCell *cell, NSIndexPath *indexPath) {
@@ -82,7 +84,8 @@
     
     [self.tableViewModel addSection:filesSection];
     
-    // File Definition 
+
+    // File Definition
     // ========================================
     
     // File Definition

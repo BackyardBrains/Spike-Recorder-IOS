@@ -32,5 +32,6 @@
 @property float filelength;
 
 - (NSURL *)fileURL;
+-(id) initWithUrl:(NSURL *) urlOfExistingFile;
 
 @end

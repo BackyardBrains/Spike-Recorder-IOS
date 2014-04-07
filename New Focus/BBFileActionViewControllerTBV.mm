@@ -178,9 +178,17 @@
                                                  initWithActivityItems:theFilenames
                                                  applicationActivities:nil] autorelease];
         
-        [self presentViewController:activities
-                           animated:YES
-                         completion:nil];
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            [[[self parentViewController] parentViewController] presentViewController:activities animated:YES completion:nil];
+
+        }
+        else
+        {
+            [self presentViewController:activities
+                               animated:YES
+                             completion:nil];
+            
+        }
 
 	}
 	else if ([cell.textLabel.text isEqualToString:@"Delete"])

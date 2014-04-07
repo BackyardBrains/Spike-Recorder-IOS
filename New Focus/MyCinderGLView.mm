@@ -233,11 +233,14 @@
     Vec2f yScaleWorldPosition = [self screenToWorld:yScaleTextPosition];
     
     float xScale = 1000.0*(xMiddle.x - xFarLeft.x);
-    if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] && [[UIScreen mainScreen] scale]==2.0)
-    {//if it is retina
-        xScale *= 2.0f;
-    }
     float yScale = yScaleWorldPosition.y;
+    if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] && [[UIScreen mainScreen] scale]==2.0)
+    {//if it is retina correct scale
+        //TODO: This should be tested with calibration voltage source
+        xScale *= 2.0f;
+        yScale /=2.0f;
+    }
+    
     
     // Figure out what we want to say
     std::ostringstream yStringStream;
@@ -308,14 +311,14 @@
         {
            rmsTextPosition.y =0.23*self.frame.size.height + (mScaleFont->getAscent() / 2.0f);
         }
-        glColor4f(1.0, 0.1, 0.1, 1.0);
+        glColor4f(0.0, 0.0, 0.0, 1.0);
 
         
         //draw background rectangle
         gl::enableDepthRead();
         gl::drawSolidRect(Rectf(self.frame.size.width-8*rmsTextSize.y,rmsTextPosition.y-1.1*rmsTextSize.y,self.frame.size.width-0.5*rmsTextSize.y,rmsTextPosition.y+0.4*rmsTextSize.y));
         gl::disableDepthRead();
-        gl::color( ColorA( 1.0, 1.0f, 1.0f, 1.0f ) );
+        gl::color( ColorA( 0.0, 1.0f, 0.0f, 1.0f ) );
         //draw text
         mScaleFont->drawString(rmsStream->str(), rmsTextPosition);
         

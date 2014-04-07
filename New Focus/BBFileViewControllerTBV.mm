@@ -8,7 +8,7 @@
 
 
 #import "BBFileViewControllerTBV.h"
-
+#import "MyAppDelegate.h"
 
 #define kSyncWaitTime 10 //seconds
 
@@ -180,10 +180,56 @@
     [self populateSelectedArray];
 	
 	[theTableView reloadData];
+    
+    //react on new file, we have to refresh table and display file
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(newFileAddedViaShare)
+                                                 name:@"FileReceivedViaShare"
+                                               object:nil];
+    
+    //check if we should open new share file
+    MyAppDelegate * appDelegate = (MyAppDelegate*)[[UIApplication sharedApplication] delegate];
+    if([appDelegate sharedFileShouldBeOpened])
+    {
+        if ([self.allFiles count] > 0)
+        {
+            NSIndexPath* ipath = [NSIndexPath indexPathForRow: [self.allFiles count]-1 inSection: 0];
+            [theTableView scrollToRowAtIndexPath: ipath atScrollPosition: UITableViewScrollPositionTop animated: YES];
+            [self tableView:theTableView didSelectRowAtIndexPath:ipath];
+        }
+        [appDelegate sharedFileIsOpened];
+    }
+
 
 }
 
+//Refresh table to display new shared file
+-(void) newFileAddedViaShare
+{
+    self.allFiles = [NSMutableArray arrayWithArray:[BBFile allObjects]];
+    self.contentSizeForViewInPopover =
+    CGSizeMake(310.0, (self.tableView.rowHeight * ([self.allFiles count] +1)));
+    self.inPseudoEditMode = NO;
+    [self populateSelectedArray];
+    [theTableView reloadData];
+    //scroll to bottom
+   
+    
+    if ([self.allFiles count] > 0)
+    {
+        NSIndexPath* ipath = [NSIndexPath indexPathForRow: [self.allFiles count]-1 inSection: 0];
+        [theTableView scrollToRowAtIndexPath: ipath atScrollPosition: UITableViewScrollPositionTop animated: YES];
+        [self tableView:theTableView didSelectRowAtIndexPath:ipath];
+    }
+    MyAppDelegate * appDelegate = (MyAppDelegate*)[[UIApplication sharedApplication] delegate];
+    [appDelegate sharedFileIsOpened];
+    
+}
 
+-(void) viewWillDisappear:(BOOL)animated
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"FileReceivedViaShare" object:nil];
+}
 
 #pragma mark - Rotation support
 
