@@ -11,7 +11,7 @@
 
 #import "MyAppDelegate.h"
 #import <DropboxSDK/DropboxSDK.h>
-
+#import "BBAudioFileReader.h"
 #define kViewRecordTabBarIndex 0
 #define kThresholdTabBarIndex 1
 #define kRecordingsTabBarIndex 2
@@ -49,7 +49,7 @@
         tabBarController.selectedIndex = selectThisIndex;
     }
     [window makeKeyAndVisible];
-    
+
 //    DBSession* dbSession =
 //    [[[DBSession alloc]
 //      initWithConsumerKey:@"gko0ired85ogh0e"
@@ -91,20 +91,43 @@
     [[BBAudioManager bbAudioManager] endSelection];
 }
 
+-(BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController {
+    //disable tab bar while in recording
+    if ([[BBAudioManager bbAudioManager] recording]) {
+        return NO;
+    }
+    return YES;
+}
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
 {
+    if ([[DBSession sharedSession] handleOpenURL:url]) {
+        if ([[DBSession sharedSession] isLinked]) {
+            NSLog(@"App linked successfully!");
+            // At this point you can start making API calls
+        }
+        return YES;
+    }
+
     if (url) {
         NSLog(@"Scheme: %@", url.scheme);
         if (url.scheme && [url.scheme isEqualToString:@"file"]) {
+            
+            //TODO: Find some better place to save file
+            
             BBFile * aFile = [[BBFile alloc] initWithUrl:url];
             if ( [[NSFileManager defaultManager] isReadableFileAtPath:[url path]] )
             {
 
                 NSURL * newUrl = [aFile fileURL];
                 [[NSFileManager defaultManager] copyItemAtURL:url toURL:newUrl error:nil];
-
-                //aFile.filelength = 2.0f;
+                BBAudioFileReader * fileReader = [[BBAudioFileReader alloc]
+                              initWithAudioFileURL:[aFile fileURL]
+                              samplingRate:aFile.samplingrate
+                              numChannels:1];
+                
+                aFile.filelength = fileReader.duration;
+                [fileReader release];
                 [aFile save];
                 sharedFileIsWaiting = YES;
                 NSLog(@"Shared file notification in openURL");
@@ -115,6 +138,7 @@
             [aFile release];
         }
     }
+
     return YES;
 }
 
@@ -123,6 +147,8 @@
 {
     return sharedFileIsWaiting;
 }
+
+
 
 -(void) sharedFileIsOpened
 {

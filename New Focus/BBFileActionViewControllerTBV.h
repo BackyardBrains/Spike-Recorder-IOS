@@ -14,6 +14,7 @@
 #import "BBFileTableCell.h"
 #import "BBFileDetailViewController.h"
 #import "PlaybackViewController.h"
+#import "SpikesAnalysisViewController.h"
 
 @protocol BBFileActionViewControllerDelegate
 @required

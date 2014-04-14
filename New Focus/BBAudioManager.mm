@@ -118,7 +118,7 @@ static BBAudioManager *bbAudioManager = nil;
         ringBuffer = new RingBuffer(RING_BUFFER_SIZE, 2);
         tempCalculationBuffer = (float *)calloc(RING_BUFFER_SIZE, sizeof(float));
         lastSeekPosition = -1;
-        dspAnalizer = new DSPAnalysis(ringBuffer);
+        dspAnalizer = new DSPAnalysis();
         
         // Set a default input block acquiring data to a big ring buffer.
         [audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
@@ -257,7 +257,7 @@ static BBAudioManager *bbAudioManager = nil;
         recording = true;
         
         // Grab a file writer. This takes care of the creation and management of the audio file.
-        fileWriter = [[AudioFileWriter alloc] 
+        fileWriter = [[AudioFileWriter alloc]
                       initWithAudioFileURL:urlToFile 
                       samplingRate:audioManager.samplingRate 
                       numChannels:audioManager.numInputChannels];

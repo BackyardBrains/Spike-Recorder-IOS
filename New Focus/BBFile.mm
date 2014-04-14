@@ -27,7 +27,7 @@
 	[subname release];
 	[comment release];
 	[date release];
-	
+	[_spikes release];
 	[super dealloc];
 
 }
@@ -59,12 +59,23 @@
         self.samplingrate   = [[BBAudioManager bbAudioManager] samplingRate];
 //        self.samplingrate = [[Novocaine audioManager] samplingrate];
 		self.gain           = [[defaults valueForKey:@"gain"] floatValue];
-		
+		_spikes = [[NSMutableArray alloc] initWithCapacity:0];
 	}
     
 	return self;
 }
 
+
+-(void) setSpikes:(NSMutableArray *) spikes
+{
+    [_spikes removeAllObjects];
+    [_spikes addObjectsFromArray:spikes];
+}
+
+-(NSMutableArray*) spikes
+{
+    return _spikes;
+}
 
 -(id) initWithUrl:(NSURL *) urlOfExistingFile
 {
@@ -119,7 +130,7 @@
         self.samplingrate   = [[BBAudioManager bbAudioManager] samplingRate];
         //        self.samplingrate = [[Novocaine audioManager] samplingrate];
 		self.gain           = [[defaults valueForKey:@"gain"] floatValue];
-		
+        _spikes = [[NSMutableArray alloc] init];
 	}
     
 	return self;
@@ -175,6 +186,8 @@
 -(void)save
 {
     NSString * newNameFromShortName = [NSString stringWithFormat:@"%@.%@", [self shortname], [[self fileURL] pathExtension]];
+    //check if name of the file is different than shortname
+    //if yes than make it same
     if(![newNameFromShortName isEqualToString:[[self filename] stringByDeletingPathExtension]])
     {
         

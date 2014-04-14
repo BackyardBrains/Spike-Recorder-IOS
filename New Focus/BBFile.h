@@ -17,6 +17,7 @@
 	NSString *subname;
 	NSString *comment;
 	NSDate *date;
+	NSMutableArray *_spikes;
 	float samplingrate;
 	float gain;
 	float filelength;
@@ -27,6 +28,7 @@
 @property (nonatomic, retain) NSString *subname;
 @property (nonatomic, retain) NSString *comment;
 @property (nonatomic, retain) NSDate *date;
+@property (nonatomic, retain) NSMutableArray *spikes;
 @property float samplingrate;
 @property float gain;
 @property float filelength;

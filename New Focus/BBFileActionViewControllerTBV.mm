@@ -7,6 +7,8 @@
 //
 
 #import "BBFileActionViewControllerTBV.h"
+#import "MyAppDelegate.h"
+#import "BBAnalysisManager.h"
 
 @implementation BBFileActionViewControllerTBV
 
@@ -71,7 +73,7 @@
         self.actionOptions = [NSArray arrayWithObjects:
                               @"File Details",
                               @"Play",
-                              //@"Analyze",
+                              @"Analyze",
                               //@"Email",
                               @"Share",
                               @"Delete", nil];
@@ -91,8 +93,29 @@
     self.contentSizeForViewInPopover =
         CGSizeMake(310.0, (self.tableView.rowHeight * ([self.actionOptions count] +1)));
     
+    //react on new file, we have to refresh table and display file
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(newFileAddedViaShare)
+                                                 name:@"FileReceivedViaShare"
+                                               object:nil];
     
+}
+
+-(void) newFileAddedViaShare
+{
+    MyAppDelegate * appDelegate = (MyAppDelegate*)[[UIApplication sharedApplication] delegate];
+    if([appDelegate sharedFileShouldBeOpened])
+    {
+        [appDelegate sharedFileIsOpened];
+    }
+
+}
+
+-(void) viewWillDisappear:(BOOL)animated
+{
     
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"FileReceivedViaShare" object:nil];
+    [super viewWillDisappear:animated];
 }
 
 #pragma mark - TableViewDelegate methods
@@ -161,12 +184,26 @@
         [bbdvc release];
         
 	}
+     
+    else if ([cell.textLabel.text isEqualToString:@"Analyze"])
+	{
+        [[BBAnalysisManager bbAnalysisManager] findSpikes:(BBFile *)[self.files objectAtIndex:0]];
+        
+        SpikesAnalysisViewController *avc = [[SpikesAnalysisViewController alloc] initWithNibName:@"SpikesViewController" bundle:nil];
+        avc.bbfile = [self.files objectAtIndex:0];
+        [self.navigationController pushViewController:avc animated:YES];
+        [avc release];
+        
+
+    }
+     
 	else if ([cell.textLabel.text isEqualToString:@"Share"])
 	{
         //grab just the filenames
         NSMutableArray *theFilenames = [[NSMutableArray alloc] initWithObjects:nil];
 		for (BBFile *thisFile in self.files)
         {
+            [thisFile save];
             [theFilenames addObject:[NSURL fileURLWithPath:[[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingPathComponent:thisFile.filename]]];
 
         }
