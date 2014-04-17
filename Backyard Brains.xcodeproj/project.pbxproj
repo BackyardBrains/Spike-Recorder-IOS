@@ -10,6 +10,7 @@
 		2402E83218EABDFC0090368A /* DSPAnalysis.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2402E83118EABDFC0090368A /* DSPAnalysis.mm */; };
 		240435DE18F6EC3400A85A1B /* BBAnalysisManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 240435DD18F6EC3400A85A1B /* BBAnalysisManager.mm */; };
 		240435E118F7E00A00A85A1B /* BBSpike.m in Sources */ = {isa = PBXBuildFile; fileRef = 240435E018F7E00A00A85A1B /* BBSpike.m */; };
+		2405351D18FC62BB009A09FF /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 2405351C18FC62BB009A09FF /* MBProgressHUD.m */; };
 		2474366918F6CAAC0044E11D /* SpikesCinderView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2474366818F6CAAC0044E11D /* SpikesCinderView.mm */; };
 		2474366B18F6DBFF0044E11D /* SpikesViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2474366A18F6DBFF0044E11D /* SpikesViewController.xib */; };
 		2474366E18F6DCA30044E11D /* SpikesAnalysisViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2474366D18F6DCA30044E11D /* SpikesAnalysisViewController.mm */; };
@@ -130,6 +131,8 @@
 		240435DD18F6EC3400A85A1B /* BBAnalysisManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BBAnalysisManager.mm; sourceTree = "<group>"; };
 		240435DF18F7E00A00A85A1B /* BBSpike.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BBSpike.h; sourceTree = "<group>"; };
 		240435E018F7E00A00A85A1B /* BBSpike.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BBSpike.m; sourceTree = "<group>"; };
+		2405351B18FC62BB009A09FF /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
+		2405351C18FC62BB009A09FF /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
 		2474366718F6CAAC0044E11D /* SpikesCinderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpikesCinderView.h; sourceTree = "<group>"; };
 		2474366818F6CAAC0044E11D /* SpikesCinderView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SpikesCinderView.mm; sourceTree = "<group>"; };
 		2474366A18F6DBFF0044E11D /* SpikesViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SpikesViewController.xib; sourceTree = "<group>"; };
@@ -320,6 +323,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2405351A18FC62A5009A09FF /* ProgressHUD */ = {
+			isa = PBXGroup;
+			children = (
+				2405351B18FC62BB009A09FF /* MBProgressHUD.h */,
+				2405351C18FC62BB009A09FF /* MBProgressHUD.m */,
+			);
+			name = ProgressHUD;
+			sourceTree = "<group>";
+		};
 		248C8EA718E4783200307C4C /* Novocaine */ = {
 			isa = PBXGroup;
 			children = (
@@ -512,6 +524,7 @@
 		FADF26451596362E006C87BA = {
 			isa = PBXGroup;
 			children = (
+				2405351A18FC62A5009A09FF /* ProgressHUD */,
 				248C8EB418E5CF5D00307C4C /* CCGLTouchCore */,
 				248C8EA718E4783200307C4C /* Novocaine */,
 				FA9A5B301809A5DA00FF01A0 /* Default-568h@2x.png */,
@@ -748,6 +761,7 @@
 				FA90598F15A9F9830013688B /* NSDate-SQLitePersistence.m in Sources */,
 				FA90599115A9F9830013688B /* NSMutableArray-MultipleSort.m in Sources */,
 				FA90599315A9F9830013688B /* NSMutableData-SQLitePersistence.m in Sources */,
+				2405351D18FC62BB009A09FF /* MBProgressHUD.m in Sources */,
 				FA90599515A9F9830013688B /* NSNumber-SQLitePersistence.m in Sources */,
 				FA90599715A9F9830013688B /* NSObject-ClassName.m in Sources */,
 				FA90599915A9F9830013688B /* NSObject-MissingKV.m in Sources */,

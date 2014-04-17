@@ -75,7 +75,7 @@
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    [bbfile save];
+    [bbfile saveWithoutArrays];
 }
 
 - (void)dealloc

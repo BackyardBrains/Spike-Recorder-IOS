@@ -9,7 +9,7 @@
 #import "BBFileActionViewControllerTBV.h"
 #import "MyAppDelegate.h"
 #import "BBAnalysisManager.h"
-
+#import "MBProgressHUD.h"
 @implementation BBFileActionViewControllerTBV
 
 
@@ -187,14 +187,30 @@
      
     else if ([cell.textLabel.text isEqualToString:@"Analyze"])
 	{
-        [[BBAnalysisManager bbAnalysisManager] findSpikes:(BBFile *)[self.files objectAtIndex:0]];
+        BBFile * fileToAnalyze = (BBFile *)[self.files objectAtIndex:0];
         
-        SpikesAnalysisViewController *avc = [[SpikesAnalysisViewController alloc] initWithNibName:@"SpikesViewController" bundle:nil];
-        avc.bbfile = [self.files objectAtIndex:0];
-        [self.navigationController pushViewController:avc animated:YES];
-        [avc release];
-        
-
+        if(fileToAnalyze.analyzed)
+        {
+            SpikesAnalysisViewController *avc = [[SpikesAnalysisViewController alloc] initWithNibName:@"SpikesViewController" bundle:nil];
+            avc.bbfile = fileToAnalyze;
+            [self.navigationController pushViewController:avc animated:YES];
+            [avc release];
+        }
+        else
+        {
+            MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+            hud.labelText = @"Analyzing Spikes";
+            dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+                [[BBAnalysisManager bbAnalysisManager] findSpikes:(BBFile *)[self.files objectAtIndex:0]];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [MBProgressHUD hideHUDForView:self.view animated:YES];
+                    SpikesAnalysisViewController *avc = [[SpikesAnalysisViewController alloc] initWithNibName:@"SpikesViewController" bundle:nil];
+                    avc.bbfile = [self.files objectAtIndex:0];
+                    [self.navigationController pushViewController:avc animated:YES];
+                    [avc release];
+                });
+            });
+        }
     }
      
 	else if ([cell.textLabel.text isEqualToString:@"Share"])
@@ -203,7 +219,7 @@
         NSMutableArray *theFilenames = [[NSMutableArray alloc] initWithObjects:nil];
 		for (BBFile *thisFile in self.files)
         {
-            [thisFile save];
+            [thisFile saveWithoutArrays];
             [theFilenames addObject:[NSURL fileURLWithPath:[[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingPathComponent:thisFile.filename]]];
 
         }

@@ -9,7 +9,7 @@
 #import "BBAnalysisManager.h"
 #import "BBSpike.h"
 #import <Accelerate/Accelerate.h>
-#define RING_BUFFER_SIZE 524288
+#define BUFFER_SIZE 524288
 
 #define kSchmittON 1
 #define kSchmittOFF 2
@@ -78,7 +78,7 @@ static BBAnalysisManager *bbAnalysisManager = nil;
     if (self = [super init])
     {
 
-        tempCalculationBuffer = (float *)calloc(RING_BUFFER_SIZE, sizeof(float));
+        tempCalculationBuffer = (float *)calloc(BUFFER_SIZE, sizeof(float));
         dspAnalizer = new DSPAnalysis();
         self.threshold1 = 0;
         self.threshold2 = 0;
@@ -94,8 +94,8 @@ static BBAnalysisManager *bbAnalysisManager = nil;
     _file = aFile;
     if (fileReader != nil)
         fileReader = nil;
-    
-    
+    self.threshold1 = _file.threshold1;
+    self.threshold2 = _file.threshold2;
     fileReader = [[BBAudioFileReader alloc]
                   initWithAudioFileURL:[aFile fileURL]
                   samplingRate:aFile.samplingrate
@@ -111,7 +111,7 @@ static BBAnalysisManager *bbAnalysisManager = nil;
     {
         startFrame = 0;
     }
-    memset(tempCalculationBuffer, 0, RING_BUFFER_SIZE*sizeof(float));
+    memset(tempCalculationBuffer, 0, BUFFER_SIZE*sizeof(float));
     int numberOfSamplesToread = targetFrame-startFrame;
     [fileReader retrieveFreshAudio:tempCalculationBuffer+numFrames-numberOfSamplesToread numFrames:numberOfSamplesToread numChannels:1 seek:startFrame];
 
@@ -142,12 +142,13 @@ static BBAnalysisManager *bbAnalysisManager = nil;
     
     
     int numberOfSamples = (int)(fileReader.duration * aFile.samplingrate);
+    float killInterval = 0.005;//5ms
     int numberOfBins = 200;
     int lengthOfBin = numberOfSamples/numberOfBins;
 
-    if(lengthOfBin>RING_BUFFER_SIZE)
+    if(lengthOfBin>BUFFER_SIZE)
     {
-        lengthOfBin = RING_BUFFER_SIZE;
+        lengthOfBin = BUFFER_SIZE;
         numberOfBins = ceil((float)numberOfSamples/(float)lengthOfBin);
     }
     
@@ -173,7 +174,7 @@ static BBAnalysisManager *bbAnalysisManager = nil;
     float negsig = -1* sig;
     
     //make maximal bins for faster processing
-    lengthOfBin = RING_BUFFER_SIZE;
+    lengthOfBin = BUFFER_SIZE;
     numberOfBins = ceil((float)numberOfSamples/(float)lengthOfBin);
     
     //find peaks
@@ -187,11 +188,12 @@ static BBAnalysisManager *bbAnalysisManager = nil;
     float minPeakValue = 1000.0;
     int minPeakIndex = 0;
     NSMutableArray * peaksIndexes = [[NSMutableArray alloc] initWithCapacity:0];
+    NSMutableArray * peaksIndexesNeg = [[NSMutableArray alloc] initWithCapacity:0];
     for(ibin=0;ibin<numberOfBins;ibin++)
     {
-        numberOfFramesRead = ibin == (numberOfBins-1) ? (numberOfSamples % RING_BUFFER_SIZE):RING_BUFFER_SIZE;
+        numberOfFramesRead = ibin == (numberOfBins-1) ? (numberOfSamples % BUFFER_SIZE):BUFFER_SIZE;
 
-        [fileReader retrieveFreshAudio:tempCalculationBuffer numFrames:(UInt32)(numberOfFramesRead) numChannels:1 seek:ibin*RING_BUFFER_SIZE];
+        [fileReader retrieveFreshAudio:tempCalculationBuffer numFrames:(UInt32)(numberOfFramesRead) numChannels:1 seek:ibin*BUFFER_SIZE];
         stdArray[ibin] = dspAnalizer->SDT(tempCalculationBuffer, numberOfFramesRead);
         
         
@@ -221,7 +223,7 @@ static BBAnalysisManager *bbAnalysisManager = nil;
             {
                 schmitNegState = kSchmittOFF;
                 BBSpike * tempSpike = [[BBSpike alloc] initWithValue:minPeakValue index:minPeakIndex andTime:((float)minPeakIndex)/aFile.samplingrate];
-                [peaksIndexes addObject:tempSpike]; //add min of negative peak
+                [peaksIndexesNeg addObject:tempSpike]; //add min of negative peak
                 [tempSpike release];
             }
             
@@ -229,30 +231,129 @@ static BBAnalysisManager *bbAnalysisManager = nil;
             if(schmitPosState==kSchmittON && tempCalculationBuffer[isample]>maxPeakValue)
             {
                 maxPeakValue = tempCalculationBuffer[isample];
-                maxPeakIndex = isample + ibin*RING_BUFFER_SIZE;
+                maxPeakIndex = isample + ibin*BUFFER_SIZE;
             }
             
             //find min in negative peak
             else if(schmitNegState==kSchmittON && tempCalculationBuffer[isample]<minPeakValue)
             {
                 minPeakValue = tempCalculationBuffer[isample];
-                minPeakIndex = isample + ibin*RING_BUFFER_SIZE;
+                minPeakIndex = isample + ibin*BUFFER_SIZE;
             }
         }
     }
     
     
-    //TODO: Add kill interval
+    //Filter positive spikes using kill interval
+    int i;
+    for(i=0;i<[peaksIndexes count]-1;i++) //look on the right
+    {
+        if([(BBSpike *)[peaksIndexes objectAtIndex:i] value]<[(BBSpike *)[peaksIndexes objectAtIndex:i+1] value])
+        {
+            if(([(BBSpike *)[peaksIndexes objectAtIndex:i+1] time]-[(BBSpike *)[peaksIndexes objectAtIndex:i] time])<killInterval)
+            {
+                [peaksIndexes removeObjectAtIndex:i];
+                i--;
+            }
+        }
+    }
     
+    for(i=1;i<[peaksIndexes count];i++) //look on the left neighbor
+    {
+        if([(BBSpike *)[peaksIndexes objectAtIndex:i] value]<[(BBSpike *)[peaksIndexes objectAtIndex:i-1] value])
+        {
+            if(([(BBSpike *)[peaksIndexes objectAtIndex:i] time]-[(BBSpike *)[peaksIndexes objectAtIndex:i-1] time])<killInterval)
+            {
+                [peaksIndexes removeObjectAtIndex:i];
+                i--;
+            }
+        }
+    }
     
+    //Filter negative spikes using kill interval
+    for(i=0;i<[peaksIndexesNeg count]-1;i++)
+    {
+        if([(BBSpike *)[peaksIndexesNeg objectAtIndex:i] value]>[(BBSpike *)[peaksIndexesNeg objectAtIndex:i+1] value])
+        {
+            if(([(BBSpike *)[peaksIndexesNeg objectAtIndex:i+1] time]-[(BBSpike *)[peaksIndexesNeg objectAtIndex:i] time])<killInterval)
+            {
+                [peaksIndexesNeg removeObjectAtIndex:i];
+                i--;
+            }
+        }
+    }
     
-    aFile.spikes = peaksIndexes;
-    [aFile save];
+    for(i=1;i<[peaksIndexesNeg count];i++)
+    {
+        if([(BBSpike *)[peaksIndexesNeg objectAtIndex:i] value]>[(BBSpike *)[peaksIndexesNeg objectAtIndex:i-1] value])
+        {
+            if(([(BBSpike *)[peaksIndexesNeg objectAtIndex:i] time]-[(BBSpike *)[peaksIndexesNeg objectAtIndex:i-1] time])<killInterval)
+            {
+                [peaksIndexesNeg removeObjectAtIndex:i];
+                i--;
+            }
+        }
+    }
+    [peaksIndexes addObjectsFromArray:peaksIndexesNeg];
+    
+    NSSortDescriptor *sortDescriptor;
+    sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"index"
+                                                 ascending:YES];
+    NSArray *sortDescriptors = [NSArray arrayWithObject:sortDescriptor];
+    NSMutableArray *sortedArray;
+    sortedArray = [[peaksIndexes sortedArrayUsingDescriptors:sortDescriptors] mutableCopy];
+
+    aFile.spikes = sortedArray;
+    //aFile.analyzed = YES;
+    //[aFile save];
     [peaksIndexes release];
+    [peaksIndexesNeg release];
+    [sortDescriptor release];
+    [sortedArray release];
     free(stdArray);
     
     return 0;
 }
+
+-(void) filterSpikes
+{
+    if(_file)
+    {
+        _file.threshold1 = self.threshold1;
+        _file.threshold2 = self.threshold2;
+        float uperThreshold;
+        float lowerThreshold;
+        
+        if(self.threshold1>self.threshold2)
+        {
+            uperThreshold = self.threshold1;
+            lowerThreshold = self.threshold2;
+        }
+        else
+        {
+            uperThreshold = self.threshold2;
+            lowerThreshold = self.threshold1;
+        }
+        
+        int i;
+        [_file.filteredSpikes removeAllObjects];
+        BBSpike * tempSpike;
+        for(i=0;i<[_file.spikes count];i++)
+        {
+            tempSpike = (BBSpike *)[_file.spikes objectAtIndex:i];
+            if(tempSpike.value>lowerThreshold && tempSpike.value<uperThreshold)
+            {
+                [_file.filteredSpikes addObject:tempSpike];
+            }
+        }
+        _file.spikes = _file.filteredSpikes;
+
+        [_file.filteredSpikes removeAllObjects];
+        _file.spikesFiltered = YES;
+        [_file save];
+    }
+}
+
 
 -(NSMutableArray *) allSpikes
 {
@@ -260,6 +361,7 @@ static BBAnalysisManager *bbAnalysisManager = nil;
     {
         return _file.spikes;
     }
+    return nil;
 }
 
 - (float)currentFileTime

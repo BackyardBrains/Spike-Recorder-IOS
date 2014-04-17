@@ -7,6 +7,7 @@
 //
 
 #import "BBFile.h"
+#import "BBSpike.h"
 
 #define  kDataID 1633969266
 
@@ -20,14 +21,21 @@
 @synthesize samplingrate;
 @synthesize gain;
 @synthesize filelength;
+@synthesize analyzed;
+@synthesize spikesCSV;
+@synthesize spikesFiltered;
+@synthesize threshold1;
+@synthesize threshold2;
 
 - (void)dealloc {
 	[filename release];
 	[shortname release];
 	[subname release];
 	[comment release];
+    [spikesCSV release];
 	[date release];
 	[_spikes release];
+    [_filteredSpikes release];
 	[super dealloc];
 
 }
@@ -59,7 +67,13 @@
         self.samplingrate   = [[BBAudioManager bbAudioManager] samplingRate];
 //        self.samplingrate = [[Novocaine audioManager] samplingrate];
 		self.gain           = [[defaults valueForKey:@"gain"] floatValue];
+        self.spikesCSV = @"";
+        self.analyzed = NO;
+        self.spikesFiltered = NO;
+        self.threshold2 = 0.0f;
+        self.threshold1 = 0.0f;
 		_spikes = [[NSMutableArray alloc] initWithCapacity:0];
+        _filteredSpikes = [[NSMutableArray alloc] initWithCapacity:0];
 	}
     
 	return self;
@@ -72,9 +86,20 @@
     [_spikes addObjectsFromArray:spikes];
 }
 
+-(void) setFilteredSpikes:(NSMutableArray *) spikes
+{
+    [_filteredSpikes removeAllObjects];
+    [_filteredSpikes addObjectsFromArray:spikes];
+}
+
 -(NSMutableArray*) spikes
 {
     return _spikes;
+}
+
+-(NSMutableArray*) filteredSpikes
+{
+    return _filteredSpikes;
 }
 
 -(id) initWithUrl:(NSURL *) urlOfExistingFile
@@ -86,7 +111,7 @@
         NSString *testFileName;
         testFileName = [NSString stringWithFormat:@"Shared %@",onlyFilename];
         
-
+        
     
         // If there's a file with same filename
         BOOL isThereAFileAlready = YES;
@@ -130,7 +155,13 @@
         self.samplingrate   = [[BBAudioManager bbAudioManager] samplingRate];
         //        self.samplingrate = [[Novocaine audioManager] samplingrate];
 		self.gain           = [[defaults valueForKey:@"gain"] floatValue];
+        self.spikesCSV = @"";
+        self.analyzed = NO;
+        self.spikesFiltered = NO;
+        self.threshold2 = 0.0f;
+        self.threshold1 = 0.0f;
         _spikes = [[NSMutableArray alloc] init];
+        _filteredSpikes = [[NSMutableArray alloc] init];
 	}
     
 	return self;
@@ -183,7 +214,39 @@
 //    
 //}
 
+
++(NSArray *)allObjects
+{
+    NSArray * allFiles = [[self class] findByCriteria:@""];
+    int i;
+    for(i=0;i<[allFiles count];i++)
+    {
+        [((BBFile *)[allFiles objectAtIndex:i]) CSVToSpikes];
+    }
+	return allFiles;
+}
+
 -(void)save
+{
+    [self renameIfNeeded];
+    [self spikesToCSV];
+    _spikes = [[NSMutableArray alloc] init];
+    _filteredSpikes = [[NSMutableArray alloc] init];
+    [super save];
+    [self CSVToSpikes];
+}
+
+-(void) saveWithoutArrays
+{
+    [self renameIfNeeded];
+    //[self spikesToCSV];
+    //_spikes = [[NSMutableArray alloc] init];
+    //_filteredSpikes = [[NSMutableArray alloc] init];
+    [super saveWithoutArrays];
+}
+
+
+-(void) renameIfNeeded
 {
     NSString * newNameFromShortName = [NSString stringWithFormat:@"%@.%@", [self shortname], [[self fileURL] pathExtension]];
     //check if name of the file is different than shortname
@@ -216,10 +279,39 @@
         
         self.filename = newNameFromShortName;
     }
-    
-    
-    [super save];
 }
+
+
+-(void) spikesToCSV
+{
+    NSMutableString *csvString = [NSMutableString string];
+    int i;
+    BBSpike * tempSpike;
+    for(i=0;i<[_spikes count];i++)
+    {
+        tempSpike = (BBSpike *) [_spikes objectAtIndex:i];
+        [csvString appendString:[NSString stringWithFormat:@"%f,%f,%d\n",
+                                 tempSpike.value, tempSpike.time, tempSpike.index]];
+    }
+    self.spikesCSV =csvString;
+}
+
+-(void) CSVToSpikes
+{
+    [_spikes removeAllObjects];
+    NSScanner *scanner = [NSScanner scannerWithString:self.spikesCSV];
+    [scanner setCharactersToBeSkipped:
+     [NSCharacterSet characterSetWithCharactersInString:@"\n, "]];
+    float value, time;
+    int index;
+    BBSpike * newSpike;
+    while ( [scanner scanFloat:&value] && [scanner scanFloat:&time] && [scanner scanInt:&index]) {
+        newSpike = [[BBSpike alloc] initWithValue:value index:index andTime:time];
+        [_spikes addObject:newSpike];
+        [newSpike release];
+    }
+}
+
 
 - (void)deleteObject {
 	[super deleteObject];

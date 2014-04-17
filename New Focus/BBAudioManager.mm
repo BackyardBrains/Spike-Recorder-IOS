@@ -312,9 +312,7 @@ static BBAudioManager *bbAudioManager = nil;
             {
                 lastSeekPosition = fileReader.currentTime;
                 //clear ring buffer
-                ringBuffer->Clear();
-                ringBuffer->SeekWriteHeadPosition(0);
-                ringBuffer->SeekReadHeadPosition(0);
+
                 
                 //calculate begining and end of interval to display
                 UInt32 targetFrame = (UInt32)(fileReader.currentTime * ((float)fileReader.samplingRate));
@@ -325,11 +323,14 @@ static BBAudioManager *bbAudioManager = nil;
                 }
                 
                 //get the data from file into clean ring buffer
-                memset(tempCalculationBuffer, 0, RING_BUFFER_SIZE*sizeof(float));
+
                 if(targetFrame!=0)
                 {
                     dispatch_sync(dispatch_get_main_queue(), ^{
-                        
+                        //memset(tempCalculationBuffer, 0, RING_BUFFER_SIZE*sizeof(float));
+                        ringBuffer->Clear();
+                        ringBuffer->SeekWriteHeadPosition(0);
+                        ringBuffer->SeekReadHeadPosition(0);
                         [fileReader retrieveFreshAudio:tempCalculationBuffer numFrames:(UInt32)(targetFrame-startFrame) numChannels:numChannels seek:(UInt32)startFrame];
                         
                         ringBuffer->AddNewInterleavedFloatData(tempCalculationBuffer, targetFrame-startFrame, numChannels);

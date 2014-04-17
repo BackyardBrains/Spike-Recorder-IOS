@@ -26,6 +26,6 @@
 
 -(void) prepareFileForSelection:(BBFile *)aFile;
 - (void)fetchAudioAndSpikes:(float *)data numFrames:(UInt32)numFrames whichChannel:(UInt32)whichChannel stride:(UInt32)stride;
-
+-(void) filterSpikes;
 -(NSMutableArray *) allSpikes;
 @end

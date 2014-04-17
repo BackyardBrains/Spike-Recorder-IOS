@@ -474,6 +474,7 @@ NSMutableArray *checkedTables;
 									}
 								}
 							}
+                            [oneItem setValue:array forKey:propName];
 							sqlite3_finalize(arrayStmt);
 						}
 						else if (isNSDictionaryType(className))
@@ -1020,6 +1021,224 @@ NSMutableArray *checkedTables;
 	
 	alreadySaving = NO;
 }
+
+
+//
+// Made as a bad hack
+//
+-(void)saveWithoutArrays
+{
+	if (alreadySaving)
+		return;
+	alreadySaving = YES;
+	
+	[[self class] tableCheck];
+	
+    if (pk == 0)
+    {
+        NSLog(@"Object of type '%@' seems to be uninitialised, perhaps init does not call super init.", [[self class] description] );
+        return;
+    }
+	
+	NSDictionary *props = [[self class] propertiesWithEncodedTypes];
+    
+	if (!dirty)
+	{
+		// Check child and owned objects to see if any of them are dirty
+		// Just tell children and composed objects to save themselves
+		
+		for (NSString *propName in props)
+		{
+			NSString *propType = [props objectForKey:propName];
+			//int colIndex = sqlite3_bind_parameter_index(stmt, [[propName stringAsSQLColumnName] UTF8String]);
+			id theProperty = [self valueForKey:propName];
+			if ([propType hasPrefix:@"@"] ) // Object
+			{
+				NSString *className = [propType substringWithRange:NSMakeRange(2, [propType length]-3)];
+				
+				if (! (isCollectionType(className)) )
+				{
+					if ([[theProperty class] isSubclassOfClass:[SQLitePersistentObject class]])
+						if ([theProperty isDirty])
+							dirty = YES;
+				}
+				else
+				{
+					if (isNSSetType(className) || isNSArrayType(className))
+						for (id oneObject in (NSArray *)theProperty)
+							if ([oneObject isKindOfClass:[SQLitePersistentObject class]])
+                            {
+								if ([oneObject isDirty])
+                                {
+									dirty = YES;
+                                }
+								else if (isNSDictionaryType(className))
+								{
+									for (id oneKey in [theProperty allKeys])
+									{
+										id oneObject = [theProperty objectForKey:oneKey];
+										if ([oneObject isKindOfClass:[SQLitePersistentObject class]])
+											if ([oneObject isDirty])
+												dirty = YES;
+									}
+								}
+                            }
+				}
+			}
+		}
+	}
+	
+	NSArray *theTransients = [[self class] transients];
+	
+	if (dirty)
+	{
+		dirty = NO;
+		
+		sqlite3 *database = [[SQLiteInstanceManager sharedManager] database];
+		
+		// If this object is new, we need to figure out the correct primary key value,
+		// which will be one higher than the current highest pk value in the table.
+		
+		if (pk < 0)
+		{
+			NSString *pkQuery = [NSString stringWithFormat:@"SELECT SEQ FROM SQLITESEQUENCE WHERE NAME='%@'", [[self class] tableName]];
+			sqlite3_stmt *statement;
+			if (sqlite3_prepare_v2(database, [pkQuery UTF8String], -1, &statement, nil) == SQLITE_OK)
+			{
+				if (sqlite3_step(statement) == SQLITE_ROW)
+				{
+					pk = sqlite3_column_int(statement, 0)+1;
+					char* errmsg;
+					
+					NSString *seqIncrementQuery = [NSString stringWithFormat:@"UPDATE SQLITESEQUENCE set seq=%d WHERE name='%@'", pk, [[self class] tableName]];
+					if (sqlite3_exec (database, [seqIncrementQuery UTF8String], NULL, NULL, &errmsg) != SQLITE_OK)
+						NSLog(@"Error Message: %s", errmsg);
+				}
+				
+			}
+			else
+				NSLog(@"Error determining next PK value in table %@", [[self class] tableName]);
+			
+			sqlite3_finalize(statement);
+		}
+		
+		NSMutableString *updateSQL = [NSMutableString stringWithFormat:@"INSERT OR REPLACE INTO %@ (pk", [[self class] tableName]];
+		
+		NSMutableString *bindSQL = [NSMutableString string];
+		
+		for (NSString *propName in props)
+		{
+			if ([theTransients containsObject:propName]) continue;
+			
+			NSString *propType = [props objectForKey:propName];
+			NSString *className = @"";
+			if ([propType hasPrefix:@"@"])
+				className = [propType substringWithRange:NSMakeRange(2, [propType length]-3)];
+			if (! (isCollectionType(className)))
+			{
+				[updateSQL appendFormat:@", %@", [propName stringAsSQLColumnName]];
+				[bindSQL appendString:@", ?"];
+			}
+		}
+		
+		[updateSQL appendFormat:@") VALUES (?%@)", bindSQL];
+		
+		sqlite3_stmt *stmt;
+		int result = sqlite3_prepare_v2( database, [updateSQL UTF8String], -1, &stmt, nil);
+		
+		// if sql statement bound ok, now bind the column values
+		if (result == SQLITE_OK)
+		{
+			int colIndex = 1;
+			sqlite3_bind_int(stmt, colIndex++, pk);
+			
+			for (NSString *propName in props)
+			{
+				if ([theTransients containsObject:propName]) continue;
+				
+				NSString *propType = [props objectForKey:propName];
+				NSString *className = propType;
+				if ([propType hasPrefix:@"@"])
+					className = [propType substringWithRange:NSMakeRange(2, [propType length]-3)];
+				//int colIndex = sqlite3_bind_parameter_index(stmt, [[propName stringAsSQLColumnName] UTF8String]);
+				id theProperty = [self valueForKey:propName];
+				if (theProperty == nil && ! (isCollectionType(className)))
+				{
+					sqlite3_bind_null(stmt, colIndex++);
+				}
+				else if ([propType isEqualToString:@"i"] || // int
+						 [propType isEqualToString:@"I"] || // unsigned int
+						 [propType isEqualToString:@"l"] || // long
+						 [propType isEqualToString:@"L"] || // usigned long
+						 [propType isEqualToString:@"q"] || // long long
+						 [propType isEqualToString:@"Q"] || // unsigned long long
+						 [propType isEqualToString:@"s"] || // short
+						 [propType isEqualToString:@"S"] || // unsigned short
+						 [propType isEqualToString:@"B"] || // bool or _Bool
+						 [propType isEqualToString:@"f"] || // float
+						 [propType isEqualToString:@"d"] )  // double
+				{
+					sqlite3_bind_text(stmt, colIndex++, [[theProperty stringValue] UTF8String], -1, NULL);
+				}
+				else if ([propType isEqualToString:@"c"] ||	// char
+						 [propType isEqualToString:@"C"] ) // unsigned char
+					
+				{
+					NSString *theString = [theProperty stringValue];
+					sqlite3_bind_text(stmt, colIndex++, [theString UTF8String], -1, NULL);
+				}
+				else if ([propType hasPrefix:@"@"] ) // Object
+				{
+					NSString *className = [propType substringWithRange:NSMakeRange(2, [propType length]-3)];
+					
+					
+					if (! (isCollectionType(className)) )
+					{
+                        
+                        NSLog(@"Property: %@ : %@", propName, theProperty);
+						if ([[theProperty class] isSubclassOfClass:[SQLitePersistentObject class]])
+						{
+							[theProperty save];
+							sqlite3_bind_text(stmt, colIndex++, [[theProperty memoryMapKey] UTF8String], -1, NULL);
+						}
+						else if ([[theProperty class] shouldBeStoredInBlob])
+						{
+							NSData *data = [theProperty sqlBlobRepresentationOfSelf];
+							sqlite3_bind_blob(stmt, colIndex++, [data bytes], [data length], NULL);
+						}
+						else
+						{
+							sqlite3_bind_text(stmt, colIndex++, [[theProperty sqlColumnRepresentationOfSelf] UTF8String], -1, NULL);
+						}
+					}
+					else
+					{
+                        //do nothing
+                    }
+				}
+			}
+			if (sqlite3_step(stmt) != SQLITE_DONE)
+				NSLog(@"Error inserting or updating row");
+			sqlite3_finalize(stmt);
+		}
+		else
+			NSLog(@"Error preparing save SQL: %s", sqlite3_errmsg(database));
+		// Can't register in memory map until we have PK, so do that now.
+		if (![[objectMap allKeys] containsObject:[self memoryMapKey]])
+			[[self class] registerObjectInMemory:self];
+		
+		
+	}
+	
+	alreadySaving = NO;
+}
+
+
+
+
+
+
+
 
 /*
  * Reverts the object back to database state. Any changes that have been

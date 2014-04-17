@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-
+#import "SQLitePersistentObject.h"
 @interface BBSpike : NSObject <NSCoding>
 
 @property float value;

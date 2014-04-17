@@ -15,6 +15,8 @@
 @interface ViewAndRecordViewController() {
     dispatch_source_t callbackTimer;
     BBFile *aFile;
+    dispatch_source_t _timer;
+    float recordingTime;
 }
 
 @end
@@ -103,8 +105,34 @@
 - (IBAction)startRecording:(id)sender
 {
     CGRect stopButtonRect = CGRectMake(self.stopButton.frame.origin.x, 0.0f, self.stopButton.frame.size.width, self.stopButton.frame.size.height);
+    self.stopButton.titleLabel.numberOfLines = 2; // Dynamic number of lines
+    self.stopButton.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    self.stopButton.titleLabel.textAlignment = NSTextAlignmentCenter;
+    [self.stopButton setTitle:  @"Tap to Stop Recording" forState: UIControlStateNormal];
     
-	[UIView beginAnimations:nil context:NULL];
+    
+    
+    _timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue());
+    if (_timer)
+    {
+        recordingTime = 0.0f;
+        dispatch_source_set_timer(_timer, dispatch_time(DISPATCH_TIME_NOW, 0.1 * NSEC_PER_SEC), 0.1 * NSEC_PER_SEC, (1ull * NSEC_PER_SEC) / 10);
+        dispatch_source_set_event_handler(_timer, ^{
+            recordingTime+=0.1f;
+            float duration = recordingTime;//(float)[[BBAudioManager bbAudioManager] fileDuration];
+            float seconds = fmod(duration, 60.0);
+            double minutes = fmod(trunc(duration / 60.0), 60.0);
+            
+            //self.timerLabel.text = [NSString stringWithFormat:@"%02.0f:%04.1f", minutes, seconds];
+           // dispatch_async(dispatch_get_main_queue(), ^{
+                [self.stopButton setTitle:  [NSString stringWithFormat:@"Tap to Stop Recording \n%02.0f:%04.1f", minutes, seconds] forState: UIControlStateNormal];
+           // });
+        
+        });
+        dispatch_resume(_timer);
+    }
+    
+    [UIView beginAnimations:nil context:NULL];
 	[UIView setAnimationDuration:.25];
 	[UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
 	[self.stopButton setFrame:stopButtonRect];
@@ -115,12 +143,19 @@
         aFile = [[BBFile alloc] init];
         NSLog(@"URL: %@", [aFile fileURL]);
         [bbAudioManager startRecording:[aFile fileURL]];
+        recordingTime = 0.0f;
     }
 
 }
 
 - (IBAction)stopRecording:(id)sender {
     
+    if (_timer) {
+        dispatch_source_cancel(_timer);
+        // Remove this if you are on a Deployment Target of iOS6 or OSX 10.8 and above
+        dispatch_release(_timer);
+        _timer = nil;
+    }
 	float offset = self.stopButton.frame.size.height;
 	CGRect stopButtonRect = CGRectMake(self.stopButton.frame.origin.x, -offset, self.stopButton.frame.size.width, self.stopButton.frame.size.height);
 	[UIView beginAnimations:nil context:NULL];
@@ -136,6 +171,10 @@
     [aFile release];
 }
 
+- (void)timerTick{
+    
+    
+}
 
 //- (IBAction)recordButtonPressed:(id)sender
 //{

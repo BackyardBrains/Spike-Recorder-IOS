@@ -7,6 +7,7 @@
 //
 
 #import "SpikesAnalysisViewController.h"
+#import "MBProgressHUD.h"
 
 @interface SpikesAnalysisViewController (){
  dispatch_source_t callbackTimer;
@@ -28,7 +29,8 @@
     [[BBAnalysisManager bbAnalysisManager] prepareFileForSelection:self.bbfile];
     self.timeSlider.minimumValue = 0;
     self.timeSlider.maximumValue = [[BBAnalysisManager bbAnalysisManager] fileDuration];
-    [self.timeSlider setValue:[[BBAnalysisManager bbAnalysisManager] currentFileTime]];
+    [self.timeSlider setValue:[[BBAnalysisManager bbAnalysisManager] fileDuration]*0.5];
+    [[BBAnalysisManager bbAnalysisManager] setCurrentFileTime: (float)self.timeSlider.value];
     [glView loadSettings];
     [glView startAnimation];
 }
@@ -43,7 +45,7 @@
 {
     [super viewDidLoad];
     self.timeSlider.continuous = YES;
-    
+    [[BBAnalysisManager bbAnalysisManager] prepareFileForSelection:self.bbfile];
     // our CCGLTouchView being added as a subview
     glView = [[SpikesCinderView alloc] initWithFrame:self.view.frame];
     
@@ -71,7 +73,17 @@
 }
 
 - (IBAction)doneClickAction:(id)sender {
-    
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    hud.labelText = @"Saving selection";
+    doneBtn.enabled = NO;
+    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+        [[BBAnalysisManager bbAnalysisManager] filterSpikes];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            doneBtn.enabled = YES;
+            [MBProgressHUD hideHUDForView:self.view animated:YES];
+            [self.navigationController popViewControllerAnimated:YES];
+        });
+    });
 }
 - (IBAction)timeValueChanged:(id)sender {
     [[BBAnalysisManager bbAnalysisManager] setCurrentFileTime: (float)self.timeSlider.value];

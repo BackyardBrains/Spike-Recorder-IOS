@@ -147,18 +147,40 @@
     glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
     
     //Draw spikes
-
+    
+    float uperThreshold;
+    float lowerThreshold;
+    
+    if([[BBAnalysisManager bbAnalysisManager] threshold1]>[[BBAnalysisManager bbAnalysisManager] threshold2])
+    {
+        uperThreshold = [[BBAnalysisManager bbAnalysisManager] threshold1];
+        lowerThreshold = [[BBAnalysisManager bbAnalysisManager] threshold2];
+    }
+    else
+    {
+        uperThreshold = [[BBAnalysisManager bbAnalysisManager] threshold2];
+        lowerThreshold = [[BBAnalysisManager bbAnalysisManager] threshold1];
+    }
+    
     BOOL weAreInInterval = NO;
     std::vector<Vec2f>	 spikes = allSpikes.getPoints();
     float sizeOfPointX = 0.3*tenPixX;
     float sizeOfPointY = 0.3*tenPixY;
     float startTimeToDisplay = [[BBAnalysisManager bbAnalysisManager] currentFileTime]-numSecondsVisible;
     float endTimeToDisplay = [[BBAnalysisManager bbAnalysisManager] currentFileTime];
-    for(int i=1; i < spikes.size()-1; i++)
+    for(int i=0; i < spikes.size(); i++)
     {
         if(spikes[i].x>startTimeToDisplay && spikes[i].x<endTimeToDisplay)
         {
             weAreInInterval = YES;
+            if(spikes[i].y<uperThreshold && spikes[i].y>lowerThreshold)
+            {
+                glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+            }
+            else
+            {
+                glColor4f(0.5f, 0.0f, 0.0f, 1.0f);
+            }
             gl::drawSolidRect(Rectf(spikes[i].x-sizeOfPointX-endTimeToDisplay,spikes[i].y-sizeOfPointY,spikes[i].x+sizeOfPointX-endTimeToDisplay,spikes[i].y+sizeOfPointY));
         }
         else if(weAreInInterval)
@@ -398,11 +420,11 @@
         
         float distance1 = (touchPos.y - screenThresholdPos1.y)*(touchPos.y - screenThresholdPos1.y)+(touchPos.x - screenThresholdPos1.x)*(touchPos.x - screenThresholdPos1.x);
         float distance2 = (touchPos.y - screenThresholdPos2.y)*(touchPos.y - screenThresholdPos2.y)+(touchPos.x - screenThresholdPos2.x)*(touchPos.x - screenThresholdPos2.x);
-        if (distance1 < 6500) // set via experimentation
+        if (distance1 < 8500) // set via experimentation
         {
             [[BBAnalysisManager bbAnalysisManager] setThreshold1:worldTouchPos.y];
         }
-        if (distance2 < 6500) // set via experimentation
+        if (distance2 < 8500) // set via experimentation
         {
             [[BBAnalysisManager bbAnalysisManager] setThreshold2:worldTouchPos.y];
         }
