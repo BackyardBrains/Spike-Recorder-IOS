@@ -12,6 +12,7 @@
 #import "AudioFileWriter.h"
 #import "BBAudioFileReader.h"
 #import "DSPThreshold.h"
+@class BBFile;
 
 typedef enum BBStimulationType
 {
@@ -92,7 +93,7 @@ typedef enum BBStimulationType
 - (void)stopRecording;
 - (void)startThresholding:(UInt32)newNumPointsToSavePerThreshold;
 - (void)stopThresholding;
-- (void)startPlaying:(NSURL *)urlToFile;
+- (void)startPlaying:(BBFile *) fileToPlay;
 - (void)stopPlaying;
 - (void)pausePlaying;
 - (void)resumePlaying;
@@ -101,7 +102,8 @@ typedef enum BBStimulationType
 -(void) updateSelection:(float) newSelectionTime;
 - (float) selectionStartTime;
 - (float) selectionEndTime;
-
+-(NSMutableArray *) getSpikes;
+-(float) getTimeForSpikes;
 - (void)saveSettingsToUserDefaults;
 
 @end

@@ -7,7 +7,7 @@
 //
 
 #import "MyCinderGLView.h"
-
+#import "BBSpike.h"
 @interface MyCinderGLView ()
 {
     BBAudioManager *audioManager;
@@ -134,7 +134,6 @@
     mCam.setOrtho(-numSecondsVisible, -numSecondsMin, -numVoltsVisible/2.0f, numVoltsVisible/2.0f, 1, 100);;
     gl::setMatrices( mCam );
     
-    
     // Draw selection area
     std::stringstream timeStream;
     std::stringstream rmstream;
@@ -191,11 +190,13 @@
     // Set the line color and width
     glColor4f(0.0f, 1.0f, 0.0f, 1.0f);
     glLineWidth(1.0f);
-
+    
     // Put the audio on the screen
     [self fillDisplayVector];
     gl::draw(displayVector);
 
+    //draw spikes on the screen
+    [self drawSpikes];
     
     // Draw a threshold line, if we're thresholding
     if ([[BBAudioManager bbAudioManager] thresholding]) {
@@ -217,6 +218,42 @@
 
     
 }
+
+
+-(void) drawSpikes
+{
+    float currentTime = [[BBAudioManager bbAudioManager] getTimeForSpikes];
+    NSMutableArray* spikes;
+    if((spikes = [[BBAudioManager bbAudioManager] getSpikes])!=nil)
+    {
+        Vec2f refSizeS = [self worldToScreen:Vec2f(-numSecondsMin,0.0)];
+        Vec2f refSizeW = [self screenToWorld:Vec2f(refSizeS.x-10,refSizeS.y+10)];
+        float tenPixX =refSizeW.x+numSecondsMin;
+        float tenPixY =refSizeW.y;
+        //Draw spikes
+        glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+        BOOL weAreInInterval = NO;
+        float sizeOfPointX = 0.3*tenPixX;
+        float sizeOfPointY = 0.3*tenPixY;
+
+        
+        float startTimeToDisplay = currentTime-((numSecondsVisible> numSecondsMax)?numSecondsMax:numSecondsVisible);
+        float endTimeToDisplay = currentTime;
+        BBSpike * tempSpike;
+        for (tempSpike in spikes) {
+            if([tempSpike time]>startTimeToDisplay && [tempSpike time]<endTimeToDisplay)
+            {
+                weAreInInterval = YES;
+                gl::drawSolidRect(Rectf([tempSpike time]-sizeOfPointX-endTimeToDisplay,[tempSpike value]-sizeOfPointY,[tempSpike time]+sizeOfPointX-endTimeToDisplay,[tempSpike value]+sizeOfPointY));
+            }
+            else if(weAreInInterval)
+            {
+                break;
+            }
+        }
+}
+}
+
 
 - (void)drawScaleTextAndSelected:(std::stringstream *) timeStream andRms:(std::stringstream *) rmsStream
 {

@@ -68,7 +68,7 @@
 }
 
 
-//TODO:return all spikes in polyline array and filter and display in spikescinderview
+//Returns all spikes in PolyLine2f object
 -(void) getAllSpikes
 {
     allSpikes = PolyLine2f();
@@ -166,7 +166,7 @@
     std::vector<Vec2f>	 spikes = allSpikes.getPoints();
     float sizeOfPointX = 0.3*tenPixX;
     float sizeOfPointY = 0.3*tenPixY;
-    float startTimeToDisplay = [[BBAnalysisManager bbAnalysisManager] currentFileTime]-numSecondsVisible;
+    float startTimeToDisplay = [[BBAnalysisManager bbAnalysisManager] currentFileTime]-((numSecondsVisible> numSecondsMax)?numSecondsMax:numSecondsVisible);
     float endTimeToDisplay = [[BBAnalysisManager bbAnalysisManager] currentFileTime];
     for(int i=0; i < spikes.size(); i++)
     {

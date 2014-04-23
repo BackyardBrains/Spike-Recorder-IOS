@@ -44,7 +44,7 @@
         
         
         // And finally, start up the audio file again, and seek to where we were.
-        [bbAudioManager startPlaying:[bbfile fileURL]]; // startPlaying: initializes the file and buffers audio
+        [bbAudioManager startPlaying:bbfile]; // startPlaying: initializes the file and buffers audio
         bbAudioManager.currentFileTime = timeToSeekTo;
         
     }
@@ -85,7 +85,7 @@
     bbAudioManager = [BBAudioManager bbAudioManager];
     NSURL *theURL = [bbfile fileURL];
     NSLog(@"Playing a file at: %@", theURL);
-    [bbAudioManager startPlaying:theURL]; // startPlaying: initializes the file and buffers audio
+    [bbAudioManager startPlaying:bbfile]; // startPlaying: initializes the file and buffers audio
     
     // Set the slider to have the bounds of the audio file's duraiton
     timeSlider.minimumValue = 0;
@@ -193,6 +193,7 @@
 - (void)sliderTouchDown:(NSNotification *)notification {
     [bbAudioManager setSeeking:YES];
     [bbAudioManager pausePlaying];
+    audioPaused = YES;
 }
 
 - (IBAction)sliderValueChanged:(id)sender {

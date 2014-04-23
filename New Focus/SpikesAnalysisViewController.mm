@@ -23,6 +23,7 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     NSLog(@"Starting Spikes Analysis view");
+    [self.navigationController setNavigationBarHidden:YES animated:YES];
     [super viewWillAppear:animated];
     // Set the slider to have the bounds of the audio file's duraiton
 
@@ -39,11 +40,13 @@
 {
     [glView saveSettings];
     [glView stopAnimation];
+    [self.navigationController setNavigationBarHidden:NO animated:YES];
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+
     self.timeSlider.continuous = YES;
     [[BBAnalysisManager bbAnalysisManager] prepareFileForSelection:self.bbfile];
     // our CCGLTouchView being added as a subview

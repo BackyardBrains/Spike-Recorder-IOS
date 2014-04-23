@@ -19,7 +19,6 @@
 	NSString *comment;
 	NSDate *date;
 	NSMutableArray *_spikes;
-	NSMutableArray *_filteredSpikes;
     BOOL analyzed;
     BOOL spikesFiltered;
     float threshold1;
@@ -36,7 +35,6 @@
 @property (nonatomic, retain) NSString *spikesCSV;
 @property (nonatomic, retain) NSDate *date;
 @property (nonatomic, retain) NSMutableArray *spikes;
-@property (nonatomic, retain) NSMutableArray *filteredSpikes;
 @property BOOL analyzed;
 @property BOOL spikesFiltered;
 @property float threshold1;
@@ -47,5 +45,6 @@
 
 - (NSURL *)fileURL;
 -(id) initWithUrl:(NSURL *) urlOfExistingFile;
+-(void) saveWithoutArrays;
 
 @end

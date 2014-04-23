@@ -10,6 +10,9 @@
 #import "MyAppDelegate.h"
 #import "BBAnalysisManager.h"
 #import "MBProgressHUD.h"
+#import "AutocorrelationGraphViewController.h"
+#import "ISIHistogramViewController.h"
+
 @implementation BBFileActionViewControllerTBV
 
 
@@ -68,15 +71,30 @@
     
     if ([self.files count] == 1) //single file
     {
-        self.navigationItem.title = [[self.files objectAtIndex:0] shortname];
-        
-        self.actionOptions = [NSArray arrayWithObjects:
+        BBFile * tempFile = [self.files objectAtIndex:0];
+        self.navigationItem.title = [tempFile shortname];
+        if(tempFile.spikesFiltered)
+        {
+            self.actionOptions = [NSArray arrayWithObjects:
                               @"File Details",
                               @"Play",
-                              @"Analyze",
+                              @"Find Spikes",
+                              @"Autocorrelation",
+                              @"ISI",
+                              @"Average Spike",
                               //@"Email",
                               @"Share",
                               @"Delete", nil];
+        }
+        else
+        {
+            self.actionOptions = [NSArray arrayWithObjects:
+                                  @"File Details",
+                                  @"Play",
+                                  @"Find Spikes",
+                                  @"Share",
+                                  @"Delete", nil];
+        }
     }
     else //multiple files
     {
@@ -98,7 +116,7 @@
                                              selector:@selector(newFileAddedViaShare)
                                                  name:@"FileReceivedViaShare"
                                                object:nil];
-    
+    [self.tableView reloadData];
 }
 
 -(void) newFileAddedViaShare
@@ -185,7 +203,7 @@
         
 	}
      
-    else if ([cell.textLabel.text isEqualToString:@"Analyze"])
+    else if ([cell.textLabel.text isEqualToString:@"Find Spikes"])
 	{
         BBFile * fileToAnalyze = (BBFile *)[self.files objectAtIndex:0];
         
@@ -212,7 +230,48 @@
             });
         }
     }
-     
+    else if ([cell.textLabel.text isEqualToString: @"Autocorrelation"])
+	{
+
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        hud.labelText = @"Calculating...";
+        dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+            NSArray * values = [[BBAnalysisManager bbAnalysisManager] autocorrelationWithFile:(BBFile *)[self.files objectAtIndex:0] maxtime:0.1f andBinsize:0.001f];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [MBProgressHUD hideHUDForView:self.view animated:YES];
+                AutocorrelationGraphViewController *avc = [[AutocorrelationGraphViewController alloc] initWithNibName:@"AutocorrelationGraphViewController" bundle:nil];
+                avc.values = values;
+                [self.navigationController pushViewController:avc animated:YES];
+                [avc release];
+            });
+        });
+        
+        
+    }
+    else if ([cell.textLabel.text isEqualToString: @"ISI"])
+	{
+        
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        hud.labelText = @"Calculating...";
+        dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+            
+            NSMutableArray* values = [[NSMutableArray alloc] initWithCapacity:0];
+            NSMutableArray* limits = [[NSMutableArray alloc] initWithCapacity:0];
+            
+            [[BBAnalysisManager bbAnalysisManager] ISIWithFile:(BBFile *)[self.files objectAtIndex:0] maxtime:0.1f numOfBins:100 values:values limits:limits ];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [MBProgressHUD hideHUDForView:self.view animated:YES];
+                ISIHistogramViewController *avc = [[ISIHistogramViewController alloc] initWithNibName:@"ISIHistogramViewController" bundle:nil];
+                avc.values = values;
+                avc.limits = limits;
+                [self.navigationController pushViewController:avc animated:YES];
+                [avc release];
+
+            });
+        });
+        
+        
+    }
 	else if ([cell.textLabel.text isEqualToString:@"Share"])
 	{
         //grab just the filenames

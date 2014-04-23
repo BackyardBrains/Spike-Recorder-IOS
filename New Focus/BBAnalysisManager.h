@@ -28,4 +28,6 @@
 - (void)fetchAudioAndSpikes:(float *)data numFrames:(UInt32)numFrames whichChannel:(UInt32)whichChannel stride:(UInt32)stride;
 -(void) filterSpikes;
 -(NSMutableArray *) allSpikes;
+-(NSArray *) autocorrelationWithFile:(BBFile *) afile maxtime:(float) maxtime andBinsize:(float) binsize;
+-(void) ISIWithFile:(BBFile *) afile maxtime:(float) maxtime numOfBins:(int) bins values:(NSMutableArray *) valuesY limits:(NSMutableArray *) limitsX;
 @end

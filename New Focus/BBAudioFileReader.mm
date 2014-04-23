@@ -121,7 +121,7 @@ static pthread_mutex_t threadLock;
 
 - (void)retrieveFreshAudio:(float *)buffer numFrames:(UInt32)thisNumFrames numChannels:(UInt32)thisNumChannels
 {
-//    dispatch_sync(dispatch_get_main_queue(), ^{
+ //   dispatch_sync(dispatch_get_main_queue(), ^{
     
         AudioBufferList incomingAudio;
         incomingAudio.mNumberBuffers = 1;

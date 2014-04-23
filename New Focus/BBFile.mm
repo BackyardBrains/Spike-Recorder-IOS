@@ -35,7 +35,6 @@
     [spikesCSV release];
 	[date release];
 	[_spikes release];
-    [_filteredSpikes release];
 	[super dealloc];
 
 }
@@ -73,7 +72,6 @@
         self.threshold2 = 0.0f;
         self.threshold1 = 0.0f;
 		_spikes = [[NSMutableArray alloc] initWithCapacity:0];
-        _filteredSpikes = [[NSMutableArray alloc] initWithCapacity:0];
 	}
     
 	return self;
@@ -86,20 +84,9 @@
     [_spikes addObjectsFromArray:spikes];
 }
 
--(void) setFilteredSpikes:(NSMutableArray *) spikes
-{
-    [_filteredSpikes removeAllObjects];
-    [_filteredSpikes addObjectsFromArray:spikes];
-}
-
 -(NSMutableArray*) spikes
 {
     return _spikes;
-}
-
--(NSMutableArray*) filteredSpikes
-{
-    return _filteredSpikes;
 }
 
 -(id) initWithUrl:(NSURL *) urlOfExistingFile
@@ -161,7 +148,6 @@
         self.threshold2 = 0.0f;
         self.threshold1 = 0.0f;
         _spikes = [[NSMutableArray alloc] init];
-        _filteredSpikes = [[NSMutableArray alloc] init];
 	}
     
 	return self;
@@ -231,7 +217,6 @@
     [self renameIfNeeded];
     [self spikesToCSV];
     _spikes = [[NSMutableArray alloc] init];
-    _filteredSpikes = [[NSMutableArray alloc] init];
     [super save];
     [self CSVToSpikes];
 }
@@ -241,7 +226,6 @@
     [self renameIfNeeded];
     //[self spikesToCSV];
     //_spikes = [[NSMutableArray alloc] init];
-    //_filteredSpikes = [[NSMutableArray alloc] init];
     [super saveWithoutArrays];
 }
 

@@ -9,6 +9,8 @@
 #import "BBAnalysisManager.h"
 #import "BBSpike.h"
 #import <Accelerate/Accelerate.h>
+#import <cmath>
+
 #define BUFFER_SIZE 524288
 
 #define kSchmittON 1
@@ -126,7 +128,7 @@ static BBAnalysisManager *bbAnalysisManager = nil;
 }
 
 
-#pragma mark - Analysis
+#pragma mark - Spike Analysis
 
 - (int)findSpikes:(BBFile *)aFile
 {
@@ -336,22 +338,165 @@ static BBAnalysisManager *bbAnalysisManager = nil;
         }
         
         int i;
-        [_file.filteredSpikes removeAllObjects];
+        NSMutableArray * filteredSpikes = [[NSMutableArray alloc] initWithCapacity:0];
         BBSpike * tempSpike;
         for(i=0;i<[_file.spikes count];i++)
         {
             tempSpike = (BBSpike *)[_file.spikes objectAtIndex:i];
             if(tempSpike.value>lowerThreshold && tempSpike.value<uperThreshold)
             {
-                [_file.filteredSpikes addObject:tempSpike];
+                [filteredSpikes addObject:tempSpike];
             }
         }
-        _file.spikes = _file.filteredSpikes;
+        _file.spikes = filteredSpikes;
 
-        [_file.filteredSpikes removeAllObjects];
+        [filteredSpikes removeAllObjects];
+        [filteredSpikes release];
         _file.spikesFiltered = YES;
         [_file save];
     }
+}
+
+
+-(NSArray *) autocorrelationWithFile:(BBFile *) afile maxtime:(float) maxtime andBinsize:(float) binsize
+{
+    if(afile && [afile.spikes count]>1)
+    {
+        BBSpike * firstSpike;
+        BBSpike * secondSpike;
+        int n = ceilf((maxtime+binsize)/binsize);
+        
+        //float C1 =[(BBSpike *)[afile.spikes objectAtIndex:[afile.spikes count]-1] time] - [(BBSpike *)[afile.spikes objectAtIndex:0] time];
+       // float C2= ((float)([afile.spikes count]*[afile.spikes count]*binsize))/C1*C1;
+        
+        int histogram [n];
+        for (int x = 0; x < n; ++x)
+        {
+            histogram[x] = 0;
+        }
+        
+        float minEdge = -binsize*0.5;
+        float maxEdge = maxtime+binsize*0.5;
+        float diff;
+        int index;
+        int mainIndex;
+        int secIndex;
+        for(mainIndex=0;mainIndex<[afile.spikes count]; mainIndex++)
+        {
+            firstSpike = [afile.spikes objectAtIndex:mainIndex];
+            //Check on left of spike
+            for(secIndex = mainIndex;secIndex>=0;secIndex--)
+            {
+                secondSpike = [afile.spikes objectAtIndex:secIndex];
+                diff = firstSpike.time-secondSpike.time;
+                if(diff>minEdge && diff<maxEdge)
+                {
+                    index = (int)(((diff-minEdge)/binsize));
+                    histogram[index]++;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            //check on right of spike
+            for(secIndex = mainIndex+1;secIndex<[afile.spikes count];secIndex++)
+            {
+                secondSpike = [afile.spikes objectAtIndex:secIndex];
+                diff = firstSpike.time-secondSpike.time;
+                if(diff>minEdge && diff<maxEdge)
+                {
+                    index = (int)(((diff-minEdge)/binsize));
+                    histogram[index]++;
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+        
+        //Normalization
+       // for(int i=0;i<n;i++)
+       // {
+       //     histogram[i] = histogram[i]/C1 - C2;
+       // }
+        
+        NSMutableArray* histMA = [NSMutableArray arrayWithCapacity:n];
+        for ( int i = 0; i < n; ++i )
+        {
+            [histMA addObject:[NSNumber numberWithInt:histogram[i]]];
+        }
+        
+        
+        return (NSArray *) histMA;
+    }
+    return nil;
+}
+
+
+//Inter-spike-interval histogram generator
+-(void) ISIWithFile:(BBFile *) afile maxtime:(float) maxtime numOfBins:(int) bins values:(NSMutableArray *) valuesY limits:(NSMutableArray *) limitsX
+{
+    if(afile && [afile.spikes count]>1)
+    {
+        int spikesCount = [afile.spikes count];
+        //make edges
+        float * logspace = [self generateLogSpaceWithMin:-3 max:1 bins:bins-1];
+
+        int histogram [bins];
+        for (int x = 0; x < bins; ++x)
+        {
+            histogram[x] = 0;
+        }
+        
+        //calculate histogram
+        float interspikeDistance;
+        for(int i=1;i<spikesCount;i++)
+        {
+            interspikeDistance = [((BBSpike *)[afile.spikes objectAtIndex:i]) time] - [((BBSpike *)[afile.spikes objectAtIndex:i-1]) time];
+            for(int j=1;j<bins;j++)
+            {
+                if(interspikeDistance>logspace[j-1] && interspikeDistance<logspace[j])
+                {
+                    histogram[j-1]++;
+                    break;
+                }
+            }
+        }
+        //Convert histogram to NSArray
+        [valuesY removeAllObjects];
+        [limitsX removeAllObjects];
+        for ( int i = 0; i < bins; ++i )
+        {
+            [valuesY addObject:[NSNumber numberWithInt:histogram[i]]];
+        }
+        for ( int i = 0; i < bins; ++i )
+        {
+            [limitsX addObject:[NSNumber numberWithFloat:logspace[i]]];
+        }
+        free(logspace);
+    }
+}
+
+//Generate logarithmically spaced vectors
+-(float *) generateLogSpaceWithMin:(int) min max:(int) max bins:(int) logBins
+{
+    double logarithmicBase = M_E;
+    double mins = pow(10.0,min);
+    double maxs = pow(10.0,max);
+    double logMin = log(mins);
+    double logMax = log(maxs);
+    double delta = (logMax - logMin) / logBins;
+
+    double accDelta = 0;
+    float* v = new float[logBins+1];
+    for (int i = 0; i <= logBins; ++i)
+    {
+        v[i] = (float) pow(logarithmicBase, logMin + accDelta);
+        accDelta += delta;// accDelta = delta * i
+    }
+    return v;
 }
 
 
