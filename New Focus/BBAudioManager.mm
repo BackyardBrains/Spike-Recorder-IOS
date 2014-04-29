@@ -300,11 +300,15 @@ static BBAudioManager *bbAudioManager = nil;
     
     
     if (self.playing == false && fileReader != nil)
+    {
+        [fileReader release];
         fileReader = nil;
+        audioManager.outputBlock = nil;
+    }
     
     _file = fileToPlay;
     
-    ringBuffer->Clear();
+    //ringBuffer->Clear();
     fileReader = [[BBAudioFileReader alloc]
                   initWithAudioFileURL:[_file fileURL]
                   samplingRate:audioManager.samplingRate
@@ -330,46 +334,43 @@ static BBAudioManager *bbAudioManager = nil;
                 }
 
                 //get the data from file into clean ring buffer
+                dispatch_sync(dispatch_get_main_queue(), ^{
+                    ringBuffer->Clear();
+                    ringBuffer->SeekWriteHeadPosition(0);
+                    ringBuffer->SeekReadHeadPosition(0);
+                    [fileReader retrieveFreshAudio:tempCalculationBuffer numFrames:(UInt32)(targetFrame-startFrame) numChannels:numChannels seek:(UInt32)startFrame];
+                    
+                    ringBuffer->AddNewInterleavedFloatData(tempCalculationBuffer, targetFrame-startFrame, numChannels);
+                  
+                    _preciseTimeOfLastData = (float)targetFrame/(float)fileReader.samplingRate;
+                    //NSLog(@"MS: %f", _preciseTimeOfLastData);
+                    //set playback time to scrubber position
+                    fileReader.currentTime = lastSeekPosition;
+                    if(selecting)
+                    {
+                         //if we have active selection recalculate RMS
+                        [self updateSelection:_selectionEndTime];
+                    }
+                });
+                
+               
+               
 
-                if(targetFrame!=0)
-                {
-                    dispatch_sync(dispatch_get_main_queue(), ^{
-                        ringBuffer->Clear();
-                        ringBuffer->SeekWriteHeadPosition(0);
-                        ringBuffer->SeekReadHeadPosition(0);
-                        [fileReader retrieveFreshAudio:tempCalculationBuffer numFrames:(UInt32)(targetFrame-startFrame) numChannels:numChannels seek:(UInt32)startFrame];
-                        
-                        ringBuffer->AddNewInterleavedFloatData(tempCalculationBuffer, targetFrame-startFrame, numChannels);
-
-                        
-                    });
-                }
-                _preciseTimeOfLastData = (float)targetFrame/(float)fileReader.samplingRate;
-                
-
-                
-                //set playback time to scrubber position
-                fileReader.currentTime = lastSeekPosition;
-                
-                //if we have active selection recalculate RMS
-                if(selecting)
-                {
-                    [self updateSelection:_selectionEndTime];
-                
-                }
             }
+            
             //we keep currentTime here to have precise time to sinc spikes display with waveform
-            _preciseTimeOfLastData = fileReader.currentTime;
+            //_preciseTimeOfLastData = fileReader.currentTime;
             //set playback data to zero (silence during scrubbing)
             memset(data, 0, numChannels*numFrames*sizeof(float));
             return;
         }
-        //we keep currentTime here to have precise time to sinc spikes display with waveform
-        dispatch_sync(dispatch_get_main_queue(), ^{
-
-            [fileReader retrieveFreshAudio:data numFrames:numFrames numChannels:numChannels];
+        //we keep currentTime here to have precise time to sinc spikes marks display with waveform
+        dispatch_sync(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH , 0), ^{
+         //dispatch_sync(dispatch_get_main_queue(), ^{
+             [fileReader retrieveFreshAudio:data numFrames:numFrames numChannels:numChannels];
+            //NSLog(@"M: %f", _preciseTimeOfLastData);
             ringBuffer->AddNewInterleavedFloatData(data, numFrames-1, numChannels);
-            _preciseTimeOfLastData = fileReader.currentTime; 
+            _preciseTimeOfLastData = fileReader.currentTime;
         });
         
         if (fileReader.fileIsDone) {
@@ -389,6 +390,13 @@ static BBAudioManager *bbAudioManager = nil;
     
 }
 
+-(void) clearWaveform
+{
+    if(ringBuffer)
+    {
+        ringBuffer->Clear();
+    }
+}
 
 - (void)stopPlaying
 {
@@ -396,7 +404,7 @@ static BBAudioManager *bbAudioManager = nil;
     // Mark ourselves as not playing
     [self pausePlaying];
     audioManager.outputBlock = nil;
-        
+    _preciseTimeOfLastData = 0.0f;
     // Toss the file reader.
     [fileReader release];
     fileReader = nil;
@@ -416,10 +424,11 @@ static BBAudioManager *bbAudioManager = nil;
     self.playing = true;
 }
 
-- (void)fetchAudio:(float *)data numFrames:(UInt32)numFrames whichChannel:(UInt32)whichChannel stride:(UInt32)stride
+- (float)fetchAudio:(float *)data numFrames:(UInt32)numFrames whichChannel:(UInt32)whichChannel stride:(UInt32)stride
 {
     if (!thresholding) {
-        ringBuffer->FetchFreshData2(data, numFrames, whichChannel, stride);
+        float timeOfData = ringBuffer->FetchFreshData2(data, numFrames, whichChannel, stride);
+        return timeOfData;
     }
     else if (thresholding) {
         // NOTE: this is not multi-channel
@@ -432,6 +441,7 @@ static BBAudioManager *bbAudioManager = nil;
             
         }
     }
+    return 0.0f;
     
 }
 

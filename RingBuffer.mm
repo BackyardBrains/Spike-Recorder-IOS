@@ -24,7 +24,7 @@
 
 #include "RingBuffer.h"
 #import <libkern/OSAtomic.h>
-
+#import "BBAudioManager.h"
 static void atomic_set(int64_t *ptr, int64_t value)
 {
     OSAtomicAdd64(value - *ptr, ptr);
@@ -162,9 +162,10 @@ void RingBuffer::AddNewInterleavedFloatData(const float *newData, const SInt64 n
 }
 
 //Returns fresh (last written) data and does not change mLastReadIndex or mNumUnreadFrames or mLastWrittenIndex
-void RingBuffer::FetchFreshData2(float *outData, SInt64 numFrames, SInt64 whichChannel, SInt64 stride)
+float RingBuffer::FetchFreshData2(float *outData, SInt64 numFrames, SInt64 whichChannel, SInt64 stride)
 {
-
+   // NSLog(@"-");
+    float tempTime = [[BBAudioManager bbAudioManager] getTimeForSpikes];
     if (mLastWrittenIndex[whichChannel] - numFrames >= 0) { // if we're requesting samples that won't go off the left end of the ring buffer, then go ahead and copy them all out.
         
         UInt32 idx = mLastWrittenIndex[whichChannel] - numFrames;
@@ -175,6 +176,7 @@ void RingBuffer::FetchFreshData2(float *outData, SInt64 numFrames, SInt64 whichC
                    outData, 
                    stride, 
                    numFrames);
+        
     }
     
     else { // if we will overrun, then we need to do two separate copies.
@@ -202,7 +204,7 @@ void RingBuffer::FetchFreshData2(float *outData, SInt64 numFrames, SInt64 whichC
                    numSamplesInSecondCopy);
         
     }
-
+    return tempTime;
 }
 
 //Returns FIFO data (not newest) and changes mLastReadIndex, mNumUnreadFrames

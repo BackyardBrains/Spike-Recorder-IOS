@@ -67,14 +67,17 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    [self.navigationController setNavigationBarHidden:YES animated:YES];
+    [[BBAudioManager bbAudioManager] clearWaveform];
     [glView startAnimation];
+
     audioPaused = NO;
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    
+
     // Make sure that we're playing out of the right audioroute, and if it changes
     // (e.g., if you unplug the headphones while playing), it just works
     [self ifNoHeadphonesConfigureAudioToPlayOutOfSpeakers];
@@ -83,6 +86,7 @@
     
     // Grab the audio file, and start buffering audio from it.
     bbAudioManager = [BBAudioManager bbAudioManager];
+    [[BBAudioManager bbAudioManager] clearWaveform];
     NSURL *theURL = [bbfile fileURL];
     NSLog(@"Playing a file at: %@", theURL);
     [bbAudioManager startPlaying:bbfile]; // startPlaying: initializes the file and buffers audio
@@ -112,8 +116,9 @@
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-    
+
     [super viewWillDisappear:animated];
+    [self.navigationController setNavigationBarHidden:NO animated:YES];
     [glView saveSettings:FALSE]; // save non-threshold settings
     [glView stopAnimation];
     dispatch_suspend(callbackTimer);

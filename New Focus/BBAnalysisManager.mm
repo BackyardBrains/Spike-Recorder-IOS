@@ -32,8 +32,7 @@ static BBAnalysisManager *bbAnalysisManager = nil;
 @implementation BBAnalysisManager
 
 @synthesize fileToAnalyze;
-@synthesize threshold1;
-@synthesize threshold2;
+
 
 #pragma mark - Singleton Methods
 + (BBAnalysisManager *) bbAnalysisManager
@@ -82,8 +81,6 @@ static BBAnalysisManager *bbAnalysisManager = nil;
 
         tempCalculationBuffer = (float *)calloc(BUFFER_SIZE, sizeof(float));
         dspAnalizer = new DSPAnalysis();
-        self.threshold1 = 0;
-        self.threshold2 = 0;
     }
     
     return self;
@@ -96,8 +93,6 @@ static BBAnalysisManager *bbAnalysisManager = nil;
     _file = aFile;
     if (fileReader != nil)
         fileReader = nil;
-    self.threshold1 = _file.threshold1;
-    self.threshold2 = _file.threshold2;
     fileReader = [[BBAudioFileReader alloc]
                   initWithAudioFileURL:[aFile fileURL]
                   samplingRate:aFile.samplingrate
@@ -298,6 +293,7 @@ static BBAnalysisManager *bbAnalysisManager = nil;
     }
     [peaksIndexes addObjectsFromArray:peaksIndexesNeg];
     
+    //sort all spikes according to time
     NSSortDescriptor *sortDescriptor;
     sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"index"
                                                  ascending:YES];
@@ -305,62 +301,81 @@ static BBAnalysisManager *bbAnalysisManager = nil;
     NSMutableArray *sortedArray;
     sortedArray = [[peaksIndexes sortedArrayUsingDescriptors:sortDescriptors] mutableCopy];
 
-    aFile.spikes = sortedArray;
+    //make array of arrays (with just one element that is spike train that contains all spikes)
+    NSMutableArray * spikesArray = [[NSMutableArray alloc] init];
+    [spikesArray addObject:sortedArray];
+    aFile.spikes = spikesArray;
+    
     //aFile.analyzed = YES;
     //[aFile save];
     [peaksIndexes release];
     [peaksIndexesNeg release];
     [sortDescriptor release];
     [sortedArray release];
+    [spikesArray release];
     free(stdArray);
     
     return 0;
 }
 
+//
+// Separate all spikes to spike trains. And put it in _file.spikes array of spike trains
+//
 -(void) filterSpikes
 {
-    if(_file)
+    if(_file && _file.numberOfThresholds>0)
     {
-        _file.threshold1 = self.threshold1;
-        _file.threshold2 = self.threshold2;
-        float uperThreshold;
-        float lowerThreshold;
-        
-        if(self.threshold1>self.threshold2)
-        {
-            uperThreshold = self.threshold1;
-            lowerThreshold = self.threshold2;
-        }
-        else
-        {
-            uperThreshold = self.threshold2;
-            lowerThreshold = self.threshold1;
-        }
-        
-        int i;
+        NSMutableArray * tempAllSpikes = [[NSMutableArray alloc] init];
+        [tempAllSpikes addObjectsFromArray:[_file.spikes objectAtIndex:0]];
+        [_file.spikes removeAllObjects];
         NSMutableArray * filteredSpikes = [[NSMutableArray alloc] initWithCapacity:0];
-        BBSpike * tempSpike;
-        for(i=0;i<[_file.spikes count];i++)
+        for(int j=0;j<_file.numberOfThresholds;j++)
         {
-            tempSpike = (BBSpike *)[_file.spikes objectAtIndex:i];
-            if(tempSpike.value>lowerThreshold && tempSpike.value<uperThreshold)
-            {
-                [filteredSpikes addObject:tempSpike];
-            }
-        }
-        _file.spikes = filteredSpikes;
 
+            float uperThreshold;
+            float lowerThreshold;
+            [self setCurrentSpikeTrain:j];
+            if(self.thresholdFirst>self.thresholdSecond)
+            {
+                uperThreshold = self.thresholdFirst;
+                lowerThreshold = self.thresholdSecond;
+            }
+            else
+            {
+                uperThreshold = self.thresholdSecond;
+                lowerThreshold = self.thresholdFirst;
+            }
+            
+            int i;
+
+            BBSpike * tempSpike;
+            for(i=0;i<[tempAllSpikes count];i++)
+            {
+                tempSpike = (BBSpike *)[tempAllSpikes objectAtIndex:i];
+                if(tempSpike.value>lowerThreshold && tempSpike.value<uperThreshold)
+                {
+                    [filteredSpikes addObject:tempSpike];
+                }
+            }
+            [_file.spikes addObject:[[filteredSpikes copy] autorelease]];//put new spike train to array of trains
+
+            [filteredSpikes removeAllObjects];
+        }
         [filteredSpikes removeAllObjects];
         [filteredSpikes release];
-        _file.spikesFiltered = YES;
+        [tempAllSpikes removeAllObjects];
+        [tempAllSpikes release];
+        _file.spikesFiltered = @"filtered";
         [_file save];
     }
+
 }
 
 
--(NSArray *) autocorrelationWithFile:(BBFile *) afile maxtime:(float) maxtime andBinsize:(float) binsize
+-(NSArray *) autocorrelationWithFile:(BBFile *) afile spikeTrainIndex:(NSInteger) aSpikeTrainIndex maxtime:(float) maxtime andBinsize:(float) binsize
 {
-    if(afile && [afile.spikes count]>1)
+    NSMutableArray * spikeTrain = (NSMutableArray *)[afile.spikes objectAtIndex:aSpikeTrainIndex];
+    if(afile && [spikeTrain count]>1)
     {
         BBSpike * firstSpike;
         BBSpike * secondSpike;
@@ -381,13 +396,14 @@ static BBAnalysisManager *bbAnalysisManager = nil;
         int index;
         int mainIndex;
         int secIndex;
-        for(mainIndex=0;mainIndex<[afile.spikes count]; mainIndex++)
+
+        for(mainIndex=0;mainIndex<[spikeTrain count]; mainIndex++)
         {
-            firstSpike = [afile.spikes objectAtIndex:mainIndex];
+            firstSpike = [spikeTrain objectAtIndex:mainIndex];
             //Check on left of spike
             for(secIndex = mainIndex;secIndex>=0;secIndex--)
             {
-                secondSpike = [afile.spikes objectAtIndex:secIndex];
+                secondSpike = [spikeTrain objectAtIndex:secIndex];
                 diff = firstSpike.time-secondSpike.time;
                 if(diff>minEdge && diff<maxEdge)
                 {
@@ -400,9 +416,9 @@ static BBAnalysisManager *bbAnalysisManager = nil;
                 }
             }
             //check on right of spike
-            for(secIndex = mainIndex+1;secIndex<[afile.spikes count];secIndex++)
+            for(secIndex = mainIndex+1;secIndex<[spikeTrain count];secIndex++)
             {
-                secondSpike = [afile.spikes objectAtIndex:secIndex];
+                secondSpike = [spikeTrain objectAtIndex:secIndex];
                 diff = firstSpike.time-secondSpike.time;
                 if(diff>minEdge && diff<maxEdge)
                 {
@@ -435,12 +451,75 @@ static BBAnalysisManager *bbAnalysisManager = nil;
 }
 
 
-//Inter-spike-interval histogram generator
--(void) ISIWithFile:(BBFile *) afile maxtime:(float) maxtime numOfBins:(int) bins values:(NSMutableArray *) valuesY limits:(NSMutableArray *) limitsX
+-(NSArray *) crosscorrelationWithFile:(BBFile *) afile firstSpikeTrainIndex:(NSInteger) fSpikeTrainIndex secondSpikeTrainIndex:(NSInteger) sSpikeTrainIndex maxtime:(float) maxtime andBinsize:(float) binsize
 {
-    if(afile && [afile.spikes count]>1)
+    NSMutableArray * fspikeTrain = (NSMutableArray *)[afile.spikes objectAtIndex:fSpikeTrainIndex];
+    NSMutableArray * sspikeTrain = (NSMutableArray *)[afile.spikes objectAtIndex:sSpikeTrainIndex];
+    if(afile && [fspikeTrain count]>1 && [sspikeTrain count]>1)
     {
-        int spikesCount = [afile.spikes count];
+        BBSpike * firstSpike;
+        BBSpike * secondSpike;
+        int n = ceilf((2*maxtime+binsize)/binsize);
+        
+        //float C1 =[(BBSpike *)[afile.spikes objectAtIndex:[afile.spikes count]-1] time] - [(BBSpike *)[afile.spikes objectAtIndex:0] time];
+        // float C2= ((float)([afile.spikes count]*[afile.spikes count]*binsize))/C1*C1;
+        
+        int histogram [n];
+        for (int x = 0; x < n; ++x)
+        {
+            histogram[x] = 0;
+        }
+        
+        float minEdge = -maxtime-binsize*0.5;
+        float maxEdge = maxtime+binsize*0.5;
+        float diff;
+        int index;
+        int mainIndex;
+        int secIndex;
+        BOOL insideInterval = NO;
+        for(mainIndex=0;mainIndex<[fspikeTrain count]; mainIndex++)
+        {
+            firstSpike = [fspikeTrain objectAtIndex:mainIndex];
+            //Check on left of spike
+            insideInterval = NO;
+            for(secIndex = 0;secIndex<[sspikeTrain count];secIndex++)
+            {
+                secondSpike = [sspikeTrain objectAtIndex:secIndex];
+                diff = firstSpike.time-secondSpike.time;
+                if(diff>minEdge && diff<maxEdge)
+                {
+                    insideInterval = YES;
+                    index = (int)(((diff-minEdge)/binsize));
+                    histogram[index]++;
+                }
+                else if(insideInterval)
+                {
+                    break;
+                }
+            }
+        }
+        
+        NSMutableArray* histMA = [NSMutableArray arrayWithCapacity:n];
+        for ( int i = 0; i < n; ++i )
+        {
+            [histMA addObject:[NSNumber numberWithInt:histogram[i]]];
+        }
+        
+        
+        return (NSArray *) histMA;
+    }
+    return nil;
+}
+
+
+
+//Inter-spike-interval histogram generator
+-(void) ISIWithFile:(BBFile *) afile spikeTrainIndex:(NSInteger) aSpikeTrainIndex maxtime:(float) maxtime numOfBins:(int) bins values:(NSMutableArray *) valuesY limits:(NSMutableArray *) limitsX
+{
+    NSMutableArray * spikeTrain = (NSMutableArray *)[afile.spikes objectAtIndex:aSpikeTrainIndex];
+    if(afile && [spikeTrain count]>1)
+    {
+        int spikesCount = [spikeTrain count];
         //make edges
         float * logspace = [self generateLogSpaceWithMin:-3 max:1 bins:bins-1];
 
@@ -454,7 +533,7 @@ static BBAnalysisManager *bbAnalysisManager = nil;
         float interspikeDistance;
         for(int i=1;i<spikesCount;i++)
         {
-            interspikeDistance = [((BBSpike *)[afile.spikes objectAtIndex:i]) time] - [((BBSpike *)[afile.spikes objectAtIndex:i-1]) time];
+            interspikeDistance = [((BBSpike *)[spikeTrain objectAtIndex:i]) time] - [((BBSpike *)[spikeTrain objectAtIndex:i-1]) time];
             for(int j=1;j<bins;j++)
             {
                 if(interspikeDistance>logspace[j-1] && interspikeDistance<logspace[j])
@@ -499,6 +578,60 @@ static BBAnalysisManager *bbAnalysisManager = nil;
     return v;
 }
 
+#pragma mark - Thresholds
+-(void) addAnotherThresholds
+{
+    [_file addAnotherThresholds];
+}
+
+-(void) removeSelectedThresholds
+{
+    [_file removeCurrentThresholds];
+}
+
+#pragma mark - Getters/ Setters
+
+-(NSInteger) moveToNextSpikeTrain
+{
+    return [_file moveToNextSpikeTrain];
+}
+
+-(void) setCurrentSpikeTrain:(NSInteger) aCurrentSpikeTrain
+{
+    
+    _file.currentSpikeTrain = aCurrentSpikeTrain;
+    
+}
+
+-(NSInteger) numberOfSpikeTrains
+{
+    return _file.numberOfThresholds;
+}
+
+-(NSInteger) currentSpikeTrain
+{
+    return _file.currentSpikeTrain;
+}
+
+-(void) setThresholdFirst:(float)aThresholdFirst
+{
+    _file.thresholdFirst = aThresholdFirst;
+}
+
+-(float) thresholdFirst
+{
+    return _file.thresholdFirst;
+}
+
+-(void) setThresholdSecond:(float) aThresholdSecond
+{
+    _file.thresholdSecond = aThresholdSecond;
+}
+
+-(float) thresholdSecond
+{
+    return _file.thresholdSecond;
+}
 
 -(NSMutableArray *) allSpikes
 {

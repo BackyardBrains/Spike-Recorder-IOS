@@ -97,7 +97,7 @@ typedef enum BBStimulationType
 - (void)stopPlaying;
 - (void)pausePlaying;
 - (void)resumePlaying;
-- (void)fetchAudio:(float *)data numFrames:(UInt32)numFrames whichChannel:(UInt32)whichChannel stride:(UInt32)stride;
+- (float)fetchAudio:(float *)data numFrames:(UInt32)numFrames whichChannel:(UInt32)whichChannel stride:(UInt32)stride;
 -(void) endSelection;
 -(void) updateSelection:(float) newSelectionTime;
 - (float) selectionStartTime;
@@ -105,5 +105,6 @@ typedef enum BBStimulationType
 -(NSMutableArray *) getSpikes;
 -(float) getTimeForSpikes;
 - (void)saveSettingsToUserDefaults;
+-(void) clearWaveform;
 
 @end

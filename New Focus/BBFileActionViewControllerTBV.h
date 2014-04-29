@@ -25,6 +25,9 @@
 
 @interface BBFileActionViewControllerTBV : UITableViewController  
         <UIActionSheetDelegate, MFMailComposeViewControllerDelegate>
+{
+    PlaybackViewController * playbackController;
+}
 
 @property (nonatomic, retain) NSArray *actionOptions;
 

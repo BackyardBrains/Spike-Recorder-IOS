@@ -14,6 +14,7 @@
     float destNumSecondsVisible; // used for short animations of scaling the plot
     float touchStartTime;
     BOOL weAreDrawingSelection;
+    float timeForSincDrawing;
 }
 
 - (Vec2f)calculateTouchDistanceChange:(std::vector<ci::app::TouchEvent::Touch>)touches;
@@ -184,6 +185,7 @@
         glColor4f(0.8, 0.8, 0.8, 1.0);
         gl::drawLine(Vec2f(sStartTime, -numVoltsVisible), Vec2f(sStartTime, numVoltsVisible));
         gl::drawLine(Vec2f(sEndTime, -numVoltsVisible), Vec2f(sEndTime, numVoltsVisible));
+        gl::enableDepthRead();
     }
 
     
@@ -192,12 +194,13 @@
     glLineWidth(1.0f);
     
     // Put the audio on the screen
+
     [self fillDisplayVector];
     gl::draw(displayVector);
-
     //draw spikes on the screen
     [self drawSpikes];
-    
+
+
     // Draw a threshold line, if we're thresholding
     if ([[BBAudioManager bbAudioManager] thresholding]) {
         glColor4f(1.0, 0.0, 0.0, 1.0);
@@ -222,7 +225,13 @@
 
 -(void) drawSpikes
 {
-    float currentTime = [[BBAudioManager bbAudioManager] getTimeForSpikes];
+    gl::enableDepthRead();
+    float currentTime = timeForSincDrawing ;
+    if(![[BBAudioManager bbAudioManager] playing])
+    {
+        currentTime = [[BBAudioManager bbAudioManager] getTimeForSpikes];
+    }
+   // NSLog(@"D: %f", currentTime);
     NSMutableArray* spikes;
     if((spikes = [[BBAudioManager bbAudioManager] getSpikes])!=nil)
     {
@@ -240,18 +249,50 @@
         float startTimeToDisplay = currentTime-((numSecondsVisible> numSecondsMax)?numSecondsMax:numSecondsVisible);
         float endTimeToDisplay = currentTime;
         BBSpike * tempSpike;
-        for (tempSpike in spikes) {
-            if([tempSpike time]>startTimeToDisplay && [tempSpike time]<endTimeToDisplay)
-            {
-                weAreInInterval = YES;
-                gl::drawSolidRect(Rectf([tempSpike time]-sizeOfPointX-endTimeToDisplay,[tempSpike value]-sizeOfPointY,[tempSpike time]+sizeOfPointX-endTimeToDisplay,[tempSpike value]+sizeOfPointY));
-            }
-            else if(weAreInInterval)
-            {
-                break;
+        NSMutableArray * tempSpikeTrain;
+        int i=0;
+        for(tempSpikeTrain in spikes)
+        {
+            weAreInInterval = NO;
+            [self setColorWithIndex:i transparency:1.0f];
+            i++;
+            for (tempSpike in tempSpikeTrain) {
+                if([tempSpike time]>startTimeToDisplay && [tempSpike time]<endTimeToDisplay)
+                {
+                    weAreInInterval = YES;
+                    gl::drawSolidRect(Rectf([tempSpike time]-sizeOfPointX-endTimeToDisplay,[tempSpike value]-sizeOfPointY,[tempSpike time]+sizeOfPointX-endTimeToDisplay,[tempSpike value]+sizeOfPointY));
+                }
+                else if(weAreInInterval)
+                {
+                    break;
+                }
             }
         }
+    }
 }
+
+
+-(void) setColorWithIndex:(int) iindex transparency:(float) transp
+{
+    iindex = iindex%5;
+    switch (iindex) {
+        case 0:
+            glColor4f(1.0f, 0.0f, 0.0f, transp);
+            break;
+        case 1:
+            glColor4f(0.0f, 0.0f, 1.0f, transp);
+            break;
+        case 2:
+            glColor4f(0.0f, 1.0f, 1.0f, transp);
+            break;
+        case 3:
+            glColor4f(1.0f, 1.0f, 0.0f, transp);
+            break;
+        case 4:
+            glColor4f(1.0f, 0.0f, 1.0f, transp);
+            break;
+    }
+    
 }
 
 
@@ -379,9 +420,9 @@
             xScaleTextPosition.y =0.95*self.frame.size.height + (mScaleFont->getAscent() / 2.0f);
         }
         mScaleFont->drawString(xStringStream.str(), xScaleTextPosition);
-        gl::enableDepthRead();
+ 
     }
-   
+    gl::enableDepthRead();
     
 }
 
@@ -448,7 +489,7 @@
     // Aight, now that we've got our ranges correct, let's ask for the audio.
     //Only fetch visible part (numPoints samples) and put it after offset.
     //Stride is equal to 2 since we have x and y coordinatesand we want to set only y
-    [audioManager fetchAudio:(float *)&(displayVector.getPoints()[offset])+1 numFrames:numPoints whichChannel:0 stride:2];
+    timeForSincDrawing =  [audioManager fetchAudio:(float *)&(displayVector.getPoints()[offset])+1 numFrames:numPoints whichChannel:0 stride:2];
 
 }
 

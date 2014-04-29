@@ -11,6 +11,14 @@
 		240435DE18F6EC3400A85A1B /* BBAnalysisManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 240435DD18F6EC3400A85A1B /* BBAnalysisManager.mm */; };
 		240435E118F7E00A00A85A1B /* BBSpike.m in Sources */ = {isa = PBXBuildFile; fileRef = 240435E018F7E00A00A85A1B /* BBSpike.m */; };
 		2405351D18FC62BB009A09FF /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 2405351C18FC62BB009A09FF /* MBProgressHUD.m */; };
+		240D805F190AC361009F9AEA /* SpikeTrainsTableViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 240D805E190AC361009F9AEA /* SpikeTrainsTableViewController.mm */; };
+		240D8062190C16E6009F9AEA /* SelectCrosscorelTableViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 240D8061190C16E6009F9AEA /* SelectCrosscorelTableViewController.mm */; };
+		240D8066190E98F6009F9AEA /* CrossCorrViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 240D8064190E98F6009F9AEA /* CrossCorrViewController.m */; };
+		240D8067190E98F6009F9AEA /* CrossCorrViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 240D8065190E98F6009F9AEA /* CrossCorrViewController.xib */; };
+		246989351909898F00F5383F /* trash.png in Resources */ = {isa = PBXBuildFile; fileRef = 246989331909898F00F5383F /* trash.png */; };
+		246989361909898F00F5383F /* trash@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 246989341909898F00F5383F /* trash@2x.png */; };
+		2469893919098C1900F5383F /* again.png in Resources */ = {isa = PBXBuildFile; fileRef = 2469893719098C1900F5383F /* again.png */; };
+		2469893A19098C1900F5383F /* again@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2469893819098C1900F5383F /* again@2x.png */; };
 		2474366918F6CAAC0044E11D /* SpikesCinderView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2474366818F6CAAC0044E11D /* SpikesCinderView.mm */; };
 		2474366B18F6DBFF0044E11D /* SpikesViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2474366A18F6DBFF0044E11D /* SpikesViewController.xib */; };
 		2474366E18F6DCA30044E11D /* SpikesAnalysisViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2474366D18F6DCA30044E11D /* SpikesAnalysisViewController.mm */; };
@@ -138,6 +146,17 @@
 		240435E018F7E00A00A85A1B /* BBSpike.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BBSpike.m; sourceTree = "<group>"; };
 		2405351B18FC62BB009A09FF /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
 		2405351C18FC62BB009A09FF /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
+		240D805D190AC361009F9AEA /* SpikeTrainsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpikeTrainsTableViewController.h; sourceTree = "<group>"; };
+		240D805E190AC361009F9AEA /* SpikeTrainsTableViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SpikeTrainsTableViewController.mm; sourceTree = "<group>"; };
+		240D8060190C16E6009F9AEA /* SelectCrosscorelTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectCrosscorelTableViewController.h; sourceTree = "<group>"; };
+		240D8061190C16E6009F9AEA /* SelectCrosscorelTableViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SelectCrosscorelTableViewController.mm; sourceTree = "<group>"; };
+		240D8063190E98F6009F9AEA /* CrossCorrViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CrossCorrViewController.h; sourceTree = "<group>"; };
+		240D8064190E98F6009F9AEA /* CrossCorrViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CrossCorrViewController.m; sourceTree = "<group>"; };
+		240D8065190E98F6009F9AEA /* CrossCorrViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CrossCorrViewController.xib; sourceTree = "<group>"; };
+		246989331909898F00F5383F /* trash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = trash.png; sourceTree = "<group>"; };
+		246989341909898F00F5383F /* trash@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "trash@2x.png"; sourceTree = "<group>"; };
+		2469893719098C1900F5383F /* again.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = again.png; sourceTree = "<group>"; };
+		2469893819098C1900F5383F /* again@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "again@2x.png"; sourceTree = "<group>"; };
 		2474366718F6CAAC0044E11D /* SpikesCinderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpikesCinderView.h; sourceTree = "<group>"; };
 		2474366818F6CAAC0044E11D /* SpikesCinderView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SpikesCinderView.mm; sourceTree = "<group>"; };
 		2474366A18F6DBFF0044E11D /* SpikesViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SpikesViewController.xib; sourceTree = "<group>"; };
@@ -548,6 +567,10 @@
 		FA2DAF8316C85D7E00EFF9D6 /* Artwork */ = {
 			isa = PBXGroup;
 			children = (
+				2469893719098C1900F5383F /* again.png */,
+				2469893819098C1900F5383F /* again@2x.png */,
+				246989331909898F00F5383F /* trash.png */,
+				246989341909898F00F5383F /* trash@2x.png */,
 				FA2DAF8416C89AD600EFF9D6 /* Icon-72.png */,
 				FA2DAF8516C89AD600EFF9D6 /* Icon-72@2x.png */,
 				FA2DAF8616C89AD600EFF9D6 /* Icon.png */,
@@ -664,6 +687,10 @@
 				FA905A4E15AA8D420013688B /* BBFileActionViewControllerTBV.mm */,
 				FA9059BC15AA8AC70013688B /* BBFileTableCell.h */,
 				FA9059BD15AA8AC70013688B /* BBFileTableCell.m */,
+				240D805D190AC361009F9AEA /* SpikeTrainsTableViewController.h */,
+				240D805E190AC361009F9AEA /* SpikeTrainsTableViewController.mm */,
+				240D8060190C16E6009F9AEA /* SelectCrosscorelTableViewController.h */,
+				240D8061190C16E6009F9AEA /* SelectCrosscorelTableViewController.mm */,
 			);
 			name = "Table UI";
 			sourceTree = "<group>";
@@ -789,6 +816,8 @@
 		FADF267B1596362F006C87BA /* MyClasses */ = {
 			isa = PBXGroup;
 			children = (
+				240D8063190E98F6009F9AEA /* CrossCorrViewController.h */,
+				240D8064190E98F6009F9AEA /* CrossCorrViewController.m */,
 				249A24641906AC59005F5F03 /* ISIHistogramViewController.h */,
 				249A24651906AC59005F5F03 /* ISIHistogramViewController.m */,
 				249A245F19058465005F5F03 /* AutocorrelationGraphViewController.h */,
@@ -818,6 +847,7 @@
 		FADF268515963630006C87BA /* MyAssets */ = {
 			isa = PBXGroup;
 			children = (
+				240D8065190E98F6009F9AEA /* CrossCorrViewController.xib */,
 				249A24661906AC59005F5F03 /* ISIHistogramViewController.xib */,
 				249A246119058465005F5F03 /* AutocorrelationGraphViewController.xib */,
 				FA14EC5E15D05DD800B0FB71 /* StimulationParameterView.xib */,
@@ -910,12 +940,14 @@
 				2474366B18F6DBFF0044E11D /* SpikesViewController.xib in Resources */,
 				FA35CF0B15ABBC680082FBC3 /* stim.png in Resources */,
 				FA35CF0C15ABBC680082FBC3 /* stim@2x.png in Resources */,
+				2469893919098C1900F5383F /* again.png in Resources */,
 				FA9A5B311809A5DA00FF01A0 /* Default-568h@2x.png in Resources */,
 				FA35CF0F15ABBC8C0082FBC3 /* ThresholdImage.png in Resources */,
 				FA35CF1015ABBC8C0082FBC3 /* WaveImage.png in Resources */,
 				FAA27C1E15AD01CA00DCC60B /* ThresholdViewController.xib in Resources */,
 				FA9A665215BA3DC100CF1697 /* MainWindow-iPad.xib in Resources */,
 				FA9A665B15BB19B000CF1697 /* SettingsDefaults.plist in Resources */,
+				240D8067190E98F6009F9AEA /* CrossCorrViewController.xib in Resources */,
 				FA14EC5C15D04AD700B0FB71 /* Settings.bundle in Resources */,
 				FA14EC5F15D05DD800B0FB71 /* StimulationParameterView.xib in Resources */,
 				FA49A7B015D9C352002A78EC /* BBFileViewControllerTBV.plist in Resources */,
@@ -923,11 +955,13 @@
 				FA2DAF7E16C85D7600EFF9D6 /* Icon-Small-50@2x.png in Resources */,
 				FA2DAF7F16C85D7600EFF9D6 /* Icon-Small.png in Resources */,
 				FA2DAF8016C85D7600EFF9D6 /* Icon-Small@2x.png in Resources */,
+				2469893A19098C1900F5383F /* again@2x.png in Resources */,
 				FA2DAF8116C85D7600EFF9D6 /* iTunesArtwork.png in Resources */,
 				FA2DAF8216C85D7600EFF9D6 /* iTunesArtwork@2x.png in Resources */,
 				FA2DAF8816C89AD600EFF9D6 /* Icon-72.png in Resources */,
 				FA2DAF8916C89AD600EFF9D6 /* Icon-72@2x.png in Resources */,
 				FA2DAF8A16C89AD600EFF9D6 /* Icon.png in Resources */,
+				246989351909898F00F5383F /* trash.png in Resources */,
 				FA2DAF8B16C89AD600EFF9D6 /* Icon@2x.png in Resources */,
 				FA042A1C16C89EC000278FE2 /* FileNeuron.png in Resources */,
 				FA042A1D16C89EC000278FE2 /* FileNeuronx2.png in Resources */,
@@ -939,6 +973,7 @@
 				FA042A2316C89EC000278FE2 /* stimulateAlt.png in Resources */,
 				FA042A2416C89EC000278FE2 /* stimulateAltx2.png in Resources */,
 				FA042A2516C89EC000278FE2 /* stimulatex2.png in Resources */,
+				246989361909898F00F5383F /* trash@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -957,6 +992,7 @@
 				FA90599315A9F9830013688B /* NSMutableData-SQLitePersistence.m in Sources */,
 				2405351D18FC62BB009A09FF /* MBProgressHUD.m in Sources */,
 				FA90599515A9F9830013688B /* NSNumber-SQLitePersistence.m in Sources */,
+				240D8062190C16E6009F9AEA /* SelectCrosscorelTableViewController.mm in Sources */,
 				FA90599715A9F9830013688B /* NSObject-ClassName.m in Sources */,
 				FA90599915A9F9830013688B /* NSObject-MissingKV.m in Sources */,
 				FA90599B15A9F9830013688B /* NSObject-SQLitePersistence.m in Sources */,
@@ -967,6 +1003,7 @@
 				FA9059A515A9F9830013688B /* SQLiteInstanceManager.m in Sources */,
 				2474366E18F6DCA30044E11D /* SpikesAnalysisViewController.mm in Sources */,
 				FA9059A715A9F9830013688B /* SQLitePersistentObject.m in Sources */,
+				240D8066190E98F6009F9AEA /* CrossCorrViewController.m in Sources */,
 				FA9059A915A9F9830013688B /* UIColor-SQLitePersistentObject.m in Sources */,
 				FA9059AB15A9F9830013688B /* UIImage-SQLitePersistence.m in Sources */,
 				249A24671906AC59005F5F03 /* ISIHistogramViewController.m in Sources */,
@@ -995,6 +1032,7 @@
 				FAA27C2215AD0CEF00DCC60B /* StimulationParameterViewController.mm in Sources */,
 				FAA27C2C15AD2CC800DCC60B /* DigitalSignalParameterViewController.mm in Sources */,
 				FA9A665915BA412600CF1697 /* BBTabBarViewController.mm in Sources */,
+				240D805F190AC361009F9AEA /* SpikeTrainsTableViewController.mm in Sources */,
 				2474366918F6CAAC0044E11D /* SpikesCinderView.mm in Sources */,
 				FA14EC6215D1FF0000B0FB71 /* RecordingOverlay.mm in Sources */,
 				249A246219058465005F5F03 /* AutocorrelationGraphViewController.m in Sources */,

@@ -91,54 +91,10 @@
     x.labelFormatter = ns;
     [ns release];
     x.labelingPolicy = CPTAxisLabelingPolicyAutomatic;
-    //x.axisLineStyle = nil;
-    //x.majorTickLineStyle = nil;
-    //x.minorTickLineStyle = nil;
-    //x.majorIntervalLength = CPTDecimalFromString(@"0.1");
-    //x.orthogonalCoordinateDecimal = CPTDecimalFromString(@"0");
-    // x.title = @"Names";
-    // x.titleLocation = CPTDecimalFromFloat(7.5f);
-    // x.titleOffset = 25.0f;
-    
-    // Define some custom labels for the data elements
-   // x.labelRotation = M_PI/5;
-   /* NSSet *majorTickLocations = [NSSet setWithObjects:[NSNumber numberWithDouble:0.001],
-                                 [NSNumber numberWithDouble:0.01],
-                                 [NSNumber numberWithDouble:0.1],
-                                 [NSNumber numberWithDouble:1],
-                                 [NSNumber numberWithDouble:10],
-                                 nil];
-    x.labelingPolicy = CPTAxisLabelingPolicyNone;
-   // x.majorTickLocations = majorTickLocations;
-    
-    
-    NSArray *xAxisLabels = [NSArray arrayWithObjects:@"1E-3", @"1E-2", @"1E-1", @"1E0", @"1E1",nil];
-    NSUInteger labelLocation = 0;
-    
-    NSMutableArray *customLabels = [NSMutableArray arrayWithCapacity:[xAxisLabels count]];
-    for (NSNumber *tickLocation in majorTickLocations)
-    {
-        CPTAxisLabel *newLabel = [[CPTAxisLabel alloc] initWithText: [xAxisLabels objectAtIndex:labelLocation++] textStyle:x.labelTextStyle];
-        newLabel.tickLocation = [tickLocation decimalValue];
-        newLabel.offset = x.labelOffset + x.majorTickLength;
-        newLabel.rotation = M_PI/4;
-        [customLabels addObject:newLabel];
-        [newLabel release];
-    }
-    
-    x.axisLabels =  [NSSet setWithArray:customLabels];*/
-    
+
+
     CPTXYAxis *y = axisSet.yAxis;
     y.labelingPolicy = CPTAxisLabelingPolicyAutomatic;
-   // y.axisLineStyle = nil;
-   // y.majorTickLineStyle = nil;
-   // y.minorTickLineStyle = nil;
-   // y.majorIntervalLength = CPTDecimalFromString(@"1000");
-   // y.orthogonalCoordinateDecimal = CPTDecimalFromString(@"0");
-    //y.title = @"Work Status";
-    //y.titleOffset = 40.0f;
-    //y.titleLocation = CPTDecimalFromFloat(150.0f);
-    
    
    
     self.hostingView.hostedGraph = barChart;
@@ -154,9 +110,7 @@
     CPTBarPlot *barPlot = [[[CPTBarPlot alloc] init] autorelease];
     barPlot.fill = [CPTFill fillWithColor:[CPTColor blueColor]];
     barPlot.lineStyle = nil;
-   // barPlot.plotRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0.001) length:CPTDecimalFromDouble(10.0)];//xAxisLength
-   // barPlot.barOffset = CPTDecimalFromFloat(10.0f);
-    //barPlot.baseValue = CPTDecimalFromString(@"0");
+
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         barPlot.barWidth = CPTDecimalFromFloat(10.0f);
     }

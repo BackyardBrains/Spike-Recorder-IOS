@@ -19,6 +19,9 @@
 @synthesize doneBtn;
 @synthesize bbfile;
 @synthesize timeSlider;
+@synthesize addTrainBtn;
+@synthesize removeTrainButton;
+@synthesize nextTrainBtn;
 
 - (void)viewWillAppear:(BOOL)animated
 {
@@ -32,6 +35,13 @@
     self.timeSlider.maximumValue = [[BBAnalysisManager bbAnalysisManager] fileDuration];
     [self.timeSlider setValue:[[BBAnalysisManager bbAnalysisManager] fileDuration]*0.5];
     [[BBAnalysisManager bbAnalysisManager] setCurrentFileTime: (float)self.timeSlider.value];
+    
+    if([[BBAnalysisManager bbAnalysisManager] numberOfSpikeTrains]<2)
+    {
+        self.nextTrainBtn.hidden = YES;
+        self.removeTrainButton.hidden = YES;
+    }
+    
     [glView loadSettings];
     [glView startAnimation];
 }
@@ -49,6 +59,7 @@
 
     self.timeSlider.continuous = YES;
     [[BBAnalysisManager bbAnalysisManager] prepareFileForSelection:self.bbfile];
+
     // our CCGLTouchView being added as a subview
     glView = [[SpikesCinderView alloc] initWithFrame:self.view.frame];
     
@@ -101,6 +112,9 @@
     //[triggerHistoryLabel release];
     [doneBtn release];
     [timeSlider release];
+    [addTrainBtn release];
+    [removeTrainButton release];
+    [nextTrainBtn release];
     [super dealloc];
 }
 
@@ -112,4 +126,24 @@
 }
 
 
+- (IBAction)addTrainClick:(id)sender {
+    [[BBAnalysisManager bbAnalysisManager] addAnotherThresholds];
+
+    self.nextTrainBtn.hidden = NO;
+    self.removeTrainButton.hidden = NO;
+    
+}
+
+- (IBAction)removeTrainClick:(id)sender {
+    [[BBAnalysisManager bbAnalysisManager] removeSelectedThresholds];
+    if([[BBAnalysisManager bbAnalysisManager] numberOfSpikeTrains]<2)
+    {
+        self.nextTrainBtn.hidden = YES;
+        self.removeTrainButton.hidden = YES;
+    }
+}
+
+- (IBAction)nextTrainClick:(id)sender {
+    [[BBAnalysisManager bbAnalysisManager] moveToNextSpikeTrain];
+}
 @end

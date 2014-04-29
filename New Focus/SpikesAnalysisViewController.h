@@ -23,5 +23,11 @@
 - (void)setGLView:(CCGLTouchView *)view;
 - (IBAction)doneClickAction:(id)sender;
 - (IBAction)timeValueChanged:(id)sender;
+@property (retain, nonatomic) IBOutlet UIButton *addTrainBtn;
+@property (retain, nonatomic) IBOutlet UIButton *removeTrainButton;
+@property (retain, nonatomic) IBOutlet UIButton *nextTrainBtn;
+- (IBAction)addTrainClick:(id)sender;
+- (IBAction)removeTrainClick:(id)sender;
+- (IBAction)nextTrainClick:(id)sender;
 
 @end

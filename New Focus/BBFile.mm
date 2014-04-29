@@ -24,12 +24,11 @@
 @synthesize analyzed;
 @synthesize spikesCSV;
 @synthesize spikesFiltered;
-@synthesize threshold1;
-@synthesize threshold2;
 
 - (void)dealloc {
 	[filename release];
 	[shortname release];
+    [spikesFiltered release];
 	[subname release];
 	[comment release];
     [spikesCSV release];
@@ -66,17 +65,40 @@
         self.samplingrate   = [[BBAudioManager bbAudioManager] samplingRate];
 //        self.samplingrate = [[Novocaine audioManager] samplingrate];
 		self.gain           = [[defaults valueForKey:@"gain"] floatValue];
-        self.spikesCSV = @"";
+        self.spikesCSV = [[[NSMutableArray alloc] init] autorelease];
         self.analyzed = NO;
-        self.spikesFiltered = NO;
-        self.threshold2 = 0.0f;
-        self.threshold1 = 0.0f;
+        self.spikesFiltered = @"";
+        _thresholds = [[NSMutableArray alloc] initWithCapacity:0];
 		_spikes = [[NSMutableArray alloc] initWithCapacity:0];
+        [_thresholds addObject:[NSNumber numberWithFloat:0.0f]];
+        [_thresholds addObject:[NSNumber numberWithFloat:0.0f]];
 	}
     
 	return self;
 }
 
+
+
+-(NSMutableArray *) thresholds
+{
+    return _thresholds;
+}
+
+-(void) setThresholds:(NSMutableArray *)athresholds
+{
+    [_thresholds removeAllObjects];
+    [_thresholds addObjectsFromArray:athresholds];
+    if([_thresholds count]==0)
+    {
+        [_thresholds addObject:[NSNumber numberWithFloat:0.0f]];
+        [_thresholds addObject:[NSNumber numberWithFloat:0.0f]];
+    }
+}
+
+-(int) numberOfThresholds
+{
+    return [_thresholds count]/2;
+}
 
 -(void) setSpikes:(NSMutableArray *) spikes
 {
@@ -142,63 +164,18 @@
         self.samplingrate   = [[BBAudioManager bbAudioManager] samplingRate];
         //        self.samplingrate = [[Novocaine audioManager] samplingrate];
 		self.gain           = [[defaults valueForKey:@"gain"] floatValue];
-        self.spikesCSV = @"";
+        self.spikesCSV = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
         self.analyzed = NO;
-        self.spikesFiltered = NO;
-        self.threshold2 = 0.0f;
-        self.threshold1 = 0.0f;
+        self.spikesFiltered = @"";
+        _thresholds = [[NSMutableArray alloc] initWithCapacity:0];
         _spikes = [[NSMutableArray alloc] init];
+        [_thresholds addObject:[NSNumber numberWithFloat:0.0f]];
+        [_thresholds addObject:[NSNumber numberWithFloat:0.0f]];
 	}
     
 	return self;
     
 }
-
-
-
-
-//- (void)setFilename:(NSString *)newFilename
-//{
-//    NSLog(@"New filename: %@", newFilename);
-//    
-//    NSString *oldFilename = [filename copy];
-//    filename = newFilename;
-//    
-//    // If there's a file that exists at the old filename location (if we've already recorded something)
-//    // then we're going to rename it
-//    NSError *error = nil;
-//    NSFileManager *fileManager = [NSFileManager defaultManager];
-//
-//    // First check if there's a file there at all
-//    BOOL isThereAFileAlready = [fileManager fileExistsAtPath:[[self docPath] stringByAppendingPathComponent:self.filename]];
-//    
-//    // If there is, let's move it.                                                           
-//    if (isThereAFileAlready) {
-//        
-//        
-//        NSLog(@"There's a file already");
-//        
-//        NSURL *oldURL = [self fileURL];    
-//        NSURL *newURL = [NSURL fileURLWithPath:[[self docPath] stringByAppendingPathComponent:newFilename]];
-//        
-//        NSLog(@"Old URL: %@", oldURL);
-//        NSLog(@"New URL: %@", newURL);
-//             
-//        BOOL success = [fileManager moveItemAtURL:oldURL toURL:newURL error:&error];
-//        
-//        // If we got it right, then we're all good. If we failed (if there's another file with the desired name), then we don't remember the new filename.
-//        if (!success)
-//            filename = [oldFilename copy];
-//        else
-//            NSLog(@"Error moving file: %@", error);
-//        
-//        NSLog(@"The filename now is: %@", filename);
-//        
-//    }
-//    
-//    [oldFilename release];
-//    
-//}
 
 
 +(NSArray *)allObjects
@@ -265,34 +242,58 @@
     }
 }
 
-
+//
+// Make array of CSV strings out of array of spike train arrays
+// We do this because it is much faster to save few long strings
+// than few arrays with hundreds of spike objects
+// When we load file object we "decompress" CSVs into arrays of spikes 
+//
 -(void) spikesToCSV
 {
-    NSMutableString *csvString = [NSMutableString string];
+    NSMutableString *csvString;
     int i;
+    int j;
     BBSpike * tempSpike;
-    for(i=0;i<[_spikes count];i++)
+    NSMutableArray * tempSpikeTrain;
+    [self.spikesCSV removeAllObjects];
+    for(j=0;j<[_spikes count];j++)
     {
-        tempSpike = (BBSpike *) [_spikes objectAtIndex:i];
-        [csvString appendString:[NSString stringWithFormat:@"%f,%f,%d\n",
-                                 tempSpike.value, tempSpike.time, tempSpike.index]];
+        tempSpikeTrain = [_spikes objectAtIndex:j];
+        csvString = [NSMutableString string];
+        for(i=0;i<[tempSpikeTrain count];i++)
+        {
+            tempSpike = (BBSpike *) [tempSpikeTrain objectAtIndex:i];
+            [csvString appendString:[NSString stringWithFormat:@"%f,%f,%d\n",
+                                     tempSpike.value, tempSpike.time, tempSpike.index]];
+        }
+        [self.spikesCSV addObject:csvString];
     }
-    self.spikesCSV =csvString;
 }
 
+
+//
+// Convert array of CSV strings to array of spike train arrays
+//
 -(void) CSVToSpikes
 {
     [_spikes removeAllObjects];
-    NSScanner *scanner = [NSScanner scannerWithString:self.spikesCSV];
-    [scanner setCharactersToBeSkipped:
-     [NSCharacterSet characterSetWithCharactersInString:@"\n, "]];
-    float value, time;
-    int index;
-    BBSpike * newSpike;
-    while ( [scanner scanFloat:&value] && [scanner scanFloat:&time] && [scanner scanInt:&index]) {
-        newSpike = [[BBSpike alloc] initWithValue:value index:index andTime:time];
-        [_spikes addObject:newSpike];
-        [newSpike release];
+    
+    int i;
+    for(i=0;i<[self.spikesCSV count];i++)
+    {
+        NSMutableArray * newSpikeTrain = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
+        NSScanner *scanner = [NSScanner scannerWithString:((NSString *)[self.spikesCSV objectAtIndex:i])];
+        [scanner setCharactersToBeSkipped:
+         [NSCharacterSet characterSetWithCharactersInString:@"\n, "]];
+        float value, time;
+        int index;
+        BBSpike * newSpike;
+        while ( [scanner scanFloat:&value] && [scanner scanFloat:&time] && [scanner scanInt:&index]) {
+            newSpike = [[BBSpike alloc] initWithValue:value index:index andTime:time];
+            [newSpikeTrain addObject:newSpike];
+            [newSpike release];
+        }
+        [_spikes addObject:newSpikeTrain];
     }
 }
 
@@ -314,6 +315,82 @@
     }	
 }
 
+-(NSInteger) moveToNextSpikeTrain
+{
+    int nextSpikeTrain = _currentSpikeTrain +1;
+    if([self numberOfThresholds]<=nextSpikeTrain)
+    {
+        nextSpikeTrain = 0;
+    }
+    _currentSpikeTrain=nextSpikeTrain;
+    return _currentSpikeTrain;
+}
+
+-(void) setCurrentSpikeTrain:(NSInteger) aCurrentSpikeTrain
+{
+    if(_spikes && [self numberOfThresholds]>aCurrentSpikeTrain && aCurrentSpikeTrain>=0)
+    {
+        _currentSpikeTrain = aCurrentSpikeTrain;
+    }
+    else
+    {
+//        NSException *e = [NSException
+//                          exceptionWithName:@"Invalid spike train index."
+//                          reason:@"Index out of bounds."
+//                          userInfo:nil];
+//        @throw e;
+    }
+}
+
+-(void) addAnotherThresholds
+{
+    [_thresholds addObject:[NSNumber numberWithFloat:0.0f]];
+    [_thresholds addObject:[NSNumber numberWithFloat:0.0f]];
+    _currentSpikeTrain = (int)([_thresholds count]/2)-1;
+}
+
+-(void) removeCurrentThresholds
+{
+    if([self numberOfThresholds]>1)
+    {
+        [_thresholds removeObjectAtIndex:_currentSpikeTrain*2+1];
+        [_thresholds removeObjectAtIndex:_currentSpikeTrain*2];
+        
+        int newCurrentSpikeTrain = [self currentSpikeTrain]-1;
+        if(newCurrentSpikeTrain<0)
+        {
+            newCurrentSpikeTrain = 0;
+        }
+        
+        [self setCurrentSpikeTrain:newCurrentSpikeTrain];
+    }
+}
+
+-(NSInteger) currentSpikeTrain
+{
+    return _currentSpikeTrain;
+}
+
+-(void) setThresholdFirst:(float)thresholdFirst
+{
+    [_thresholds replaceObjectAtIndex:_currentSpikeTrain*2 withObject:[NSNumber numberWithFloat:thresholdFirst]];
+}
+
+-(float) thresholdFirst
+{
+    return [[_thresholds objectAtIndex:_currentSpikeTrain*2] floatValue];
+}
+
+-(void) setThresholdSecond:(float)thresholdSecond
+{
+    [_thresholds replaceObjectAtIndex:_currentSpikeTrain*2+1 withObject:[NSNumber numberWithFloat:thresholdSecond]];
+}
+
+-(float) thresholdSecond
+{
+    return [[_thresholds objectAtIndex:_currentSpikeTrain*2+1] floatValue];
+}
+
 - (NSURL *)fileURL
 {
     return [NSURL fileURLWithPath:[[self docPath] stringByAppendingPathComponent:self.filename]];
@@ -324,5 +401,15 @@
 {
     return [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
 }
+
+/*-(NSString*) spikesFiltered
+{
+    return _spikesFiltered;
+}
+
+-(void) setSpikesFiltered:(NSString *) aSpikesFiltered
+{
+    _spikesFiltered = aSpikesFiltered;
+}*/
 
 @end

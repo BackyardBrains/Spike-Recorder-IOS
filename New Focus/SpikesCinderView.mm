@@ -73,9 +73,13 @@
 {
     allSpikes = PolyLine2f();
     BBSpike * tempSpike;
-    for (int i=0; i < [[analysisManager allSpikes] count] ; ++i)
+    if([[analysisManager allSpikes] count]==0)
     {
-        tempSpike = (BBSpike *)[[analysisManager allSpikes] objectAtIndex:i];
+        return;
+    }
+    for (int i=0; i < [[[analysisManager allSpikes] objectAtIndex:0] count] ; ++i)
+    {
+        tempSpike = (BBSpike *)[[[analysisManager allSpikes] objectAtIndex:0] objectAtIndex:i];
         allSpikes.push_back(Vec2f([tempSpike time] , [tempSpike value]));
     }
 }
@@ -148,7 +152,7 @@
     
     //Draw spikes
     
-    float uperThreshold;
+   /* float uperThreshold;
     float lowerThreshold;
     
     if([[BBAnalysisManager bbAnalysisManager] threshold1]>[[BBAnalysisManager bbAnalysisManager] threshold2])
@@ -161,8 +165,10 @@
         uperThreshold = [[BBAnalysisManager bbAnalysisManager] threshold2];
         lowerThreshold = [[BBAnalysisManager bbAnalysisManager] threshold1];
     }
-    
+    */
     BOOL weAreInInterval = NO;
+    BOOL weFoundInterval = NO;
+    int tempCurrentSelectedInterval = [[BBAnalysisManager bbAnalysisManager] currentSpikeTrain];
     std::vector<Vec2f>	 spikes = allSpikes.getPoints();
     float sizeOfPointX = 0.3*tenPixX;
     float sizeOfPointY = 0.3*tenPixY;
@@ -170,12 +176,26 @@
     float endTimeToDisplay = [[BBAnalysisManager bbAnalysisManager] currentFileTime];
     for(int i=0; i < spikes.size(); i++)
     {
+        
         if(spikes[i].x>startTimeToDisplay && spikes[i].x<endTimeToDisplay)
         {
             weAreInInterval = YES;
-            if(spikes[i].y<uperThreshold && spikes[i].y>lowerThreshold)
+            weFoundInterval = NO;
+            int threshi=0;
+            for(threshi=0;threshi<[[BBAnalysisManager bbAnalysisManager] numberOfSpikeTrains];threshi++)
             {
-                glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+                [[BBAnalysisManager bbAnalysisManager] setCurrentSpikeTrain:threshi];
+                if((spikes[i].y<[[BBAnalysisManager bbAnalysisManager] thresholdFirst] && spikes[i].y>[[BBAnalysisManager bbAnalysisManager] thresholdSecond]) || (spikes[i].y>[[BBAnalysisManager bbAnalysisManager] thresholdFirst] && spikes[i].y<[[BBAnalysisManager bbAnalysisManager] thresholdSecond]))
+                {
+                
+                    weFoundInterval = YES;
+                    break;
+                }
+            }
+            
+            if(weFoundInterval)
+            {
+                [self setColorWithIndex:threshi transparency:1.0f];
             }
             else
             {
@@ -188,7 +208,9 @@
             break;
         }
     }
-
+    
+    //put back index of selected interval
+    [[BBAnalysisManager bbAnalysisManager] setCurrentSpikeTrain:tempCurrentSelectedInterval];
 
     // Put a little grid on the screen.
     [self drawGrid];
@@ -197,8 +219,8 @@
     //add handles for threshold lines
     gl::disableDepthRead();
     glColor4f(0.3f, 0.3f, 1.0f, 1.0f);
-    float threshval1 = [[BBAnalysisManager bbAnalysisManager] threshold1];
-    float threshval2 = [[BBAnalysisManager bbAnalysisManager] threshold2];
+    float threshval1 = [[BBAnalysisManager bbAnalysisManager] thresholdFirst];
+    float threshval2 = [[BBAnalysisManager bbAnalysisManager] thresholdSecond];
     glLineWidth(2.0f);
     gl::drawLine(Vec2f(-numSecondsVisible, threshval1), Vec2f(-numSecondsMin, threshval1));
     gl::drawLine(Vec2f(-numSecondsVisible, threshval2), Vec2f(-numSecondsMin, threshval2));
@@ -214,6 +236,30 @@
     
     // Draw some text on that screen
     [self drawScaleTextAndSelected];
+}
+
+
+-(void) setColorWithIndex:(int) iindex transparency:(float) transp
+{
+    iindex = iindex%5;
+    switch (iindex) {
+        case 0:
+            glColor4f(1.0f, 0.0f, 0.0f, transp);
+            break;
+        case 1:
+            glColor4f(0.0f, 0.0f, 1.0f, transp);
+            break;
+        case 2:
+            glColor4f(0.0f, 1.0f, 1.0f, transp);
+            break;
+        case 3:
+            glColor4f(1.0f, 1.0f, 0.0f, transp);
+            break;
+        case 4:
+            glColor4f(1.0f, 0.0f, 1.0f, transp);
+            break;
+    }
+
 }
 
 - (void)drawScaleTextAndSelected
@@ -415,18 +461,18 @@
         
         
         
-        Vec2f screenThresholdPos1 = [self worldToScreen:Vec2f(-numSecondsMin, [[BBAnalysisManager bbAnalysisManager] threshold1])];
-        Vec2f screenThresholdPos2 = [self worldToScreen:Vec2f(-numSecondsVisible, [[BBAnalysisManager bbAnalysisManager] threshold2])];
+        Vec2f screenThresholdPos1 = [self worldToScreen:Vec2f(-numSecondsMin, [[BBAnalysisManager bbAnalysisManager] thresholdFirst])];
+        Vec2f screenThresholdPos2 = [self worldToScreen:Vec2f(-numSecondsVisible, [[BBAnalysisManager bbAnalysisManager] thresholdSecond])];
         
         float distance1 = (touchPos.y - screenThresholdPos1.y)*(touchPos.y - screenThresholdPos1.y)+(touchPos.x - screenThresholdPos1.x)*(touchPos.x - screenThresholdPos1.x);
         float distance2 = (touchPos.y - screenThresholdPos2.y)*(touchPos.y - screenThresholdPos2.y)+(touchPos.x - screenThresholdPos2.x)*(touchPos.x - screenThresholdPos2.x);
         if (distance1 < 8500) // set via experimentation
         {
-            [[BBAnalysisManager bbAnalysisManager] setThreshold1:worldTouchPos.y];
+            [[BBAnalysisManager bbAnalysisManager] setThresholdFirst:worldTouchPos.y];
         }
         if (distance2 < 8500) // set via experimentation
         {
-            [[BBAnalysisManager bbAnalysisManager] setThreshold2:worldTouchPos.y];
+            [[BBAnalysisManager bbAnalysisManager] setThresholdSecond:worldTouchPos.y];
         }
 
         
