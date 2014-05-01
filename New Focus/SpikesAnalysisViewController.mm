@@ -33,9 +33,11 @@
     [[BBAnalysisManager bbAnalysisManager] prepareFileForSelection:self.bbfile];
     self.timeSlider.minimumValue = 0;
     self.timeSlider.maximumValue = [[BBAnalysisManager bbAnalysisManager] fileDuration];
+    //put slider at the middle of the file
     [self.timeSlider setValue:[[BBAnalysisManager bbAnalysisManager] fileDuration]*0.5];
     [[BBAnalysisManager bbAnalysisManager] setCurrentFileTime: (float)self.timeSlider.value];
     
+    //show buttons for spike trains if we have multiple trains
     if([[BBAnalysisManager bbAnalysisManager] numberOfSpikeTrains]<2)
     {
         self.nextTrainBtn.hidden = YES;
@@ -86,6 +88,9 @@
     callbackTimer = nil;
 }
 
+//
+// End of selecting/editing save selected spike trains
+//
 - (IBAction)doneClickAction:(id)sender {
     MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     hud.labelText = @"Saving selection";
@@ -99,6 +104,8 @@
         });
     });
 }
+
+
 - (IBAction)timeValueChanged:(id)sender {
     [[BBAnalysisManager bbAnalysisManager] setCurrentFileTime: (float)self.timeSlider.value];
 }
@@ -119,13 +126,10 @@
 }
 
 - (void)viewDidUnload {
-    //[triggerHistoryLabel release];
-    //triggerHistoryLabel = nil;
-    //[self setTriggerHistoryLabel:nil];
     [super viewDidUnload];
 }
 
-
+//Add another threshold pair (new spike train)
 - (IBAction)addTrainClick:(id)sender {
     [[BBAnalysisManager bbAnalysisManager] addAnotherThresholds];
 
@@ -134,6 +138,7 @@
     
 }
 
+//Add threshold pair (spike train)
 - (IBAction)removeTrainClick:(id)sender {
     [[BBAnalysisManager bbAnalysisManager] removeSelectedThresholds];
     if([[BBAnalysisManager bbAnalysisManager] numberOfSpikeTrains]<2)
@@ -143,6 +148,7 @@
     }
 }
 
+//Move to next spike train
 - (IBAction)nextTrainClick:(id)sender {
     [[BBAnalysisManager bbAnalysisManager] moveToNextSpikeTrain];
 }

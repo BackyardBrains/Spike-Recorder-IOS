@@ -43,7 +43,7 @@
     if(fieldEnum == CPTScatterPlotFieldX)
     {
         //x axis data
-        return [_limits objectAtIndex:index];//0.1f*(((float)index)/101.0f)];//[NSNumber numberWithFloat:0.1f*(((float)index)/101.0f)];
+        return [_limits objectAtIndex:index];
     }
     else
     {
@@ -84,6 +84,7 @@
     barChart.titleDisplacement = CGPointMake(0.0f, -10.0f);
     barChart.titlePlotAreaFrameAnchor = CPTRectAnchorTop;
     
+    //make exp. labels
     CPTXYAxisSet *axisSet = (CPTXYAxisSet *)barChart.axisSet;
     CPTXYAxis *x = axisSet.xAxis;
     NSNumberFormatter *ns = [[NSNumberFormatter alloc] init];
@@ -104,6 +105,7 @@
     CPTXYPlotSpace *plotSpace = (CPTXYPlotSpace *)barChart.defaultPlotSpace;
     plotSpace.xRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(0.00001) length:CPTDecimalFromDouble(10.0)];
 
+    //make x axis log type
     plotSpace.xScaleType = CPTScaleTypeLog;
     plotSpace.yScaleType = CPTScaleTypeLinear;
     
@@ -111,6 +113,7 @@
     barPlot.fill = [CPTFill fillWithColor:[CPTColor blueColor]];
     barPlot.lineStyle = nil;
 
+    //make width of bars on ipad greater
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         barPlot.barWidth = CPTDecimalFromFloat(10.0f);
     }
@@ -120,7 +123,7 @@
     }
    
     barPlot.cornerRadius = 0.0f;
-    barPlot.barWidthsAreInViewCoordinates = YES;
+    barPlot.barWidthsAreInViewCoordinates = YES; //bar width are defined in pixels of screen
     barPlot.dataSource = self;
     [barChart addPlot:barPlot];
     [barChart.defaultPlotSpace scaleToFitPlots:[barChart allPlots]];

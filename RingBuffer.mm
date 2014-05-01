@@ -164,7 +164,9 @@ void RingBuffer::AddNewInterleavedFloatData(const float *newData, const SInt64 n
 //Returns fresh (last written) data and does not change mLastReadIndex or mNumUnreadFrames or mLastWrittenIndex
 float RingBuffer::FetchFreshData2(float *outData, SInt64 numFrames, SInt64 whichChannel, SInt64 stride)
 {
-   // NSLog(@"-");
+    //This is patch that is used to get time of data as precise as possibile since otherwise
+    //display of spike marks and waveform are not sinchronized
+    //TODO: make timestamp of data part of this class
     float tempTime = [[BBAudioManager bbAudioManager] getTimeForSpikes];
     if (mLastWrittenIndex[whichChannel] - numFrames >= 0) { // if we're requesting samples that won't go off the left end of the ring buffer, then go ahead and copy them all out.
         

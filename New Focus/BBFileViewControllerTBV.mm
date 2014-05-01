@@ -238,7 +238,6 @@
         {
             NSIndexPath* ipath = [NSIndexPath indexPathForRow: [self.allFiles count]-1 inSection: 0];
             [theTableView scrollToRowAtIndexPath: ipath atScrollPosition: UITableViewScrollPositionTop animated: YES];
-            //[self tableView:theTableView didSelectRowAtIndexPath:ipath];
             [self openActionViewWithFile:[self.allFiles objectAtIndex:[self.allFiles count]-1]];
         }
         MyAppDelegate * appDelegate = (MyAppDelegate*)[[UIApplication sharedApplication] delegate];

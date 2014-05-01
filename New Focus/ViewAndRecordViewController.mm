@@ -97,11 +97,6 @@
     return YES;
 }
 
-//- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
-//{
-//    [glView setCurrentBounds:self.view.frame];
-//}
-
 - (IBAction)startRecording:(id)sender
 {
     CGRect stopButtonRect = CGRectMake(self.stopButton.frame.origin.x, 0.0f, self.stopButton.frame.size.width, self.stopButton.frame.size.height);
@@ -111,7 +106,7 @@
     [self.stopButton setTitle:  @"Tap to Stop Recording" forState: UIControlStateNormal];
     
     
-    
+    //Make timer that we are displaying while recording
     _timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue());
     if (_timer)
     {
@@ -119,14 +114,12 @@
         dispatch_source_set_timer(_timer, dispatch_time(DISPATCH_TIME_NOW, 0.1 * NSEC_PER_SEC), 0.1 * NSEC_PER_SEC, (1ull * NSEC_PER_SEC) / 10);
         dispatch_source_set_event_handler(_timer, ^{
             recordingTime+=0.1f;
-            float duration = recordingTime;//(float)[[BBAudioManager bbAudioManager] fileDuration];
+            float duration = recordingTime;
             float seconds = fmod(duration, 60.0);
             double minutes = fmod(trunc(duration / 60.0), 60.0);
-            
-            //self.timerLabel.text = [NSString stringWithFormat:@"%02.0f:%04.1f", minutes, seconds];
-           // dispatch_async(dispatch_get_main_queue(), ^{
-                [self.stopButton setTitle:  [NSString stringWithFormat:@"Tap to Stop Recording \n%02.0f:%04.1f", minutes, seconds] forState: UIControlStateNormal];
-           // });
+            //update label
+            [self.stopButton setTitle:  [NSString stringWithFormat:@"Tap to Stop Recording \n%02.0f:%04.1f", minutes, seconds] forState: UIControlStateNormal];
+           
         
         });
         dispatch_resume(_timer);
@@ -176,23 +169,6 @@
     
 }
 
-//- (IBAction)recordButtonPressed:(id)sender
-//{
-//
-//    BBAudioManager *bbAudioManager = [BBAudioManager bbAudioManager];
-//    if (bbAudioManager.recording == false) {
-//        aFile = [[BBFile alloc] init];
-//        NSLog(@"URL: %@", [aFile fileURL]);
-//        [bbAudioManager startRecording:[aFile fileURL]];
-//        RecordingOverlayController *rovc = [[RecordingOverlayController alloc] initWithCompletionBlock:^{
-//                aFile.filelength = bbAudioManager.fileDuration;
-//                [bbAudioManager stopRecording];
-//                [aFile save];
-//                [aFile release];
-//        }];
-//    }
-//
-//}
 
 - (IBAction)stimulateButtonPressed:(id)sender {
 

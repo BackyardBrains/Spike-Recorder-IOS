@@ -201,6 +201,7 @@
     audioPaused = YES;
 }
 
+//Seek to new place in file
 - (IBAction)sliderValueChanged:(id)sender {
     
     bbAudioManager.currentFileTime = (float)self.timeSlider.value;

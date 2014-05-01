@@ -68,7 +68,7 @@
 }
 
 
-//Returns all spikes in PolyLine2f object
+//Push all spikes in PolyLine2f object
 -(void) getAllSpikes
 {
     allSpikes = PolyLine2f();
@@ -152,20 +152,6 @@
     
     //Draw spikes
     
-   /* float uperThreshold;
-    float lowerThreshold;
-    
-    if([[BBAnalysisManager bbAnalysisManager] threshold1]>[[BBAnalysisManager bbAnalysisManager] threshold2])
-    {
-        uperThreshold = [[BBAnalysisManager bbAnalysisManager] threshold1];
-        lowerThreshold = [[BBAnalysisManager bbAnalysisManager] threshold2];
-    }
-    else
-    {
-        uperThreshold = [[BBAnalysisManager bbAnalysisManager] threshold2];
-        lowerThreshold = [[BBAnalysisManager bbAnalysisManager] threshold1];
-    }
-    */
     BOOL weAreInInterval = NO;
     BOOL weFoundInterval = NO;
     int tempCurrentSelectedInterval = [[BBAnalysisManager bbAnalysisManager] currentSpikeTrain];
@@ -176,12 +162,12 @@
     float endTimeToDisplay = [[BBAnalysisManager bbAnalysisManager] currentFileTime];
     for(int i=0; i < spikes.size(); i++)
     {
-        
         if(spikes[i].x>startTimeToDisplay && spikes[i].x<endTimeToDisplay)
         {
             weAreInInterval = YES;
             weFoundInterval = NO;
             int threshi=0;
+            //check if spike is in one of the selected intervals
             for(threshi=0;threshi<[[BBAnalysisManager bbAnalysisManager] numberOfSpikeTrains];threshi++)
             {
                 [[BBAnalysisManager bbAnalysisManager] setCurrentSpikeTrain:threshi];
@@ -192,15 +178,16 @@
                     break;
                 }
             }
-            
+            //if we are in spike train interval
             if(weFoundInterval)
             {
-                [self setColorWithIndex:threshi transparency:1.0f];
+                [self setColorWithIndex:threshi transparency:1.0f]; //draw selected spike
             }
             else
             {
-                glColor4f(0.5f, 0.0f, 0.0f, 1.0f);
+                glColor4f(0.5f, 0.0f, 0.0f, 1.0f); //draw unselected spike
             }
+            //draw spike mark
             gl::drawSolidRect(Rectf(spikes[i].x-sizeOfPointX-endTimeToDisplay,spikes[i].y-sizeOfPointY,spikes[i].x+sizeOfPointX-endTimeToDisplay,spikes[i].y+sizeOfPointY));
         }
         else if(weAreInInterval)
@@ -238,7 +225,9 @@
     [self drawScaleTextAndSelected];
 }
 
-
+//
+// Chenge color according to index
+//
 -(void) setColorWithIndex:(int) iindex transparency:(float) transp
 {
     iindex = iindex%5;

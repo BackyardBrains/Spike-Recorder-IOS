@@ -222,16 +222,22 @@
     
 }
 
-
+//
+// Draw spikes of all spike trains
+//
 -(void) drawSpikes
 {
     gl::enableDepthRead();
+    //we use timestamp (timeForSincDrawing) that is taken from audio manager "at the same time"
+    //when we took data from circular buffer to display waveform. It is important for sinc of waveform and spike marks
     float currentTime = timeForSincDrawing ;
+    
+    //If we are not playing (we are scrubbing) than take time stamp directly from audio manager
     if(![[BBAudioManager bbAudioManager] playing])
     {
         currentTime = [[BBAudioManager bbAudioManager] getTimeForSpikes];
     }
-   // NSLog(@"D: %f", currentTime);
+
     NSMutableArray* spikes;
     if((spikes = [[BBAudioManager bbAudioManager] getSpikes])!=nil)
     {
@@ -251,19 +257,21 @@
         BBSpike * tempSpike;
         NSMutableArray * tempSpikeTrain;
         int i=0;
+        //go through all spike trains
         for(tempSpikeTrain in spikes)
         {
             weAreInInterval = NO;
             [self setColorWithIndex:i transparency:1.0f];
             i++;
+            //go through all spikes
             for (tempSpike in tempSpikeTrain) {
                 if([tempSpike time]>startTimeToDisplay && [tempSpike time]<endTimeToDisplay)
                 {
-                    weAreInInterval = YES;
+                    weAreInInterval = YES;//we are in visible interval
                     gl::drawSolidRect(Rectf([tempSpike time]-sizeOfPointX-endTimeToDisplay,[tempSpike value]-sizeOfPointY,[tempSpike time]+sizeOfPointX-endTimeToDisplay,[tempSpike value]+sizeOfPointY));
                 }
                 else if(weAreInInterval)
-                {
+                {//if we pass last spike in visible interval
                     break;
                 }
             }
@@ -271,7 +279,7 @@
     }
 }
 
-
+//Change color of spike marks according to index
 -(void) setColorWithIndex:(int) iindex transparency:(float) transp
 {
     iindex = iindex%5;
@@ -490,7 +498,7 @@
     //Only fetch visible part (numPoints samples) and put it after offset.
     //Stride is equal to 2 since we have x and y coordinatesand we want to set only y
     timeForSincDrawing =  [audioManager fetchAudio:(float *)&(displayVector.getPoints()[offset])+1 numFrames:numPoints whichChannel:0 stride:2];
-
+    //timeForSincDrawing is used to sinc displaying of waveform and spike marks
 }
 
 

@@ -343,7 +343,7 @@ static BBAudioManager *bbAudioManager = nil;
                     ringBuffer->AddNewInterleavedFloatData(tempCalculationBuffer, targetFrame-startFrame, numChannels);
                   
                     _preciseTimeOfLastData = (float)targetFrame/(float)fileReader.samplingRate;
-                    //NSLog(@"MS: %f", _preciseTimeOfLastData);
+
                     //set playback time to scrubber position
                     fileReader.currentTime = lastSeekPosition;
                     if(selecting)
@@ -352,14 +352,8 @@ static BBAudioManager *bbAudioManager = nil;
                         [self updateSelection:_selectionEndTime];
                     }
                 });
-                
-               
-               
-
             }
             
-            //we keep currentTime here to have precise time to sinc spikes display with waveform
-            //_preciseTimeOfLastData = fileReader.currentTime;
             //set playback data to zero (silence during scrubbing)
             memset(data, 0, numChannels*numFrames*sizeof(float));
             return;
@@ -427,6 +421,8 @@ static BBAudioManager *bbAudioManager = nil;
 - (float)fetchAudio:(float *)data numFrames:(UInt32)numFrames whichChannel:(UInt32)whichChannel stride:(UInt32)stride
 {
     if (!thresholding) {
+        //Fetch data and get time of data as precise as posible. Used to sichronize
+        //display of waveform and spike marks
         float timeOfData = ringBuffer->FetchFreshData2(data, numFrames, whichChannel, stride);
         return timeOfData;
     }

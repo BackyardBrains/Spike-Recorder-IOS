@@ -50,11 +50,7 @@
     }
     [window makeKeyAndVisible];
 
-//    DBSession* dbSession =
-//    [[[DBSession alloc]
-//      initWithConsumerKey:@"gko0ired85ogh0e"
-//      consumerSecret:@"vmxyfeju241zqpk"]
-//     autorelease];
+    //dropbox session
     DBSession *dbSession = [[[DBSession alloc]
                             initWithAppKey:@"ce7f9ip8scc9xyb"
                             appSecret:@"jbvj3k3xchx7qig"
@@ -85,7 +81,7 @@
     return NO;
 }
 
-
+//Patch. TODO: Fix this on some other place
 - (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController
 {
     [[BBAudioManager bbAudioManager] endSelection];
@@ -109,6 +105,7 @@
         return YES;
     }
 
+    //Audio file handling. Used for sharing.
     if (url) {
         NSLog(@"Scheme: %@", url.scheme);
         if (url.scheme && [url.scheme isEqualToString:@"file"]) {
@@ -129,9 +126,13 @@
                 aFile.filelength = fileReader.duration;
                 [fileReader release];
                 [aFile save];
+                //Flag that indicate that we should open shared file
+                //and show it to user
                 sharedFileIsWaiting = YES;
                 NSLog(@"Shared file notification in openURL");
+                //open list of files to show new file at the end of the list
                 tabBarController.selectedIndex = kRecordingsTabBarIndex;
+                //Post notification
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"FileReceivedViaShare" object:self];
 
             }
@@ -142,14 +143,15 @@
     return YES;
 }
 
-//
+//Flag that indicate that we should open shared file
+//and show it to user
 -(BOOL) sharedFileShouldBeOpened
 {
     return sharedFileIsWaiting;
 }
 
-
-
+//Flag that indicate that we should open shared file
+//and show it to user
 -(void) sharedFileIsOpened
 {
     sharedFileIsWaiting = NO;

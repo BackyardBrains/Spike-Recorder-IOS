@@ -189,6 +189,10 @@
 	return allFiles;
 }
 
+//
+// Save file. First transform arrays of spikes to CSV, than save and than restore arrays
+// It is much much faster to save one CSV string than spike train array
+//
 -(void)save
 {
     [self renameIfNeeded];
@@ -198,6 +202,9 @@
     [self CSVToSpikes];
 }
 
+//
+// Save file but don't save spike trains. It is faster and sometimes enough.
+//
 -(void) saveWithoutArrays
 {
     [self renameIfNeeded];
@@ -206,7 +213,10 @@
     [super saveWithoutArrays];
 }
 
-
+//
+// Check if we can save file with original name or we have already file with same name.
+// If we find file with same name add index number
+//
 -(void) renameIfNeeded
 {
     NSString * newNameFromShortName = [NSString stringWithFormat:@"%@.%@", [self shortname], [[self fileURL] pathExtension]];
@@ -315,6 +325,10 @@
     }	
 }
 
+//
+// Set spike train index to next value
+// It will influence threshold getters/setters
+//
 -(NSInteger) moveToNextSpikeTrain
 {
     int nextSpikeTrain = _currentSpikeTrain +1;
@@ -326,6 +340,10 @@
     return _currentSpikeTrain;
 }
 
+//
+// Set spike train index to new value
+// It will influence threshold getters/setters
+//
 -(void) setCurrentSpikeTrain:(NSInteger) aCurrentSpikeTrain
 {
     if(_spikes && [self numberOfThresholds]>aCurrentSpikeTrain && aCurrentSpikeTrain>=0)
@@ -342,6 +360,7 @@
     }
 }
 
+//Add another threshold pair
 -(void) addAnotherThresholds
 {
     [_thresholds addObject:[NSNumber numberWithFloat:0.0f]];

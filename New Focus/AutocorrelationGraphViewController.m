@@ -43,7 +43,7 @@
     if(fieldEnum == CPTScatterPlotFieldX)
     {
         //x axis data
-        return [NSNumber numberWithFloat:0.1f*(((float)index)/101.0f)];//[NSNumber numberWithDouble:index];
+        return [NSNumber numberWithFloat:0.1f*(((float)index)/101.0f)];
     }
     else
     {
@@ -85,7 +85,7 @@
     textStyle.color = [CPTColor grayColor];
     textStyle.fontSize = 16.0f;
     textStyle.textAlignment = CPTTextAlignmentCenter;
-    barChart.titleTextStyle = textStyle;  // Error found here
+    barChart.titleTextStyle = textStyle;
     barChart.titleDisplacement = CGPointMake(0.0f, -10.0f);
     barChart.titlePlotAreaFrameAnchor = CPTRectAnchorTop;
     
@@ -104,10 +104,9 @@
     
     NSArray *customTickLocations = [NSArray arrayWithObjects:[NSDecimalNumber numberWithInt:0], [NSDecimalNumber numberWithInt:20], [NSDecimalNumber numberWithInt:40], [NSDecimalNumber numberWithInt:60], [NSDecimalNumber numberWithInt:80],[NSDecimalNumber numberWithInt:100], nil];
     
-    
     NSArray *xAxisLabels = [NSArray arrayWithObjects:@"0", @"0.02", @"0.04", @"0.06", @"0.08", @"0.1", nil];
     NSUInteger labelLocation = 0;
-    
+    //make custom labels
     NSMutableArray *customLabels = [NSMutableArray arrayWithCapacity:[xAxisLabels count]];
     for (NSNumber *tickLocation in customTickLocations)
     {
@@ -118,7 +117,7 @@
         [customLabels addObject:newLabel];
         [newLabel release];
     }
-    
+    //set custom labels on x axis
     x.axisLabels =  [NSSet setWithArray:customLabels];
 
     
@@ -134,6 +133,7 @@
     barPlot.barOffset = CPTDecimalFromFloat(1.0f);
     barPlot.baseValue = CPTDecimalFromString(@"0");
 
+    //make width of bars on ipad greater
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         barPlot.barWidth = CPTDecimalFromFloat(10.0f);
     }
@@ -143,7 +143,7 @@
     }
     
     barPlot.cornerRadius = 0.0f;
-    barPlot.barWidthsAreInViewCoordinates = YES;
+    barPlot.barWidthsAreInViewCoordinates = YES; //bar width are defined in pixels of screen
 
     barPlot.dataSource = self;
     [barChart addPlot:barPlot];
@@ -155,7 +155,6 @@
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 //Values of histogram

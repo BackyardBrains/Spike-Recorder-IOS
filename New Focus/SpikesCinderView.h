@@ -21,8 +21,6 @@
     gl::Texture mColorScale;
     gl::TextureFontRef mScaleFont;
     
-    RingBuffer *ringBuffer;
-    
     PolyLine2f displayVector;
     PolyLine2f allSpikes;
     // Display parameters

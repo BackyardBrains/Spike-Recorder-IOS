@@ -371,7 +371,9 @@ static BBAnalysisManager *bbAnalysisManager = nil;
 
 }
 
-
+//
+// Calculate autocorrelation of spike train
+//
 -(NSArray *) autocorrelationWithFile:(BBFile *) afile spikeTrainIndex:(NSInteger) aSpikeTrainIndex maxtime:(float) maxtime andBinsize:(float) binsize
 {
     NSMutableArray * spikeTrain = (NSMutableArray *)[afile.spikes objectAtIndex:aSpikeTrainIndex];
@@ -450,7 +452,9 @@ static BBAnalysisManager *bbAnalysisManager = nil;
     return nil;
 }
 
-
+//
+// Calculate cross-correlation of two spike trains
+//
 -(NSArray *) crosscorrelationWithFile:(BBFile *) afile firstSpikeTrainIndex:(NSInteger) fSpikeTrainIndex secondSpikeTrainIndex:(NSInteger) sSpikeTrainIndex maxtime:(float) maxtime andBinsize:(float) binsize
 {
     NSMutableArray * fspikeTrain = (NSMutableArray *)[afile.spikes objectAtIndex:fSpikeTrainIndex];
@@ -477,11 +481,13 @@ static BBAnalysisManager *bbAnalysisManager = nil;
         int mainIndex;
         int secIndex;
         BOOL insideInterval = NO;
+        //go through first spike train
         for(mainIndex=0;mainIndex<[fspikeTrain count]; mainIndex++)
         {
             firstSpike = [fspikeTrain objectAtIndex:mainIndex];
             //Check on left of spike
             insideInterval = NO;
+            //go through second spike train
             for(secIndex = 0;secIndex<[sspikeTrain count];secIndex++)
             {
                 secondSpike = [sspikeTrain objectAtIndex:secIndex];
@@ -493,7 +499,7 @@ static BBAnalysisManager *bbAnalysisManager = nil;
                     histogram[index]++;
                 }
                 else if(insideInterval)
-                {
+                {//we pass last spike that is in interval of interest
                     break;
                 }
             }

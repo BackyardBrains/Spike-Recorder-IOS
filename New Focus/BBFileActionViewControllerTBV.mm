@@ -140,6 +140,7 @@
     [self.tableView reloadData];
 }
 
+//If file is opened reset flag
 -(void) newFileAddedViaShare
 {
     MyAppDelegate * appDelegate = (MyAppDelegate*)[[UIApplication sharedApplication] delegate];

@@ -11,8 +11,8 @@
 
 @interface ISIHistogramViewController : UIViewController <CPTPlotDataSource>
 {
-    NSArray * _values;
-    NSArray * _limits;
+    NSArray * _values; //y axis data
+    NSArray * _limits; //x axis data
 }
 
 @property (retain) NSArray * values;
