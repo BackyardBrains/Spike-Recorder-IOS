@@ -8,6 +8,7 @@
 
 #import "MyCinderGLView.h"
 #import "BBSpike.h"
+#import "BBBTManager.h"
 @interface MyCinderGLView ()
 {
     BBAudioManager *audioManager;
@@ -332,15 +333,27 @@
     std::ostringstream yStringStream;
     yStringStream.precision(2);
     yStringStream << fixed << yScale << " mV";
+    
+    
     std::stringstream xStringStream;
     xStringStream.precision(1);
-    if (xScale >= 1000) {
+   /* if (xScale >= 1000) {
         xScale /= 1000.0;
         xStringStream << fixed << xScale << " s";
     }
     else {
         xStringStream << fixed << xScale << " msec";
+    }*/
+    float br = [[BBBTManager btManager] currentBaudRate];
+    if (br >= 1000) {
+        br /= 1000.0;
+        xStringStream << fixed << br << " KSps";
     }
+    else {
+        xStringStream << fixed << br << " Sps";
+    }
+
+    
 
 	gl::color( ColorA( 1.0, 1.0f, 1.0f, 1.0f ) );
     

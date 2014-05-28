@@ -12,6 +12,7 @@
 #import "AudioFileWriter.h"
 #import "BBAudioFileReader.h"
 #import "DSPThreshold.h"
+#import <ExternalAccessory/ExternalAccessory.h>
 @class BBFile;
 
 typedef enum BBStimulationType
@@ -27,7 +28,7 @@ typedef enum BBStimulationType
 } BBStimulationType;
 
 
-@interface BBAudioManager : NSObject
+@interface BBAudioManager : NSObject <EAAccessoryDelegate, NSStreamDelegate>
 {
     float stimulationPulseFrequency;
     float stimulationPulseDuration;
@@ -83,6 +84,7 @@ typedef enum BBStimulationType
 @property (readonly) BOOL thresholding;
 @property (readonly) BOOL selecting;
 @property (readonly) BOOL playing;
+@property (readonly) BOOL btOn;
 @property BOOL seeking;
 
 + (BBAudioManager *) bbAudioManager;
@@ -106,5 +108,7 @@ typedef enum BBStimulationType
 -(float) getTimeForSpikes;
 - (void)saveSettingsToUserDefaults;
 -(void) clearWaveform;
+-(void) switchToBluetooth;
+-(void) closeBluetooth;
 
 @end

@@ -141,6 +141,10 @@
 
 }
 
+- (IBAction)btButtonPressed:(id)sender {
+    [[BBAudioManager bbAudioManager] switchToBluetooth];
+}
+
 - (IBAction)stopRecording:(id)sender {
     
     if (_timer) {
@@ -208,6 +212,7 @@
     [stimulateButton release];
     [stimulatePreferenceButton release];
     [_stopButton release];
+    [_btButton release];
     [super dealloc];
 }
 

@@ -7,6 +7,7 @@
 
 #import "BBAudioManager.h"
 #import "DSPAnalysis.h"
+#import "BBBTManager.h"
 #import "BBFile.h"
 
 #define RING_BUFFER_SIZE 524288
@@ -36,6 +37,15 @@ static BBAudioManager *bbAudioManager = nil;
     float lastSeekPosition;
     float * tempCalculationBuffer;//used to load data for display while scrubbing
     UInt32 lastNumberOfSampleDisplayed;//used to find position of selection in trigger view
+    
+    
+    //======bt thing
+   /* EAAccessory *_accessory;
+    EASession *_session;
+    NSInteger availableBtData;
+    NSMutableData *_writeData;
+    NSMutableData *_readData;
+    */
 }
 
 @property BOOL playing;
@@ -72,6 +82,7 @@ static BBAudioManager *bbAudioManager = nil;
 @synthesize selecting;
 @synthesize playing;
 @synthesize seeking;
+@synthesize btOn;
 
 
 #pragma mark - Singleton Methods
@@ -137,7 +148,8 @@ static BBAudioManager *bbAudioManager = nil;
         stimulating = false;
         thresholding = false;
         selecting = false;
-
+        btOn = false;
+        
     }
     
     return self;
@@ -208,6 +220,20 @@ static BBAudioManager *bbAudioManager = nil;
     [audioManager play];
 
 }
+
+
+#pragma mark - Bluetooth
+- (void) switchToBluetooth
+{
+    btOn = YES;
+    [[BBBTManager btManager] startBluetooth];
+    audioManager.inputBlock = nil;
+    audioManager.outputBlock = nil;
+    [[BBBTManager btManager] setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
+        ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
+    }];
+}
+
 
 - (void)startThresholding:(UInt32)newNumPointsToSavePerThreshold
 {
@@ -317,6 +343,8 @@ static BBAudioManager *bbAudioManager = nil;
     audioManager.inputBlock = nil;
     [audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
         
+        
+        //------- Scrubbing ----------------
         if (!self.playing) {
             //if we have new seek position
             if(self.seeking && lastSeekPosition != fileReader.currentTime)
@@ -358,6 +386,8 @@ static BBAudioManager *bbAudioManager = nil;
             memset(data, 0, numChannels*numFrames*sizeof(float));
             return;
         }
+        
+        //------- Playing ----------------
         //we keep currentTime here to have precise time to sinc spikes marks display with waveform
         dispatch_sync(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH , 0), ^{
          //dispatch_sync(dispatch_get_main_queue(), ^{
