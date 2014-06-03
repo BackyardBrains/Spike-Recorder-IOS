@@ -337,22 +337,25 @@
     
     std::stringstream xStringStream;
     xStringStream.precision(1);
-   /* if (xScale >= 1000) {
+    if (xScale >= 1000) {
         xScale /= 1000.0;
         xStringStream << fixed << xScale << " s";
     }
     else {
         xStringStream << fixed << xScale << " msec";
-    }*/
-    float br = [[BBBTManager btManager] currentBaudRate];
+    }
+    
+    //==================================================
+    //Debug code for BT sample rate
+   /* float br = [[BBBTManager btManager] currentBaudRate];
     if (br >= 1000) {
         br /= 1000.0;
         xStringStream << fixed << br << " KSps";
     }
     else {
         xStringStream << fixed << br << " Sps";
-    }
-
+    }*/
+    //==================================================
     
 
 	gl::color( ColorA( 1.0, 1.0f, 1.0f, 1.0f ) );
@@ -645,6 +648,10 @@
 
 
 #pragma mark - Utility
+
+//
+// 
+//
 - (Vec2f)screenToWorld:(Vec2f)point
 {
 

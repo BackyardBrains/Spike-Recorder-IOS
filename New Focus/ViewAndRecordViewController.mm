@@ -62,11 +62,12 @@
     [super viewDidLoad];
     
     // our CCGLTouchView being added as a subview
-	MyCinderGLView *aView = [[MyCinderGLView alloc] init];
-	glView = aView;
-	[aView release];
-    glView = [[MyCinderGLView alloc] initWithFrame:self.view.frame];
+	//MultichannelCindeGLView *aView = [[MultichannelCindeGLView alloc] init];
+	//glView = aView;
+	//[aView release];
+    glView = [[MultichannelCindeGLView alloc] initWithFrame:self.view.frame];
     
+    [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] numberOfChannels] samplingRate:[[BBAudioManager bbAudioManager] samplingRate] andDataSource:self];
 	[self.view addSubview:glView];
     [self.view sendSubviewToBack:glView];
 	
@@ -85,10 +86,18 @@
     [glView stopAnimation];
 }
 
-- (void)setGLView:(MyCinderGLView *)view
+- (void)setGLView:(MultichannelCindeGLView *)view
 {
     glView = view;
     callbackTimer = nil;
+}
+
+#pragma mark - MultichannelGLViewDelegate function
+- (void) fetchDataToDisplay:(float *)data numFrames:(UInt32)numFrames whichChannel:(UInt32)whichChannel
+{
+    //Fetch data and get time of data as precise as posible. Used to sichronize
+    //display of waveform and spike marks
+    [[BBAudioManager bbAudioManager] fetchAudio:data numFrames:numFrames whichChannel:whichChannel stride:1];
 }
 
 

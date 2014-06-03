@@ -33,9 +33,6 @@
     
     
     // our CCGLTouchView being added as a subview
-//	MyCinderGLView *aView = [[MyCinderGLView alloc] init];
-//	glView = aView;
-//	[aView release];
     glView = [[MyCinderGLView alloc] initWithFrame:self.view.frame];
     
 	[self.view addSubview:glView];

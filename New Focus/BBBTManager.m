@@ -292,7 +292,8 @@ static BBBTManager *btManager = nil;
         {
             self.inputBlock(dataToLoad, [arrayOfFloats count], 1);//TODO: make it multy channel
         }
-        
+        [arrayOfFloats removeAllObjects];
+        [arrayOfFloats release];
         free(dataToLoad);
     }
 }

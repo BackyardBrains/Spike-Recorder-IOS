@@ -9,7 +9,7 @@
 #import "PlaybackViewController.h"
 
 @interface PlaybackViewController() {
-    dispatch_source_t callbackTimer;
+    dispatch_source_t callbackTimer; //timer for update of slider/scrubber
     BBFile *aFile;
     BBAudioManager *bbAudioManager;
     BOOL audioPaused;
@@ -140,8 +140,11 @@
     [self.timeSlider addTarget:self
                         action:@selector(sliderTouchDown:)
               forControlEvents:(UIControlEventTouchDown)];
+    
+    
     // our CCGLTouchView being added as a subview
-	MyCinderGLView *aView = [[MyCinderGLView alloc] init];
+    //TODO: check if this is redundant:
+    MyCinderGLView *aView = [[MyCinderGLView alloc] init];
 	glView = aView;
 	[aView release];
     

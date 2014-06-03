@@ -12,7 +12,7 @@
 #import "AudioFileWriter.h"
 #import "BBAudioFileReader.h"
 #import "DSPThreshold.h"
-#import <ExternalAccessory/ExternalAccessory.h>
+
 @class BBFile;
 
 typedef enum BBStimulationType
@@ -28,7 +28,7 @@ typedef enum BBStimulationType
 } BBStimulationType;
 
 
-@interface BBAudioManager : NSObject <EAAccessoryDelegate, NSStreamDelegate>
+@interface BBAudioManager : NSObject
 {
     float stimulationPulseFrequency;
     float stimulationPulseDuration;
@@ -53,6 +53,7 @@ typedef enum BBStimulationType
 }
 
 @property (getter=samplingRate, readonly) float samplingRate;
+@property (getter=numberOfChannels, readonly) int numberOfChannels;
 
 @property int numPulsesInDigitalStimulation;
 @property float stimulationDigitalMessageFrequency; // the embedded high-frequency signal interpreted by hardware

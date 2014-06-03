@@ -116,7 +116,6 @@ static pthread_mutex_t outputAudioFileLock;
             CheckError( ExtAudioFileWriteAsync(self.outputFile, 0, NULL), "Initializing audio file");
         }
         pthread_mutex_unlock( &outputAudioFileLock );
-        
     }
     return self;
 }

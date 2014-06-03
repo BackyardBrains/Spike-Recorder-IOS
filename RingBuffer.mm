@@ -124,6 +124,8 @@ void RingBuffer::AddNewDoubleData(const double *newData, const SInt64 numFrames,
 void RingBuffer::AddNewInterleavedFloatData(const float *newData, const SInt64 numFrames, const SInt64 numChannelsHere)
 {
 	
+    
+    
 	int numChannelsToCopy = (numChannelsHere <= mNumChannels) ? numChannelsHere : mNumChannels;
 	float zero = 0.0f;
 	
@@ -206,6 +208,8 @@ float RingBuffer::FetchFreshData2(float *outData, SInt64 numFrames, SInt64 which
                    numSamplesInSecondCopy);
         
     }
+    
+    
     return tempTime;
 }
 

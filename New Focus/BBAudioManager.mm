@@ -234,6 +234,11 @@ static BBAudioManager *bbAudioManager = nil;
     }];
 }
 
+-(void) closeBluetooth
+{
+    //TODO: implement BT stop
+}
+
 
 - (void)startThresholding:(UInt32)newNumPointsToSavePerThreshold
 {
@@ -470,6 +475,11 @@ static BBAudioManager *bbAudioManager = nil;
     return 0.0f;
     
 }
+
+
+
+
+
 
 #pragma mark - Output Methods
 - (void)startStimulating:(BBStimulationType)newStimulationType
@@ -910,6 +920,11 @@ static BBAudioManager *bbAudioManager = nil;
 - (float)samplingRate
 {
     return audioManager.samplingRate;
+}
+
+-(int) numberOfChannels
+{
+    return audioManager.numInputChannels;
 }
 
 - (void)setNumTriggersInThresholdHistory:(UInt32)numTriggersInThresholdHistoryLocal

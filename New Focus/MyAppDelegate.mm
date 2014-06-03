@@ -12,6 +12,7 @@
 #import "MyAppDelegate.h"
 #import <DropboxSDK/DropboxSDK.h>
 #import "BBAudioFileReader.h"
+#import "TestFlight.h"
 #define kViewRecordTabBarIndex 0
 #define kThresholdTabBarIndex 1
 #define kRecordingsTabBarIndex 2
@@ -23,6 +24,9 @@
 
 - (void)launch
 {    
+   
+    // start of your application:didFinishLaunchingWithOptions // ...
+    [TestFlight takeOff:@"da7a715d-e6da-44e9-97a8-05b75525a9db"];
 
     // Hide the status bar
 //    [[UIApplication sharedApplication] setStatusBarHidden:YES animated:NO];

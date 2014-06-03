@@ -2,6 +2,14 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>numSamplesMin</key>
+	<string>10</string>
+	<key>numSamplesMax</key>
+	<string>132300</string>
+	<key>numSamplesVisibleThreshold</key>
+	<string>1000</string>
+	<key>numSamplesVisible</key>
+	<string>1000</string>
 	<key>stimulationPulseFrequency</key>
 	<integer>20</integer>
 	<key>stimulationDigitalMessageFrequency</key>

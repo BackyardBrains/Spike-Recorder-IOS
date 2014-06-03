@@ -14,9 +14,10 @@
 #import "BBAudioManager.h"
 #import "BBFile.h"
 #import "RecordingOverlayController.h"
+#import "MultichannelCindeGLView.h"
 
-@interface ViewAndRecordViewController : CCGLTouchViewController {
-    MyCinderGLView *glView;
+@interface ViewAndRecordViewController : CCGLTouchViewController <MultichannelGLViewDelegate>{
+    MultichannelCindeGLView *glView;
     
 }
 
