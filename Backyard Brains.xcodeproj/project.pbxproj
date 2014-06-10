@@ -15,6 +15,7 @@
 		240D8062190C16E6009F9AEA /* SelectCrosscorelTableViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 240D8061190C16E6009F9AEA /* SelectCrosscorelTableViewController.mm */; };
 		240D8066190E98F6009F9AEA /* CrossCorrViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 240D8064190E98F6009F9AEA /* CrossCorrViewController.m */; };
 		240D8067190E98F6009F9AEA /* CrossCorrViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 240D8065190E98F6009F9AEA /* CrossCorrViewController.xib */; };
+		244C6A3B1943742E0097F7D4 /* WavManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 244C6A3A1943742E0097F7D4 /* WavManager.mm */; };
 		246989351909898F00F5383F /* trash.png in Resources */ = {isa = PBXBuildFile; fileRef = 246989331909898F00F5383F /* trash.png */; };
 		246989361909898F00F5383F /* trash@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 246989341909898F00F5383F /* trash@2x.png */; };
 		2469893919098C1900F5383F /* again.png in Resources */ = {isa = PBXBuildFile; fileRef = 2469893719098C1900F5383F /* again.png */; };
@@ -160,6 +161,8 @@
 		240D8063190E98F6009F9AEA /* CrossCorrViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CrossCorrViewController.h; sourceTree = "<group>"; };
 		240D8064190E98F6009F9AEA /* CrossCorrViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CrossCorrViewController.m; sourceTree = "<group>"; };
 		240D8065190E98F6009F9AEA /* CrossCorrViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CrossCorrViewController.xib; sourceTree = "<group>"; };
+		244C6A391943742E0097F7D4 /* WavManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WavManager.h; sourceTree = "<group>"; };
+		244C6A3A1943742E0097F7D4 /* WavManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WavManager.mm; sourceTree = "<group>"; };
 		246989331909898F00F5383F /* trash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = trash.png; sourceTree = "<group>"; };
 		246989341909898F00F5383F /* trash@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "trash@2x.png"; sourceTree = "<group>"; };
 		2469893719098C1900F5383F /* again.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = again.png; sourceTree = "<group>"; };
@@ -462,6 +465,15 @@
 				2405351C18FC62BB009A09FF /* MBProgressHUD.m */,
 			);
 			name = ProgressHUD;
+			sourceTree = "<group>";
+		};
+		244C6A38194374080097F7D4 /* wav */ = {
+			isa = PBXGroup;
+			children = (
+				244C6A391943742E0097F7D4 /* WavManager.h */,
+				244C6A3A1943742E0097F7D4 /* WavManager.mm */,
+			);
+			name = wav;
 			sourceTree = "<group>";
 		};
 		247ED9B3193DEB8700871BAC /* TestFlightSDK3.0.2 */ = {
@@ -827,6 +839,7 @@
 		FADF26681596362F006C87BA /* Backyard Brains */ = {
 			isa = PBXGroup;
 			children = (
+				244C6A38194374080097F7D4 /* wav */,
 				FA9A665015BA3DC000CF1697 /* iPad */,
 				FAA27C1F15AD0BB200DCC60B /* Stim UI */,
 				FAA43D2715AB5F9C0024E445 /* Images */,
@@ -1057,6 +1070,7 @@
 				240435E118F7E00A00A85A1B /* BBSpike.m in Sources */,
 				248C8EB318E4785D00307C4C /* RingBuffer.mm in Sources */,
 				248C8EB018E4785D00307C4C /* AudioFileReader.mm in Sources */,
+				244C6A3B1943742E0097F7D4 /* WavManager.mm in Sources */,
 				240435DE18F6EC3400A85A1B /* BBAnalysisManager.mm in Sources */,
 				FADF267E1596362F006C87BA /* MyAppDelegate.mm in Sources */,
 				248C8EBC18E5CF5E00307C4C /* CCGLTouchView.mm in Sources */,
@@ -1239,7 +1253,7 @@
 					"-ObjC",
 				);
 				PRODUCT_NAME = "Backyard Brains";
-				PROVISIONING_PROFILE = "B57EC2DA-3FB5-498A-B5BB-9DB64E514E1E";
+				PROVISIONING_PROFILE = "BFBCE91F-A04A-4967-92D1-57165CE45F27";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "$(CINDER_PATH)/include";

@@ -20,7 +20,7 @@ typedef enum {
 	//Progress is shown using an UIActivityIndicatorView. This is the default.
 	MultichannelGLViewModeThresholding,
 	//Progress is shown using a round, pie-chart like, progress view.
-	MultichannelGLViewModeDeterminate,
+	MultichannelGLViewModePlayback,
 	//Progress is shown using a horizontal progress bar
 	MultichannelGLViewModeDeterminateHorizontalBar
 } MultichannelGLViewMode;
@@ -67,5 +67,9 @@ typedef enum {
 @protocol MultichannelGLViewDelegate <NSObject>
 //Called every frame when view needs data to display
 - (void) fetchDataToDisplay:(float *)data numFrames:(UInt32)numFrames whichChannel:(UInt32)whichChannel;
-//@optional
+
+@optional
+
+-(void) selectChannel:(int) selectedChannel;
+
 @end

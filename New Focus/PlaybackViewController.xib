@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="5053" systemVersion="13C64" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="5056" systemVersion="13D65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none">
     <dependencies>
         <deployment defaultVersion="1536" identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
@@ -18,7 +18,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" continuous="NO" id="4">
-                    <rect key="frame" x="51.0000012484998" y="392" width="251" height="29"/>
+                    <rect key="frame" x="51" y="392" width="251.00000063045496" height="29"/>
                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMinY="YES"/>
                     <connections>
                         <action selector="sliderValueChanged:" destination="-1" eventType="valueChanged" id="6"/>
@@ -39,7 +39,7 @@
                         <action selector="playPauseButtonPressed:" destination="-1" eventType="touchUpInside" id="8"/>
                     </connections>
                 </button>
-                <imageView userInteractionEnabled="NO" contentMode="left" image="TickMarks.png" id="12">
+                <imageView hidden="YES" userInteractionEnabled="NO" contentMode="left" image="TickMarks.png" id="12">
                     <rect key="frame" x="0.0" y="22" width="24" height="435"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" heightSizable="YES"/>
                 </imageView>

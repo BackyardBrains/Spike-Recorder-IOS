@@ -68,6 +68,7 @@
     glView = [[MultichannelCindeGLView alloc] initWithFrame:self.view.frame];
     
     [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] numberOfChannels] samplingRate:[[BBAudioManager bbAudioManager] samplingRate] andDataSource:self];
+    glView.mode = MultichannelGLViewModeView;
 	[self.view addSubview:glView];
     [self.view sendSubviewToBack:glView];
 	

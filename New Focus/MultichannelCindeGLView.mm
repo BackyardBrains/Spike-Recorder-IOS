@@ -25,7 +25,7 @@
     
     
     //debug variables
-    BOOL debugMultichannelOnSingleChannel;
+   // BOOL debugMultichannelOnSingleChannel;
 }
 
 @end
@@ -42,7 +42,7 @@
 //
 - (void)setup
 {
-    debugMultichannelOnSingleChannel = NO;
+    //debugMultichannelOnSingleChannel = NO;
     
     dataSourceDelegate = nil;;
     samplingRate = 0;
@@ -75,11 +75,11 @@
 {
     [self stopAnimation];
     
-    if(newNumberOfChannels<2)
-    {
-        debugMultichannelOnSingleChannel = YES;
-        newNumberOfChannels = 3;
-    }
+  //  if(newNumberOfChannels<2)
+  //  {
+  //      debugMultichannelOnSingleChannel = YES;
+  //      newNumberOfChannels = 3;
+  //  }
     
     dataSourceDelegate = newDataSource;
     samplingRate = newSamplingRate;
@@ -91,7 +91,9 @@
     }
     
     selectedChannel = 0;
-    
+    if ([dataSourceDelegate respondsToSelector:@selector(selectChannel:)]) {
+        [dataSourceDelegate selectChannel:selectedChannel];
+    }
     // Setup display vectors. Every PolyLine2f is one waveform
     if(displayVectors!=nil)
     {
@@ -297,17 +299,17 @@
         //TODO: timeForSincDrawing is used to sinc displaying of waveform and spike marks
        
         //================ debug region ======
-        if(debugMultichannelOnSingleChannel)
-        {
-            
-            [dataSourceDelegate fetchDataToDisplay:tempDataBuffer numFrames:numPoints whichChannel:0];
-        }
-        else
-        {
+//        if(debugMultichannelOnSingleChannel)
+//        {
+//            
+//            [dataSourceDelegate fetchDataToDisplay:tempDataBuffer numFrames:numPoints whichChannel:0];
+//        }
+//        else
+//        {
         //================ end debug region ======
             [dataSourceDelegate fetchDataToDisplay:tempDataBuffer numFrames:numPoints whichChannel:channelIndex];
         //================ debug region ======
-        }
+//        }
         //================ end debug region ======
 
         //now transfer y axis data from bufer to display vector with stride equ. to 2
@@ -394,11 +396,11 @@
     float radiusYAxis = HANDLE_RADIUS*scaleXY.y;
 
     
-
+    //put background of handles to black
     glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
     gl::drawSolidRect(Rectf(-maxTimeSpan,maxVoltsSpan,centerOfCircleX+1.6*radiusXAxis,-maxVoltsSpan));
 
-    
+    //draw all handles
     for(int indexOfChannel = 0;indexOfChannel<numberOfChannels;indexOfChannel++)
     {
         [self setColorWithIndex:indexOfChannel transparency:1.0f];
@@ -413,6 +415,8 @@
         glLineWidth(2.0f);
         gl::drawLine(Vec2f(centerOfCircleX, yOffsets[indexOfChannel]), Vec2f(0.0f, yOffsets[indexOfChannel]));
         glLineWidth(1.0f);
+        
+        //draw holow unselected handle
         if(indexOfChannel!=selectedChannel)
         {
             glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
@@ -511,7 +515,7 @@
 
 
 
-//TODO:Update for all states
+//Draw line for time scale
 - (void)drawGrid
 {
     //draw line for x-axis
@@ -576,7 +580,7 @@
 }
 
 //
-//
+// React on one and two finger gestures
 //
 - (void)updateActiveTouches
 {
@@ -635,6 +639,7 @@
             //move channel
             yOffsets[grabbedHandleIndex] = glWorldTouchPos.y;
             
+            //if we drag handle outside the screen return it back
             float upperBoundary =(maxVoltsSpan*0.5 - HANDLE_RADIUS*scaleXY.y);
             if(yOffsets[grabbedHandleIndex]>upperBoundary)
             {
@@ -648,6 +653,9 @@
             }
             //select channel
             selectedChannel = grabbedHandleIndex;
+            if ([dataSourceDelegate respondsToSelector:@selector(selectChannel:)]) {
+                [dataSourceDelegate selectChannel:selectedChannel];
+            }
         
         }
     }

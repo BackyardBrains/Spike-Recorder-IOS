@@ -10,11 +10,11 @@
 #import "MyCinderGLView.h"
 #import "BBAudioManager.h"
 #import "BBFile.h"
+#import "MultichannelCindeGLView.h"
 
-
-@interface PlaybackViewController : CCGLTouchViewController
+@interface PlaybackViewController : CCGLTouchViewController <MultichannelGLViewDelegate>
 {
-    MyCinderGLView *glView;
+    MultichannelCindeGLView *glView;
 }
 
 - (void)setGLView:(CCGLTouchView *)view;
@@ -27,5 +27,6 @@
 
 - (IBAction)sliderValueChanged:(id)sender;
 - (IBAction)playPauseButtonPressed:(id)sender;
+- (void) selectChannel:(int) selectedChannel;
 
 @end

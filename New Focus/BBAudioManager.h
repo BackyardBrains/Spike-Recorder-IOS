@@ -55,6 +55,10 @@ typedef enum BBStimulationType
 @property (getter=samplingRate, readonly) float samplingRate;
 @property (getter=numberOfChannels, readonly) int numberOfChannels;
 
+@property (getter=sourceSamplingRate, readonly) float sourceSamplingRate;
+@property (getter=sourceNumberOfChannels, readonly) int sourceNumberOfChannels;
+
+
 @property int numPulsesInDigitalStimulation;
 @property float stimulationDigitalMessageFrequency; // the embedded high-frequency signal interpreted by hardware
 @property float stimulationDigitalDuration;
@@ -111,5 +115,7 @@ typedef enum BBStimulationType
 -(void) clearWaveform;
 -(void) switchToBluetooth;
 -(void) closeBluetooth;
+
+-(void) selectChannel:(int) selectedChannel;
 
 @end

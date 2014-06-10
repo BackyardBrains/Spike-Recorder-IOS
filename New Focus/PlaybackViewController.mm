@@ -91,10 +91,11 @@
     NSLog(@"Playing a file at: %@", theURL);
     [bbAudioManager startPlaying:bbfile]; // startPlaying: initializes the file and buffers audio
     
+    [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
+    
     // Set the slider to have the bounds of the audio file's duraiton
     timeSlider.minimumValue = 0;
     timeSlider.maximumValue = bbAudioManager.fileDuration;
-
     // Periodically poll for the current position in the audio file, and update the
     // slider accordingly.
     callbackTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue());
@@ -143,13 +144,10 @@
     
     
     // our CCGLTouchView being added as a subview
-    //TODO: check if this is redundant:
-    MyCinderGLView *aView = [[MyCinderGLView alloc] init];
-	glView = aView;
-	[aView release];
+    glView = [[MultichannelCindeGLView alloc] initWithFrame:self.view.frame];
     
-    glView = [[MyCinderGLView alloc] initWithFrame:self.view.frame];
-    
+    //[glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
+    glView.mode = MultichannelGLViewModePlayback;
 	[self.view addSubview:glView];
     [self.view sendSubviewToBack:glView];
     
@@ -171,10 +169,18 @@
 
 
 
-- (void)setGLView:(MyCinderGLView *)view
+- (void)setGLView:(MultichannelCindeGLView *)view
 {
     glView = view;
     callbackTimer = nil;
+}
+
+#pragma mark - MultichannelGLViewDelegate function
+- (void) fetchDataToDisplay:(float *)data numFrames:(UInt32)numFrames whichChannel:(UInt32)whichChannel
+{
+    //Fetch data and get time of data as precise as posible. Used to sichronize
+    //display of waveform and spike marks
+    [[BBAudioManager bbAudioManager] fetchAudio:data numFrames:numFrames whichChannel:whichChannel stride:1];
 }
 
 
@@ -214,6 +220,11 @@
 {
     [self togglePlayback];
     audioPaused = !audioPaused;
+}
+
+-(void) selectChannel:(int) selectedChannel
+{
+    [bbAudioManager selectChannel:selectedChannel];
 }
 
 - (void)togglePlayback

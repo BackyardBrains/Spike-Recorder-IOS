@@ -46,7 +46,7 @@
 		//Format date into the filename
 		NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
 
-		[dateFormatter setDateFormat:@"'BYB Recording 'M'-'d'-'yyyy' 'h':'mm':'ss':'S a'.m4a'"];
+		[dateFormatter setDateFormat:@"'BYB Recording 'M'-'d'-'yyyy' 'h':'mm':'ss':'S a'.wav'"];//.m4a
 		self.filename = [dateFormatter stringFromDate:self.date];
         NSLog(@"Filename: %@", self.filename);
 		
