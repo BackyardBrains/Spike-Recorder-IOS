@@ -45,6 +45,7 @@
 		249A24671906AC59005F5F03 /* ISIHistogramViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 249A24651906AC59005F5F03 /* ISIHistogramViewController.m */; };
 		249A24681906AC59005F5F03 /* ISIHistogramViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 249A24661906AC59005F5F03 /* ISIHistogramViewController.xib */; };
 		24A13BD4192B8F3500BCE9D1 /* ExternalAccessory.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24A13BD3192B8F3500BCE9D1 /* ExternalAccessory.framework */; };
+		24F6696019476E9B00A78247 /* BBAudioFileWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 24F6695F19476E9B00A78247 /* BBAudioFileWriter.m */; };
 		FA042A1C16C89EC000278FE2 /* FileNeuron.png in Resources */ = {isa = PBXBuildFile; fileRef = FA042A1216C89EC000278FE2 /* FileNeuron.png */; };
 		FA042A1D16C89EC000278FE2 /* FileNeuronx2.png in Resources */ = {isa = PBXBuildFile; fileRef = FA042A1316C89EC000278FE2 /* FileNeuronx2.png */; };
 		FA042A1E16C89EC000278FE2 /* record.png in Resources */ = {isa = PBXBuildFile; fileRef = FA042A1416C89EC000278FE2 /* record.png */; };
@@ -286,6 +287,8 @@
 		249A24651906AC59005F5F03 /* ISIHistogramViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ISIHistogramViewController.m; sourceTree = "<group>"; };
 		249A24661906AC59005F5F03 /* ISIHistogramViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ISIHistogramViewController.xib; sourceTree = "<group>"; };
 		24A13BD3192B8F3500BCE9D1 /* ExternalAccessory.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ExternalAccessory.framework; path = System/Library/Frameworks/ExternalAccessory.framework; sourceTree = SDKROOT; };
+		24F6695E19476E9B00A78247 /* BBAudioFileWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BBAudioFileWriter.h; sourceTree = "<group>"; };
+		24F6695F19476E9B00A78247 /* BBAudioFileWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BBAudioFileWriter.m; sourceTree = "<group>"; };
 		FA042A1216C89EC000278FE2 /* FileNeuron.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = FileNeuron.png; path = "BYB Icons/FileNeuron.png"; sourceTree = "<group>"; };
 		FA042A1316C89EC000278FE2 /* FileNeuronx2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = FileNeuronx2.png; path = "BYB Icons/FileNeuronx2.png"; sourceTree = "<group>"; };
 		FA042A1416C89EC000278FE2 /* record.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = record.png; path = "BYB Icons/record.png"; sourceTree = "<group>"; };
@@ -651,6 +654,8 @@
 				FA6921BC15A4AA8100199CCB /* BBAudioManager.mm */,
 				FA4530B115ACDF3B00FA179A /* BBAudioFileReader.h */,
 				FA4530B215ACDF3B00FA179A /* BBAudioFileReader.mm */,
+				24F6695E19476E9B00A78247 /* BBAudioFileWriter.h */,
+				24F6695F19476E9B00A78247 /* BBAudioFileWriter.m */,
 				2402E83018EABDFC0090368A /* DSPAnalysis.h */,
 				2402E83118EABDFC0090368A /* DSPAnalysis.mm */,
 				240435DC18F6EC3400A85A1B /* BBAnalysisManager.h */,
@@ -1060,6 +1065,7 @@
 				FA9059A315A9F9830013688B /* NSString-UppercaseFirst.m in Sources */,
 				247ED9B11935EA3C00871BAC /* MultichannelCindeGLView.mm in Sources */,
 				FA9059A515A9F9830013688B /* SQLiteInstanceManager.m in Sources */,
+				24F6696019476E9B00A78247 /* BBAudioFileWriter.m in Sources */,
 				2474366E18F6DCA30044E11D /* SpikesAnalysisViewController.mm in Sources */,
 				FA9059A715A9F9830013688B /* SQLitePersistentObject.m in Sources */,
 				240D8066190E98F6009F9AEA /* CrossCorrViewController.m in Sources */,

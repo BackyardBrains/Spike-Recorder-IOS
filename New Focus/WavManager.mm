@@ -120,7 +120,7 @@
     self.fileHandle = nil;
 
     
-    //free(header);
+    free(header);
 }
 
 
@@ -177,7 +177,7 @@
 
 -(WavProperties) openWav:(NSURL *)urlToFile
 {
-    _pathToFile = [urlToFile path];
+    _pathToFile = [[urlToFile path] retain];
     struct WavProperties newFileProperties;
     newFileProperties.numOfChannels = 0;
     newFileProperties.sampleRate = 0;

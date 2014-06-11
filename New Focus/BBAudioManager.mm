@@ -20,7 +20,7 @@ static BBAudioManager *bbAudioManager = nil;
 {
     Novocaine *audioManager;
     RingBuffer *ringBuffer;
-    __block AudioFileWriter *fileWriter;
+    __block BBAudioFileWriter *fileWriter;
     __block BBAudioFileReader *fileReader;
     DSPThreshold *dspThresholder;
     DSPAnalysis *dspAnalizer;
@@ -262,6 +262,12 @@ static BBAudioManager *bbAudioManager = nil;
 {
     btOn = YES;
     [[BBBTManager btManager] startBluetooth];
+    
+    //TODO: sampling rate and number of channels should be set here
+    //_sourceSamplingRate;
+    //_sourceNumberOfChannels;
+    
+    
     audioManager.inputBlock = nil;
     audioManager.outputBlock = nil;
     [[BBBTManager btManager] setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
@@ -328,10 +334,10 @@ static BBAudioManager *bbAudioManager = nil;
         recording = true;
         
         // Grab a file writer. This takes care of the creation and management of the audio file.
-        fileWriter = [[AudioFileWriter alloc]
+        fileWriter = [[BBAudioFileWriter alloc]
                       initWithAudioFileURL:urlToFile 
-                      samplingRate:audioManager.samplingRate 
-                      numChannels:audioManager.numInputChannels];
+                      samplingRate:_sourceSamplingRate
+                      numChannels:_sourceNumberOfChannels];
         
         // Replace the audio input function
         // We're still going to save an in-copy memory of the audio for display,

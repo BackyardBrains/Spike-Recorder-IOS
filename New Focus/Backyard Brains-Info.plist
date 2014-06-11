@@ -9,13 +9,15 @@
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
-			<key>CFBundleTypeName</key>
-			<string>Backyard Brains Recording</string>
-			<key>LSHandlerRank</key>
-			<string>Default</string>
-			<key>LSItemContentTypes</key>
-			<array>
+            <key>CFBundleTypeName</key>
+            <string>Audio</string>
+            <key>LSHandlerRank</key>
+            <string>Alternate</string>
+            <key>LSItemContentTypes</key>
+            <array>
+                <string>public.audio</string>
 				<string>public.mpeg-4-audio</string>
+                <string>com.microsoft.waveform-​audio</string>
 			</array>
 		</dict>
 	</array>

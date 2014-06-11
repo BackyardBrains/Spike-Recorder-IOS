@@ -143,7 +143,19 @@
     
     BBAudioManager *bbAudioManager = [BBAudioManager bbAudioManager];
     if (bbAudioManager.recording == false) {
-        aFile = [[BBFile alloc] init];
+        
+//TODO: Uncomment this on real multichannel
+        //check if we have non-standard requirements for format and make custom wav
+        if([bbAudioManager sourceNumberOfChannels]>2 || [bbAudioManager samplingRate]!=44100.0f)
+        {
+            aFile = [[BBFile alloc] initWav];
+        }
+        else
+        {
+            //if everything is standard make .m4a file (it has beter compression )
+            aFile = [[BBFile alloc] init];
+        }
+        
         NSLog(@"URL: %@", [aFile fileURL]);
         [bbAudioManager startRecording:[aFile fileURL]];
         recordingTime = 0.0f;

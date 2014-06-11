@@ -12,7 +12,6 @@
 #import "CCGLTouchView.h"
 #import "Novocaine.h"
 #import "RingBuffer.h"
-#import "AudioFileWriter.h"
 #import "BBAudioManager.h"
 #include "cinder/Font.h"
 #include "cinder/gl/TextureFont.h"
@@ -26,7 +25,6 @@
     gl::TextureFontRef mScaleFont;
     
     RingBuffer *ringBuffer;
-    AudioFileWriter *fileWriter;
     
     PolyLine2f displayVector;
     

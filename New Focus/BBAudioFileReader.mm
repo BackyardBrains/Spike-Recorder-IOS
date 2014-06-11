@@ -70,8 +70,11 @@ static pthread_mutex_t threadLock;
             }
             
             wavManager = [[WavManager alloc] init];
-            [wavManager openWav:urlToAudioFile];
-            
+           struct WavProperties wavProp =  [wavManager openWav:urlToAudioFile];
+           if(wavProp.compressionType != 3)//float format
+           {
+               //Unsuported compression type
+           }
         }
         else
         {

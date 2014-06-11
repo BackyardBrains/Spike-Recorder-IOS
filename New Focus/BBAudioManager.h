@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "Novocaine.h"
 #import "RingBuffer.h"
-#import "AudioFileWriter.h"
+#import "BBAudioFileWriter.h"
 #import "BBAudioFileReader.h"
 #import "DSPThreshold.h"
 

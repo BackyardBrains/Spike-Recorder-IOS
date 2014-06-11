@@ -54,6 +54,7 @@
 
 - (NSURL *)fileURL;
 -(id) initWithUrl:(NSURL *) urlOfExistingFile;
+-(id) initWav;
 -(void) saveWithoutArrays;
 
 

@@ -41,41 +41,67 @@
 - (id)init {
 	if ((self = [super init])) {
 		
-		self.date = [NSDate date];		
-
-		//Format date into the filename
-		NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-
-		[dateFormatter setDateFormat:@"'BYB Recording 'M'-'d'-'yyyy' 'h':'mm':'ss':'S a'.wav'"];//.m4a
-		self.filename = [dateFormatter stringFromDate:self.date];
-        NSLog(@"Filename: %@", self.filename);
-		
-		[dateFormatter setDateFormat:@"'BYB Recording 'M'-'d'-'yyyy' 'h':'mm':'ss':'S a"];
-		self.shortname = [dateFormatter stringFromDate:self.date];
-		
-		[dateFormatter setDateFormat:@"M'/'d'/'yyyy',' h':'mm a"];
-		self.subname = [dateFormatter stringFromDate:self.date];
-				
-		[dateFormatter release];
-		
-		self.comment = @"";
-		
-		// Grab the sampling rate from NSUserDefaults
-		NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        self.samplingrate   = [[BBAudioManager bbAudioManager] samplingRate];
-//        self.samplingrate = [[Novocaine audioManager] samplingrate];
-		self.gain           = [[defaults valueForKey:@"gain"] floatValue];
-        self.spikesCSV = [[[NSMutableArray alloc] init] autorelease];
-        self.analyzed = NO;
-        self.spikesFiltered = @"";
-        _thresholds = [[NSMutableArray alloc] initWithCapacity:0];
-		_spikes = [[NSMutableArray alloc] initWithCapacity:0];
-        [_thresholds addObject:[NSNumber numberWithFloat:0.0f]];
-        [_thresholds addObject:[NSNumber numberWithFloat:0.0f]];
+		[self setupFilePropertiesForWav:NO];
 	}
     
 	return self;
 }
+
+- (id)initWav {
+	if ((self = [super init])) {
+		
+		[self setupFilePropertiesForWav:YES];
+	}
+    
+	return self;
+}
+
+
+-(void) setupFilePropertiesForWav:(BOOL) isWav
+{
+    self.date = [NSDate date];
+    
+    //Format date into the filename
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    
+    if(isWav)
+    {
+        [dateFormatter setDateFormat:@"'BYB Recording 'M'-'d'-'yyyy' 'h':'mm':'ss':'S a'.wav'"];
+    }
+    else
+    {
+        [dateFormatter setDateFormat:@"'BYB Recording 'M'-'d'-'yyyy' 'h':'mm':'ss':'S a'.m4a'"];
+    }
+    self.filename = [dateFormatter stringFromDate:self.date];
+    NSLog(@"Filename: %@", self.filename);
+    
+    [dateFormatter setDateFormat:@"'BYB Recording 'M'-'d'-'yyyy' 'h':'mm':'ss':'S a"];
+    self.shortname = [dateFormatter stringFromDate:self.date];
+    
+    [dateFormatter setDateFormat:@"M'/'d'/'yyyy',' h':'mm a"];
+    self.subname = [dateFormatter stringFromDate:self.date];
+    
+    [dateFormatter release];
+    
+    self.comment = @"";
+    
+    // Grab the sampling rate from NSUserDefaults
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    self.samplingrate   = [[BBAudioManager bbAudioManager] samplingRate];
+    //        self.samplingrate = [[Novocaine audioManager] samplingrate];
+    self.gain           = [[defaults valueForKey:@"gain"] floatValue];
+    self.spikesCSV = [[[NSMutableArray alloc] init] autorelease];
+    self.analyzed = NO;
+    self.spikesFiltered = @"";
+    _thresholds = [[NSMutableArray alloc] initWithCapacity:0];
+    _spikes = [[NSMutableArray alloc] initWithCapacity:0];
+    [_thresholds addObject:[NSNumber numberWithFloat:0.0f]];
+    [_thresholds addObject:[NSNumber numberWithFloat:0.0f]];
+
+
+}
+
+
 
 
 

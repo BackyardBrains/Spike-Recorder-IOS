@@ -129,14 +129,14 @@
     for(int channelIndex = 0; channelIndex < numberOfChannels; channelIndex++)
     {
         
-        float oneSampleTime = maxTimeSpan / numSamplesVisible[selectedChannel];
+        float oneSampleTime = maxTimeSpan / numSamplesVisible[0];
         for (int i=0; i <numSamplesMax-1; i++)
         {
             float x = (i- (numSamplesMax-1))*oneSampleTime;
             displayVectors[channelIndex].push_back(Vec2f(x, 0.0f));
         }
         displayVectors[channelIndex].setClosed(false);
-        
+        //make some vertical space between channels
         yOffsets[channelIndex] = -maxVoltsSpan*0.5 + (channelIndex+1)*(maxVoltsSpan/((float)numberOfChannels))- 0.5*(maxVoltsSpan/((float)numberOfChannels));
         
     }			
@@ -232,33 +232,36 @@
     // We'll be checking if we have to limit the amount of points we display on the screen
     // (e.g., the user is allowed to pinch beyond the maximum allowed range, but we
     // just display what's available, and then stretch it back to the true limit)
-    for(int channelIndex = 0; channelIndex<numberOfChannels; channelIndex++)
-    {
+    //for(int channelIndex = 0; channelIndex<numberOfChannels; channelIndex++)
+    //{
         // See if we're asking for TOO MANY points
         int numPoints, offset;
-        if (numSamplesVisible[channelIndex] > numSamplesMax) {
+        if (numSamplesVisible[0] > numSamplesMax) {
             numPoints = numSamplesMax;
             offset = 0;
             
             if ([self getActiveTouches].size() != 2)
             {
-                float oldValue = numSamplesVisible[channelIndex];
-                numSamplesVisible[channelIndex] += 0.6 * (numSamplesMax - numSamplesVisible[channelIndex]);
+                float oldValue = numSamplesVisible[0];
+                numSamplesVisible[0] += 0.6 * (numSamplesMax - numSamplesVisible[0]);
                 
                 float zero = 0.0f;
-                float zoom = oldValue/numSamplesVisible[channelIndex];
-                vDSP_vsmsa ((float *)&(displayVectors[channelIndex].getPoints()[0]), 2,
+                float zoom = oldValue/numSamplesVisible[0];
+                for(int channelIndex = 0; channelIndex<numberOfChannels; channelIndex++)
+                {
+                    vDSP_vsmsa ((float *)&(displayVectors[channelIndex].getPoints()[0]), 2,
                             &zoom,
                             &zero,
                             (float *)&(displayVectors[channelIndex].getPoints()[0]),
                             2,
                             numSamplesMax
                             );
+                }
             }
         }
         
         // See if we're asking for TOO FEW points
-        else if (numSamplesVisible[channelIndex] < numSamplesMin)
+        else if (numSamplesVisible[0] < numSamplesMin)
         {
             
             numPoints = numSamplesMin;
@@ -267,18 +270,21 @@
             if ([self getActiveTouches].size() != 2)
             {
                 
-                float oldValue = numSamplesVisible[channelIndex];
-                numSamplesVisible[channelIndex] += 0.6 * (numSamplesMin*2.0 - numSamplesVisible[channelIndex]);//animation to min sec
+                float oldValue = numSamplesVisible[0];
+                numSamplesVisible[0] += 0.6 * (numSamplesMin*2.0 - numSamplesVisible[0]);//animation to min sec
                 
                 float zero = 0.0f;
-                float zoom = oldValue/numSamplesVisible[channelIndex];
-                vDSP_vsmsa ((float *)&(displayVectors[channelIndex].getPoints()[0]), 2,
+                float zoom = oldValue/numSamplesVisible[0];
+                for(int channelIndex = 0; channelIndex<numberOfChannels; channelIndex++)
+                {
+                    vDSP_vsmsa ((float *)&(displayVectors[channelIndex].getPoints()[0]), 2,
                             &zoom,
                             &zero,
                             (float *)&(displayVectors[channelIndex].getPoints()[0]),
                             2,
                             numSamplesMax
                             );
+                }
 
             }
         }
@@ -286,7 +292,7 @@
         // If we haven't set off any of the alarms above,
         // then we're asking for a normal range of points.
         else {
-            numPoints = numSamplesVisible[channelIndex];//visible part
+            numPoints = numSamplesVisible[0];//visible part
             offset = numSamplesMax - numPoints;//nonvisible part
             
             if (self.mode == MultichannelGLViewModeThresholding) {
@@ -307,6 +313,8 @@
 //        else
 //        {
         //================ end debug region ======
+    for(int channelIndex = 0; channelIndex<numberOfChannels; channelIndex++)
+    {
             [dataSourceDelegate fetchDataToDisplay:tempDataBuffer numFrames:numPoints whichChannel:channelIndex];
         //================ debug region ======
 //        }
@@ -327,10 +335,10 @@
                     numSamplesMax
                     );
         
-        
+    }
         //NSLog(@"v: %f %f", displayVectors[channelIndex].getPoints()[0].x, displayVectors[channelIndex].getPoints()[offset].x);
         //timeForSincDrawing =  [audioManager fetchAudio:(float *)&(displayVector.getPoints()[offset])+1 numFrames:numPoints whichChannel:0 stride:2];
-    }
+   // }
 }
 
 
@@ -443,7 +451,7 @@
     Vec2f xMiddle  = [self screenToWorld:Vec2f(self.frame.size.width/2.0f, 0.0)];
     Vec2f yScaleWorldPosition = [self screenToWorld:yScaleTextPosition];
     
-    float xScale = 0.5*numSamplesVisible[selectedChannel]*(1/samplingRate)*1000;//1000.0*(xMiddle.x - xFarLeft.x);
+    float xScale = 0.5*numSamplesVisible[0]*(1/samplingRate)*1000;//1000.0*(xMiddle.x - xFarLeft.x);
     float yScale = yScaleWorldPosition.y;
     /*if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] && [[UIScreen mainScreen] scale]==2.0)
     {//if it is retina correct scale
@@ -593,16 +601,16 @@
     if (touches.size() == 2)
     {
         Vec2f touchDistanceDelta = [self calculateTouchDistanceChange:touches];
-        float oldNumSamplesVisible = numSamplesVisible[selectedChannel];
+        float oldNumSamplesVisible = numSamplesVisible[0];
         float oldNumVoltsVisible = numVoltsVisible[selectedChannel];
-        numSamplesVisible[selectedChannel] /= (touchDistanceDelta.x - 1) + 1;
+        numSamplesVisible[0] /= (touchDistanceDelta.x - 1) + 1;
         numVoltsVisible[selectedChannel] /= (touchDistanceDelta.y - 1) + 1;
        
         // Make sure that we don't go out of bounds
-        if (numSamplesVisible[selectedChannel] < numSamplesMin )
+        if (numSamplesVisible[0] < numSamplesMin )
         {
             touchDistanceDelta.x = 1.0f;
-            numSamplesVisible[selectedChannel] = oldNumSamplesVisible;
+            numSamplesVisible[0] = oldNumSamplesVisible;
         }
         if (numVoltsVisible[selectedChannel] < 0.001)
         {
@@ -614,13 +622,17 @@
         //Change x axis values so that only numSamplesVisible[selectedChannel] samples are visible for selected channel
         float zero = 0.0f;
         float zoom = touchDistanceDelta.x;
-        vDSP_vsmsa ((float *)&(displayVectors[selectedChannel].getPoints()[0]), 2,
+        for(int channelIndex = 0;channelIndex<numberOfChannels;channelIndex++)
+        {
+        vDSP_vsmsa ((float *)&(displayVectors[channelIndex].getPoints()[0]),
+                         2,
                          &zoom,
                          &zero,
-                         (float *)&(displayVectors[selectedChannel].getPoints()[0]),
+                         (float *)&(displayVectors[channelIndex].getPoints()[0]),
                          2,
                          numSamplesMax
                          );
+        }
        
     }
     
