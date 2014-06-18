@@ -96,6 +96,7 @@
 #pragma mark - MultichannelGLViewDelegate function
 - (void) fetchDataToDisplay:(float *)data numFrames:(UInt32)numFrames whichChannel:(UInt32)whichChannel
 {
+    
     //Fetch data and get time of data as precise as posible. Used to sichronize
     //display of waveform and spike marks
     [[BBAudioManager bbAudioManager] fetchAudio:data numFrames:numFrames whichChannel:whichChannel stride:1];
@@ -155,6 +156,9 @@
             //if everything is standard make .m4a file (it has beter compression )
             aFile = [[BBFile alloc] init];
         }
+        aFile.numberOfChannels = [bbAudioManager sourceNumberOfChannels];
+        aFile.samplingrate = [bbAudioManager sourceSamplingRate];
+        [aFile setupChannels];//create name of channels without spike trains
         
         NSLog(@"URL: %@", [aFile fileURL]);
         [bbAudioManager startRecording:[aFile fileURL]];

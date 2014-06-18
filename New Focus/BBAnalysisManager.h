@@ -12,9 +12,6 @@
 #import "BBFile.h"
 
 @interface BBAnalysisManager : NSObject
-{
-    NSInteger _currentSpikeTrain;
-}
 
 + (BBAnalysisManager *) bbAnalysisManager;
 
@@ -23,20 +20,26 @@
 @property (readonly) float fileDuration;
 
 @property (nonatomic) NSInteger currentSpikeTrain;
+@property (nonatomic) NSInteger currentChannel;
 @property (nonatomic) float thresholdFirst;
 @property (nonatomic) float thresholdSecond;
 
-- (int)findSpikes:(BBFile *)aFile;
-
--(void) prepareFileForSelection:(BBFile *)aFile;
-- (void)fetchAudioAndSpikes:(float *)data numFrames:(UInt32)numFrames whichChannel:(UInt32)whichChannel stride:(UInt32)stride;
--(void) filterSpikes;
+- (void)findSpikes:(BBFile *)aFile;
 -(NSMutableArray *) allSpikes;
--(NSArray *) autocorrelationWithFile:(BBFile *) afile spikeTrainIndex:(NSInteger) aSpikeTrainIndex maxtime:(float) maxtime andBinsize:(float) binsize;
--(void) ISIWithFile:(BBFile *) afile spikeTrainIndex:(NSInteger) aSpikeTrainIndex maxtime:(float) maxtime numOfBins:(int) bins values:(NSMutableArray *) valuesY limits:(NSMutableArray *) limitsX;
--(NSArray *) crosscorrelationWithFile:(BBFile *) afile firstSpikeTrainIndex:(NSInteger) fSpikeTrainIndex secondSpikeTrainIndex:(NSInteger) sSpikeTrainIndex maxtime:(float) maxtime andBinsize:(float) binsize;
+-(void) prepareFileForSelection:(BBFile *)aFile;
+- (void)fetchAudioAndSpikes:(float *)data numFrames:(UInt32)numFrames stride:(UInt32)stride;
+-(void) filterSpikes;
+
+-(NSArray *) autocorrelationWithFile:(BBFile *) afile channelIndex:(NSInteger) aChanIndex spikeTrainIndex:(NSInteger) aSpikeTrainIndex maxtime:(float) maxtime andBinsize:(float) binsize;
+
+-(NSArray *) crosscorrelationWithFile:(BBFile *) afile firstChannelIndex:(NSInteger) fChanIndex firstSpikeTrainIndex:(NSInteger) fSpikeTrainIndex secondChannelIndex:(NSInteger) sChanIndex secondSpikeTrainIndex:(NSInteger) sSpikeTrainIndex maxtime:(float) maxtime andBinsize:(float) binsize;
+
+-(void) ISIWithFile:(BBFile *) afile channelIndex:(NSInteger) aChannelIndex spikeTrainIndex:(NSInteger) aSpikeTrainIndex maxtime:(float) maxtime numOfBins:(int) bins values:(NSMutableArray *) valuesY limits:(NSMutableArray *) limitsX;
+
+
 -(NSInteger) moveToNextSpikeTrain;
--(NSInteger) numberOfSpikeTrains;
+-(int) numberOfSpikeTrains;
+-(int) numberOfSpikeTrainsOnCurrentChannel;
 -(void) addAnotherThresholds;
 -(void) removeSelectedThresholds;
 @end

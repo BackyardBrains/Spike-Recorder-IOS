@@ -27,7 +27,7 @@
 {
     self = [super init];
     if (self) {
-        self.file = aFile;
+       /* self.file = aFile;
         viewFunction = aFunction;
         self.trainList = [[[NSMutableArray alloc] init] autorelease];
         
@@ -55,6 +55,7 @@
 		self.tableView.delegate = self;
 		self.tableView.sectionIndexMinimumDisplayRowCount=10;
 		self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
+        */
     }
     return self;
 }

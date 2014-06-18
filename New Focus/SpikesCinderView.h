@@ -35,5 +35,5 @@
 
 - (void)saveSettings;
 - (void)loadSettings;
-
+-(void) channelChanged;
 @end

@@ -41,7 +41,7 @@ typedef enum {
     // Display parameters
     int numSamplesMax;
     int numSamplesMin;
-    float* numSamplesVisible; //current zoom for every channel x axis
+    float numSamplesVisible; //current zoom for every channel x axis
 
     float numVoltsMax;
     float numVoltsMin;

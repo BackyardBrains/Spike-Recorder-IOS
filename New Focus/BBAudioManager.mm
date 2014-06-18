@@ -840,9 +840,11 @@ static BBAudioManager *bbAudioManager = nil;
 
 -(NSMutableArray *) getSpikes
 {
-    if(_file && [_file.spikes count]>0)
+    
+    //TODO: Check if this is ok:
+    if(_file && [_file.allSpikes count]>0)
     {
-        return _file.spikes;
+        return _file.allSpikes;
     }
     
     return nil;

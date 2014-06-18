@@ -73,6 +73,7 @@
 //
 - (void)setNumberOfChannels:(int) newNumberOfChannels samplingRate:(float) newSamplingRate andDataSource:(id <MultichannelGLViewDelegate>) newDataSource
 {
+    NSLog(@"!!!!!!!!!Setup num of channel");
     [self stopAnimation];
     
   //  if(newNumberOfChannels<2)
@@ -99,13 +100,11 @@
     {
         //TODO: realease display vectors
         delete[] displayVectors;
-        delete[] numSamplesVisible;
         delete[] numVoltsVisible;
         delete[] yOffsets;
         delete[] tempDataBuffer;
     }
     displayVectors =  new PolyLine2f[newNumberOfChannels];
-    numSamplesVisible = new float[newNumberOfChannels]; // current zoom for every channel x axis
     numVoltsVisible = new float[newNumberOfChannels]; //current zoom for every channel y axis
     yOffsets = new float[newNumberOfChannels];//y offset of horizontal axis
 
@@ -129,7 +128,7 @@
     for(int channelIndex = 0; channelIndex < numberOfChannels; channelIndex++)
     {
         
-        float oneSampleTime = maxTimeSpan / numSamplesVisible[0];
+        float oneSampleTime = maxTimeSpan / numSamplesVisible;
         for (int i=0; i <numSamplesMax-1; i++)
         {
             float x = (i- (numSamplesMax-1))*oneSampleTime;
@@ -158,12 +157,7 @@
         NSLog(@"Setting threshold defaults");
         numSamplesMax = [[defaults valueForKey:@"numSamplesMax"] floatValue];
         numSamplesMin = [[defaults valueForKey:@"numSamplesMin"] floatValue];
-        
-        for(int i=0;i<numberOfChannels;i++)
-        {
-            numSamplesVisible[i] = [[defaults valueForKey:@"numSamplesVisibleThreshold"] floatValue];
-        }
-        
+        numSamplesVisible = [[defaults valueForKey:@"numSamplesVisibleThreshold"] floatValue];
         numVoltsMin = [[defaults valueForKey:@"numVoltsMinThreshold"] floatValue];
         numVoltsMax = [[defaults valueForKey:@"numVoltsMaxThreshold"] floatValue];
        
@@ -175,10 +169,7 @@
     else {
         numSamplesMax = [[defaults valueForKey:@"numSamplesMax"] floatValue];
         numSamplesMin = [[defaults valueForKey:@"numSamplesMin"] floatValue];
-        for(int i=0;i<numberOfChannels;i++)
-        {
-            numSamplesVisible[i] = [[defaults valueForKey:@"numSamplesVisible"] floatValue];
-        }
+        numSamplesVisible = [[defaults valueForKey:@"numSamplesVisible"] floatValue];
         numVoltsMin = [[defaults valueForKey:@"numVoltsMin"] floatValue];
         numVoltsMax = [[defaults valueForKey:@"numVoltsMax"] floatValue];
         
@@ -201,7 +192,7 @@
     if (useThresholdSettings) {
         [defaults setValue:[NSNumber numberWithFloat:numSamplesMax] forKey:@"numSamplesMax"];
         [defaults setValue:[NSNumber numberWithFloat:numSamplesMin] forKey:@"numSamplesMin"];
-        [defaults setValue:[NSNumber numberWithFloat:numSamplesVisible[0]] forKey:@"numSamplesVisibleThreshold"];
+        [defaults setValue:[NSNumber numberWithFloat:numSamplesVisible] forKey:@"numSamplesVisibleThreshold"];
         [defaults setValue:[NSNumber numberWithFloat:numVoltsMin] forKey:@"numVoltsMinThreshold"];
         [defaults setValue:[NSNumber numberWithFloat:numVoltsMax] forKey:@"numVoltsMaxThreshold"];
         [defaults setValue:[NSNumber numberWithFloat:numVoltsVisible[0]] forKey:@"numVoltsVisibleThreshold"];
@@ -209,7 +200,7 @@
     else {
         [defaults setValue:[NSNumber numberWithFloat:numSamplesMax] forKey:@"numSamplesMax"];
         [defaults setValue:[NSNumber numberWithFloat:numSamplesMin] forKey:@"numSamplesMin"];
-        [defaults setValue:[NSNumber numberWithFloat:numSamplesVisible[0]] forKey:@"numSamplesVisible"];
+        [defaults setValue:[NSNumber numberWithFloat:numSamplesVisible] forKey:@"numSamplesVisible"];
         [defaults setValue:[NSNumber numberWithFloat:numVoltsMin] forKey:@"numVoltsMin"];
         [defaults setValue:[NSNumber numberWithFloat:numVoltsMax] forKey:@"numVoltsMax"];
         [defaults setValue:[NSNumber numberWithFloat:numVoltsVisible[0]] forKey:@"numVoltsVisible"];
@@ -236,17 +227,17 @@
     //{
         // See if we're asking for TOO MANY points
         int numPoints, offset;
-        if (numSamplesVisible[0] > numSamplesMax) {
+        if (numSamplesVisible > numSamplesMax) {
             numPoints = numSamplesMax;
             offset = 0;
             
             if ([self getActiveTouches].size() != 2)
             {
-                float oldValue = numSamplesVisible[0];
-                numSamplesVisible[0] += 0.6 * (numSamplesMax - numSamplesVisible[0]);
+                float oldValue = numSamplesVisible;
+                numSamplesVisible += 0.6 * (numSamplesMax - numSamplesVisible);
                 
                 float zero = 0.0f;
-                float zoom = oldValue/numSamplesVisible[0];
+                float zoom = oldValue/numSamplesVisible;
                 for(int channelIndex = 0; channelIndex<numberOfChannels; channelIndex++)
                 {
                     vDSP_vsmsa ((float *)&(displayVectors[channelIndex].getPoints()[0]), 2,
@@ -261,7 +252,7 @@
         }
         
         // See if we're asking for TOO FEW points
-        else if (numSamplesVisible[0] < numSamplesMin)
+        else if (numSamplesVisible < numSamplesMin)
         {
             
             numPoints = numSamplesMin;
@@ -270,11 +261,11 @@
             if ([self getActiveTouches].size() != 2)
             {
                 
-                float oldValue = numSamplesVisible[0];
-                numSamplesVisible[0] += 0.6 * (numSamplesMin*2.0 - numSamplesVisible[0]);//animation to min sec
+                float oldValue = numSamplesVisible;
+                numSamplesVisible += 0.6 * (numSamplesMin*2.0 - numSamplesVisible);//animation to min sec
                 
                 float zero = 0.0f;
-                float zoom = oldValue/numSamplesVisible[0];
+                float zoom = oldValue/numSamplesVisible;
                 for(int channelIndex = 0; channelIndex<numberOfChannels; channelIndex++)
                 {
                     vDSP_vsmsa ((float *)&(displayVectors[channelIndex].getPoints()[0]), 2,
@@ -292,7 +283,7 @@
         // If we haven't set off any of the alarms above,
         // then we're asking for a normal range of points.
         else {
-            numPoints = numSamplesVisible[0];//visible part
+            numPoints = numSamplesVisible;//visible part
             offset = numSamplesMax - numPoints;//nonvisible part
             
             if (self.mode == MultichannelGLViewModeThresholding) {
@@ -315,11 +306,12 @@
         //================ end debug region ======
     for(int channelIndex = 0; channelIndex<numberOfChannels; channelIndex++)
     {
-            [dataSourceDelegate fetchDataToDisplay:tempDataBuffer numFrames:numPoints whichChannel:channelIndex];
+       
+        [dataSourceDelegate fetchDataToDisplay:tempDataBuffer numFrames:numPoints whichChannel:channelIndex];
         //================ debug region ======
 //        }
         //================ end debug region ======
-
+       
         //now transfer y axis data from bufer to display vector with stride equ. to 2
         //multiply Y data with zoom level
         
@@ -332,7 +324,7 @@
                     &zero,
                     (float *)&(displayVectors[channelIndex].getPoints()[offset])+1,
                     2,
-                    numSamplesMax
+                    numPoints
                     );
         
     }
@@ -451,7 +443,7 @@
     Vec2f xMiddle  = [self screenToWorld:Vec2f(self.frame.size.width/2.0f, 0.0)];
     Vec2f yScaleWorldPosition = [self screenToWorld:yScaleTextPosition];
     
-    float xScale = 0.5*numSamplesVisible[0]*(1/samplingRate)*1000;//1000.0*(xMiddle.x - xFarLeft.x);
+    float xScale = 0.5*numSamplesVisible*(1/samplingRate)*1000;//1000.0*(xMiddle.x - xFarLeft.x);
     float yScale = yScaleWorldPosition.y;
     /*if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] && [[UIScreen mainScreen] scale]==2.0)
     {//if it is retina correct scale
@@ -601,16 +593,16 @@
     if (touches.size() == 2)
     {
         Vec2f touchDistanceDelta = [self calculateTouchDistanceChange:touches];
-        float oldNumSamplesVisible = numSamplesVisible[0];
+        float oldNumSamplesVisible = numSamplesVisible;
         float oldNumVoltsVisible = numVoltsVisible[selectedChannel];
-        numSamplesVisible[0] /= (touchDistanceDelta.x - 1) + 1;
+        numSamplesVisible /= (touchDistanceDelta.x - 1) + 1;
         numVoltsVisible[selectedChannel] /= (touchDistanceDelta.y - 1) + 1;
        
         // Make sure that we don't go out of bounds
-        if (numSamplesVisible[0] < numSamplesMin )
+        if (numSamplesVisible < numSamplesMin )
         {
             touchDistanceDelta.x = 1.0f;
-            numSamplesVisible[0] = oldNumSamplesVisible;
+            numSamplesVisible = oldNumSamplesVisible;
         }
         if (numVoltsVisible[selectedChannel] < 0.001)
         {
@@ -619,7 +611,7 @@
         }
         
        
-        //Change x axis values so that only numSamplesVisible[selectedChannel] samples are visible for selected channel
+        //Change x axis values so that only numSamplesVisible samples are visible for selected channel
         float zero = 0.0f;
         float zoom = touchDistanceDelta.x;
         for(int channelIndex = 0;channelIndex<numberOfChannels;channelIndex++)

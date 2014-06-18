@@ -76,9 +76,9 @@
     {
         BBFile * tempFile = [self.files objectAtIndex:0];
         self.navigationItem.title = [tempFile shortname];
-        if([tempFile.spikesFiltered isEqualToString:@"filtered"] )
+        if([tempFile.spikesFiltered isEqualToString:FILE_SPIKE_SORTED] )
         {
-            if([tempFile.spikes count]>1)
+            if([tempFile numberOfSpikeTrains]>1)
             {
                 self.actionOptions = [NSArray arrayWithObjects:
                               @"File Details",
@@ -235,34 +235,30 @@
     else if ([cell.textLabel.text isEqualToString:@"Find Spikes"])
 	{
         BBFile * fileToAnalyze = (BBFile *)[self.files objectAtIndex:0];
-        
-        if(fileToAnalyze.analyzed)
-        {
-            SpikesAnalysisViewController *avc = [[SpikesAnalysisViewController alloc] initWithNibName:@"SpikesViewController" bundle:nil];
-            avc.bbfile = fileToAnalyze;
-            [self.navigationController pushViewController:avc animated:YES];
-            [avc release];
-        }
-        else
-        {
-            MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-            hud.labelText = @"Analyzing Spikes";
-            dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-                [[BBAnalysisManager bbAnalysisManager] findSpikes:(BBFile *)[self.files objectAtIndex:0]];
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [MBProgressHUD hideHUDForView:self.view animated:YES];
-                    SpikesAnalysisViewController *avc = [[SpikesAnalysisViewController alloc] initWithNibName:@"SpikesViewController" bundle:nil];
-                    avc.bbfile = [self.files objectAtIndex:0];
-                    [self.navigationController pushViewController:avc animated:YES];
-                    [avc release];
-                });
+       
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        hud.labelText = @"Analyzing Spikes";
+        dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+            
+            [[BBAnalysisManager bbAnalysisManager] findSpikes:fileToAnalyze];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                [MBProgressHUD hideHUDForView:self.view animated:YES];
+                SpikesAnalysisViewController *avc = [[SpikesAnalysisViewController alloc] initWithNibName:@"SpikesViewController" bundle:nil];
+                avc.bbfile = [self.files objectAtIndex:0];
+                [self.navigationController pushViewController:avc animated:YES];
+                [avc release];
+                
             });
-        }
+            
+        });
+        
     }
     else if ([cell.textLabel.text isEqualToString: @"Autocorrelation"])
 	{
 
-        if([[(BBFile *)[self.files objectAtIndex:0] spikes] count]<2)
+        if([(BBFile *)[self.files objectAtIndex:0] numberOfSpikeTrains]<2)
         {
             MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
             hud.labelText = @"Calculating...";
@@ -288,7 +284,7 @@
     }
     else if ([cell.textLabel.text isEqualToString: @"ISI"])
 	{
-        if([[(BBFile *)[self.files objectAtIndex:0] spikes] count]<2)
+        if([(BBFile *)[self.files objectAtIndex:0] numberOfSpikeTrains]<2)
         {
             MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
             hud.labelText = @"Calculating...";
@@ -319,7 +315,7 @@
     }
     else if ([cell.textLabel.text isEqualToString: @"Cross-correlation"])
     {
-        if([[(BBFile *)[self.files objectAtIndex:0] spikes] count]==2)
+        if([(BBFile *)[self.files objectAtIndex:0] numberOfSpikeTrains]==2)
         {
             MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
             hud.labelText = @"Calculating...";

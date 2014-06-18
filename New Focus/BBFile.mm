@@ -8,8 +8,10 @@
 
 #import "BBFile.h"
 #import "BBSpike.h"
+#import "BBChannel.h"
+#import "BBSpikeTrain.h"
 
-#define  kDataID 1633969266
+//#define  kDataID 1633969266
 
 @implementation BBFile
 
@@ -19,10 +21,11 @@
 @synthesize comment;
 @synthesize date;
 @synthesize samplingrate;
+@synthesize numberOfChannels;
 @synthesize gain;
 @synthesize filelength;
-@synthesize analyzed;
-@synthesize spikesCSV;
+
+
 @synthesize spikesFiltered;
 
 - (void)dealloc {
@@ -31,9 +34,10 @@
     [spikesFiltered release];
 	[subname release];
 	[comment release];
-    [spikesCSV release];
 	[date release];
-	[_spikes release];
+	[_allSpikes release];
+    [_allChannels release];
+    [_allEvents release];
 	[super dealloc];
 
 }
@@ -90,51 +94,11 @@
     self.samplingrate   = [[BBAudioManager bbAudioManager] samplingRate];
     //        self.samplingrate = [[Novocaine audioManager] samplingrate];
     self.gain           = [[defaults valueForKey:@"gain"] floatValue];
-    self.spikesCSV = [[[NSMutableArray alloc] init] autorelease];
-    self.analyzed = NO;
-    self.spikesFiltered = @"";
-    _thresholds = [[NSMutableArray alloc] initWithCapacity:0];
-    _spikes = [[NSMutableArray alloc] initWithCapacity:0];
-    [_thresholds addObject:[NSNumber numberWithFloat:0.0f]];
-    [_thresholds addObject:[NSNumber numberWithFloat:0.0f]];
-
-
-}
-
-
-
-
-
--(NSMutableArray *) thresholds
-{
-    return _thresholds;
-}
-
--(void) setThresholds:(NSMutableArray *)athresholds
-{
-    [_thresholds removeAllObjects];
-    [_thresholds addObjectsFromArray:athresholds];
-    if([_thresholds count]==0)
-    {
-        [_thresholds addObject:[NSNumber numberWithFloat:0.0f]];
-        [_thresholds addObject:[NSNumber numberWithFloat:0.0f]];
-    }
-}
-
--(int) numberOfThresholds
-{
-    return [_thresholds count]/2;
-}
-
--(void) setSpikes:(NSMutableArray *) spikes
-{
-    [_spikes removeAllObjects];
-    [_spikes addObjectsFromArray:spikes];
-}
-
--(NSMutableArray*) spikes
-{
-    return _spikes;
+    self.spikesFiltered = FILE_NOT_SPIKE_SORTED;
+    self.numberOfChannels = 0;
+    _allChannels = [[NSMutableArray alloc] initWithCapacity:0];
+    _allSpikes = [[NSMutableArray alloc] initWithCapacity:0];
+    _allEvents = [[NSMutableArray alloc] initWithCapacity:0];
 }
 
 -(id) initWithUrl:(NSURL *) urlOfExistingFile
@@ -147,18 +111,18 @@
         testFileName = [NSString stringWithFormat:@"Shared %@",onlyFilename];
         
         
-    
+        
         // If there's a file with same filename
         BOOL isThereAFileAlready = YES;
-    
+        
         // If there is, let's change the name
         int i;
         i=2;
         while (isThereAFileAlready) {
             
             
-             isThereAFileAlready = [[NSFileManager defaultManager] fileExistsAtPath:[[self docPath] stringByAppendingPathComponent:testFileName]];
-        
+            isThereAFileAlready = [[NSFileManager defaultManager] fileExistsAtPath:[[self docPath] stringByAppendingPathComponent:testFileName]];
+            
             if(isThereAFileAlready)
             {
                 NSLog(@"There's a file already");
@@ -167,7 +131,7 @@
             }
         }
         onlyFilename = testFileName;
-
+        
         
 		//Format date into the filename
 		NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
@@ -185,23 +149,93 @@
 		
 		self.comment = @"";
 		
-		// Grab the sampling rate from NSUserDefaults
+        
+        
+        NSError *avPlayerError = nil;
+        AVAudioPlayer *avPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:urlOfExistingFile error:&avPlayerError];
+        if (avPlayerError)
+        {
+            NSLog(@"Error init file: %@", [avPlayerError description]);
+            self.numberOfChannels =1;
+            self.samplingrate = 44100.0f;
+        }
+        else
+        {
+            self.numberOfChannels = [avPlayer numberOfChannels];
+            self.samplingrate = [[[avPlayer settings] objectForKey:AVSampleRateKey] floatValue];
+            NSLog(@"Source file num. of channels %d, sampling rate %f", self.numberOfChannels, self.samplingrate );
+        }
+        [avPlayer release];
+        avPlayer = nil;
+
 		NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        self.samplingrate   = [[BBAudioManager bbAudioManager] samplingRate];
-        //        self.samplingrate = [[Novocaine audioManager] samplingrate];
 		self.gain           = [[defaults valueForKey:@"gain"] floatValue];
-        self.spikesCSV = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
-        self.analyzed = NO;
-        self.spikesFiltered = @"";
-        _thresholds = [[NSMutableArray alloc] initWithCapacity:0];
-        _spikes = [[NSMutableArray alloc] init];
-        [_thresholds addObject:[NSNumber numberWithFloat:0.0f]];
-        [_thresholds addObject:[NSNumber numberWithFloat:0.0f]];
+        self.spikesFiltered = FILE_NOT_SPIKE_SORTED;
+        [self setupChannels];
+        
+        _allSpikes = [[NSMutableArray alloc] initWithCapacity:0];
+        _allEvents = [[NSMutableArray alloc] initWithCapacity:0];
+
 	}
     
 	return self;
     
 }
+
+-(void) setupChannels
+{
+    _allChannels = [[NSMutableArray alloc] initWithCapacity:0];
+    
+    for (int i =0; i<self.numberOfChannels; i++)
+    {
+        NSString * nameOfChannel = [NSString stringWithFormat:@"Channel %d",i+1];
+        BBChannel * newChannel = [[BBChannel alloc] initWithNameOfChannel:nameOfChannel];
+        
+        NSString * nameOfSpikeTrain = [NSString stringWithFormat:@"Spike %da",(i+1)];
+        BBSpikeTrain * newSpikeTrain = [[BBSpikeTrain alloc]initWithName:nameOfSpikeTrain];
+        
+        [newChannel.spikeTrains addObject:newSpikeTrain];
+        
+        [_allChannels addObject:newChannel];
+    }
+
+}
+
+-(void) setAllSpikes:(NSMutableArray *) spikes
+{
+    [_allSpikes removeAllObjects];
+    [_allSpikes addObjectsFromArray:spikes];
+}
+
+-(NSMutableArray*) allSpikes
+{
+    return _allSpikes;
+}
+
+
+-(void) setAllChannels:(NSMutableArray *)allChannels
+{
+    [_allChannels removeAllObjects];
+    [_allChannels addObjectsFromArray:allChannels];
+}
+
+-(NSMutableArray*) allChannels
+{
+    return _allChannels;
+}
+
+-(void) setAllEvents:(NSMutableArray *)allEvents
+{
+    [_allEvents removeAllObjects];
+    [_allEvents addObjectsFromArray:allEvents];
+}
+
+-(NSMutableArray*) allEvents
+{
+    return _allEvents;
+}
+
+
 
 
 +(NSArray *)allObjects
@@ -223,7 +257,7 @@
 {
     [self renameIfNeeded];
     [self spikesToCSV];
-    _spikes = [[NSMutableArray alloc] init];
+    _allSpikes = [[NSMutableArray alloc] init];
     [super save];
     [self CSVToSpikes];
 }
@@ -279,58 +313,47 @@
 }
 
 //
-// Make array of CSV strings out of array of spike train arrays
-// We do this because it is much faster to save few long strings
-// than few arrays with hundreds of spike objects
-// When we load file object we "decompress" CSVs into arrays of spikes 
+//compress all spikes to csv
 //
 -(void) spikesToCSV
 {
-    NSMutableString *csvString;
-    int i;
-    int j;
-    BBSpike * tempSpike;
-    NSMutableArray * tempSpikeTrain;
-    [self.spikesCSV removeAllObjects];
-    for(j=0;j<[_spikes count];j++)
+    
+    for(int channelIndex = 0;channelIndex<[_allChannels count];channelIndex++)
     {
-        tempSpikeTrain = [_spikes objectAtIndex:j];
-        csvString = [NSMutableString string];
-        for(i=0;i<[tempSpikeTrain count];i++)
+        BBChannel * tempChannel = (BBChannel *)[_allChannels objectAtIndex:channelIndex];
+        for(int trainIndex=0;trainIndex<[[tempChannel spikeTrains] count];trainIndex++)
         {
-            tempSpike = (BBSpike *) [tempSpikeTrain objectAtIndex:i];
-            [csvString appendString:[NSString stringWithFormat:@"%f,%f,%d\n",
-                                     tempSpike.value, tempSpike.time, tempSpike.index]];
+            [[[tempChannel spikeTrains] objectAtIndex:trainIndex] spikesToCSV];
         }
-        [self.spikesCSV addObject:csvString];
     }
 }
 
 
 //
-// Convert array of CSV strings to array of spike train arrays
+// Uncompress all CSV to spike trains
 //
 -(void) CSVToSpikes
 {
-    [_spikes removeAllObjects];
-    
-    int i;
-    for(i=0;i<[self.spikesCSV count];i++)
+    for(int channelIndex = 0;channelIndex<[_allChannels count];channelIndex++)
     {
-        NSMutableArray * newSpikeTrain = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
-        NSScanner *scanner = [NSScanner scannerWithString:((NSString *)[self.spikesCSV objectAtIndex:i])];
-        [scanner setCharactersToBeSkipped:
-         [NSCharacterSet characterSetWithCharactersInString:@"\n, "]];
-        float value, time;
-        int index;
-        BBSpike * newSpike;
-        while ( [scanner scanFloat:&value] && [scanner scanFloat:&time] && [scanner scanInt:&index]) {
-            newSpike = [[BBSpike alloc] initWithValue:value index:index andTime:time];
-            [newSpikeTrain addObject:newSpike];
-            [newSpike release];
+        BBChannel * tempChannel = (BBChannel *)[_allChannels objectAtIndex:channelIndex];
+        for(int trainIndex=0;trainIndex<[[tempChannel spikeTrains] count];trainIndex++)
+        {
+            [[[tempChannel spikeTrains] objectAtIndex:trainIndex] CSVToSpikes];
         }
-        [_spikes addObject:newSpikeTrain];
     }
+}
+
+
+-(int) numberOfSpikeTrains
+{
+    int numOfST = 0;
+    for(int channelIndex = 0;channelIndex<[_allChannels count];channelIndex++)
+    {
+        BBChannel * tempChannel = (BBChannel *)[_allChannels objectAtIndex:channelIndex];
+        numOfST +=[[tempChannel spikeTrains] count];
+    }
+    return numOfST;
 }
 
 
@@ -351,90 +374,6 @@
     }	
 }
 
-//
-// Set spike train index to next value
-// It will influence threshold getters/setters
-//
--(NSInteger) moveToNextSpikeTrain
-{
-    int nextSpikeTrain = _currentSpikeTrain +1;
-    if([self numberOfThresholds]<=nextSpikeTrain)
-    {
-        nextSpikeTrain = 0;
-    }
-    _currentSpikeTrain=nextSpikeTrain;
-    return _currentSpikeTrain;
-}
-
-//
-// Set spike train index to new value
-// It will influence threshold getters/setters
-//
--(void) setCurrentSpikeTrain:(NSInteger) aCurrentSpikeTrain
-{
-    if(_spikes && [self numberOfThresholds]>aCurrentSpikeTrain && aCurrentSpikeTrain>=0)
-    {
-        _currentSpikeTrain = aCurrentSpikeTrain;
-    }
-    else
-    {
-//        NSException *e = [NSException
-//                          exceptionWithName:@"Invalid spike train index."
-//                          reason:@"Index out of bounds."
-//                          userInfo:nil];
-//        @throw e;
-    }
-}
-
-//Add another threshold pair
--(void) addAnotherThresholds
-{
-    [_thresholds addObject:[NSNumber numberWithFloat:0.0f]];
-    [_thresholds addObject:[NSNumber numberWithFloat:0.0f]];
-    _currentSpikeTrain = (int)([_thresholds count]/2)-1;
-}
-
--(void) removeCurrentThresholds
-{
-    if([self numberOfThresholds]>1)
-    {
-        [_thresholds removeObjectAtIndex:_currentSpikeTrain*2+1];
-        [_thresholds removeObjectAtIndex:_currentSpikeTrain*2];
-        
-        int newCurrentSpikeTrain = [self currentSpikeTrain]-1;
-        if(newCurrentSpikeTrain<0)
-        {
-            newCurrentSpikeTrain = 0;
-        }
-        
-        [self setCurrentSpikeTrain:newCurrentSpikeTrain];
-    }
-}
-
--(NSInteger) currentSpikeTrain
-{
-    return _currentSpikeTrain;
-}
-
--(void) setThresholdFirst:(float)thresholdFirst
-{
-    [_thresholds replaceObjectAtIndex:_currentSpikeTrain*2 withObject:[NSNumber numberWithFloat:thresholdFirst]];
-}
-
--(float) thresholdFirst
-{
-    return [[_thresholds objectAtIndex:_currentSpikeTrain*2] floatValue];
-}
-
--(void) setThresholdSecond:(float)thresholdSecond
-{
-    [_thresholds replaceObjectAtIndex:_currentSpikeTrain*2+1 withObject:[NSNumber numberWithFloat:thresholdSecond]];
-}
-
--(float) thresholdSecond
-{
-    return [[_thresholds objectAtIndex:_currentSpikeTrain*2+1] floatValue];
-}
 
 - (NSURL *)fileURL
 {
@@ -446,15 +385,5 @@
 {
     return [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
 }
-
-/*-(NSString*) spikesFiltered
-{
-    return _spikesFiltered;
-}
-
--(void) setSpikesFiltered:(NSString *) aSpikesFiltered
-{
-    _spikesFiltered = aSpikesFiltered;
-}*/
 
 @end

@@ -28,7 +28,7 @@
 {
     self = [super init];
     if (self) {
-        self.file = aFile;
+    /*    self.file = aFile;
 
         self.trainList = [[[NSMutableArray alloc] init] autorelease];
         
@@ -68,7 +68,7 @@
                                        action:@selector(startAnalysis)];
         self.navigationItem.rightBarButtonItem = doneButton;
         [doneButton release];
-        
+        */
     }
     return self;
 }

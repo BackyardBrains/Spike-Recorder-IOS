@@ -178,6 +178,7 @@
 #pragma mark - MultichannelGLViewDelegate function
 - (void) fetchDataToDisplay:(float *)data numFrames:(UInt32)numFrames whichChannel:(UInt32)whichChannel
 {
+
     //Fetch data and get time of data as precise as posible. Used to sichronize
     //display of waveform and spike marks
     [[BBAudioManager bbAudioManager] fetchAudio:data numFrames:numFrames whichChannel:whichChannel stride:1];

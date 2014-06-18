@@ -8,6 +8,8 @@
 
 #import "BBAnalysisManager.h"
 #import "BBSpike.h"
+#import "BBChannel.h"
+#import "BBSpikeTrain.h"
 #import <Accelerate/Accelerate.h>
 #import <cmath>
 
@@ -25,6 +27,9 @@ static BBAnalysisManager *bbAnalysisManager = nil;
     DSPAnalysis *dspAnalizer;
     float * tempCalculationBuffer;//used to load data for display while scrubbing
     BBFile * _file;
+    int _currentChannel;
+    int _currentTrainIndex;
+    NSArray * alphabetArray;
 }
 @end
 
@@ -81,6 +86,9 @@ static BBAnalysisManager *bbAnalysisManager = nil;
 
         tempCalculationBuffer = (float *)calloc(BUFFER_SIZE, sizeof(float));
         dspAnalizer = new DSPAnalysis();
+        alphabetArray = [[NSArray arrayWithObjects:  @"a", @"b", @"c", @"d", @"e", @"f", @"g", @"h", @"i", @"j", @"k", @"l", @"m", @"n", @"o", @"p", @"q", @"r", @"s", @"t", @"u", @"v", @"w", @"x", @"y", @"z", nil] retain];
+        
+        
     }
     
     return self;
@@ -90,17 +98,19 @@ static BBAnalysisManager *bbAnalysisManager = nil;
 
 -(void) prepareFileForSelection:(BBFile *)aFile
 {
+    _currentChannel = 0;
+    _currentTrainIndex = 0;
     _file = aFile;
     if (fileReader != nil)
         fileReader = nil;
     fileReader = [[BBAudioFileReader alloc]
                   initWithAudioFileURL:[aFile fileURL]
                   samplingRate:aFile.samplingrate
-                  numChannels:1];
+                  numChannels:aFile.numberOfChannels];
 
 }
 
-- (void)fetchAudioAndSpikes:(float *)data numFrames:(UInt32)numFrames whichChannel:(UInt32)whichChannel stride:(UInt32)stride
+- (void)fetchAudioAndSpikes:(float *)data numFrames:(UInt32)numFrames stride:(UInt32)stride
 {
     UInt32 targetFrame = (UInt32)(fileReader.currentTime * ((float)fileReader.samplingRate));
     int startFrame = targetFrame - numFrames;
@@ -109,12 +119,13 @@ static BBAnalysisManager *bbAnalysisManager = nil;
         startFrame = 0;
     }
     memset(tempCalculationBuffer, 0, BUFFER_SIZE*sizeof(float));
-    int numberOfSamplesToread = targetFrame-startFrame;
-    [fileReader retrieveFreshAudio:tempCalculationBuffer+numFrames-numberOfSamplesToread numFrames:numberOfSamplesToread numChannels:1 seek:startFrame];
-
+    //real number of frames to read (we may read less if we are on begining of the file)
+    int numberOfFramesToRead = targetFrame-startFrame;
+    
+    [fileReader retrieveFreshAudio:tempCalculationBuffer+(numFrames-numberOfFramesToRead)*_file.numberOfChannels numFrames:numberOfFramesToRead numChannels:_file.numberOfChannels seek:startFrame];
     float zero = 0.0f;
-    vDSP_vsadd(tempCalculationBuffer,
-               1,
+    vDSP_vsadd(&(tempCalculationBuffer[_currentChannel]),
+               _file.numberOfChannels,
                &zero,
                data,
                stride,
@@ -125,9 +136,20 @@ static BBAnalysisManager *bbAnalysisManager = nil;
 
 #pragma mark - Spike Analysis
 
-- (int)findSpikes:(BBFile *)aFile
+-(void) findSpikes:(BBFile *)aFile
 {
     _file = aFile;
+    [[_file allSpikes] removeAllObjects];
+    for(int i=0;i<aFile.numberOfChannels;i++)
+    {
+        [self findSpikes:aFile andChannel:i];
+    }
+}
+
+
+- (int)findSpikes:(BBFile *)aFile andChannel:(int) channelIndex
+{
+
     if (fileReader != nil)
         fileReader = nil;
     
@@ -135,17 +157,17 @@ static BBAnalysisManager *bbAnalysisManager = nil;
     fileReader = [[BBAudioFileReader alloc]
                   initWithAudioFileURL:[aFile fileURL]
                   samplingRate:aFile.samplingrate
-                  numChannels:1];
+                  numChannels:aFile.numberOfChannels];
     
     
     int numberOfSamples = (int)(fileReader.duration * aFile.samplingrate);
     float killInterval = 0.005;//5ms
     int numberOfBins = 200;
     int lengthOfBin = numberOfSamples/numberOfBins;
-
-    if(lengthOfBin>BUFFER_SIZE)
+    int maxLengthOfBin = (BUFFER_SIZE/aFile.numberOfChannels);
+    if(lengthOfBin>maxLengthOfBin)
     {
-        lengthOfBin = BUFFER_SIZE;
+        lengthOfBin = maxLengthOfBin;
         numberOfBins = ceil((float)numberOfSamples/(float)lengthOfBin);
     }
     
@@ -159,9 +181,17 @@ static BBAnalysisManager *bbAnalysisManager = nil;
     
     //calculate STD for each bin
     int ibin;
+    float zero = 0.0f;
     for(ibin=0;ibin<numberOfBins;ibin++)
     {
-        [fileReader retrieveFreshAudio:tempCalculationBuffer numFrames:(UInt32)(lengthOfBin) numChannels:1];
+        [fileReader retrieveFreshAudio:tempCalculationBuffer numFrames:(UInt32)(lengthOfBin) numChannels:aFile.numberOfChannels];
+        //get only one channel and put it on the begining of buffer in non-interleaved form
+        vDSP_vsadd((float *)&tempCalculationBuffer[channelIndex],
+                   aFile.numberOfChannels,
+                   &zero,
+                   tempCalculationBuffer,
+                   1,
+                   lengthOfBin);
         stdArray[ibin] = dspAnalizer->SDT(tempCalculationBuffer, lengthOfBin);
     }
     //sort array of STDs
@@ -171,7 +201,7 @@ static BBAnalysisManager *bbAnalysisManager = nil;
     float negsig = -1* sig;
     
     //make maximal bins for faster processing
-    lengthOfBin = BUFFER_SIZE;
+    lengthOfBin = (BUFFER_SIZE/aFile.numberOfChannels);
     numberOfBins = ceil((float)numberOfSamples/(float)lengthOfBin);
     
     //find peaks
@@ -188,11 +218,18 @@ static BBAnalysisManager *bbAnalysisManager = nil;
     NSMutableArray * peaksIndexesNeg = [[NSMutableArray alloc] initWithCapacity:0];
     for(ibin=0;ibin<numberOfBins;ibin++)
     {
-        numberOfFramesRead = ibin == (numberOfBins-1) ? (numberOfSamples % BUFFER_SIZE):BUFFER_SIZE;
+        //read lengthOfBin frames except for last one reading where we should read only what is left
+        numberOfFramesRead = ibin == (numberOfBins-1) ? (numberOfSamples % lengthOfBin):lengthOfBin;
 
-        [fileReader retrieveFreshAudio:tempCalculationBuffer numFrames:(UInt32)(numberOfFramesRead) numChannels:1 seek:ibin*BUFFER_SIZE];
-        stdArray[ibin] = dspAnalizer->SDT(tempCalculationBuffer, numberOfFramesRead);
-        
+        [fileReader retrieveFreshAudio:tempCalculationBuffer numFrames:(UInt32)(numberOfFramesRead) numChannels:aFile.numberOfChannels seek:ibin*lengthOfBin];
+        //stdArray[ibin] = dspAnalizer->SDT(tempCalculationBuffer, numberOfFramesRead);
+        //get only one channel and put it on the begining of buffer in non-interleaved form
+        vDSP_vsadd((float *)&tempCalculationBuffer[channelIndex],
+                   aFile.numberOfChannels,
+                   &zero,
+                   tempCalculationBuffer,
+                   1,
+                   lengthOfBin);
         
         for(isample=0;isample<numberOfFramesRead;isample++)
         {
@@ -228,14 +265,14 @@ static BBAnalysisManager *bbAnalysisManager = nil;
             if(schmitPosState==kSchmittON && tempCalculationBuffer[isample]>maxPeakValue)
             {
                 maxPeakValue = tempCalculationBuffer[isample];
-                maxPeakIndex = isample + ibin*BUFFER_SIZE;
+                maxPeakIndex = isample + ibin*lengthOfBin;
             }
             
             //find min in negative peak
             else if(schmitNegState==kSchmittON && tempCalculationBuffer[isample]<minPeakValue)
             {
                 minPeakValue = tempCalculationBuffer[isample];
-                minPeakIndex = isample + ibin*BUFFER_SIZE;
+                minPeakIndex = isample + ibin*lengthOfBin;
             }
         }
     }
@@ -301,82 +338,73 @@ static BBAnalysisManager *bbAnalysisManager = nil;
     NSMutableArray *sortedArray;
     sortedArray = [[peaksIndexes sortedArrayUsingDescriptors:sortDescriptors] mutableCopy];
 
-    //make array of arrays (with just one element that is spike train that contains all spikes)
-    NSMutableArray * spikesArray = [[NSMutableArray alloc] init];
-    [spikesArray addObject:sortedArray];
-    aFile.spikes = spikesArray;
+    //add spikes
+    [aFile.allSpikes addObject:sortedArray];
+
     
-    //aFile.analyzed = YES;
     //[aFile save];
     [peaksIndexes release];
     [peaksIndexesNeg release];
     [sortDescriptor release];
     [sortedArray release];
-    [spikesArray release];
+
     free(stdArray);
     
     return 0;
 }
 
 //
-// Separate all spikes to spike trains. And put it in _file.spikes array of spike trains
+// Separate all spikes to spike trains. And put it in BBSpikeTrain object
 //
 -(void) filterSpikes
 {
-    if(_file && _file.numberOfThresholds>0)
+    if(_file)
     {
-        NSMutableArray * tempAllSpikes = [[NSMutableArray alloc] init];
-        [tempAllSpikes addObjectsFromArray:[_file.spikes objectAtIndex:0]];
-        [_file.spikes removeAllObjects];
-        NSMutableArray * filteredSpikes = [[NSMutableArray alloc] initWithCapacity:0];
-        for(int j=0;j<_file.numberOfThresholds;j++)
+        for(int channelIndex = 0;channelIndex<_file.numberOfChannels;channelIndex++)
         {
-
-            float uperThreshold;
-            float lowerThreshold;
-            [self setCurrentSpikeTrain:j];
-            if(self.thresholdFirst>self.thresholdSecond)
+            BBChannel * tempChannel = [[_file allChannels] objectAtIndex:channelIndex];
+            NSMutableArray * currentChannelSpikes = [[_file allSpikes] objectAtIndex:channelIndex];
+            for(int spikeIndex = 0;spikeIndex<[tempChannel.spikeTrains count];spikeIndex++)
             {
-                uperThreshold = self.thresholdFirst;
-                lowerThreshold = self.thresholdSecond;
-            }
-            else
-            {
-                uperThreshold = self.thresholdSecond;
-                lowerThreshold = self.thresholdFirst;
-            }
-            
-            int i;
-
-            BBSpike * tempSpike;
-            for(i=0;i<[tempAllSpikes count];i++)
-            {
-                tempSpike = (BBSpike *)[tempAllSpikes objectAtIndex:i];
-                if(tempSpike.value>lowerThreshold && tempSpike.value<uperThreshold)
+                BBSpikeTrain * tempSpikeTrain = [tempChannel.spikeTrains objectAtIndex:spikeIndex];
+                [tempSpikeTrain.spikes removeAllObjects];
+                
+                float uperThreshold;
+                float lowerThreshold;
+                if(tempSpikeTrain.firstThreshold>tempSpikeTrain.secondThreshold)
                 {
-                    [filteredSpikes addObject:tempSpike];
+                    uperThreshold = tempSpikeTrain.firstThreshold;
+                    lowerThreshold = tempSpikeTrain.secondThreshold;
+                }
+                else
+                {
+                    uperThreshold = tempSpikeTrain.secondThreshold;
+                    lowerThreshold = tempSpikeTrain.firstThreshold;
+                }
+                
+                BBSpike * tempSpike;
+                for(int i=0;i<[currentChannelSpikes count];i++)
+                {
+                    tempSpike = (BBSpike *)[currentChannelSpikes objectAtIndex:i];
+                    if(tempSpike.value>lowerThreshold && tempSpike.value<uperThreshold)
+                    {
+                        [tempSpikeTrain.spikes addObject:tempSpike];
+                    }
                 }
             }
-            [_file.spikes addObject:[[filteredSpikes copy] autorelease]];//put new spike train to array of trains
-
-            [filteredSpikes removeAllObjects];
+        
         }
-        [filteredSpikes removeAllObjects];
-        [filteredSpikes release];
-        [tempAllSpikes removeAllObjects];
-        [tempAllSpikes release];
-        _file.spikesFiltered = @"filtered";
+        _file.spikesFiltered = FILE_SPIKE_SORTED;
         [_file save];
     }
-
-}
+ }
 
 //
 // Calculate autocorrelation of spike train
 //
--(NSArray *) autocorrelationWithFile:(BBFile *) afile spikeTrainIndex:(NSInteger) aSpikeTrainIndex maxtime:(float) maxtime andBinsize:(float) binsize
+-(NSArray *) autocorrelationWithFile:(BBFile *) afile channelIndex:(NSInteger) aChanIndex spikeTrainIndex:(NSInteger) aSpikeTrainIndex maxtime:(float) maxtime andBinsize:(float) binsize
 {
-    NSMutableArray * spikeTrain = (NSMutableArray *)[afile.spikes objectAtIndex:aSpikeTrainIndex];
+    NSMutableArray * spikeTrain = (NSMutableArray *)[[[[afile.allChannels objectAtIndex:aChanIndex] spikeTrains] objectAtIndex:aSpikeTrainIndex] spikes];
     if(afile && [spikeTrain count]>1)
     {
         BBSpike * firstSpike;
@@ -455,10 +483,10 @@ static BBAnalysisManager *bbAnalysisManager = nil;
 //
 // Calculate cross-correlation of two spike trains
 //
--(NSArray *) crosscorrelationWithFile:(BBFile *) afile firstSpikeTrainIndex:(NSInteger) fSpikeTrainIndex secondSpikeTrainIndex:(NSInteger) sSpikeTrainIndex maxtime:(float) maxtime andBinsize:(float) binsize
+-(NSArray *) crosscorrelationWithFile:(BBFile *) afile firstChannelIndex:(NSInteger) fChanIndex firstSpikeTrainIndex:(NSInteger) fSpikeTrainIndex secondChannelIndex:(NSInteger) sChanIndex secondSpikeTrainIndex:(NSInteger) sSpikeTrainIndex maxtime:(float) maxtime andBinsize:(float) binsize
 {
-    NSMutableArray * fspikeTrain = (NSMutableArray *)[afile.spikes objectAtIndex:fSpikeTrainIndex];
-    NSMutableArray * sspikeTrain = (NSMutableArray *)[afile.spikes objectAtIndex:sSpikeTrainIndex];
+    NSMutableArray * fspikeTrain = (NSMutableArray *)[[[[afile.allChannels objectAtIndex:fChanIndex] spikeTrains] objectAtIndex:fSpikeTrainIndex] spikes];
+    NSMutableArray * sspikeTrain = (NSMutableArray *)[[[[afile.allChannels objectAtIndex:sChanIndex] spikeTrains] objectAtIndex:sSpikeTrainIndex] spikes];
     if(afile && [fspikeTrain count]>1 && [sspikeTrain count]>1)
     {
         BBSpike * firstSpike;
@@ -520,9 +548,9 @@ static BBAnalysisManager *bbAnalysisManager = nil;
 
 
 //Inter-spike-interval histogram generator
--(void) ISIWithFile:(BBFile *) afile spikeTrainIndex:(NSInteger) aSpikeTrainIndex maxtime:(float) maxtime numOfBins:(int) bins values:(NSMutableArray *) valuesY limits:(NSMutableArray *) limitsX
+-(void) ISIWithFile:(BBFile *) afile channelIndex:(NSInteger) aChannelIndex spikeTrainIndex:(NSInteger) aSpikeTrainIndex maxtime:(float) maxtime numOfBins:(int) bins values:(NSMutableArray *) valuesY limits:(NSMutableArray *) limitsX
 {
-    NSMutableArray * spikeTrain = (NSMutableArray *)[afile.spikes objectAtIndex:aSpikeTrainIndex];
+    NSMutableArray * spikeTrain = (NSMutableArray *)[[[[afile.allChannels objectAtIndex:aChannelIndex] spikeTrains] objectAtIndex:aSpikeTrainIndex] spikes];
     if(afile && [spikeTrain count]>1)
     {
         int spikesCount = [spikeTrain count];
@@ -587,65 +615,107 @@ static BBAnalysisManager *bbAnalysisManager = nil;
 #pragma mark - Thresholds
 -(void) addAnotherThresholds
 {
-    [_file addAnotherThresholds];
+    _currentTrainIndex = [[[[_file allChannels] objectAtIndex:_currentChannel] spikeTrains] count];
+    NSString * nameOfSpikeTrain = [NSString stringWithFormat:@"Spike %d%@",(_currentChannel+1), [alphabetArray objectAtIndex:_currentTrainIndex] ];
+    BBSpikeTrain * newSpikeTrain = [[BBSpikeTrain alloc] initWithName:nameOfSpikeTrain];
+    //add spike train
+    [[[[_file allChannels] objectAtIndex:_currentChannel] spikeTrains] addObject:newSpikeTrain];
 }
 
 -(void) removeSelectedThresholds
 {
-    [_file removeCurrentThresholds];
+    NSMutableArray * trains = (NSMutableArray *)[[[_file allChannels] objectAtIndex:_currentChannel] spikeTrains];
+    if([trains count]>_currentTrainIndex)
+    {
+        [trains removeObjectAtIndex:_currentTrainIndex];
+    }
+    
+    for(int i=0;i<[trains count];i++)
+    {
+        NSString * nameOfSpikeTrain = [NSString stringWithFormat:@"Spike %d%@",(_currentChannel+1), [alphabetArray objectAtIndex:_currentTrainIndex] ];
+        BBSpikeTrain * spikeTrain = [trains objectAtIndex:i];
+        spikeTrain.nameOfTrain = [nameOfSpikeTrain copy];
+    }
+    _currentTrainIndex--;
+    [self moveToNextSpikeTrain];
 }
 
 #pragma mark - Getters/ Setters
 
 -(NSInteger) moveToNextSpikeTrain
 {
-    return [_file moveToNextSpikeTrain];
+    
+    _currentTrainIndex = (_currentTrainIndex+1)%([[[[_file allChannels] objectAtIndex:_currentChannel] spikeTrains] count]);
+    return _currentTrainIndex;
 }
 
 -(void) setCurrentSpikeTrain:(NSInteger) aCurrentSpikeTrain
 {
     
-    _file.currentSpikeTrain = aCurrentSpikeTrain;
+    _currentTrainIndex = aCurrentSpikeTrain;
     
 }
 
--(NSInteger) numberOfSpikeTrains
+-(int) numberOfSpikeTrainsOnCurrentChannel
 {
-    return _file.numberOfThresholds;
+    return [[[[_file allChannels] objectAtIndex:_currentChannel] spikeTrains] count];
+}
+
+
+-(int) numberOfSpikeTrains
+{
+    return [_file numberOfSpikeTrains];
 }
 
 -(NSInteger) currentSpikeTrain
 {
-    return _file.currentSpikeTrain;
+    return _currentTrainIndex;
+}
+
+-(NSInteger) currentChannel
+{
+    return _currentChannel;
+}
+
+-(void) setCurrentChannel:(NSInteger)currentChannel
+{
+    _currentTrainIndex = 0;
+    _currentChannel = currentChannel;
 }
 
 -(void) setThresholdFirst:(float)aThresholdFirst
 {
-    _file.thresholdFirst = aThresholdFirst;
+    NSMutableArray * trains = (NSMutableArray *)[[[_file allChannels] objectAtIndex:_currentChannel] spikeTrains];
+    BBSpikeTrain * spikeTrain = [trains objectAtIndex:_currentTrainIndex];
+    spikeTrain.firstThreshold = aThresholdFirst;
 }
 
 -(float) thresholdFirst
 {
-    return _file.thresholdFirst;
+    NSMutableArray * trains = (NSMutableArray *)[[[_file allChannels] objectAtIndex:_currentChannel] spikeTrains];
+    BBSpikeTrain * spikeTrain = [trains objectAtIndex:_currentTrainIndex];
+
+    return spikeTrain.firstThreshold;
 }
 
 -(void) setThresholdSecond:(float) aThresholdSecond
 {
-    _file.thresholdSecond = aThresholdSecond;
+    NSMutableArray * trains = (NSMutableArray *)[[[_file allChannels] objectAtIndex:_currentChannel] spikeTrains];
+    BBSpikeTrain * spikeTrain = [trains objectAtIndex:_currentTrainIndex];
+    spikeTrain.secondThreshold = aThresholdSecond;
 }
 
 -(float) thresholdSecond
 {
-    return _file.thresholdSecond;
+    NSMutableArray * trains = (NSMutableArray *)[[[_file allChannels] objectAtIndex:_currentChannel] spikeTrains];
+    BBSpikeTrain * spikeTrain = [trains objectAtIndex:_currentTrainIndex];
+    
+    return spikeTrain.secondThreshold;
 }
 
 -(NSMutableArray *) allSpikes
 {
-    if(_file)
-    {
-        return _file.spikes;
-    }
-    return nil;
+    return [_file.allSpikes objectAtIndex:_currentChannel];
 }
 
 - (float)currentFileTime

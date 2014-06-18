@@ -174,7 +174,8 @@ static SQLiteInstanceManager *sharedSQLiteManager = nil;
 	if (databaseFilepath == nil)
 	{
 		NSMutableString *ret = [NSMutableString string];
-		NSString *appName = [[NSProcessInfo processInfo] processName];
+		NSMutableString *appName = [[[NSProcessInfo processInfo] processName] mutableCopy];
+        [appName appendString:@"v2"];
 		for (int i = 0; i < [appName length]; i++)
 		{
 			NSRange range = NSMakeRange(i, 1);

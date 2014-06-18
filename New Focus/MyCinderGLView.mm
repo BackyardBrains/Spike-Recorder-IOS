@@ -558,7 +558,7 @@
 - (void)updateActiveTouches
 {
     [super updateActiveTouches];
-    NSLog(@"Num volts visible: %f", numVoltsVisible);
+    //NSLog(@"Num volts visible: %f", numVoltsVisible);
 
     std::vector<ci::app::TouchEvent::Touch> touches = [self getActiveTouches];
     
