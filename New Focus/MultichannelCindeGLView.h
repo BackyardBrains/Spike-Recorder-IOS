@@ -17,12 +17,11 @@
 
 typedef enum {
     MultichannelGLViewModeView,
-	//Progress is shown using an UIActivityIndicatorView. This is the default.
+
 	MultichannelGLViewModeThresholding,
-	//Progress is shown using a round, pie-chart like, progress view.
+
 	MultichannelGLViewModePlayback,
-	//Progress is shown using a horizontal progress bar
-	MultichannelGLViewModeDeterminateHorizontalBar
+
 } MultichannelGLViewMode;
 
 
@@ -66,10 +65,17 @@ typedef enum {
  */
 @protocol MultichannelGLViewDelegate <NSObject>
 //Called every frame when view needs data to display
-- (void) fetchDataToDisplay:(float *)data numFrames:(UInt32)numFrames whichChannel:(UInt32)whichChannel;
+- (float) fetchDataToDisplay:(float *)data numFrames:(UInt32)numFrames whichChannel:(UInt32)whichChannel;
 
 @optional
-
--(void) selectChannel:(int) selectedChannel;
-
+-(float) getCurrentTimeForSinc;//get current time of audio (used for sync of spikes and waveform)
+-(void) selectChannel:(int) selectedChannel;//set selected channel
+- (NSMutableArray *) getChannels;//get channels from BBfile object
+-(BOOL) shouldEnableSelection;//should view enable interval selection
+-(void) updateSelection:(float) newSelectionTime;
+-(float) selectionStartTime;
+-(float) selectionEndTime;
+-(void) endSelection;
+-(BOOL) selecting;
+-(float) rmsOfSelection;
 @end

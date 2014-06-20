@@ -8,6 +8,9 @@
 
 #import "MultichannelCindeGLView.h"
 #import <Accelerate/Accelerate.h>
+#import "BBSpike.h"
+#import "BBSpikeTrain.h"
+#import "BBChannel.h"
 #define HANDLE_RADIUS 20
 
 @interface MultichannelCindeGLView ()
@@ -22,8 +25,8 @@
     //precalculated constants
     Vec2f scaleXY;//relationship between pixels and GL world (pixels x scaleXY = GL units)
  
-    
-    
+    float timeForSincDrawing;
+    BOOL weAreDrawingSelection;
     //debug variables
    // BOOL debugMultichannelOnSingleChannel;
 }
@@ -43,8 +46,9 @@
 - (void)setup
 {
     //debugMultichannelOnSingleChannel = NO;
+    weAreDrawingSelection = NO;
     
-    dataSourceDelegate = nil;;
+    dataSourceDelegate = nil;
     samplingRate = 0;
     numberOfChannels = 0;
     [self enableMultiTouch:YES];
@@ -125,6 +129,13 @@
     //create vetors that hold waveforms for every channel
     //we will create X axis values now and afterwards we will change Y values in every frame
     // and X axis values on zoom in/ zoom out
+    
+    scaleXY = [self screenToWorld:Vec2f(1.0f,1.0f)];
+    Vec2f scaleXYZero = [self screenToWorld:Vec2f(0.0f,0.0f)];
+    scaleXY.x = fabsf(scaleXY.x - scaleXYZero.x);
+    scaleXY.y = fabsf(scaleXY.y - scaleXYZero.y);
+    float usableYAxisSpan = maxVoltsSpan*0.8;
+    
     for(int channelIndex = 0; channelIndex < numberOfChannels; channelIndex++)
     {
         
@@ -136,7 +147,8 @@
         }
         displayVectors[channelIndex].setClosed(false);
         //make some vertical space between channels
-        yOffsets[channelIndex] = -maxVoltsSpan*0.5 + (channelIndex+1)*(maxVoltsSpan/((float)numberOfChannels))- 0.5*(maxVoltsSpan/((float)numberOfChannels));
+        
+        yOffsets[channelIndex] = -usableYAxisSpan*0.4 + (channelIndex+1)*(usableYAxisSpan/((float)numberOfChannels))- 0.5*(usableYAxisSpan/((float)numberOfChannels));
         
     }			
 
@@ -307,7 +319,7 @@
     for(int channelIndex = 0; channelIndex<numberOfChannels; channelIndex++)
     {
        
-        [dataSourceDelegate fetchDataToDisplay:tempDataBuffer numFrames:numPoints whichChannel:channelIndex];
+        timeForSincDrawing =  [dataSourceDelegate fetchDataToDisplay:tempDataBuffer numFrames:numPoints whichChannel:channelIndex];
         //================ debug region ======
 //        }
         //================ end debug region ======
@@ -354,6 +366,14 @@
         scaleXY.y = fabsf(scaleXY.y - scaleXYZero.y);
         
         
+        if ([dataSourceDelegate respondsToSelector:@selector(selecting)])
+        {
+            weAreDrawingSelection = [dataSourceDelegate shouldEnableSelection] && [dataSourceDelegate selecting] &&  [dataSourceDelegate selectionStartTime] != [dataSourceDelegate selectionEndTime] ;
+            if(weAreDrawingSelection)
+            {
+                [self drawSelectionInterval];
+            }
+        }
         
         // Set the line color and width
         glColor4f(0.0f, 1.0f, 0.0f, 1.0f);
@@ -369,6 +389,12 @@
 
         }
         
+        if(self.mode == MultichannelGLViewModePlayback)
+        {
+            [self drawSpikes];
+        }
+        
+        
         if(multichannel)
         {
             //draw handle
@@ -377,12 +403,167 @@
             
         }
         
-        // Put a little grid on the screen.
-        [self drawGrid];
-        
-        // Draw some text on that screen
-        [self drawScaleTextAndSelected];
+        if(weAreDrawingSelection)
+        {
+            [self drawTimeAndRMS];
+        }
+        else
+        {
+            // Put a little grid on the screen.
+            [self drawGrid];
+            // Draw scale on the screen
+            [self drawScaleText];
+        }
     }
+}
+
+
+-(void) drawTimeAndRMS
+{
+    // Draw selection area
+    std::stringstream timeStream;
+    std::stringstream rmstream;
+    float sStartTime;
+    float sEndTime;
+    //Order time points in right way
+    
+    if([dataSourceDelegate selectionStartTime]>[dataSourceDelegate selectionEndTime])
+    {
+        sStartTime = [dataSourceDelegate selectionEndTime];
+        sEndTime = [dataSourceDelegate selectionStartTime];
+    }
+    else
+    {
+        sStartTime = [dataSourceDelegate selectionStartTime];
+        sEndTime = [dataSourceDelegate selectionEndTime];
+    }
+
+    
+    //Calculate time
+    float timeToDisplay = 1000.0*(sEndTime - sStartTime);
+    
+    timeStream.precision(1);
+    if (timeToDisplay >= 1000) {
+        timeToDisplay /= 1000.0;
+        timeStream << fixed << timeToDisplay << " s";
+    }
+    else {
+        timeStream << fixed << timeToDisplay << " msec";
+    }
+    
+    //Get RMS string
+    float rmsToDisplay = [dataSourceDelegate rmsOfSelection];
+    
+    rmstream.precision(3);
+    rmstream <<"RMS: "<< fixed << rmsToDisplay << " mV";
+    
+    
+    
+    
+    gl::disableDepthRead();
+    gl::setMatricesWindow( Vec2i(self.frame.size.width, self.frame.size.height) );
+	gl::enableAlphaBlending();
+    
+  
+    
+	gl::color( ColorA( 1.0, 1.0f, 1.0f, 1.0f ) );
+    
+ 
+    
+    
+      //Draw time ---------------------------------------------
+    
+    //if we are measuring draw measure result at the bottom
+    Vec2f xScaleTextSize = mScaleFont->measureString(timeStream.str());
+    Vec2f xScaleTextPosition = Vec2f(0.,0.);
+    xScaleTextPosition.x = (self.frame.size.width - xScaleTextSize.x)/2.0;
+    //if it is iPad put somewhat higher
+    
+    
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        xScaleTextPosition.y =0.85*self.frame.size.height + (mScaleFont->getAscent() / 2.0f);
+    }
+    else
+    {
+        xScaleTextPosition.y =0.923*self.frame.size.height + (mScaleFont->getAscent() / 2.0f);
+    }
+    glColor4f(0.0, 0.47843137254901963, 1.0, 1.0);
+    float centerx = self.frame.size.width/2;
+    
+    //draw background rectangle
+    gl::enableDepthRead();
+    gl::drawSolidRect(Rectf(centerx-3*xScaleTextSize.y,xScaleTextPosition.y-1.1*xScaleTextSize.y,centerx+3*xScaleTextSize.y,xScaleTextPosition.y+0.4*xScaleTextSize.y));
+    gl::disableDepthRead();
+    gl::color( ColorA( 1.0, 1.0f, 1.0f, 1.0f ) );
+    //draw text
+    mScaleFont->drawString(timeStream.str(), xScaleTextPosition);
+    
+    
+    //Draw RMS -------------------------------------------------
+    float xpositionOfCenterOfRMSBackground;
+    
+    Vec2f rmsTextSize = mScaleFont->measureString(rmstream.str());
+    xpositionOfCenterOfRMSBackground = self.frame.size.width-4.25*rmsTextSize.y;
+    Vec2f rmsTextPosition = Vec2f(0.,0.);
+    rmsTextPosition.x = (xpositionOfCenterOfRMSBackground - 0.5*rmsTextSize.x);
+    //if it is iPad put it on the right
+    UIInterfaceOrientation interfaceOrientation = [[UIApplication sharedApplication] statusBarOrientation];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad || UIInterfaceOrientationIsLandscape(interfaceOrientation)) {
+        rmsTextPosition.y =xScaleTextPosition.y;
+    }
+    else
+    {
+        rmsTextPosition.y =0.23*self.frame.size.height + (mScaleFont->getAscent() / 2.0f);
+    }
+    glColor4f(0.0, 0.0, 0.0, 1.0);
+    
+    
+    //draw background rectangle
+    gl::enableDepthRead();
+    gl::drawSolidRect(Rectf(self.frame.size.width-8*rmsTextSize.y,rmsTextPosition.y-1.1*rmsTextSize.y,self.frame.size.width-0.5*rmsTextSize.y,rmsTextPosition.y+0.4*rmsTextSize.y));
+    gl::disableDepthRead();
+    gl::color( ColorA( 0.0, 1.0f, 0.0f, 1.0f ) );
+    //draw text
+    mScaleFont->drawString(rmstream.str(), rmsTextPosition);
+
+    gl::enableDepthRead();
+
+}
+
+
+-(void) drawSelectionInterval
+{
+
+        glLineWidth(1.0f);
+    
+        float sStartTime;
+        float sEndTime;
+        //Order time points in right way
+    
+        if([dataSourceDelegate selectionStartTime]>[dataSourceDelegate selectionEndTime])
+        {
+            sStartTime = [dataSourceDelegate selectionEndTime];
+            sEndTime = [dataSourceDelegate selectionStartTime];
+        }
+        else
+        {
+            sStartTime = [dataSourceDelegate selectionStartTime];
+            sEndTime = [dataSourceDelegate selectionEndTime];
+        }
+        float virtualVisibleTimeSpan = numSamplesVisible * 1.0f/samplingRate;
+        sStartTime = (sStartTime/virtualVisibleTimeSpan)*(-maxTimeSpan);
+        sEndTime = (sEndTime/virtualVisibleTimeSpan)*(-maxTimeSpan);
+    
+        //draw background of selected region
+        glColor4f(0.4, 0.4, 0.4, 0.5);
+        gl::disableDepthRead();
+        gl::drawSolidRect(Rectf(sStartTime, -maxVoltsSpan/2, sEndTime, maxVoltsSpan/2),false);
+        
+        //draw limit lines
+        glColor4f(0.8, 0.8, 0.8, 1.0);
+        gl::drawLine(Vec2f(sStartTime, -maxVoltsSpan/2), Vec2f(sStartTime, maxVoltsSpan/2));
+        gl::drawLine(Vec2f(sEndTime, -maxVoltsSpan/2), Vec2f(sEndTime, maxVoltsSpan/2));
+        gl::enableDepthRead();
 }
 
 //
@@ -428,36 +609,116 @@
 }
 
 
-//TODO:Update for all states
-- (void)drawScaleTextAndSelected
+//
+// Draw spikes of all spike trains
+//
+-(void) drawSpikes
+{
+   // gl::enableDepthRead();
+    //we use timestamp (timeForSincDrawing) that is taken from audio manager "at the same time"
+    //when we took data from circular buffer to display waveform. It is important for sinc of waveform and spike marks
+    float currentTime = timeForSincDrawing ;
+    
+    //If we are not playing (we are scrubbing) than take time stamp directly from audio manager
+
+    //float currentTime = [dataSourceDelegate getCurrentTimeForSinc];
+    NSMutableArray * allChannels = [dataSourceDelegate getChannels];
+    
+    
+    float realNumberOfSamplesVisible = numSamplesVisible;
+    if (realNumberOfSamplesVisible > numSamplesMax) {
+        realNumberOfSamplesVisible = numSamplesMax;
+    }
+    if (realNumberOfSamplesVisible < numSamplesMin) {
+        realNumberOfSamplesVisible = numSamplesMin;
+    }
+    
+    //calc. real size of time span that is displayed
+    float virtualVisibleTimeSpan = realNumberOfSamplesVisible * 1.0f/samplingRate;
+    
+    //calc. real start and end time
+    float realStartTime =currentTime - virtualVisibleTimeSpan;
+    float realEndTime = currentTime;
+    if(realStartTime<0.0f)
+    {
+        realStartTime = 0.0f;
+    }
+
+    //Draw spikes
+    glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+    BOOL weAreInInterval = NO;
+
+
+
+    
+
+    BBSpike * tempSpike;
+    BBChannel * tempChannel;
+    BBSpikeTrain * tempSpikeTrain;
+    int i=0;
+    float sizeOfPointX = scaleXY.x * 5;
+    float sizeOfPointY = scaleXY.y * 5;
+    
+    for (int channelIndex=0;channelIndex<[allChannels count];channelIndex++)
+    {
+        tempChannel = [allChannels objectAtIndex:channelIndex];
+        //offset of channel
+        float zeroOffset = yOffsets[channelIndex];
+        //volts zoom
+        float zoom = maxVoltsSpan/ numVoltsVisible[channelIndex];
+        for(int trainIndex=0;trainIndex<[[tempChannel spikeTrains] count];trainIndex++)
+        {
+            tempSpikeTrain = [[tempChannel spikeTrains] objectAtIndex:trainIndex];
+            
+
+                weAreInInterval = NO;
+            
+                [self setColorWithIndex:(trainIndex+(channelIndex+1)) transparency:1.0f];
+                i++;
+                //go through all spikes
+                for (tempSpike in tempSpikeTrain.spikes) {
+                    if([tempSpike time]>realStartTime && [tempSpike time]<realEndTime)
+                    {
+                        weAreInInterval = YES;//we are in visible interval
+                        //reacalculate spikes to virtual GL x axis [-maxTimeSpan, 0]
+                        float xValue = ([tempSpike time] -realEndTime)*(maxTimeSpan/virtualVisibleTimeSpan);
+                        //recalculate Y axis with zoom and offset
+                        float yValue = [tempSpike value] * zoom +zeroOffset;
+                        
+                        //draw spike mark
+                        //gl::drawSolidRect(Rectf(xValue-sizeOfPointX,yValue-sizeOfPointY,xValue+sizeOfPointX,yValue+sizeOfPointY));
+                        //draw spike mark
+                        gl::drawSolidEllipse( Vec2f(xValue, yValue), sizeOfPointX,sizeOfPointY, 40 );
+                    }
+                    else if(weAreInInterval)
+                    {//if we pass last spike in visible interval
+                        break;
+                    }
+                }
+        }
+    }
+    
+}
+
+
+
+//
+//Draw X scale
+//
+- (void)drawScaleText
 {
     gl::disableDepthRead();
     gl::setMatricesWindow( Vec2i(self.frame.size.width, self.frame.size.height) );
 	gl::enableAlphaBlending();
     
-    // Calculate the position of the y-scale text to be shown
-    Vec2f yScaleTextPosition = Vec2f(20.0, self.frame.size.height/2.0f - 120.0f + (mScaleFont->getAscent() / 2.0f));
-    
-    // Now, calculate the values to be placed in the text
-    Vec2f xFarLeft = [self screenToWorld:Vec2f(0.0, 0.0)];
-    Vec2f xMiddle  = [self screenToWorld:Vec2f(self.frame.size.width/2.0f, 0.0)];
-    Vec2f yScaleWorldPosition = [self screenToWorld:yScaleTextPosition];
-    
     float xScale = 0.5*numSamplesVisible*(1/samplingRate)*1000;//1000.0*(xMiddle.x - xFarLeft.x);
-    float yScale = yScaleWorldPosition.y;
+
     /*if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] && [[UIScreen mainScreen] scale]==2.0)
     {//if it is retina correct scale
         //TODO: This should be tested with calibration voltage source
         xScale *= 2.0f;
         yScale /=2.0f;
     }*/
-    
-    
-    // Figure out what we want to say
-    std::ostringstream yStringStream;
-    yStringStream.precision(2);
-    yStringStream << fixed << yScale << " mV";
-    
     
     std::stringstream xStringStream;
     xStringStream.precision(1);
@@ -485,13 +746,9 @@
     
     
 	gl::color( ColorA( 1.0, 1.0f, 1.0f, 1.0f ) );
-    
-    
-    // Draw the y-axis scale text
-    
-// mScaleFont->drawString(yStringStream.str(), yScaleTextPosition);
+
   
-    //If we are not measuring draw x-scale text
+    //draw x-scale text
     // Now that we have the string, calculate the position of the x-scale text
     // (we'll be horizontally centering by hand)
     Vec2f xScaleTextSize = mScaleFont->measureString(xStringStream.str());
@@ -524,16 +781,15 @@
     float height = top - bottom;
     float width = right - left;
     float middleX = (right - left)/2.0f + left;
-    //draw line for x-axis if we are not displaying time interval measure
-   // if (!weAreDrawingSelection) {
-        float lineLength = 0.5*width;
-        float lineY = height*0.1 + bottom;
-        Vec2f leftPoint = Vec2f(middleX - lineLength / 2.0f, lineY);
-        Vec2f rightPoint = Vec2f(middleX + lineLength / 2.0f, lineY);
-        glColor4f(0.8, 0.8, 0.8, 1.0);
-        glLineWidth(1.0f);
-        gl::drawLine(leftPoint, rightPoint);
-   // }
+
+    float lineLength = 0.5*width;
+    float lineY = height*0.1 + bottom;
+    Vec2f leftPoint = Vec2f(middleX - lineLength / 2.0f, lineY);
+    Vec2f rightPoint = Vec2f(middleX + lineLength / 2.0f, lineY);
+    glColor4f(0.8, 0.8, 0.8, 1.0);
+    glLineWidth(1.0f);
+    gl::drawLine(leftPoint, rightPoint);
+   
 }
 
 //====================================== TOUCH ==============================================================================
@@ -632,6 +888,8 @@
     //Selecting time interval and thresholding are mutualy exclusive
     else if (touches.size() == 1)
     {
+        BOOL weAreHoldingHandle = NO;
+        
         Vec2f touchPos = touches[0].getPos();
         // Convert into GL coordinate
         Vec2f glWorldTouchPos = [self screenToWorld:touchPos];
@@ -640,6 +898,7 @@
         //if user grabbed the handle of channel
         if(multichannel && (grabbedHandleIndex = [self checkIntersectionWithHandles:glWorldTouchPos])!=-1)
         {
+            weAreHoldingHandle = YES;
             //move channel
             yOffsets[grabbedHandleIndex] = glWorldTouchPos.y;
             
@@ -662,6 +921,27 @@
             }
         
         }
+        
+        //if we are not moving channels check if need to make interval selection
+        if(!weAreHoldingHandle)
+        {
+            if ([dataSourceDelegate respondsToSelector:@selector(shouldEnableSelection)]) {
+                if([dataSourceDelegate shouldEnableSelection])
+                {
+                    Vec2f touchPos = touches[0].getPos();
+                    
+                    // Convert into GL world time coordinate
+                    Vec2f worldTouchPos = [self screenToWorld:touchPos];
+                    float virtualVisibleTimeSpan = numSamplesVisible * 1.0f/samplingRate;
+                    float timePos = (worldTouchPos.x/(-maxTimeSpan))*virtualVisibleTimeSpan;
+                    
+                    [dataSourceDelegate updateSelection:timePos];
+                
+                }
+            }
+        
+        }
+        
     }
     
 }
@@ -698,10 +978,13 @@
 
 
 
-/*- (void)touchesBegan:(NSSet*)touches withEvent:(UIEvent*)event
+- (void)touchesBegan:(NSSet*)touches withEvent:(UIEvent*)event
 {
     //if touch begins remove old time interval selection
-    [[BBAudioManager bbAudioManager] endSelection];
+    if ([dataSourceDelegate respondsToSelector:@selector(endSelection)])
+    {
+        [dataSourceDelegate endSelection];
+    }
     [super touchesBegan:touches withEvent:event];
     
 }
@@ -710,14 +993,16 @@
 {
     //if user just tapped on screen start and end point will
     //be the same so we will remove time interval selection
-    if([[BBAudioManager bbAudioManager] selectionStartTime] == [[BBAudioManager bbAudioManager] selectionEndTime])
+    if ([dataSourceDelegate respondsToSelector:@selector(endSelection)])
     {
-        [[BBAudioManager bbAudioManager] endSelection];
+        if([dataSourceDelegate selectionStartTime] == [dataSourceDelegate selectionEndTime])
+        {
+            [dataSourceDelegate endSelection];
+        }
     }
     [super touchesEnded:touches withEvent:event];
 }
 
-*/
 
 
 #pragma mark - Utility

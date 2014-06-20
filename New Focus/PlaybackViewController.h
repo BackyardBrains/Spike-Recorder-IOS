@@ -27,6 +27,15 @@
 
 - (IBAction)sliderValueChanged:(id)sender;
 - (IBAction)playPauseButtonPressed:(id)sender;
-- (void) selectChannel:(int) selectedChannel;
 
+//MultichannelGLViewDelegate protocol functions
+- (float) fetchDataToDisplay:(float *)data numFrames:(UInt32)numFrames whichChannel:(UInt32)whichChannel;
+- (void) selectChannel:(int) selectedChannel;
+-(BOOL) shouldEnableSelection;
+-(void) updateSelection:(float) newSelectionTime;
+-(float) selectionStartTime;
+-(float) selectionEndTime;
+-(void) endSelection;
+-(BOOL) selecting;
+-(float) rmsOfSelection;
 @end

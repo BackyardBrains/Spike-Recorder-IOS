@@ -16,6 +16,22 @@
 		240D8066190E98F6009F9AEA /* CrossCorrViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 240D8064190E98F6009F9AEA /* CrossCorrViewController.m */; };
 		240D8067190E98F6009F9AEA /* CrossCorrViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 240D8065190E98F6009F9AEA /* CrossCorrViewController.xib */; };
 		244C6A3B1943742E0097F7D4 /* WavManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 244C6A3A1943742E0097F7D4 /* WavManager.mm */; };
+		24513CE319545BCA007F240A /* FileNeuron.png in Resources */ = {isa = PBXBuildFile; fileRef = 24513CE119545BCA007F240A /* FileNeuron.png */; };
+		24513CE419545BCA007F240A /* FileNeuron@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 24513CE219545BCA007F240A /* FileNeuron@2x.png */; };
+		24513CE719545C50007F240A /* Record.png in Resources */ = {isa = PBXBuildFile; fileRef = 24513CE519545C50007F240A /* Record.png */; };
+		24513CE819545C50007F240A /* Record@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 24513CE619545C50007F240A /* Record@2x.png */; };
+		24513CED19545CE9007F240A /* Pause.png in Resources */ = {isa = PBXBuildFile; fileRef = 24513CE919545CE9007F240A /* Pause.png */; };
+		24513CEE19545CE9007F240A /* Pause@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 24513CEA19545CE9007F240A /* Pause@2x.png */; };
+		24513CEF19545CE9007F240A /* Play.png in Resources */ = {isa = PBXBuildFile; fileRef = 24513CEB19545CE9007F240A /* Play.png */; };
+		24513CF019545CE9007F240A /* Play@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 24513CEC19545CE9007F240A /* Play@2x.png */; };
+		24513CF719545E5A007F240A /* Stimulate.png in Resources */ = {isa = PBXBuildFile; fileRef = 24513CF519545E5A007F240A /* Stimulate.png */; };
+		24513CF819545E5A007F240A /* Stimulate@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 24513CF619545E5A007F240A /* Stimulate@2x.png */; };
+		24513CFB19545E91007F240A /* StimSettings.png in Resources */ = {isa = PBXBuildFile; fileRef = 24513CF919545E91007F240A /* StimSettings.png */; };
+		24513CFC19545E91007F240A /* StimSettings@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 24513CFA19545E91007F240A /* StimSettings@2x.png */; };
+		24513CFF19545F3C007F240A /* ThresholdImage.png in Resources */ = {isa = PBXBuildFile; fileRef = 24513CFD19545F3C007F240A /* ThresholdImage.png */; };
+		24513D0019545F3C007F240A /* ThresholdImage@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 24513CFE19545F3C007F240A /* ThresholdImage@2x.png */; };
+		24513D0319545F5E007F240A /* WaveImage.png in Resources */ = {isa = PBXBuildFile; fileRef = 24513D0119545F5E007F240A /* WaveImage.png */; };
+		24513D0419545F5E007F240A /* WaveImage@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 24513D0219545F5E007F240A /* WaveImage@2x.png */; };
 		245F1C7C194B832C00AF0477 /* BBSpikeTrain.m in Sources */ = {isa = PBXBuildFile; fileRef = 245F1C7B194B832C00AF0477 /* BBSpikeTrain.m */; };
 		245F1C7F194C762700AF0477 /* BBChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 245F1C7E194C762700AF0477 /* BBChannel.m */; };
 		245F1C82194C791700AF0477 /* BBSignalEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 245F1C81194C791700AF0477 /* BBSignalEvent.m */; };
@@ -53,16 +69,6 @@
 		24D9DFCD1951C35600A78BED /* FPTouchView.m in Sources */ = {isa = PBXBuildFile; fileRef = 24D9DFCA1951C35600A78BED /* FPTouchView.m */; };
 		24D9DFD01951C4A600A78BED /* BBChannelSelectionTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 24D9DFCF1951C4A600A78BED /* BBChannelSelectionTableViewController.m */; };
 		24F6696019476E9B00A78247 /* BBAudioFileWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 24F6695F19476E9B00A78247 /* BBAudioFileWriter.m */; };
-		FA042A1C16C89EC000278FE2 /* FileNeuron.png in Resources */ = {isa = PBXBuildFile; fileRef = FA042A1216C89EC000278FE2 /* FileNeuron.png */; };
-		FA042A1D16C89EC000278FE2 /* FileNeuronx2.png in Resources */ = {isa = PBXBuildFile; fileRef = FA042A1316C89EC000278FE2 /* FileNeuronx2.png */; };
-		FA042A1E16C89EC000278FE2 /* record.png in Resources */ = {isa = PBXBuildFile; fileRef = FA042A1416C89EC000278FE2 /* record.png */; };
-		FA042A1F16C89EC000278FE2 /* recordx2.png in Resources */ = {isa = PBXBuildFile; fileRef = FA042A1516C89EC000278FE2 /* recordx2.png */; };
-		FA042A2016C89EC000278FE2 /* stim_config.png in Resources */ = {isa = PBXBuildFile; fileRef = FA042A1616C89EC000278FE2 /* stim_config.png */; };
-		FA042A2116C89EC000278FE2 /* stim_conifgx2.png in Resources */ = {isa = PBXBuildFile; fileRef = FA042A1716C89EC000278FE2 /* stim_conifgx2.png */; };
-		FA042A2216C89EC000278FE2 /* stimulate.png in Resources */ = {isa = PBXBuildFile; fileRef = FA042A1816C89EC000278FE2 /* stimulate.png */; };
-		FA042A2316C89EC000278FE2 /* stimulateAlt.png in Resources */ = {isa = PBXBuildFile; fileRef = FA042A1916C89EC000278FE2 /* stimulateAlt.png */; };
-		FA042A2416C89EC000278FE2 /* stimulateAltx2.png in Resources */ = {isa = PBXBuildFile; fileRef = FA042A1A16C89EC000278FE2 /* stimulateAltx2.png */; };
-		FA042A2516C89EC000278FE2 /* stimulatex2.png in Resources */ = {isa = PBXBuildFile; fileRef = FA042A1B16C89EC000278FE2 /* stimulatex2.png */; };
 		FA14EC5C15D04AD700B0FB71 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = FA14EC5B15D04AD700B0FB71 /* Settings.bundle */; };
 		FA14EC5F15D05DD800B0FB71 /* StimulationParameterView.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA14EC5E15D05DD800B0FB71 /* StimulationParameterView.xib */; };
 		FA14EC6215D1FF0000B0FB71 /* RecordingOverlay.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA14EC6115D1FF0000B0FB71 /* RecordingOverlay.mm */; };
@@ -79,14 +85,6 @@
 		FA2DAF8B16C89AD600EFF9D6 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FA2DAF8716C89AD600EFF9D6 /* Icon@2x.png */; };
 		FA35CEFE15ABBADC0082FBC3 /* PlaybackViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA35CEFC15ABBADB0082FBC3 /* PlaybackViewController.mm */; };
 		FA35CEFF15ABBADC0082FBC3 /* PlaybackViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA35CEFD15ABBADB0082FBC3 /* PlaybackViewController.xib */; };
-		FA35CF0315ABBC590082FBC3 /* play@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FA35CF0115ABBC590082FBC3 /* play@2x.png */; };
-		FA35CF0415ABBC590082FBC3 /* play.png in Resources */ = {isa = PBXBuildFile; fileRef = FA35CF0215ABBC590082FBC3 /* play.png */; };
-		FA35CF0915ABBC680082FBC3 /* pause.png in Resources */ = {isa = PBXBuildFile; fileRef = FA35CF0515ABBC680082FBC3 /* pause.png */; };
-		FA35CF0A15ABBC680082FBC3 /* pause@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FA35CF0615ABBC680082FBC3 /* pause@2x.png */; };
-		FA35CF0B15ABBC680082FBC3 /* stim.png in Resources */ = {isa = PBXBuildFile; fileRef = FA35CF0715ABBC680082FBC3 /* stim.png */; };
-		FA35CF0C15ABBC680082FBC3 /* stim@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FA35CF0815ABBC680082FBC3 /* stim@2x.png */; };
-		FA35CF0F15ABBC8C0082FBC3 /* ThresholdImage.png in Resources */ = {isa = PBXBuildFile; fileRef = FA35CF0D15ABBC8C0082FBC3 /* ThresholdImage.png */; };
-		FA35CF1015ABBC8C0082FBC3 /* WaveImage.png in Resources */ = {isa = PBXBuildFile; fileRef = FA35CF0E15ABBC8C0082FBC3 /* WaveImage.png */; };
 		FA4530B315ACDF3B00FA179A /* BBAudioFileReader.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA4530B215ACDF3B00FA179A /* BBAudioFileReader.mm */; };
 		FA49A7B015D9C352002A78EC /* BBFileViewControllerTBV.plist in Resources */ = {isa = PBXBuildFile; fileRef = FA49A7AF15D9C352002A78EC /* BBFileViewControllerTBV.plist */; };
 		FA658AD2180B06BF00A3890C /* DropboxSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA658AD1180B06BF00A3890C /* DropboxSDK.framework */; };
@@ -171,16 +169,32 @@
 		240D8065190E98F6009F9AEA /* CrossCorrViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CrossCorrViewController.xib; sourceTree = "<group>"; };
 		244C6A391943742E0097F7D4 /* WavManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WavManager.h; sourceTree = "<group>"; };
 		244C6A3A1943742E0097F7D4 /* WavManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WavManager.mm; sourceTree = "<group>"; };
+		24513CE119545BCA007F240A /* FileNeuron.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = FileNeuron.png; path = ../FileNeuron.png; sourceTree = "<group>"; };
+		24513CE219545BCA007F240A /* FileNeuron@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "FileNeuron@2x.png"; path = "../FileNeuron@2x.png"; sourceTree = "<group>"; };
+		24513CE519545C50007F240A /* Record.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Record.png; path = ../Record.png; sourceTree = "<group>"; };
+		24513CE619545C50007F240A /* Record@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Record@2x.png"; path = "../Record@2x.png"; sourceTree = "<group>"; };
+		24513CE919545CE9007F240A /* Pause.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Pause.png; sourceTree = "<group>"; };
+		24513CEA19545CE9007F240A /* Pause@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Pause@2x.png"; sourceTree = "<group>"; };
+		24513CEB19545CE9007F240A /* Play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Play.png; sourceTree = "<group>"; };
+		24513CEC19545CE9007F240A /* Play@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Play@2x.png"; sourceTree = "<group>"; };
+		24513CF519545E5A007F240A /* Stimulate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Stimulate.png; sourceTree = "<group>"; };
+		24513CF619545E5A007F240A /* Stimulate@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Stimulate@2x.png"; sourceTree = "<group>"; };
+		24513CF919545E91007F240A /* StimSettings.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = StimSettings.png; sourceTree = "<group>"; };
+		24513CFA19545E91007F240A /* StimSettings@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "StimSettings@2x.png"; sourceTree = "<group>"; };
+		24513CFD19545F3C007F240A /* ThresholdImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ThresholdImage.png; sourceTree = "<group>"; };
+		24513CFE19545F3C007F240A /* ThresholdImage@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ThresholdImage@2x.png"; sourceTree = "<group>"; };
+		24513D0119545F5E007F240A /* WaveImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = WaveImage.png; sourceTree = "<group>"; };
+		24513D0219545F5E007F240A /* WaveImage@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "WaveImage@2x.png"; sourceTree = "<group>"; };
 		245F1C7A194B832C00AF0477 /* BBSpikeTrain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BBSpikeTrain.h; sourceTree = "<group>"; };
 		245F1C7B194B832C00AF0477 /* BBSpikeTrain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BBSpikeTrain.m; sourceTree = "<group>"; };
 		245F1C7D194C762700AF0477 /* BBChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BBChannel.h; sourceTree = "<group>"; };
 		245F1C7E194C762700AF0477 /* BBChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BBChannel.m; sourceTree = "<group>"; };
 		245F1C80194C791700AF0477 /* BBSignalEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BBSignalEvent.h; sourceTree = "<group>"; };
 		245F1C81194C791700AF0477 /* BBSignalEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BBSignalEvent.m; sourceTree = "<group>"; };
-		246989331909898F00F5383F /* trash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = trash.png; sourceTree = "<group>"; };
-		246989341909898F00F5383F /* trash@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "trash@2x.png"; sourceTree = "<group>"; };
-		2469893719098C1900F5383F /* again.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = again.png; sourceTree = "<group>"; };
-		2469893819098C1900F5383F /* again@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "again@2x.png"; sourceTree = "<group>"; };
+		246989331909898F00F5383F /* trash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = trash.png; path = ../trash.png; sourceTree = "<group>"; };
+		246989341909898F00F5383F /* trash@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "trash@2x.png"; path = "../trash@2x.png"; sourceTree = "<group>"; };
+		2469893719098C1900F5383F /* again.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = again.png; path = ../again.png; sourceTree = "<group>"; };
+		2469893819098C1900F5383F /* again@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "again@2x.png"; path = "../again@2x.png"; sourceTree = "<group>"; };
 		247115F31930BB1100D1B004 /* BBBTManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BBBTManager.h; sourceTree = "<group>"; };
 		247115F41930BB1100D1B004 /* BBBTManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BBBTManager.m; sourceTree = "<group>"; };
 		2474366718F6CAAC0044E11D /* SpikesCinderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpikesCinderView.h; sourceTree = "<group>"; };
@@ -311,16 +325,6 @@
 		24D9DFCF1951C4A600A78BED /* BBChannelSelectionTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BBChannelSelectionTableViewController.m; sourceTree = "<group>"; };
 		24F6695E19476E9B00A78247 /* BBAudioFileWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BBAudioFileWriter.h; sourceTree = "<group>"; };
 		24F6695F19476E9B00A78247 /* BBAudioFileWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BBAudioFileWriter.m; sourceTree = "<group>"; };
-		FA042A1216C89EC000278FE2 /* FileNeuron.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = FileNeuron.png; path = "BYB Icons/FileNeuron.png"; sourceTree = "<group>"; };
-		FA042A1316C89EC000278FE2 /* FileNeuronx2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = FileNeuronx2.png; path = "BYB Icons/FileNeuronx2.png"; sourceTree = "<group>"; };
-		FA042A1416C89EC000278FE2 /* record.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = record.png; path = "BYB Icons/record.png"; sourceTree = "<group>"; };
-		FA042A1516C89EC000278FE2 /* recordx2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = recordx2.png; path = "BYB Icons/recordx2.png"; sourceTree = "<group>"; };
-		FA042A1616C89EC000278FE2 /* stim_config.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = stim_config.png; path = "BYB Icons/stim_config.png"; sourceTree = "<group>"; };
-		FA042A1716C89EC000278FE2 /* stim_conifgx2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = stim_conifgx2.png; path = "BYB Icons/stim_conifgx2.png"; sourceTree = "<group>"; };
-		FA042A1816C89EC000278FE2 /* stimulate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = stimulate.png; path = "BYB Icons/stimulate.png"; sourceTree = "<group>"; };
-		FA042A1916C89EC000278FE2 /* stimulateAlt.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = stimulateAlt.png; path = "BYB Icons/stimulateAlt.png"; sourceTree = "<group>"; };
-		FA042A1A16C89EC000278FE2 /* stimulateAltx2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = stimulateAltx2.png; path = "BYB Icons/stimulateAltx2.png"; sourceTree = "<group>"; };
-		FA042A1B16C89EC000278FE2 /* stimulatex2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = stimulatex2.png; path = "BYB Icons/stimulatex2.png"; sourceTree = "<group>"; };
 		FA14EC5B15D04AD700B0FB71 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = Settings.bundle; path = "New Focus/Settings.bundle"; sourceTree = "<group>"; };
 		FA14EC5E15D05DD800B0FB71 /* StimulationParameterView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StimulationParameterView.xib; sourceTree = "<group>"; };
 		FA14EC6015D1FF0000B0FB71 /* RecordingOverlay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecordingOverlay.h; sourceTree = "<group>"; };
@@ -340,14 +344,6 @@
 		FA35CEFB15ABBADB0082FBC3 /* PlaybackViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaybackViewController.h; sourceTree = "<group>"; };
 		FA35CEFC15ABBADB0082FBC3 /* PlaybackViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PlaybackViewController.mm; sourceTree = "<group>"; };
 		FA35CEFD15ABBADB0082FBC3 /* PlaybackViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PlaybackViewController.xib; sourceTree = "<group>"; };
-		FA35CF0115ABBC590082FBC3 /* play@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "play@2x.png"; sourceTree = "<group>"; };
-		FA35CF0215ABBC590082FBC3 /* play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = play.png; sourceTree = "<group>"; };
-		FA35CF0515ABBC680082FBC3 /* pause.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pause.png; sourceTree = "<group>"; };
-		FA35CF0615ABBC680082FBC3 /* pause@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pause@2x.png"; sourceTree = "<group>"; };
-		FA35CF0715ABBC680082FBC3 /* stim.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stim.png; sourceTree = "<group>"; };
-		FA35CF0815ABBC680082FBC3 /* stim@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "stim@2x.png"; sourceTree = "<group>"; };
-		FA35CF0D15ABBC8C0082FBC3 /* ThresholdImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ThresholdImage.png; sourceTree = "<group>"; };
-		FA35CF0E15ABBC8C0082FBC3 /* WaveImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = WaveImage.png; sourceTree = "<group>"; };
 		FA4530B115ACDF3B00FA179A /* BBAudioFileReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BBAudioFileReader.h; sourceTree = "<group>"; };
 		FA4530B215ACDF3B00FA179A /* BBAudioFileReader.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BBAudioFileReader.mm; sourceTree = "<group>"; };
 		FA49A7AF15D9C352002A78EC /* BBFileViewControllerTBV.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = BBFileViewControllerTBV.plist; sourceTree = "<group>"; };
@@ -653,10 +649,6 @@
 		FA2DAF8316C85D7E00EFF9D6 /* Artwork */ = {
 			isa = PBXGroup;
 			children = (
-				2469893719098C1900F5383F /* again.png */,
-				2469893819098C1900F5383F /* again@2x.png */,
-				246989331909898F00F5383F /* trash.png */,
-				246989341909898F00F5383F /* trash@2x.png */,
 				FA2DAF8416C89AD600EFF9D6 /* Icon-72.png */,
 				FA2DAF8516C89AD600EFF9D6 /* Icon-72@2x.png */,
 				FA2DAF8616C89AD600EFF9D6 /* Icon.png */,
@@ -667,16 +659,6 @@
 				FA2DAF7A16C85D7500EFF9D6 /* Icon-Small@2x.png */,
 				FA2DAF7B16C85D7500EFF9D6 /* iTunesArtwork.png */,
 				FA2DAF7C16C85D7600EFF9D6 /* iTunesArtwork@2x.png */,
-				FA042A1216C89EC000278FE2 /* FileNeuron.png */,
-				FA042A1316C89EC000278FE2 /* FileNeuronx2.png */,
-				FA042A1416C89EC000278FE2 /* record.png */,
-				FA042A1516C89EC000278FE2 /* recordx2.png */,
-				FA042A1616C89EC000278FE2 /* stim_config.png */,
-				FA042A1716C89EC000278FE2 /* stim_conifgx2.png */,
-				FA042A1816C89EC000278FE2 /* stimulate.png */,
-				FA042A1916C89EC000278FE2 /* stimulateAlt.png */,
-				FA042A1A16C89EC000278FE2 /* stimulateAltx2.png */,
-				FA042A1B16C89EC000278FE2 /* stimulatex2.png */,
 			);
 			name = Artwork;
 			sourceTree = "<group>";
@@ -813,15 +795,27 @@
 		FAA43D2715AB5F9C0024E445 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				24513D0119545F5E007F240A /* WaveImage.png */,
+				24513D0219545F5E007F240A /* WaveImage@2x.png */,
+				24513CFD19545F3C007F240A /* ThresholdImage.png */,
+				24513CFE19545F3C007F240A /* ThresholdImage@2x.png */,
+				24513CE519545C50007F240A /* Record.png */,
+				24513CE619545C50007F240A /* Record@2x.png */,
+				24513CE119545BCA007F240A /* FileNeuron.png */,
+				24513CE219545BCA007F240A /* FileNeuron@2x.png */,
+				2469893719098C1900F5383F /* again.png */,
+				2469893819098C1900F5383F /* again@2x.png */,
+				246989331909898F00F5383F /* trash.png */,
+				246989341909898F00F5383F /* trash@2x.png */,
+				24513CF919545E91007F240A /* StimSettings.png */,
+				24513CFA19545E91007F240A /* StimSettings@2x.png */,
+				24513CF519545E5A007F240A /* Stimulate.png */,
+				24513CF619545E5A007F240A /* Stimulate@2x.png */,
+				24513CE919545CE9007F240A /* Pause.png */,
+				24513CEA19545CE9007F240A /* Pause@2x.png */,
+				24513CEB19545CE9007F240A /* Play.png */,
+				24513CEC19545CE9007F240A /* Play@2x.png */,
 				FA658AD3180B1CB700A3890C /* unselected.png */,
-				FA35CF0D15ABBC8C0082FBC3 /* ThresholdImage.png */,
-				FA35CF0E15ABBC8C0082FBC3 /* WaveImage.png */,
-				FA35CF0515ABBC680082FBC3 /* pause.png */,
-				FA35CF0615ABBC680082FBC3 /* pause@2x.png */,
-				FA35CF0715ABBC680082FBC3 /* stim.png */,
-				FA35CF0815ABBC680082FBC3 /* stim@2x.png */,
-				FA35CF0115ABBC590082FBC3 /* play@2x.png */,
-				FA35CF0215ABBC590082FBC3 /* play.png */,
 				FAEEE79115ABB8C00050F3E9 /* RecordButton.png */,
 				FAEEE78D15ABB7890050F3E9 /* dropbox@2x.png */,
 				FAEEE78E15ABB7890050F3E9 /* dropbox.png */,
@@ -1028,6 +1022,8 @@
 				FADF266D1596362F006C87BA /* InfoPlist.strings in Resources */,
 				FADF268715963630006C87BA /* MainWindow.xib in Resources */,
 				FADF268915963630006C87BA /* ViewAndRecordViewController.xib in Resources */,
+				24513CE719545C50007F240A /* Record.png in Resources */,
+				24513D0319545F5E007F240A /* WaveImage.png in Resources */,
 				249A246319058465005F5F03 /* AutocorrelationGraphViewController.xib in Resources */,
 				FA905A4C15AA8CF00013688B /* BBFileTableCell.xib in Resources */,
 				FAA43D2B15AB5FBC0024E445 /* TickMarks.png in Resources */,
@@ -1037,50 +1033,46 @@
 				FA658AD4180B1CB700A3890C /* unselected.png in Resources */,
 				FAEEE79015ABB7890050F3E9 /* dropbox.png in Resources */,
 				FAEEE79215ABB8C00050F3E9 /* RecordButton.png in Resources */,
+				24513D0019545F3C007F240A /* ThresholdImage@2x.png in Resources */,
 				FA35CEFF15ABBADC0082FBC3 /* PlaybackViewController.xib in Resources */,
-				FA35CF0315ABBC590082FBC3 /* play@2x.png in Resources */,
-				FA35CF0415ABBC590082FBC3 /* play.png in Resources */,
-				FA35CF0915ABBC680082FBC3 /* pause.png in Resources */,
-				FA35CF0A15ABBC680082FBC3 /* pause@2x.png in Resources */,
+				24513CE419545BCA007F240A /* FileNeuron@2x.png in Resources */,
 				2474366B18F6DBFF0044E11D /* SpikesViewController.xib in Resources */,
-				FA35CF0B15ABBC680082FBC3 /* stim.png in Resources */,
-				FA35CF0C15ABBC680082FBC3 /* stim@2x.png in Resources */,
 				2469893919098C1900F5383F /* again.png in Resources */,
+				24513CFF19545F3C007F240A /* ThresholdImage.png in Resources */,
 				FA9A5B311809A5DA00FF01A0 /* Default-568h@2x.png in Resources */,
-				FA35CF0F15ABBC8C0082FBC3 /* ThresholdImage.png in Resources */,
-				FA35CF1015ABBC8C0082FBC3 /* WaveImage.png in Resources */,
+				24513CFB19545E91007F240A /* StimSettings.png in Resources */,
 				FAA27C1E15AD01CA00DCC60B /* ThresholdViewController.xib in Resources */,
 				FA9A665215BA3DC100CF1697 /* MainWindow-iPad.xib in Resources */,
 				FA9A665B15BB19B000CF1697 /* SettingsDefaults.plist in Resources */,
 				240D8067190E98F6009F9AEA /* CrossCorrViewController.xib in Resources */,
 				FA14EC5C15D04AD700B0FB71 /* Settings.bundle in Resources */,
+				24513CEE19545CE9007F240A /* Pause@2x.png in Resources */,
+				24513CF819545E5A007F240A /* Stimulate@2x.png in Resources */,
+				24513D0419545F5E007F240A /* WaveImage@2x.png in Resources */,
 				FA14EC5F15D05DD800B0FB71 /* StimulationParameterView.xib in Resources */,
 				FA49A7B015D9C352002A78EC /* BBFileViewControllerTBV.plist in Resources */,
+				24513CF019545CE9007F240A /* Play@2x.png in Resources */,
 				FA2DAF7D16C85D7600EFF9D6 /* Icon-Small-50.png in Resources */,
 				247ED9BC193DEB8800871BAC /* release_notes.md in Resources */,
 				FA2DAF7E16C85D7600EFF9D6 /* Icon-Small-50@2x.png in Resources */,
 				FA2DAF7F16C85D7600EFF9D6 /* Icon-Small.png in Resources */,
 				FA2DAF8016C85D7600EFF9D6 /* Icon-Small@2x.png in Resources */,
 				2469893A19098C1900F5383F /* again@2x.png in Resources */,
+				24513CFC19545E91007F240A /* StimSettings@2x.png in Resources */,
 				FA2DAF8116C85D7600EFF9D6 /* iTunesArtwork.png in Resources */,
 				FA2DAF8216C85D7600EFF9D6 /* iTunesArtwork@2x.png in Resources */,
 				FA2DAF8816C89AD600EFF9D6 /* Icon-72.png in Resources */,
 				FA2DAF8916C89AD600EFF9D6 /* Icon-72@2x.png in Resources */,
 				FA2DAF8A16C89AD600EFF9D6 /* Icon.png in Resources */,
 				246989351909898F00F5383F /* trash.png in Resources */,
+				24513CEF19545CE9007F240A /* Play.png in Resources */,
 				247ED9BB193DEB8800871BAC /* README.md in Resources */,
 				FA2DAF8B16C89AD600EFF9D6 /* Icon@2x.png in Resources */,
-				FA042A1C16C89EC000278FE2 /* FileNeuron.png in Resources */,
-				FA042A1D16C89EC000278FE2 /* FileNeuronx2.png in Resources */,
-				FA042A1E16C89EC000278FE2 /* record.png in Resources */,
-				FA042A1F16C89EC000278FE2 /* recordx2.png in Resources */,
-				FA042A2016C89EC000278FE2 /* stim_config.png in Resources */,
-				FA042A2116C89EC000278FE2 /* stim_conifgx2.png in Resources */,
-				FA042A2216C89EC000278FE2 /* stimulate.png in Resources */,
-				FA042A2316C89EC000278FE2 /* stimulateAlt.png in Resources */,
-				FA042A2416C89EC000278FE2 /* stimulateAltx2.png in Resources */,
-				FA042A2516C89EC000278FE2 /* stimulatex2.png in Resources */,
+				24513CE819545C50007F240A /* Record@2x.png in Resources */,
+				24513CF719545E5A007F240A /* Stimulate.png in Resources */,
 				246989361909898F00F5383F /* trash@2x.png in Resources */,
+				24513CE319545BCA007F240A /* FileNeuron.png in Resources */,
+				24513CED19545CE9007F240A /* Pause.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

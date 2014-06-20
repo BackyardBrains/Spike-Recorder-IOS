@@ -53,11 +53,11 @@
     {
 
         if ([BBAudioManager bbAudioManager].playing == YES) {
-            [self.playPauseButton setBackgroundImage:[UIImage imageNamed:@"pause.png"] forState:UIControlStateNormal];
+            [self.playPauseButton setBackgroundImage:[UIImage imageNamed:@"Pause"] forState:UIControlStateNormal];
         }
         
         else {
-            [self.playPauseButton setBackgroundImage:[UIImage imageNamed:@"play.png"] forState:UIControlStateNormal];
+            [self.playPauseButton setBackgroundImage:[UIImage imageNamed:@"Play"] forState:UIControlStateNormal];
 
         }
 
@@ -176,19 +176,67 @@
 }
 
 #pragma mark - MultichannelGLViewDelegate function
-- (void) fetchDataToDisplay:(float *)data numFrames:(UInt32)numFrames whichChannel:(UInt32)whichChannel
+- (float) fetchDataToDisplay:(float *)data numFrames:(UInt32)numFrames whichChannel:(UInt32)whichChannel
 {
 
     //Fetch data and get time of data as precise as posible. Used to sichronize
     //display of waveform and spike marks
-    [[BBAudioManager bbAudioManager] fetchAudio:data numFrames:numFrames whichChannel:whichChannel stride:1];
+    return [[BBAudioManager bbAudioManager] fetchAudio:data numFrames:numFrames whichChannel:whichChannel stride:1];
 }
 
+-(float) getCurrentTimeForSinc
+{
+    return [[BBAudioManager bbAudioManager] getTimeForSpikes];
+}
+
+-(NSMutableArray *) getChannels
+{
+    return [[BBAudioManager bbAudioManager] getChannels];
+}
+
+
+-(BOOL) shouldEnableSelection
+{
+    return ![[BBAudioManager bbAudioManager] playing];
+}
+
+-(void) updateSelection:(float) newSelectionTime
+{
+    [[BBAudioManager bbAudioManager] updateSelection:newSelectionTime];
+}
+
+-(float) selectionStartTime
+{
+    return [[BBAudioManager bbAudioManager] selectionStartTime];
+}
+
+-(float) selectionEndTime
+{
+    return [[BBAudioManager bbAudioManager] selectionEndTime];
+}
+
+-(void) endSelection
+{
+    [[BBAudioManager bbAudioManager] endSelection];
+}
+
+-(BOOL) selecting
+{
+    return [[BBAudioManager bbAudioManager] selecting];
+}
+
+-(float) rmsOfSelection
+{
+    return [[BBAudioManager bbAudioManager] rmsOfSelection];
+}
+
+#pragma mark - end of MultichannelGLViewDelegate
 
 - (void)dealloc {
     [timeSlider release];
     [super dealloc];
 }
+
 
 
 //

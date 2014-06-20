@@ -180,7 +180,7 @@
             if((spikes[i].y<[[BBAnalysisManager bbAnalysisManager] thresholdFirst] && spikes[i].y>[[BBAnalysisManager bbAnalysisManager] thresholdSecond]) || (spikes[i].y>[[BBAnalysisManager bbAnalysisManager] thresholdFirst] && spikes[i].y<[[BBAnalysisManager bbAnalysisManager] thresholdSecond]))
             {
             
-               [self setColorWithIndex:[[BBAnalysisManager bbAnalysisManager] currentSpikeTrain] transparency:1.0f]; //draw selected spike
+               [self setColorWithIndex:[[BBAnalysisManager bbAnalysisManager] currentChannel]+[[BBAnalysisManager bbAnalysisManager] currentSpikeTrain] transparency:1.0f]; //draw selected spike
             }
             else
             {

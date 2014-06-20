@@ -9,6 +9,9 @@
 #import "DSPAnalysis.h"
 #import "BBBTManager.h"
 #import "BBFile.h"
+#import "BBSpike.h"
+#import "BBSpikeTrain.h"
+#import "BBChannel.h"
 #import <Accelerate/Accelerate.h>
 
 //#define RING_BUFFER_SIZE 524288
@@ -578,7 +581,41 @@ static BBAudioManager *bbAudioManager = nil;
 }
 
 
-
+-(NSMutableArray *) getChannels
+{
+    return [_file allChannels];
+    
+    
+    /*
+    NSMutableArray* filteredChannelSpikes;
+    NSMutableArray* filteredSpikeTrainSpikes;
+    BBChannel * aChannel = [[_file allChannels] objectAtIndex:aChannelIndex];
+    BBSpike * tempSpike;
+    BBSpikeTrain * tempSpikeTrain;
+    int i=0;
+    BOOL weAreInInterval = NO;
+    //go through all spike trains
+    for(tempSpikeTrain in aChannel.spikeTrains)
+    {
+        weAreInInterval = NO;
+        filteredSpikeTrainSpikes = [NSMutableArray]
+        //go through all spikes
+        for (tempSpike in tempSpikeTrain.spikes) {
+            if([tempSpike time]>startTime && [tempSpike time]<endTime)
+            {
+                weAreInInterval = YES;//we are in visible interval
+               
+            }
+            else if(weAreInInterval)
+            {//if we pass last spike in visible interval
+                break;
+            }
+        }
+    }
+    
+    
+    return filteredSpikes;*/
+}
 
 
 
@@ -865,15 +902,15 @@ static BBAudioManager *bbAudioManager = nil;
     
     int startSample, endSample;
     //selection times are negative so we need oposite logic
-    if(-_selectionEndTime> -_selectionStartTime)
+    if(_selectionEndTime> _selectionStartTime)
     {
-        startSample = -_selectionStartTime * [self samplingRate];
-        endSample = -_selectionEndTime * [self samplingRate];
+        startSample = _selectionStartTime * [self samplingRate];
+        endSample = _selectionEndTime * [self samplingRate];
     }
     else
     {
-        startSample = -_selectionEndTime * [self samplingRate];
-        endSample = -_selectionStartTime * [self samplingRate];
+        startSample = _selectionEndTime * [self samplingRate];
+        endSample = _selectionStartTime * [self samplingRate];
     }
     
     
@@ -884,7 +921,7 @@ static BBAudioManager *bbAudioManager = nil;
         //fetchAudio will put all data (from left time limit to right edge of the screen) at the begining
         //of the display buffer. After that we just take data from begining of the buffer to the length of
         //selected time interval and calculate RMS
-        ringBuffer->FetchFreshData2(tempCalculationBuffer, endSample, 0, 1);
+        ringBuffer->FetchFreshData2(tempCalculationBuffer, endSample, _selectedChannel , 1);
         selectionRMS =dspAnalizer->RMSSelection((tempCalculationBuffer), endSample-startSample);
     }
     else if (thresholding) {

@@ -385,7 +385,7 @@
         {
             xScaleTextPosition.y =0.923*self.frame.size.height + (mScaleFont->getAscent() / 2.0f);
         }
-        glColor4f(0.0, 0.0, 1.0, 1.0);
+        glColor4f(0.0, 0.47843137254901963, 1.0, 1.0);
         float centerx = self.frame.size.width/2;
         
         //draw background rectangle
