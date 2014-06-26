@@ -7,7 +7,16 @@
 //
 
 #import <UIKit/UIKit.h>
-@class SpikesAnalysisViewController;
+
+@protocol BBSelectionTableDelegateProtocol;
+
 @interface BBChannelSelectionTableViewController : UITableViewController
-@property(nonatomic,assign) SpikesAnalysisViewController *delegate;
+@property(nonatomic,assign) id <BBSelectionTableDelegateProtocol> delegate;
+@end
+
+
+@protocol BBSelectionTableDelegateProtocol
+@required
+- (void)rowSelected:(NSInteger) rowIndex;
+-(NSMutableArray *) getAllRows;
 @end

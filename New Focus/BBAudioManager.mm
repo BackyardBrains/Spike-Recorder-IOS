@@ -261,18 +261,32 @@ static BBAudioManager *bbAudioManager = nil;
 
 
 #pragma mark - Bluetooth
-- (void) switchToBluetooth
+
+-(void) testBluetoothConnection
+{
+   
+    [[BBBTManager btManager] startBluetooth];
+}
+
+-(void) switchToBluetoothWithNumOfChannels:(int) numOfChannelsBT andSampleRate:(int) inSampleRate
 {
     btOn = YES;
-    [[BBBTManager btManager] startBluetooth];
-    
-    //TODO: sampling rate and number of channels should be set here
-    //_sourceSamplingRate;
-    //_sourceNumberOfChannels;
+    [[BBBTManager btManager] configBluetoothWithChannels:numOfChannelsBT andSampleRate:inSampleRate];
+    _sourceSamplingRate=inSampleRate;
+    _sourceNumberOfChannels=numOfChannelsBT;
     
     
     audioManager.inputBlock = nil;
     audioManager.outputBlock = nil;
+    
+    delete ringBuffer;
+    free(tempCalculationBuffer);
+    
+    //create new buffers
+    int sizeOfBuffer = NUM_OF_SECONDS_TO_DISPLAY * _sourceSamplingRate;
+    ringBuffer = new RingBuffer(sizeOfBuffer, _sourceNumberOfChannels);
+    tempCalculationBuffer = (float *)calloc(sizeOfBuffer*_sourceNumberOfChannels, sizeof(float));
+    
     [[BBBTManager btManager] setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
         ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
     }];
@@ -280,7 +294,17 @@ static BBAudioManager *bbAudioManager = nil;
 
 -(void) closeBluetooth
 {
-    //TODO: implement BT stop
+    [[BBBTManager btManager] stopCurrentBluetoothConnection];
+    [BBBTManager btManager].inputBlock = nil;
+    btOn = NO;
+    if(thresholding)
+    {
+        [self startThresholding:numPointsToSavePerThreshold];
+    }
+    else
+    {
+        [self startMonitoring];
+    }
 }
 
 

@@ -11,8 +11,9 @@
 #import "BBAnalysisManager.h"
 #import "BBFile.h"
 #import "FPPopoverController.h"
+#import "BBChannelSelectionTableViewController.h"
 
-@interface SpikesAnalysisViewController : CCGLTouchViewController <FPPopoverControllerDelegate> {
+@interface SpikesAnalysisViewController : CCGLTouchViewController <FPPopoverControllerDelegate,BBSelectionTableDelegateProtocol> {
     SpikesCinderView *glView;
     FPPopoverController * popover;
 }
@@ -36,6 +37,6 @@
 - (IBAction)addTrainClick:(id)sender;
 - (IBAction)removeTrainClick:(id)sender;
 - (IBAction)nextTrainClick:(id)sender;
-- (void)channelSelected:(NSInteger) channelIndex;
--(NSMutableArray *) getAllChannels;
+- (void)rowSelected:(NSInteger) rowIndex;
+-(NSMutableArray *) getAllRows;
 @end

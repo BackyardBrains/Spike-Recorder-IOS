@@ -18,12 +18,17 @@ static BBBTManager *btManager = nil;
 {
     EAAccessory *_accessory;
     EASession *_session;
-    NSMutableData *_writeData;
     NSMutableData *_readData;
     
     dispatch_source_t _baudRateTimer;
     int numberOfBytesReceivedInLastSec;
     float bitsPerSec;
+    
+    bool sendConfigData;
+    int _confNumberOfChannels;
+    int _confSamplingRate;
+    bool connectToDevice;
+    bool deviceAlreadyDisconnected;
 }
 
 @end
@@ -37,6 +42,7 @@ static BBBTManager *btManager = nil;
 	{
 		if (btManager == nil) {
 			btManager = [[BBBTManager alloc] init];
+            
 		}
 	}
     return btManager;
@@ -76,6 +82,7 @@ static BBBTManager *btManager = nil;
     if (self = [super init])
     {
         self.inputBlock = nil;
+        deviceAlreadyDisconnected = NO;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_accessoryDidConnect:) name:EAAccessoryDidConnectNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_accessoryDidDisconnect:) name:EAAccessoryDidDisconnectNotification object:nil];
         [[EAAccessoryManager sharedAccessoryManager] registerForLocalNotifications];
@@ -88,7 +95,7 @@ static BBBTManager *btManager = nil;
             dispatch_source_set_timer(_baudRateTimer, dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC), NSEC_PER_SEC, (1ull * NSEC_PER_SEC) / 10);
             dispatch_source_set_event_handler(_baudRateTimer, ^{
 
-                bitsPerSec = ((float)numberOfBytesReceivedInLastSec)/3.0;
+                bitsPerSec = ((float)numberOfBytesReceivedInLastSec)/1.0;
                 numberOfBytesReceivedInLastSec = 0;
                 
             });
@@ -112,30 +119,54 @@ static BBBTManager *btManager = nil;
 
 -(void) startBluetooth
 {
+    connectToDevice = NO;
     _session = [self openSessionForProtocol:BT_PROTOCOL_STRING];
     numberOfBytesReceivedInLastSec = 0;
 }
 
 
+-(void) configBluetoothWithChannels:(int)inNumOfChannels andSampleRate:(int) inSampleRate
+{
+    _confSamplingRate = inSampleRate;
+    _confNumberOfChannels = inNumOfChannels;
+    NSLog(@"Start bluetooth with Num of channels: %d and Sample rate: %d", inNumOfChannels, inSampleRate);
+    sendConfigData = YES;
+    [self writeDataFunc];
+}
+
 - (EASession *)openSessionForProtocol:(NSString *)protocolString
 {
     NSArray *accessories = [[EAAccessoryManager sharedAccessoryManager]
                             connectedAccessories];
-    _accessory = nil;
-    EASession *session = nil;
     
+
+    EASession *session = nil;
+    BOOL foundAccessory = NO;
     for (EAAccessory *obj in accessories)
     {
         if ([[obj protocolStrings] containsObject:protocolString])
         {
+            if(_accessory == obj)
+            {
+                NSLog(@"Open same accessory");
+                sendConfigData = YES;
+                [self writeDataFunc];
+                NSNotification *notification = [NSNotification notificationWithName:FOUND_BT_CONNECTION object:self];
+                [[NSNotificationCenter defaultCenter] postNotification:notification];
+                return _session;
+            }
             _accessory = obj;
+            foundAccessory = YES;
+            NSNotification *notification = [NSNotification notificationWithName:FOUND_BT_CONNECTION object:self];
+            [[NSNotificationCenter defaultCenter] postNotification:notification];
             break;
         }
     }
     
-    if (_accessory)
+    if (foundAccessory)
     {
-        
+        NSLog(@"Open new BT session");
+        _session = session;
         session = [[EASession alloc] initWithAccessory:_accessory
                                            forProtocol:protocolString];
         if (session)
@@ -151,18 +182,77 @@ static BBBTManager *btManager = nil;
             [session autorelease];
         }
     }
+    else
+    {
+        NSLog(@"No accessory found");
+        NSNotification *notification = [NSNotification notificationWithName:NO_BT_CONNECTION object:self];
+        [[NSNotificationCenter defaultCenter] postNotification:notification];
+        
+       /* connectToDevice = YES;
+        [[EAAccessoryManager sharedAccessoryManager] showBluetoothAccessoryPickerWithNameFilter:nil completion:^(NSError *error) {
+            if(error != nil && [error code] == EABluetoothAccessoryPickerResultCancelled)
+            {
+                //if canceled
+                
+            }
+            else
+            {
+                //_session = [self openSessionForProtocol:BT_PROTOCOL_STRING];
+                //numberOfBytesReceivedInLastSec = 0;
+            }
+            
+        }];*/
+    
+    }
     
     return session;
+}
+
+
+-(void) stopCurrentBluetoothConnection
+{
+    NSLog(@"stopCurrentBluetoothConnection");
+    if(_session)
+    {
+        
+       /* [[_session inputStream] removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+        [[_session inputStream] setDelegate:nil];
+        [[_session inputStream] close];
+        
+        
+        [[_session outputStream] removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+        [[_session outputStream] setDelegate:nil];
+       // [[_session outputStream] close];
+        
+        _session = nil;
+        [_readData release];
+        _readData = nil;
+        
+        [_accessory setDelegate:nil];
+        [_accessory release];
+        _accessory = nil;*/
+    }
 }
 
 - (void)_accessoryDidDisconnect:(NSNotification *)notification {
     
     NSLog(@"Accessory disconnected");
+    if(!deviceAlreadyDisconnected)
+    {
+        deviceAlreadyDisconnected = YES;
+        NSNotification *newnotification = [NSNotification notificationWithName:BT_DISCONNECTED object:self];
+        [[NSNotificationCenter defaultCenter] postNotification:newnotification];
+    }
 }
 
 - (void)_accessoryDidConnect:(NSNotification *)notification {
-    
+    deviceAlreadyDisconnected = NO;
     NSLog(@"Accessory connected");
+   /* if(connectToDevice)
+    {
+        _session = [self openSessionForProtocol:BT_PROTOCOL_STRING];
+        numberOfBytesReceivedInLastSec = 0;
+    }*/
     
 }
 
@@ -179,7 +269,7 @@ static BBBTManager *btManager = nil;
             [self readDataFunc];
             break;
         case NSStreamEventHasSpaceAvailable:
-
+            [self writeDataFunc];
             break;
         case NSStreamEventErrorOccurred:
             NSLog(@"NSStreamEventErrorOccurred");
@@ -205,14 +295,14 @@ static BBBTManager *btManager = nil;
         
         unsigned char * allBytes = (unsigned char *)[_readData mutableBytes];
         int startIndex = 0;
-        numberOfBytesReceivedInLastSec += [_readData length];
+        numberOfBytesReceivedInLastSec += bytesRead;
         
-        //find legal begining of first number
+        //find begining of frame
         for(int i=0;i<[_readData length]-1;i++)
         {
-            if(allBytes[i] == 0xFF && allBytes[i+1] < 0xFF)
+            if(allBytes[i]>= 0x80)
             {
-                startIndex = i+1;
+                startIndex = i;
                 break;
             }
             
@@ -223,64 +313,65 @@ static BBBTManager *btManager = nil;
         float finalFloat;
         int indexInData;
         NSMutableArray * arrayOfFloats = [[NSMutableArray alloc] init];
-        for(indexInData=startIndex;indexInData<[_readData length]-1;indexInData=indexInData)
+        for(indexInData=startIndex;indexInData<[_readData length];indexInData=indexInData)
         {
-            //if(allBytes[indexInData-1] == 0xFF && allBytes[indexInData-2] == 0xFF && allBytes[indexInData]!= 0xFF)
-            if(allBytes[indexInData-1] == 0xFF  && allBytes[indexInData]!= 0xFF)
+            if(allBytes[indexInData]>= 0x80)
             {
-                MSB = allBytes[indexInData];
-                MSB = MSB<<8;
-                LSB  = allBytes[indexInData+1];
-                finalIntMeasure = (int)(MSB|LSB);
-                if(finalIntMeasure!=257)
+                int numberOfBytesToEnd = [_readData length] - indexInData;
+                if(_confNumberOfChannels*2>numberOfBytesToEnd)
                 {
-                    finalIntMeasure = finalIntMeasure;
+                    unsigned char * lastTwoBytes = &(allBytes[[_readData length]-numberOfBytesToEnd]);
+                    [_readData replaceBytesInRange:NSMakeRange(0, numberOfBytesToEnd) withBytes:lastTwoBytes];
+                    [_readData setLength:numberOfBytesToEnd];
+                    break;
                 }
-                finalFloat = ((float)finalIntMeasure)* 0.00322265625f;//3.3/1024
-                [arrayOfFloats addObject:[NSNumber numberWithFloat:finalFloat]];
-                indexInData=indexInData+3;
+                allBytes[indexInData] = allBytes[indexInData] & 0x7F;
+                for(int by=0;by<_confNumberOfChannels;by++)
+                {
+                    MSB = allBytes[indexInData] & 0x7F;//take bits without flag
+                    MSB = MSB<<7;
+                    LSB  = allBytes[indexInData+1] & 0x7F;
+                    finalIntMeasure = (int)(MSB|LSB);
+                    finalFloat = ((float)finalIntMeasure)* 0.00322265625f;//3.3/1024
+                    [arrayOfFloats addObject:[NSNumber numberWithFloat:finalFloat]];
+                    indexInData=indexInData+2;
+                }
             }
             else
             {
+                //if not start of frame search it
                 indexInData++;
-                continue;
             }
-            
             
             //test code
             ///////////////////////////////////////////////////////////////////////////////////////////
-          /*     finalIntMeasure = (int)allBytes[indexInData];
+           /*    finalIntMeasure = (int)allBytes[indexInData];
              finalFloat = ((float)finalIntMeasure)* 0.00322265625f;//3.3/1024
              [arrayOfFloats addObject:[NSNumber numberWithFloat:finalFloat]];
              if(allBytes[indexInData+1] -1 == allBytes[indexInData])
              {
-             LSB = LSB;
+                LSB = LSB;
              }
              else
              {
-             if(allBytes[indexInData]!=0xFF)
-             {
-             LSB = LSB;
-             NSLog(@"%02x",allBytes[indexInData]);
-             NSLog(@"%02x",allBytes[indexInData+1]);
-             NSLog(@"--------");
+                 if(allBytes[indexInData]!=0xFF)
+                 {
+                     LSB = LSB;
+                     NSLog(@"%02x",allBytes[indexInData]);
+                     NSLog(@"%02x",allBytes[indexInData+1]);
+                     NSLog(@"--------");
+                 }
+                 else
+                 {
+                    LSB = LSB;
+                 }
              }
-             else
-             {
-             LSB = LSB;
-             }
-             }
-             indexInData++;*/
+             indexInData++;
             ///////////////////////////////////////////////////////////////////////////////////////////
-            
+            */
         }
         
-        //TODO: make it multy channel
-        //keep last two bytes in buffer in case we cut the frame
-        unsigned char * lastTwoBytes = &(allBytes[[_readData length]-2]);
-        [_readData replaceBytesInRange:NSMakeRange(0, 2) withBytes:lastTwoBytes];
-        [_readData setLength:2];
-        
+
         //transform from NSArray to array of floats
         float * dataToLoad = (float *)calloc([arrayOfFloats count], sizeof(float));
         for(int i=0;i<[arrayOfFloats count];i++)
@@ -290,7 +381,7 @@ static BBBTManager *btManager = nil;
         
         if(self.inputBlock!=nil)
         {
-            self.inputBlock(dataToLoad, [arrayOfFloats count], 1);//TODO: make it multy channel
+            self.inputBlock(dataToLoad, [arrayOfFloats count]/_confNumberOfChannels, _confNumberOfChannels);//TODO: make it multy channel
         }
         [arrayOfFloats removeAllObjects];
         [arrayOfFloats release];
@@ -298,25 +389,34 @@ static BBBTManager *btManager = nil;
     }
 }
 
--(void) closeBluetooth
+-(void) writeDataFunc
 {
-    [[_session inputStream] close];
-    [[_session inputStream] removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-    [[_session inputStream] setDelegate:nil];
-    [[_session outputStream] close];
-    [[_session outputStream] removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-    [[_session outputStream] setDelegate:nil];
-    
-    [_session release];
-    _session = nil;
-    
-    [_writeData release];
-    _writeData = nil;
-    [_readData release];
-    _readData = nil;
-    
-    
+    if(sendConfigData)
+    {
+        sendConfigData = NO;
+        int tempCounterNum = 16000000/_confSamplingRate;
+        NSString *yourString  = [NSString stringWithFormat:@"conf c:%d;s:%d;",_confNumberOfChannels,tempCounterNum];
+        
+        NSData *data = [yourString dataUsingEncoding:NSUTF8StringEncoding];
+
+        
+        
+        NSInteger bytesWritten = [[_session outputStream] write:[data bytes] maxLength:[data length]];
+        
+        if (bytesWritten == -1)
+        {
+            NSLog(@"BT config write error");
+            
+        }
+        else if (bytesWritten > 0)
+        {
+            bytesWritten =bytesWritten;
+        }
+    }
+
 }
+
+
 
 
 

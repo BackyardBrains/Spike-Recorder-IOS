@@ -11,6 +11,7 @@
 #import "BBSpike.h"
 #import "BBSpikeTrain.h"
 #import "BBChannel.h"
+#import "BBBTManager.h"
 #define HANDLE_RADIUS 20
 
 @interface MultichannelCindeGLView ()
@@ -722,7 +723,7 @@
     
     std::stringstream xStringStream;
     xStringStream.precision(1);
-    if (xScale >= 1000) {
+   /* if (xScale >= 1000) {
         xScale /= 1000.0;
         //xStringStream.precision(1);
         xStringStream << fixed << xScale << " s";
@@ -730,18 +731,18 @@
     else {
        // xStringStream.precision(2);
         xStringStream << fixed << xScale << " msec";
-    }
+    }*/
     
     //==================================================
     //Debug code for BT sample rate
-    /* float br = [[BBBTManager btManager] currentBaudRate];
+     float br = [[BBBTManager btManager] currentBaudRate];
      if (br >= 1000) {
      br /= 1000.0;
-     xStringStream << fixed << br << " KSps";
+     xStringStream << fixed << br << " KBps";
      }
      else {
-     xStringStream << fixed << br << " Sps";
-     }*/
+     xStringStream << fixed << br << " Bps";
+     }
     //==================================================
     
     

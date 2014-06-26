@@ -15,10 +15,12 @@
 #import "BBFile.h"
 #import "RecordingOverlayController.h"
 #import "MultichannelCindeGLView.h"
+#import "FPPopoverController.h"
+#import "BBChannelSelectionTableViewController.h"
 
-@interface ViewAndRecordViewController : CCGLTouchViewController <MultichannelGLViewDelegate>{
+@interface ViewAndRecordViewController : CCGLTouchViewController <MultichannelGLViewDelegate, FPPopoverControllerDelegate, BBSelectionTableDelegateProtocol>{
     MultichannelCindeGLView *glView;
-    
+     FPPopoverController * popover;
 }
 
 - (void)setGLView:(CCGLTouchView *)view;
@@ -37,5 +39,8 @@
 - (IBAction)startRecording:(id)sender;
 - (IBAction)btButtonPressed:(id)sender;
 
+//BT popover delegate function
+- (void)rowSelected:(NSInteger) rowIndex;
+-(NSMutableArray *) getAllRows;
 
 @end

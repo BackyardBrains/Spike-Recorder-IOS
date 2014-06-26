@@ -16,6 +16,10 @@
 		240D8066190E98F6009F9AEA /* CrossCorrViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 240D8064190E98F6009F9AEA /* CrossCorrViewController.m */; };
 		240D8067190E98F6009F9AEA /* CrossCorrViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 240D8065190E98F6009F9AEA /* CrossCorrViewController.xib */; };
 		244C6A3B1943742E0097F7D4 /* WavManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 244C6A3A1943742E0097F7D4 /* WavManager.mm */; };
+		244DA13E195C9B0B00BFAA8B /* inputicon.png in Resources */ = {isa = PBXBuildFile; fileRef = 244DA13C195C9B0B00BFAA8B /* inputicon.png */; };
+		244DA13F195C9B0B00BFAA8B /* inputicon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 244DA13D195C9B0B00BFAA8B /* inputicon@2x.png */; };
+		244DA142195C9DAF00BFAA8B /* bluetooth.png in Resources */ = {isa = PBXBuildFile; fileRef = 244DA140195C9DAF00BFAA8B /* bluetooth.png */; };
+		244DA143195C9DAF00BFAA8B /* bluetooth@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 244DA141195C9DAF00BFAA8B /* bluetooth@2x.png */; };
 		24513CE319545BCA007F240A /* FileNeuron.png in Resources */ = {isa = PBXBuildFile; fileRef = 24513CE119545BCA007F240A /* FileNeuron.png */; };
 		24513CE419545BCA007F240A /* FileNeuron@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 24513CE219545BCA007F240A /* FileNeuron@2x.png */; };
 		24513CE719545C50007F240A /* Record.png in Resources */ = {isa = PBXBuildFile; fileRef = 24513CE519545C50007F240A /* Record.png */; };
@@ -169,6 +173,10 @@
 		240D8065190E98F6009F9AEA /* CrossCorrViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CrossCorrViewController.xib; sourceTree = "<group>"; };
 		244C6A391943742E0097F7D4 /* WavManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WavManager.h; sourceTree = "<group>"; };
 		244C6A3A1943742E0097F7D4 /* WavManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WavManager.mm; sourceTree = "<group>"; };
+		244DA13C195C9B0B00BFAA8B /* inputicon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = inputicon.png; sourceTree = "<group>"; };
+		244DA13D195C9B0B00BFAA8B /* inputicon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "inputicon@2x.png"; sourceTree = "<group>"; };
+		244DA140195C9DAF00BFAA8B /* bluetooth.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bluetooth.png; sourceTree = "<group>"; };
+		244DA141195C9DAF00BFAA8B /* bluetooth@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bluetooth@2x.png"; sourceTree = "<group>"; };
 		24513CE119545BCA007F240A /* FileNeuron.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = FileNeuron.png; path = ../FileNeuron.png; sourceTree = "<group>"; };
 		24513CE219545BCA007F240A /* FileNeuron@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "FileNeuron@2x.png"; path = "../FileNeuron@2x.png"; sourceTree = "<group>"; };
 		24513CE519545C50007F240A /* Record.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Record.png; path = ../Record.png; sourceTree = "<group>"; };
@@ -795,6 +803,10 @@
 		FAA43D2715AB5F9C0024E445 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				244DA140195C9DAF00BFAA8B /* bluetooth.png */,
+				244DA141195C9DAF00BFAA8B /* bluetooth@2x.png */,
+				244DA13C195C9B0B00BFAA8B /* inputicon.png */,
+				244DA13D195C9B0B00BFAA8B /* inputicon@2x.png */,
 				24513D0119545F5E007F240A /* WaveImage.png */,
 				24513D0219545F5E007F240A /* WaveImage@2x.png */,
 				24513CFD19545F3C007F240A /* ThresholdImage.png */,
@@ -1044,18 +1056,22 @@
 				FAA27C1E15AD01CA00DCC60B /* ThresholdViewController.xib in Resources */,
 				FA9A665215BA3DC100CF1697 /* MainWindow-iPad.xib in Resources */,
 				FA9A665B15BB19B000CF1697 /* SettingsDefaults.plist in Resources */,
+				244DA143195C9DAF00BFAA8B /* bluetooth@2x.png in Resources */,
 				240D8067190E98F6009F9AEA /* CrossCorrViewController.xib in Resources */,
 				FA14EC5C15D04AD700B0FB71 /* Settings.bundle in Resources */,
+				244DA142195C9DAF00BFAA8B /* bluetooth.png in Resources */,
 				24513CEE19545CE9007F240A /* Pause@2x.png in Resources */,
 				24513CF819545E5A007F240A /* Stimulate@2x.png in Resources */,
 				24513D0419545F5E007F240A /* WaveImage@2x.png in Resources */,
 				FA14EC5F15D05DD800B0FB71 /* StimulationParameterView.xib in Resources */,
 				FA49A7B015D9C352002A78EC /* BBFileViewControllerTBV.plist in Resources */,
 				24513CF019545CE9007F240A /* Play@2x.png in Resources */,
+				244DA13E195C9B0B00BFAA8B /* inputicon.png in Resources */,
 				FA2DAF7D16C85D7600EFF9D6 /* Icon-Small-50.png in Resources */,
 				247ED9BC193DEB8800871BAC /* release_notes.md in Resources */,
 				FA2DAF7E16C85D7600EFF9D6 /* Icon-Small-50@2x.png in Resources */,
 				FA2DAF7F16C85D7600EFF9D6 /* Icon-Small.png in Resources */,
+				244DA13F195C9B0B00BFAA8B /* inputicon@2x.png in Resources */,
 				FA2DAF8016C85D7600EFF9D6 /* Icon-Small@2x.png in Resources */,
 				2469893A19098C1900F5383F /* again@2x.png in Resources */,
 				24513CFC19545E91007F240A /* StimSettings@2x.png in Resources */,

@@ -8,6 +8,10 @@
 
 #import <Foundation/Foundation.h>
 #import <ExternalAccessory/ExternalAccessory.h>
+#define NO_BT_CONNECTION @"noBtConnection"
+#define BT_DISCONNECTED @"btDisconnected"
+#define FOUND_BT_CONNECTION @"foundBtConnection"
+
 typedef void (^BBBTInputBlock)(float *data, UInt32 numFrames, UInt32 numChannels);
 
 @interface BBBTManager : NSObject  <EAAccessoryDelegate, NSStreamDelegate>
@@ -20,5 +24,6 @@ typedef void (^BBBTInputBlock)(float *data, UInt32 numFrames, UInt32 numChannels
 - (float) currentBaudRate;
 
 -(void) startBluetooth;
-
+-(void) stopCurrentBluetoothConnection;
+-(void) configBluetoothWithChannels:(int)inNumOfChannels andSampleRate:(int) inSampleRate;
 @end

@@ -9,7 +9,7 @@
 #import "SpikesAnalysisViewController.h"
 #import "MBProgressHUD.h"
 #import "BBChannel.h"
-#import "BBChannelSelectionTableViewController.h"
+
 
 @interface SpikesAnalysisViewController (){
  dispatch_source_t callbackTimer;
@@ -190,7 +190,7 @@
     [[BBAnalysisManager bbAnalysisManager] moveToNextSpikeTrain];
 }
 
-#pragma mark - Selection of channels
+#pragma mark - Selection of channels Popover
 //====================================================================================
 
 - (IBAction)channelClick:(id)sender {
@@ -199,6 +199,7 @@
     
     //the controller we want to present as a popover
     BBChannelSelectionTableViewController *controller = [[BBChannelSelectionTableViewController alloc] initWithStyle:UITableViewStylePlain];
+    
     controller.delegate = self;
     popover = [[FPPopoverController alloc] initWithViewController:controller];
     popover.border = NO;
@@ -223,7 +224,7 @@
 }
 
 
--(NSMutableArray *) getAllChannels
+-(NSMutableArray *) getAllRows
 {
     NSMutableArray * allChannelsLabels = [[[NSMutableArray alloc] init] autorelease];
     for(int i=0;i<[[bbfile allChannels] count];i++)
@@ -234,9 +235,9 @@
 }
 
 
-- (void)channelSelected:(NSInteger) channelIndex
+- (void)rowSelected:(NSInteger) rowIndex
 {
-    [[BBAnalysisManager bbAnalysisManager] setCurrentChannel:channelIndex];
+    [[BBAnalysisManager bbAnalysisManager] setCurrentChannel:rowIndex];
     [self setupButtons];
     [glView channelChanged];
     [popover dismissPopoverAnimated:YES];

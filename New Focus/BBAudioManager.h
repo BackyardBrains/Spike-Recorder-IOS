@@ -117,7 +117,8 @@ typedef enum BBStimulationType
 -(float) getTimeForSpikes;
 - (void)saveSettingsToUserDefaults;
 -(void) clearWaveform;
--(void) switchToBluetooth;
+-(void) testBluetoothConnection;
+-(void) switchToBluetoothWithNumOfChannels:(int) numOfChannelsBT andSampleRate:(int) inSampleRate;
 -(void) closeBluetooth;
 
 -(void) selectChannel:(int) selectedChannel;

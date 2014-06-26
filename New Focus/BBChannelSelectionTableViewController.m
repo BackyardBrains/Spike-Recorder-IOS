@@ -25,7 +25,7 @@
     [super viewDidLoad];
     
     self.title = @"Popover Title";
-    allItems = [[self.delegate getAllChannels] retain];
+    allItems = [[self.delegate getAllRows] retain];
 }
 
 
@@ -61,7 +61,7 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    [self.delegate channelSelected:indexPath.row];
+    [self.delegate rowSelected:indexPath.row];
     
 }
 

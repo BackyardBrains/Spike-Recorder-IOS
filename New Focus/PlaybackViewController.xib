@@ -18,7 +18,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" continuous="NO" id="4">
-                    <rect key="frame" x="51.000001221240964" y="392" width="251" height="29"/>
+                    <rect key="frame" x="51.000000601571379" y="392" width="251" height="29"/>
                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMinY="YES"/>
                     <connections>
                         <action selector="sliderValueChanged:" destination="-1" eventType="valueChanged" id="6"/>
