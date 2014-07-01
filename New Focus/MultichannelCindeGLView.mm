@@ -115,7 +115,8 @@
 
     
     //load limits for graph and init starting position
-    [self loadSettings:FALSE];
+   
+    [self loadSettings:mode==MultichannelGLViewModeThresholding];
     
     
     //data buffer that is used to transfer data (modify stride) to displayVectors
@@ -298,10 +299,6 @@
         else {
             numPoints = numSamplesVisible+1;//visible part
             offset = numSamplesMax - numPoints-1;//nonvisible part
-            
-            if (self.mode == MultichannelGLViewModeThresholding) {
-                offset -= ((float)numSamplesMin)/2.0f;
-            }
         }
 
         // Aight, now that we've got our ranges correct, let's ask for the signal.
@@ -428,13 +425,18 @@
 
         gl::drawSolidEllipse( Vec2f(centerOfCircleX, threshval), radiusXAxis, radiusYAxis, 100 );
         gl::drawSolidTriangle(
-                              Vec2f(centerOfCircleX+0.35*radiusXAxis, threshval+radiusYAxis*0.97),
-                              Vec2f(centerOfCircleX+1.6*radiusXAxis, threshval),
-                              Vec2f(centerOfCircleX+0.35*radiusXAxis, threshval-radiusYAxis*0.97)
+                              Vec2f(centerOfCircleX-0.35*radiusXAxis, threshval+radiusYAxis*0.97),
+                              Vec2f(centerOfCircleX-1.6*radiusXAxis, threshval),
+                              Vec2f(centerOfCircleX-0.35*radiusXAxis, threshval-radiusYAxis*0.97)
                               );
         
         glLineWidth(2.0f);
-        gl::drawLine(Vec2f(centerOfCircleX, threshval), Vec2f(0.0f, threshval));
+        float linePart = maxTimeSpan/40.0f;
+        for(float pos=-maxTimeSpan;pos<-linePart; pos+=linePart+linePart)
+        {
+            gl::drawLine(Vec2f(pos, threshval), Vec2f(pos+linePart, threshval));
+        }
+        //gl::drawLine(Vec2f(centerOfCircleX, threshval), Vec2f(-maxTimeSpan, threshval));
         glLineWidth(1.0f);
     }
 }
@@ -893,9 +895,12 @@
         if (mode == MultichannelGLViewModeThresholding) {
             // slightly tigher bounds on the thresholding view (don't need to see whole second and a half in this view)
             // TODO: this is a hack to get thresholding to have a separate number of seconds visible. I weep for how awful this is. I am so sorry.
-            float thisNumSamplesMax= 1.5*samplingRate;
-            numSamplesVisible = (numSamplesVisible < thisNumSamplesMax - 0.25*samplingRate) ? numSamplesVisible : (thisNumSamplesMax - 0.25*samplingRate);
-            numSamplesVisible = (numSamplesVisible > numSamplesMin) ? numSamplesVisible : numSamplesMin;
+            float thisNumSamplesMax= 65536;
+            if(numSamplesVisible >= thisNumSamplesMax)
+            {
+                numSamplesVisible = oldNumSamplesVisible;
+                touchDistanceDelta.x = 1.0f;
+            }
         }
         
         
@@ -976,7 +981,7 @@
                 if((glWorldTouchPos.y - (yOffsets[selectedChannel]+currentThreshold))*(glWorldTouchPos.y - (yOffsets[selectedChannel]+currentThreshold)) < intersectionDistanceY && (glWorldTouchPos.x * glWorldTouchPos.x) <intersectionDistanceX)
                 {
                     changingThreshold = true;
-                    [dataSourceDelegate setThreshold:glWorldTouchPos.y/zoom];
+                    [dataSourceDelegate setThreshold:(glWorldTouchPos.y-yOffsets[selectedChannel])/zoom];
                 }
             }
             

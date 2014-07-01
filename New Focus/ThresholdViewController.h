@@ -19,4 +19,12 @@
 - (void)setThreshold:(float)newThreshold;
 - (float) fetchDataToDisplay:(float *)data numFrames:(UInt32)numFrames whichChannel:(UInt32)whichChannel;
 
+-(BOOL) shouldEnableSelection;
+-(void) updateSelection:(float) newSelectionTime;
+-(float) selectionStartTime;
+-(float) selectionEndTime;
+-(void) endSelection;
+-(BOOL) selecting;
+-(float) rmsOfSelection;
+
 @end

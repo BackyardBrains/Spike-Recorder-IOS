@@ -44,7 +44,7 @@ class DSPThreshold {
         DSPThreshold(RingBuffer *externalRingBuffer, UInt32 numSamplesInHistory, UInt32 numTriggersInHistory, UInt32 numberOfChannels);
         ~DSPThreshold();
         void ProcessNewAudio(float *incomingAudio, UInt32 numFrames);
-		
+        void SetNumberOfChannels(UInt32 newNumOfChannels);
     
         // Puts the trigger point in the center of outData (it's best to display things that way
         void GetCenteredTriggeredData(float *outData, UInt32 numFrames, UInt32 stride, UInt32 whichChannel);

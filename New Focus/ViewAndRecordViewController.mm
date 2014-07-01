@@ -39,7 +39,7 @@
 
     stimulateButton.hidden = !enabled;
     stimulatePreferenceButton.hidden = !enabled;
-    
+    [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
     [glView startAnimation];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(noBTConnection) name:NO_BT_CONNECTION object:nil];
@@ -62,10 +62,10 @@
     [glView stopAnimation];
     
     
-    if([[BBAudioManager bbAudioManager] btOn])
+   /* if([[BBAudioManager bbAudioManager] btOn])
     {
         [self btButtonPressed:nil];
-    }
+    }*/
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NO_BT_CONNECTION object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:FOUND_BT_CONNECTION object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:BT_DISCONNECTED object:nil];

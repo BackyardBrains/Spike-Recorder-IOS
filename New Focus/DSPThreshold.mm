@@ -40,6 +40,25 @@ DSPThreshold :: DSPThreshold (RingBuffer *externalRingBuffer, UInt32 numSamplesI
 }
 
 
+void DSPThreshold:: SetNumberOfChannels(UInt32 newNumOfChannels)
+{
+    if(triggeredSegmentHistory)
+    {
+        free(triggeredSegmentHistory);
+    }
+    _numberOfChannels = newNumOfChannels;
+    _selectedChannel = 0;
+    triggeredSegmentHistory = (TriggeredSegmentHistory *)calloc(newNumOfChannels, sizeof(TriggeredSegmentHistory));
+    for(int i=0;i<newNumOfChannels;i++)
+    {
+        triggeredSegmentHistory[i].sizeOfMovingAverage = (mNumTriggersInHistory <= kNumSegmentsInTriggerAverage) ? mNumTriggersInHistory : kNumSegmentsInTriggerAverage;
+        triggeredSegmentHistory[i].movingAverageIncrement = 1;
+        triggeredSegmentHistory[i].currentSegment = 0; // let's just be explicit.
+    }
+    ClearHistory();
+}
+
+
 int DSPThreshold:: FindThresholdCrossing(const float *data, UInt32 inNumberFrames,UInt32 selectedChannel, UInt32 stride)
 {
 	// If we're looking for an upward threshold crossing
@@ -301,7 +320,7 @@ void DSPThreshold :: GetCenteredTriggeredData(float *outData, UInt32 numFrames, 
         
         UInt32 offset = (kNumPointsInTriggerBuffer - numFrames)/2;
         float normfactor = 1.0 / (float)th->movingAverageIncrement;
-        vDSP_vsmul(&triggeredSegmentHistory[whichChannel].averageSegment[offset], 1, &normfactor, outData, stride, numFrames);
+        vDSP_vsmul(&(triggeredSegmentHistory[whichChannel].averageSegment[offset]), 1, &normfactor, outData, stride, numFrames);
         
         if (mLastFreshSample > (kNumPointsInTriggerBuffer + numFrames)/2)
             isTriggered = NO;

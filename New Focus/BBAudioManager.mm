@@ -335,11 +335,13 @@ static BBAudioManager *bbAudioManager = nil;
     
     numPointsToSavePerThreshold = newNumPointsToSavePerThreshold;
     
-    if (!dspThresholder) {
-        dspThresholder = new DSPThreshold(ringBuffer, numPointsToSavePerThreshold, 50,_sourceNumberOfChannels);
-        dspThresholder->SetThreshold(_threshold);
-        dspThresholder->SetThreshold(_selectedChannel);
+    if (dspThresholder) {
+        dspThresholder->SetNumberOfChannels(_sourceNumberOfChannels);
     }
+    dspThresholder = new DSPThreshold(ringBuffer, numPointsToSavePerThreshold, 50,_sourceNumberOfChannels);
+    dspThresholder->SetThreshold(_threshold);
+    dspThresholder->SetSelectedChannel(_selectedChannel);
+    
     
     if(btOn)
     {
@@ -1065,6 +1067,10 @@ static BBAudioManager *bbAudioManager = nil;
 -(void) selectChannel:(int) selectedChannel
 {
     _selectedChannel = selectedChannel;
+    if(thresholding)
+    {
+        dspThresholder->SetSelectedChannel(_selectedChannel);
+    }
 }
 
 //private. Starts selection functionality
