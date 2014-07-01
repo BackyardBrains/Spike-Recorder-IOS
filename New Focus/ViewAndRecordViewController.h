@@ -23,7 +23,7 @@
      FPPopoverController * popover;
 }
 
-- (void)setGLView:(CCGLTouchView *)view;
+- (void)setGLView:(MultichannelCindeGLView *)view;
 
 
 @property (retain, nonatomic) IBOutlet UISlider *slider;

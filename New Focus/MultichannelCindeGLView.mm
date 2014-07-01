@@ -296,37 +296,21 @@
         // If we haven't set off any of the alarms above,
         // then we're asking for a normal range of points.
         else {
-            numPoints = numSamplesVisible;//visible part
-            offset = numSamplesMax - numPoints;//nonvisible part
+            numPoints = numSamplesVisible+1;//visible part
+            offset = numSamplesMax - numPoints-1;//nonvisible part
             
             if (self.mode == MultichannelGLViewModeThresholding) {
-                offset -= (numSamplesMin)/2.0f;
+                offset -= ((float)numSamplesMin)/2.0f;
             }
         }
 
         // Aight, now that we've got our ranges correct, let's ask for the signal.
         //Only fetch visible part (numPoints samples) and put it after offset.
-        //TODO: timeForSincDrawing is used to sinc displaying of waveform and spike marks
-       
-        //================ debug region ======
-//        if(debugMultichannelOnSingleChannel)
-//        {
-//            
-//            [dataSourceDelegate fetchDataToDisplay:tempDataBuffer numFrames:numPoints whichChannel:0];
-//        }
-//        else
-//        {
-        //================ end debug region ======
+
     for(int channelIndex = 0; channelIndex<numberOfChannels; channelIndex++)
     {
        
         timeForSincDrawing =  [dataSourceDelegate fetchDataToDisplay:tempDataBuffer numFrames:numPoints whichChannel:channelIndex];
-        //================ debug region ======
-//        }
-        //================ end debug region ======
-       
-        //now transfer y axis data from bufer to display vector with stride equ. to 2
-        //multiply Y data with zoom level
         
         float zero = yOffsets[channelIndex];
         float zoom = maxVoltsSpan/ numVoltsVisible[channelIndex];
@@ -341,9 +325,6 @@
                     );
         
     }
-        //NSLog(@"v: %f %f", displayVectors[channelIndex].getPoints()[0].x, displayVectors[channelIndex].getPoints()[offset].x);
-        //timeForSincDrawing =  [audioManager fetchAudio:(float *)&(displayVector.getPoints()[offset])+1 numFrames:numPoints whichChannel:0 stride:2];
-   // }
 }
 
 
@@ -404,6 +385,15 @@
             
         }
         
+        
+        if([dataSourceDelegate respondsToSelector:@selector(thresholding)])
+        {
+            // Draw a threshold line, if we're thresholding
+            [self drawThreshold];
+        }
+        
+
+        
         if(weAreDrawingSelection)
         {
             [self drawTimeAndRMS];
@@ -416,8 +406,38 @@
             [self drawScaleText];
         }
     }
+    glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
 }
 
+
+-(void) drawThreshold
+{
+    if ([dataSourceDelegate thresholding]) {
+        glColor4f(1.0, 0.0, 0.0, 1.0);
+        glLineWidth(1.0f);
+        float zoom = maxVoltsSpan/ numVoltsVisible[selectedChannel];
+        // Draw a line from left to right at the voltage threshold value.
+        float threshval = yOffsets[selectedChannel]+[dataSourceDelegate threshold]*zoom;
+
+        float centerOfCircleX = -20*scaleXY.x;
+        
+        float radiusXAxis = HANDLE_RADIUS*scaleXY.x;
+        float radiusYAxis = HANDLE_RADIUS*scaleXY.y;
+        
+        //draw all handles
+
+        gl::drawSolidEllipse( Vec2f(centerOfCircleX, threshval), radiusXAxis, radiusYAxis, 100 );
+        gl::drawSolidTriangle(
+                              Vec2f(centerOfCircleX+0.35*radiusXAxis, threshval+radiusYAxis*0.97),
+                              Vec2f(centerOfCircleX+1.6*radiusXAxis, threshval),
+                              Vec2f(centerOfCircleX+0.35*radiusXAxis, threshval-radiusYAxis*0.97)
+                              );
+        
+        glLineWidth(2.0f);
+        gl::drawLine(Vec2f(centerOfCircleX, threshval), Vec2f(0.0f, threshval));
+        glLineWidth(1.0f);
+    }
+}
 
 -(void) drawTimeAndRMS
 {
@@ -867,6 +887,18 @@
             numVoltsVisible[selectedChannel] = oldNumVoltsVisible;
         }
         
+        // If we are thresholding,
+        // we will not allow the springy x-axis effect to occur
+        // (why? we always want the x-axis to be centered on the threshold value)
+        if (mode == MultichannelGLViewModeThresholding) {
+            // slightly tigher bounds on the thresholding view (don't need to see whole second and a half in this view)
+            // TODO: this is a hack to get thresholding to have a separate number of seconds visible. I weep for how awful this is. I am so sorry.
+            float thisNumSamplesMax= 1.5*samplingRate;
+            numSamplesVisible = (numSamplesVisible < thisNumSamplesMax - 0.25*samplingRate) ? numSamplesVisible : (thisNumSamplesMax - 0.25*samplingRate);
+            numSamplesVisible = (numSamplesVisible > numSamplesMin) ? numSamplesVisible : numSamplesMin;
+        }
+        
+        
        
         //Change x axis values so that only numSamplesVisible samples are visible for selected channel
         float zero = 0.0f;
@@ -923,18 +955,36 @@
         
         }
         
-        //if we are not moving channels check if need to make interval selection
+        //if we are not moving channels check if need to make interval selection or threshold
         if(!weAreHoldingHandle)
         {
-            if ([dataSourceDelegate respondsToSelector:@selector(shouldEnableSelection)]) {
+            
+            
+            BOOL changingThreshold;
+            changingThreshold = false;
+            
+            //thresholding
+            if (self.mode == MultichannelGLViewModeThresholding && ![dataSourceDelegate selecting]) {
+
+                float zoom = maxVoltsSpan/ numVoltsVisible[selectedChannel];
+                float currentThreshold = [dataSourceDelegate threshold]*zoom;
+
+                float intersectionDistanceX = 8000*scaleXY.x*scaleXY.x;
+                float intersectionDistanceY = 8000*scaleXY.y*scaleXY.y;
+                
+                //check first if user grabbed selected channel
+                if((glWorldTouchPos.y - (yOffsets[selectedChannel]+currentThreshold))*(glWorldTouchPos.y - (yOffsets[selectedChannel]+currentThreshold)) < intersectionDistanceY && (glWorldTouchPos.x * glWorldTouchPos.x) <intersectionDistanceX)
+                {
+                    changingThreshold = true;
+                    [dataSourceDelegate setThreshold:glWorldTouchPos.y/zoom];
+                }
+            }
+            
+            if ([dataSourceDelegate respondsToSelector:@selector(shouldEnableSelection)] & !changingThreshold) {
                 if([dataSourceDelegate shouldEnableSelection])
                 {
-                    Vec2f touchPos = touches[0].getPos();
-                    
-                    // Convert into GL world time coordinate
-                    Vec2f worldTouchPos = [self screenToWorld:touchPos];
                     float virtualVisibleTimeSpan = numSamplesVisible * 1.0f/samplingRate;
-                    float timePos = (worldTouchPos.x/(-maxTimeSpan))*virtualVisibleTimeSpan;
+                    float timePos = (glWorldTouchPos.x/(-maxTimeSpan))*virtualVisibleTimeSpan;
                     
                     [dataSourceDelegate updateSelection:timePos];
                 

@@ -33,13 +33,16 @@
     
     
     // our CCGLTouchView being added as a subview
-    glView = [[MyCinderGLView alloc] initWithFrame:self.view.frame];
+    glView = [[MultichannelCindeGLView alloc] initWithFrame:self.view.frame];
     
+    [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels ] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
+    glView.mode = MultichannelGLViewModeThresholding;
 	[self.view addSubview:glView];
     [self.view sendSubviewToBack:glView];
 	
     // set our view controller's prop that will hold a pointer to our newly created CCGLTouchView
     [self setGLView:glView];
+
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate:) name:UIApplicationWillTerminateNotification object:nil];
 
@@ -54,7 +57,7 @@
 }
 
 
-- (void)setGLView:(MyCinderGLView *)view
+- (void)setGLView:(MultichannelCindeGLView *)view
 {
     glView = view;
     callbackTimer = nil;
@@ -76,6 +79,33 @@
     return YES;
 }
 
+
+- (float) fetchDataToDisplay:(float *)data numFrames:(UInt32)numFrames whichChannel:(UInt32)whichChannel
+{
+    return [[BBAudioManager bbAudioManager] fetchAudio:data numFrames:numFrames whichChannel:whichChannel stride:1];
+}
+
+
+-(BOOL) thresholding
+{
+    return [[BBAudioManager bbAudioManager] thresholding];
+}
+
+-(float) threshold
+{
+    return [[BBAudioManager bbAudioManager] threshold];
+}
+
+
+- (void)setThreshold:(float)newThreshold
+{
+    [[BBAudioManager bbAudioManager] setThreshold:newThreshold];
+}
+
+-(void) selectChannel:(int) selectedChannel
+{
+    [[BBAudioManager bbAudioManager] selectChannel:selectedChannel];
+}
 
 
 - (void)dealloc {

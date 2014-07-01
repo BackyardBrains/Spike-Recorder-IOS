@@ -60,6 +60,12 @@
     NSLog(@"Stopping regular view");
     [glView saveSettings:FALSE]; // save non-threshold settings
     [glView stopAnimation];
+    
+    
+    if([[BBAudioManager bbAudioManager] btOn])
+    {
+        [self btButtonPressed:nil];
+    }
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NO_BT_CONNECTION object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:FOUND_BT_CONNECTION object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:BT_DISCONNECTED object:nil];
@@ -76,7 +82,7 @@
 	//[aView release];
     glView = [[MultichannelCindeGLView alloc] initWithFrame:self.view.frame];
     
-    [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] numberOfChannels] samplingRate:[[BBAudioManager bbAudioManager] samplingRate] andDataSource:self];
+    [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels ] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
     glView.mode = MultichannelGLViewModeView;
 	[self.view addSubview:glView];
     [self.view sendSubviewToBack:glView];
@@ -154,9 +160,8 @@
     BBAudioManager *bbAudioManager = [BBAudioManager bbAudioManager];
     if (bbAudioManager.recording == false) {
         
-//TODO: Uncomment this on real multichannel
         //check if we have non-standard requirements for format and make custom wav
-        if([bbAudioManager sourceNumberOfChannels]>2 || [bbAudioManager samplingRate]!=44100.0f)
+        if([bbAudioManager sourceNumberOfChannels]>2 || [bbAudioManager sourceSamplingRate]!=44100.0f)
         {
             aFile = [[BBFile alloc] initWav];
         }
@@ -176,9 +181,44 @@
 
 }
 
+- (IBAction)stopRecording:(id)sender {
+    
+    if (_timer) {
+        dispatch_source_cancel(_timer);
+        // Remove this if you are on a Deployment Target of iOS6 or OSX 10.8 and above
+        dispatch_release(_timer);
+        _timer = nil;
+    }
+	float offset = self.stopButton.frame.size.height;
+	CGRect stopButtonRect = CGRectMake(self.stopButton.frame.origin.x, -offset, self.stopButton.frame.size.width, self.stopButton.frame.size.height);
+	[UIView beginAnimations:nil context:NULL];
+	[UIView setAnimationDuration:.25];
+	[UIView setAnimationCurve:UIViewAnimationCurveEaseIn];
+	[self.stopButton setFrame:stopButtonRect];
+	[UIView commitAnimations];
+    
+    BBAudioManager *bbAudioManager = [BBAudioManager bbAudioManager];
+    aFile.filelength = bbAudioManager.fileDuration;
+    [bbAudioManager stopRecording];
+    [aFile save];
+    [aFile release];
+}
+
+- (void)timerTick{
+    
+    
+}
+
+
 #pragma mark - BT stuff
 
 - (IBAction)btButtonPressed:(id)sender {
+    
+    if([[BBAudioManager bbAudioManager] recording])
+    {
+        [self stopRecording:nil];
+    }
+    
     
     if([[BBAudioManager bbAudioManager] btOn])
     {
@@ -218,7 +258,7 @@
     popover.tint = FPPopoverWhiteTint;
     popover.border = NO;
     popover.arrowDirection = FPPopoverNoArrow;
-    
+    popover.title = nil;
     
     if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
     {
@@ -336,34 +376,6 @@
 
 
 #pragma mark - Actions
-
-- (IBAction)stopRecording:(id)sender {
-    
-    if (_timer) {
-        dispatch_source_cancel(_timer);
-        // Remove this if you are on a Deployment Target of iOS6 or OSX 10.8 and above
-        dispatch_release(_timer);
-        _timer = nil;
-    }
-	float offset = self.stopButton.frame.size.height;
-	CGRect stopButtonRect = CGRectMake(self.stopButton.frame.origin.x, -offset, self.stopButton.frame.size.width, self.stopButton.frame.size.height);
-	[UIView beginAnimations:nil context:NULL];
-	[UIView setAnimationDuration:.25];
-	[UIView setAnimationCurve:UIViewAnimationCurveEaseIn];
-	[self.stopButton setFrame:stopButtonRect];
-	[UIView commitAnimations];
-    
-    BBAudioManager *bbAudioManager = [BBAudioManager bbAudioManager];
-    aFile.filelength = bbAudioManager.fileDuration;
-    [bbAudioManager stopRecording];
-    [aFile save];
-    [aFile release];
-}
-
-- (void)timerTick{
-    
-    
-}
 
 
 - (IBAction)stimulateButtonPressed:(id)sender {

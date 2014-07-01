@@ -78,4 +78,9 @@ typedef enum {
 -(void) endSelection;
 -(BOOL) selecting;
 -(float) rmsOfSelection;
+
+-(BOOL) thresholding;
+-(float) threshold;
+- (void)setThreshold:(float)newThreshold;
+
 @end

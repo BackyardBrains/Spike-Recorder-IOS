@@ -69,6 +69,16 @@
                         <action selector="stimulatePrefButtonPressed:" destination="-1" eventType="touchUpInside" id="26"/>
                     </connections>
                 </button>
+                <button opaque="NO" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="q8i-Hd-N5S">
+                    <rect key="frame" x="45" y="15" width="50" height="42"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <state key="normal" image="bluetooth.png">
+                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <connections>
+                        <action selector="btButtonPressed:" destination="-1" eventType="touchUpInside" id="QAi-eC-EAm"/>
+                    </connections>
+                </button>
                 <button opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" id="29">
                     <rect key="frame" x="0.0" y="-65" width="320" height="64"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
@@ -83,16 +93,6 @@
                     </state>
                     <connections>
                         <action selector="stopRecording:" destination="-1" eventType="touchUpInside" id="32"/>
-                    </connections>
-                </button>
-                <button opaque="NO" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="q8i-Hd-N5S">
-                    <rect key="frame" x="52" y="22" width="25" height="25"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <state key="normal" image="bluetooth.png">
-                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                    </state>
-                    <connections>
-                        <action selector="btButtonPressed:" destination="-1" eventType="touchUpInside" id="QAi-eC-EAm"/>
                     </connections>
                 </button>
             </subviews>
