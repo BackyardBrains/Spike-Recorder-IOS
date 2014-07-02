@@ -371,12 +371,22 @@ static BBAudioManager *bbAudioManager = nil;
         return;
     
     thresholding = false;
-    audioManager.inputBlock = nil;
-    // Replace the input block with the old input block, where we just save an in-memory copy of the audio.
-    //[audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
-    //    ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
-    //}];
-    
+    if(btOn)
+    {
+        [[BBBTManager btManager] setInputBlock:nil];
+        [[BBBTManager btManager] setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
+         {
+             ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
+         }];
+    }
+    else
+    {
+        audioManager.inputBlock = nil;
+        // Replace the input block with the old input block, where we just save an in-memory copy of the audio.
+        [audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
+            ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
+        }];
+    }
 //    delete dspThresholder;
 }
 
@@ -1019,13 +1029,13 @@ static BBAudioManager *bbAudioManager = nil;
     //selection times are negative so we need oposite logic
     if(_selectionEndTime> _selectionStartTime)
     {
-        startSample = _selectionStartTime * [self samplingRate];
-        endSample = _selectionEndTime * [self samplingRate];
+        startSample = _selectionStartTime * [self sourceSamplingRate];
+        endSample = _selectionEndTime * [self sourceSamplingRate];
     }
     else
     {
-        startSample = _selectionEndTime * [self samplingRate];
-        endSample = _selectionStartTime * [self samplingRate];
+        startSample = _selectionEndTime * [self sourceSamplingRate];
+        endSample = _selectionStartTime * [self sourceSamplingRate];
     }
     
     

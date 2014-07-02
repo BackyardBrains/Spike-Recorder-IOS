@@ -14,6 +14,8 @@
 #import "BBBTManager.h"
 #define HANDLE_RADIUS 20
 
+#define MAX_THRESHOLD_VISIBLE_TIME 1.5
+
 @interface MultichannelCindeGLView ()
 {
    
@@ -87,7 +89,7 @@
   //      newNumberOfChannels = 3;
   //  }
     
-    dataSourceDelegate = newDataSource;
+    
     samplingRate = newSamplingRate;
     numberOfChannels = newNumberOfChannels;
     
@@ -96,10 +98,7 @@
         multichannel = YES;
     }
     
-    selectedChannel = 0;
-    if ([dataSourceDelegate respondsToSelector:@selector(selectChannel:)]) {
-        [dataSourceDelegate selectChannel:selectedChannel];
-    }
+    
     // Setup display vectors. Every PolyLine2f is one waveform
     if(displayVectors!=nil)
     {
@@ -150,12 +149,24 @@
         displayVectors[channelIndex].setClosed(false);
         //make some vertical space between channels
         
-        yOffsets[channelIndex] = -usableYAxisSpan*0.4 + (channelIndex+1)*(usableYAxisSpan/((float)numberOfChannels))- 0.5*(usableYAxisSpan/((float)numberOfChannels));
-        
-    }			
+        if(numberOfChannels>1)
+        {
+            yOffsets[channelIndex] = -usableYAxisSpan*0.4 + (channelIndex+1)*(usableYAxisSpan/((float)numberOfChannels))- 0.5*(usableYAxisSpan/((float)numberOfChannels));
+        }
+        else
+        {
+            yOffsets[channelIndex] = 0;
+        }
+    }
 
     
-    
+    dataSourceDelegate = newDataSource;
+    selectedChannel = 0;
+    if ([dataSourceDelegate respondsToSelector:@selector(selectChannel:)]) {
+        [dataSourceDelegate selectChannel:selectedChannel];
+    }
+
+    NSLog(@"End setup number of channels");
     [self startAnimation];
 }
 
@@ -172,6 +183,10 @@
         numSamplesMax = [[defaults valueForKey:@"numSamplesMax"] floatValue];
         numSamplesMin = [[defaults valueForKey:@"numSamplesMin"] floatValue];
         numSamplesVisible = [[defaults valueForKey:@"numSamplesVisibleThreshold"] floatValue];
+        if(numSamplesVisible>MAX_THRESHOLD_VISIBLE_TIME*samplingRate)
+        {
+            numSamplesVisible = MAX_THRESHOLD_VISIBLE_TIME*samplingRate;
+        }
         numVoltsMin = [[defaults valueForKey:@"numVoltsMinThreshold"] floatValue];
         numVoltsMax = [[defaults valueForKey:@"numVoltsMaxThreshold"] floatValue];
        
@@ -242,13 +257,13 @@
         // See if we're asking for TOO MANY points
         int numPoints, offset;
         if (numSamplesVisible > numSamplesMax) {
-            numPoints = numSamplesMax;
+            numPoints = numSamplesMax-1;
             offset = 0;
             
             if ([self getActiveTouches].size() != 2)
             {
                 float oldValue = numSamplesVisible;
-                numSamplesVisible += 0.6 * (numSamplesMax - numSamplesVisible);
+                numSamplesVisible += 0.6 * (numSamplesMax-1 - numSamplesVisible);
                 
                 float zero = 0.0f;
                 float zoom = oldValue/numSamplesVisible;
@@ -299,8 +314,18 @@
         else {
             numPoints = numSamplesVisible+1;//visible part
             offset = numSamplesMax - numPoints-1;//nonvisible part
+            if(offset<0)
+            {
+                offset = 0;
+            }
         }
-
+    
+        if(numPoints>numSamplesMax)
+        {
+            numPoints = numSamplesMax;
+            offset = 0;
+        }
+    
         // Aight, now that we've got our ranges correct, let's ask for the signal.
         //Only fetch visible part (numPoints samples) and put it after offset.
 
@@ -431,11 +456,18 @@
                               );
         
         glLineWidth(2.0f);
-        float linePart = maxTimeSpan/40.0f;
+        float linePart = radiusXAxis/2.0f;
         for(float pos=-maxTimeSpan;pos<-linePart; pos+=linePart+linePart)
         {
             gl::drawLine(Vec2f(pos, threshval), Vec2f(pos+linePart, threshval));
         }
+        
+        if(numberOfChannels==1)
+        {
+            [self setColorWithIndex:0 transparency:1.0f];
+            gl::drawLine(Vec2f(-maxTimeSpan, yOffsets[selectedChannel]), Vec2f(0, yOffsets[selectedChannel]));
+        }
+        
         //gl::drawLine(Vec2f(centerOfCircleX, threshval), Vec2f(-maxTimeSpan, threshval));
         glLineWidth(1.0f);
     }
@@ -637,7 +669,7 @@
 //
 -(void) drawSpikes
 {
-   // gl::enableDepthRead();
+
     //we use timestamp (timeForSincDrawing) that is taken from audio manager "at the same time"
     //when we took data from circular buffer to display waveform. It is important for sinc of waveform and spike marks
     float currentTime = timeForSincDrawing ;
@@ -720,7 +752,6 @@
                 }
         }
     }
-    
 }
 
 
@@ -745,7 +776,7 @@
     
     std::stringstream xStringStream;
     xStringStream.precision(1);
-   /* if (xScale >= 1000) {
+    if (xScale >= 1000) {
         xScale /= 1000.0;
         //xStringStream.precision(1);
         xStringStream << fixed << xScale << " s";
@@ -753,18 +784,18 @@
     else {
        // xStringStream.precision(2);
         xStringStream << fixed << xScale << " msec";
-    }*/
+    }
     
     //==================================================
     //Debug code for BT sample rate
-     float br = [[BBBTManager btManager] currentBaudRate];
+    /* float br = [[BBBTManager btManager] currentBaudRate];
      if (br >= 1000) {
      br /= 1000.0;
      xStringStream << fixed << br << " KBps";
      }
      else {
      xStringStream << fixed << br << " Bps";
-     }
+     }*/
     //==================================================
     
     
@@ -895,7 +926,7 @@
         if (mode == MultichannelGLViewModeThresholding) {
             // slightly tigher bounds on the thresholding view (don't need to see whole second and a half in this view)
             // TODO: this is a hack to get thresholding to have a separate number of seconds visible. I weep for how awful this is. I am so sorry.
-            float thisNumSamplesMax= 65536;
+            float thisNumSamplesMax= MAX_THRESHOLD_VISIBLE_TIME*samplingRate;
             if(numSamplesVisible >= thisNumSamplesMax)
             {
                 numSamplesVisible = oldNumSamplesVisible;
@@ -953,9 +984,13 @@
                 yOffsets[grabbedHandleIndex] = lowerBoundary;
             }
             //select channel
-            selectedChannel = grabbedHandleIndex;
-            if ([dataSourceDelegate respondsToSelector:@selector(selectChannel:)]) {
-                [dataSourceDelegate selectChannel:selectedChannel];
+            if(selectedChannel!=grabbedHandleIndex)
+            {
+                selectedChannel = grabbedHandleIndex;
+                if ([dataSourceDelegate respondsToSelector:@selector(selectChannel:)]) {
+                    
+                    [dataSourceDelegate selectChannel:selectedChannel];
+                }
             }
         
         }

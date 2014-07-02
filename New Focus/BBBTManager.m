@@ -395,7 +395,7 @@ static BBBTManager *btManager = nil;
     {
         sendConfigData = NO;
         int tempCounterNum = 16000000/_confSamplingRate;
-        NSString *yourString  = [NSString stringWithFormat:@"conf c:%d;s:%d;",_confNumberOfChannels,tempCounterNum];
+        NSString *yourString  = [NSString stringWithFormat:@"conf s:%d;c:%d;",tempCounterNum,_confNumberOfChannels];
         
         NSData *data = [yourString dataUsingEncoding:NSUTF8StringEncoding];
 

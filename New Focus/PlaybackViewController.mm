@@ -142,6 +142,13 @@
                         action:@selector(sliderTouchDown:)
               forControlEvents:(UIControlEventTouchDown)];
     
+    if(glView)
+    {
+        [glView stopAnimation];
+        [glView removeFromSuperview];
+        [glView release];
+        glView = nil;
+    }
     
     // our CCGLTouchView being added as a subview
     glView = [[MultichannelCindeGLView alloc] initWithFrame:self.view.frame];
