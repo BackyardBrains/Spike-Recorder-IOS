@@ -66,18 +66,28 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    [super viewWillAppear:animated];
-    [self.navigationController setNavigationBarHidden:YES animated:YES];
-    [[BBAudioManager bbAudioManager] clearWaveform];
-    [glView startAnimation];
+    [self.navigationController setNavigationBarHidden:YES animated:NO];
+    if(glView)
+    {
+        [glView stopAnimation];
+        [glView removeFromSuperview];
+        [glView release];
+        glView = nil;
+    }
+    
+    // our CCGLTouchView being added as a subview
+    glView = [[MultichannelCindeGLView alloc] initWithFrame:self.view.frame];
 
-    audioPaused = NO;
-}
+    glView.mode = MultichannelGLViewModePlayback;
+	[self.view addSubview:glView];
+    [self.view sendSubviewToBack:glView];
+    
+    // set our view controller's prop that will hold a pointer to our newly created CCGLTouchView
+    [self setGLView:glView];
 
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-
+    //[[BBAudioManager bbAudioManager] clearWaveform];
+    //
+    
     // Make sure that we're playing out of the right audioroute, and if it changes
     // (e.g., if you unplug the headphones while playing), it just works
     [self ifNoHeadphonesConfigureAudioToPlayOutOfSpeakers];
@@ -86,18 +96,18 @@
     
     // Grab the audio file, and start buffering audio from it.
     bbAudioManager = [BBAudioManager bbAudioManager];
-    [[BBAudioManager bbAudioManager] clearWaveform];
+    //[[BBAudioManager bbAudioManager] clearWaveform];
     NSURL *theURL = [bbfile fileURL];
     NSLog(@"Playing a file at: %@", theURL);
     [bbAudioManager startPlaying:bbfile]; // startPlaying: initializes the file and buffers audio
     
-    [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
-    
-    // Set the slider to have the bounds of the audio file's duraiton
+       // Set the slider to have the bounds of the audio file's duraiton
     timeSlider.minimumValue = 0;
     timeSlider.maximumValue = bbAudioManager.fileDuration;
     // Periodically poll for the current position in the audio file, and update the
     // slider accordingly.
+    
+    
     callbackTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue());
     dispatch_source_set_timer(callbackTimer, dispatch_walltime(NULL, 0), 0.25*NSEC_PER_SEC, 0);
     dispatch_source_set_event_handler(callbackTimer, ^{
@@ -110,24 +120,33 @@
     });
     
     dispatch_resume(callbackTimer);
+    [super viewWillAppear:animated];
+}
 
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
+    audioPaused = NO;
 
 }
 
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-
-    [super viewWillDisappear:animated];
+    [[BBAudioManager bbAudioManager] clearWaveform];  
+    
     [self.navigationController setNavigationBarHidden:NO animated:YES];
     [glView saveSettings:FALSE]; // save non-threshold settings
+    
     [glView stopAnimation];
     dispatch_suspend(callbackTimer);
     [[BBAudioManager bbAudioManager] stopPlaying];
+
     [[Novocaine audioManager] removeObserver:self forKeyPath:@"numOutputChannels"];
     [self restoreAudioOutputRouteToDefault];
     dispatch_suspend(callbackTimer);
-    
+    [super viewWillDisappear:animated];
 }
 
 
@@ -136,13 +155,14 @@
     [super viewDidLoad];
     self.timeSlider.continuous = YES;
     [self.timeSlider addTarget:self
-                  action:@selector(sliderTouchUpInside:)
-        forControlEvents:(UIControlEventTouchUpInside)];
+                        action:@selector(sliderTouchUpInside:)
+              forControlEvents:(UIControlEventTouchUpInside)];
     [self.timeSlider addTarget:self
                         action:@selector(sliderTouchDown:)
               forControlEvents:(UIControlEventTouchDown)];
     
-    if(glView)
+
+      /* if(glView)
     {
         [glView stopAnimation];
         [glView removeFromSuperview];
@@ -159,9 +179,7 @@
     [self.view sendSubviewToBack:glView];
     
     // set our view controller's prop that will hold a pointer to our newly created CCGLTouchView
-    [self setGLView:glView];
-    
-
+    [self setGLView:glView];*/
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation

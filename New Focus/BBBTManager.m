@@ -416,7 +416,14 @@ static BBBTManager *btManager = nil;
 
 }
 
-
+-(int) numberOfChannels
+{
+    return _confNumberOfChannels;
+}
+-(int) samplingRate
+{
+    return _confSamplingRate;
+}
 
 
 

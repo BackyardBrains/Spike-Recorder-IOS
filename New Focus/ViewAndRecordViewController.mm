@@ -32,7 +32,7 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    
+    [[BBAudioManager bbAudioManager] startMonitoring];
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     BOOL enabled = [[defaults valueForKey:@"stimulationEnabled"] boolValue];
@@ -48,11 +48,12 @@
     }
     glView = [[MultichannelCindeGLView alloc] initWithFrame:self.view.frame];
     [self setGLView:glView];
-    [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels ] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
     glView.mode = MultichannelGLViewModeView;
+    [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels ] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
+    
 	[self.view addSubview:glView];
     [self.view sendSubviewToBack:glView];
-	
+	[glView startAnimation];
     // set our view controller's prop that will hold a pointer to our newly created CCGLTouchView
     
 
@@ -63,6 +64,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(noBTConnection) name:NO_BT_CONNECTION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(btDisconnected) name:BT_DISCONNECTED object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(foundBTConnection) name:FOUND_BT_CONNECTION object:nil];
+    
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -100,7 +102,7 @@
 	//[aView release];
     
     stimulateButton.selected = NO;
-    [[BBAudioManager bbAudioManager] startMonitoring];
+   // [[BBAudioManager bbAudioManager] startMonitoring];
     // Listen for going down
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate:) name:UIApplicationWillTerminateNotification object:nil];
 }

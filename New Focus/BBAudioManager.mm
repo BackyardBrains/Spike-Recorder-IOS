@@ -253,24 +253,50 @@ static BBAudioManager *bbAudioManager = nil;
     if (thresholding)
         [self stopThresholding];
     
-    _sourceSamplingRate =  audioManager.samplingRate;
-    _sourceNumberOfChannels = audioManager.numInputChannels;
-    
-    audioManager.inputBlock = nil;
-    //Free memory
-    delete ringBuffer;
-    free(tempCalculationBuffer);
-    
-    //create new buffers
-    ringBuffer = new RingBuffer(maxNumberOfSamplesToDisplay, _sourceNumberOfChannels);
-    tempCalculationBuffer = (float *)calloc(maxNumberOfSamplesToDisplay*_sourceNumberOfChannels, sizeof(float));
-    
-    
-    [audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
-        ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
-    }];
-    
-    [audioManager play];
+    if(btOn)
+    {
+        
+        _sourceSamplingRate=[[BBBTManager btManager] samplingRate];
+        _sourceNumberOfChannels=[[BBBTManager btManager] numberOfChannels];
+        
+        
+        audioManager.inputBlock = nil;
+        audioManager.outputBlock = nil;
+        
+        delete ringBuffer;
+        free(tempCalculationBuffer);
+        
+        //create new buffers
+        
+        ringBuffer = new RingBuffer(maxNumberOfSamplesToDisplay, _sourceNumberOfChannels);
+        tempCalculationBuffer = (float *)calloc(maxNumberOfSamplesToDisplay*_sourceNumberOfChannels, sizeof(float));
+        
+        [[BBBTManager btManager] setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
+            ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
+        }];
+
+    }
+    else
+    {
+        _sourceSamplingRate =  audioManager.samplingRate;
+        _sourceNumberOfChannels = audioManager.numInputChannels;
+        
+        audioManager.inputBlock = nil;
+        //Free memory
+        delete ringBuffer;
+        free(tempCalculationBuffer);
+        
+        //create new buffers
+        ringBuffer = new RingBuffer(maxNumberOfSamplesToDisplay, _sourceNumberOfChannels);
+        tempCalculationBuffer = (float *)calloc(maxNumberOfSamplesToDisplay*_sourceNumberOfChannels, sizeof(float));
+        
+        
+        [audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
+            ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
+        }];
+        
+            [audioManager play];
+    }
 
 }
 
@@ -470,6 +496,7 @@ static BBAudioManager *bbAudioManager = nil;
         fileReader = nil;
         audioManager.outputBlock = nil;
     }
+    [[BBBTManager btManager] setInputBlock:nil];
     
     _file = fileToPlay;
     

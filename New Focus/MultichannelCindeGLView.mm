@@ -32,6 +32,7 @@
     BOOL weAreDrawingSelection;
     //debug variables
    // BOOL debugMultichannelOnSingleChannel;
+    BOOL firstDrawAfterChannelChange;
 }
 
 @end
@@ -80,6 +81,7 @@
 //
 - (void)setNumberOfChannels:(int) newNumberOfChannels samplingRate:(float) newSamplingRate andDataSource:(id <MultichannelGLViewDelegate>) newDataSource
 {
+    firstDrawAfterChannelChange = YES;
     NSLog(@"!!!!!!!!!Setup num of channel");
     [self stopAnimation];
     
@@ -168,6 +170,7 @@
 
     NSLog(@"End setup number of channels");
     [self startAnimation];
+    
 }
 
 - (void)loadSettings:(BOOL)useThresholdSettings
@@ -353,13 +356,21 @@
 
 - (void)draw {
     
-    
-    // this pair of lines is the standard way to clear the screen in OpenGL
-	gl::clear( Color( 0.0f, 0.0f, 0.0f ), true );
-	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-    
     if(dataSourceDelegate)
     {
+        
+        if(firstDrawAfterChannelChange)
+        {
+            //this is fix for bug. Draw text starts to paint background of text
+            //to same color as text if we don't make new instance here
+            //TODO: find a reason for this
+            firstDrawAfterChannelChange = NO;
+            mScaleFont = gl::TextureFont::create( Font("Helvetica", 18) );
+        }
+        //mScaleFont = gl::TextureFont::create( Font("Helvetica", 18) );
+        // this pair of lines is the standard way to clear the screen in OpenGL
+        gl::clear( Color( 0.0f, 0.0f, 0.0f ), true );
+        glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
         // Look at it right
         mCam.setOrtho(-maxTimeSpan, -0.0f, -maxVoltsSpan/2.0f, maxVoltsSpan/2.0f, 1, 100);
         gl::setMatrices( mCam );
@@ -428,7 +439,7 @@
             [self drawScaleText];
         }
     }
-    glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
+    //glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
 }
 
 
@@ -456,7 +467,7 @@
                               );
         
         glLineWidth(2.0f);
-        float linePart = radiusXAxis/2.0f;
+        float linePart = radiusXAxis*0.7;
         for(float pos=-maxTimeSpan;pos<-linePart; pos+=linePart+linePart)
         {
             gl::drawLine(Vec2f(pos, threshval), Vec2f(pos+linePart, threshval));
@@ -574,14 +585,14 @@
     
     
     //draw background rectangle
-    gl::enableDepthRead();
+    //gl::enableDepthRead();
     gl::drawSolidRect(Rectf(self.frame.size.width-8*rmsTextSize.y,rmsTextPosition.y-1.1*rmsTextSize.y,self.frame.size.width-0.5*rmsTextSize.y,rmsTextPosition.y+0.4*rmsTextSize.y));
-    gl::disableDepthRead();
+    //gl::disableDepthRead();
     gl::color( ColorA( 0.0, 1.0f, 0.0f, 1.0f ) );
     //draw text
     mScaleFont->drawString(rmstream.str(), rmsTextPosition);
 
-    gl::enableDepthRead();
+    //gl::enableDepthRead();
 
 }
 
@@ -669,7 +680,7 @@
 //
 -(void) drawSpikes
 {
-
+  
     //we use timestamp (timeForSincDrawing) that is taken from audio manager "at the same time"
     //when we took data from circular buffer to display waveform. It is important for sinc of waveform and spike marks
     float currentTime = timeForSincDrawing ;
@@ -752,6 +763,7 @@
                 }
         }
     }
+  
 }
 
 
