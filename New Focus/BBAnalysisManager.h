@@ -24,7 +24,7 @@
 @property (nonatomic) float thresholdFirst;
 @property (nonatomic) float thresholdSecond;
 
-- (void)findSpikes:(BBFile *)aFile;
+- (int)findSpikes:(BBFile *)aFile;
 -(NSMutableArray *) allSpikes;
 -(void) prepareFileForSelection:(BBFile *)aFile;
 - (void)fetchAudioAndSpikes:(float *)data numFrames:(UInt32)numFrames stride:(UInt32)stride;

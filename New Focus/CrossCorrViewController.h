@@ -15,6 +15,7 @@
 }
 
 @property (retain) NSArray * values;
+@property (retain, nonatomic) NSString * graphTitle;
 
 @property (retain, nonatomic) IBOutlet CPTGraphHostingView *hostingView;
 

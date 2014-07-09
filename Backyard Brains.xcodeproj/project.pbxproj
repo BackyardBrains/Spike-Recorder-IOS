@@ -20,6 +20,9 @@
 		244DA13F195C9B0B00BFAA8B /* inputicon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 244DA13D195C9B0B00BFAA8B /* inputicon@2x.png */; };
 		244DA142195C9DAF00BFAA8B /* bluetooth.png in Resources */ = {isa = PBXBuildFile; fileRef = 244DA140195C9DAF00BFAA8B /* bluetooth.png */; };
 		244DA143195C9DAF00BFAA8B /* bluetooth@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 244DA141195C9DAF00BFAA8B /* bluetooth@2x.png */; };
+		24507B4E196AF50400E27BD2 /* ISIGraphCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 24507B4D196AF50400E27BD2 /* ISIGraphCollectionViewCell.m */; };
+		24507B52196C333C00E27BD2 /* AutoGraphViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 24507B50196C333C00E27BD2 /* AutoGraphViewController.mm */; };
+		24507B53196C333C00E27BD2 /* AutoGraphViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 24507B51196C333C00E27BD2 /* AutoGraphViewController.xib */; };
 		24513CE319545BCA007F240A /* FileNeuron.png in Resources */ = {isa = PBXBuildFile; fileRef = 24513CE119545BCA007F240A /* FileNeuron.png */; };
 		24513CE419545BCA007F240A /* FileNeuron@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 24513CE219545BCA007F240A /* FileNeuron@2x.png */; };
 		24513CE719545C50007F240A /* Record.png in Resources */ = {isa = PBXBuildFile; fileRef = 24513CE519545C50007F240A /* Record.png */; };
@@ -43,6 +46,7 @@
 		246989361909898F00F5383F /* trash@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 246989341909898F00F5383F /* trash@2x.png */; };
 		2469893919098C1900F5383F /* again.png in Resources */ = {isa = PBXBuildFile; fileRef = 2469893719098C1900F5383F /* again.png */; };
 		2469893A19098C1900F5383F /* again@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2469893819098C1900F5383F /* again@2x.png */; };
+		247038F7196C37E5002D15C3 /* AutoGraphCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 247038F6196C37E5002D15C3 /* AutoGraphCollectionViewCell.m */; };
 		247115F51930BB1100D1B004 /* BBBTManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 247115F41930BB1100D1B004 /* BBBTManager.m */; };
 		2474366918F6CAAC0044E11D /* SpikesCinderView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2474366818F6CAAC0044E11D /* SpikesCinderView.mm */; };
 		2474366B18F6DBFF0044E11D /* SpikesViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2474366A18F6DBFF0044E11D /* SpikesViewController.xib */; };
@@ -62,6 +66,11 @@
 		248C8EBF18E5D8FC00307C4C /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 248C8EBE18E5D8FC00307C4C /* MobileCoreServices.framework */; };
 		248C8EC118E5D90500307C4C /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 248C8EC018E5D90500307C4C /* ImageIO.framework */; };
 		248C8EC318E9EFAA00307C4C /* SensibleTableView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 248C8EC218E9EFAA00307C4C /* SensibleTableView.framework */; };
+		2490139B1966CD5E00E5EF91 /* GraphMatrixViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 249013991966CD5E00E5EF91 /* GraphMatrixViewController.mm */; };
+		2490139C1966CD5E00E5EF91 /* GraphMatrixViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2490139A1966CD5E00E5EF91 /* GraphMatrixViewController.xib */; };
+		2490139F1966D88200E5EF91 /* GraphCollectionViewCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2490139E1966D88200E5EF91 /* GraphCollectionViewCell.mm */; };
+		249013A3196AB45200E5EF91 /* ISIGraphViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 249013A1196AB45200E5EF91 /* ISIGraphViewController.mm */; };
+		249013A4196AB45200E5EF91 /* ISIGraphViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 249013A2196AB45200E5EF91 /* ISIGraphViewController.xib */; };
 		249A245E190580E5005F5F03 /* libCorePlot-CocoaTouch.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 249A245D190580E5005F5F03 /* libCorePlot-CocoaTouch.a */; };
 		249A246219058465005F5F03 /* AutocorrelationGraphViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 249A246019058465005F5F03 /* AutocorrelationGraphViewController.m */; };
 		249A246319058465005F5F03 /* AutocorrelationGraphViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 249A246119058465005F5F03 /* AutocorrelationGraphViewController.xib */; };
@@ -177,6 +186,11 @@
 		244DA13D195C9B0B00BFAA8B /* inputicon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "inputicon@2x.png"; sourceTree = "<group>"; };
 		244DA140195C9DAF00BFAA8B /* bluetooth.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bluetooth.png; sourceTree = "<group>"; };
 		244DA141195C9DAF00BFAA8B /* bluetooth@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bluetooth@2x.png"; sourceTree = "<group>"; };
+		24507B4C196AF50400E27BD2 /* ISIGraphCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISIGraphCollectionViewCell.h; sourceTree = "<group>"; };
+		24507B4D196AF50400E27BD2 /* ISIGraphCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ISIGraphCollectionViewCell.m; sourceTree = "<group>"; };
+		24507B4F196C333C00E27BD2 /* AutoGraphViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AutoGraphViewController.h; sourceTree = "<group>"; };
+		24507B50196C333C00E27BD2 /* AutoGraphViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AutoGraphViewController.mm; sourceTree = "<group>"; };
+		24507B51196C333C00E27BD2 /* AutoGraphViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AutoGraphViewController.xib; sourceTree = "<group>"; };
 		24513CE119545BCA007F240A /* FileNeuron.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = FileNeuron.png; path = ../FileNeuron.png; sourceTree = "<group>"; };
 		24513CE219545BCA007F240A /* FileNeuron@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "FileNeuron@2x.png"; path = "../FileNeuron@2x.png"; sourceTree = "<group>"; };
 		24513CE519545C50007F240A /* Record.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Record.png; path = ../Record.png; sourceTree = "<group>"; };
@@ -203,6 +217,8 @@
 		246989341909898F00F5383F /* trash@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "trash@2x.png"; path = "../trash@2x.png"; sourceTree = "<group>"; };
 		2469893719098C1900F5383F /* again.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = again.png; path = ../again.png; sourceTree = "<group>"; };
 		2469893819098C1900F5383F /* again@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "again@2x.png"; path = "../again@2x.png"; sourceTree = "<group>"; };
+		247038F5196C37E5002D15C3 /* AutoGraphCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AutoGraphCollectionViewCell.h; sourceTree = "<group>"; };
+		247038F6196C37E5002D15C3 /* AutoGraphCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AutoGraphCollectionViewCell.m; sourceTree = "<group>"; };
 		247115F31930BB1100D1B004 /* BBBTManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BBBTManager.h; sourceTree = "<group>"; };
 		247115F41930BB1100D1B004 /* BBBTManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BBBTManager.m; sourceTree = "<group>"; };
 		2474366718F6CAAC0044E11D /* SpikesCinderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpikesCinderView.h; sourceTree = "<group>"; };
@@ -236,6 +252,14 @@
 		248C8EBE18E5D8FC00307C4C /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		248C8EC018E5D90500307C4C /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		248C8EC218E9EFAA00307C4C /* SensibleTableView.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SensibleTableView.framework; sourceTree = "<group>"; };
+		249013981966CD5E00E5EF91 /* GraphMatrixViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphMatrixViewController.h; sourceTree = "<group>"; };
+		249013991966CD5E00E5EF91 /* GraphMatrixViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GraphMatrixViewController.mm; sourceTree = "<group>"; };
+		2490139A1966CD5E00E5EF91 /* GraphMatrixViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GraphMatrixViewController.xib; sourceTree = "<group>"; };
+		2490139D1966D88200E5EF91 /* GraphCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphCollectionViewCell.h; sourceTree = "<group>"; };
+		2490139E1966D88200E5EF91 /* GraphCollectionViewCell.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GraphCollectionViewCell.mm; sourceTree = "<group>"; };
+		249013A0196AB45200E5EF91 /* ISIGraphViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISIGraphViewController.h; sourceTree = "<group>"; };
+		249013A1196AB45200E5EF91 /* ISIGraphViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ISIGraphViewController.mm; sourceTree = "<group>"; };
+		249013A2196AB45200E5EF91 /* ISIGraphViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ISIGraphViewController.xib; sourceTree = "<group>"; };
 		249A240F190580D7005F5F03 /* CorePlot-CocoaTouch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CorePlot-CocoaTouch.h"; sourceTree = "<group>"; };
 		249A2410190580D7005F5F03 /* CPTAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPTAnimation.h; sourceTree = "<group>"; };
 		249A2411190580D7005F5F03 /* CPTAnimationOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPTAnimationOperation.h; sourceTree = "<group>"; };
@@ -779,6 +803,18 @@
 				240D8061190C16E6009F9AEA /* SelectCrosscorelTableViewController.mm */,
 				24D9DFCE1951C4A600A78BED /* BBChannelSelectionTableViewController.h */,
 				24D9DFCF1951C4A600A78BED /* BBChannelSelectionTableViewController.m */,
+				249013981966CD5E00E5EF91 /* GraphMatrixViewController.h */,
+				249013991966CD5E00E5EF91 /* GraphMatrixViewController.mm */,
+				2490139D1966D88200E5EF91 /* GraphCollectionViewCell.h */,
+				2490139E1966D88200E5EF91 /* GraphCollectionViewCell.mm */,
+				249013A0196AB45200E5EF91 /* ISIGraphViewController.h */,
+				249013A1196AB45200E5EF91 /* ISIGraphViewController.mm */,
+				24507B4C196AF50400E27BD2 /* ISIGraphCollectionViewCell.h */,
+				24507B4D196AF50400E27BD2 /* ISIGraphCollectionViewCell.m */,
+				24507B4F196C333C00E27BD2 /* AutoGraphViewController.h */,
+				24507B50196C333C00E27BD2 /* AutoGraphViewController.mm */,
+				247038F5196C37E5002D15C3 /* AutoGraphCollectionViewCell.h */,
+				247038F6196C37E5002D15C3 /* AutoGraphCollectionViewCell.m */,
 			);
 			name = "Table UI";
 			sourceTree = "<group>";
@@ -958,6 +994,9 @@
 		FADF268515963630006C87BA /* MyAssets */ = {
 			isa = PBXGroup;
 			children = (
+				24507B51196C333C00E27BD2 /* AutoGraphViewController.xib */,
+				249013A2196AB45200E5EF91 /* ISIGraphViewController.xib */,
+				2490139A1966CD5E00E5EF91 /* GraphMatrixViewController.xib */,
 				240D8065190E98F6009F9AEA /* CrossCorrViewController.xib */,
 				249A24661906AC59005F5F03 /* ISIHistogramViewController.xib */,
 				249A246119058465005F5F03 /* AutocorrelationGraphViewController.xib */,
@@ -1060,6 +1099,7 @@
 				240D8067190E98F6009F9AEA /* CrossCorrViewController.xib in Resources */,
 				FA14EC5C15D04AD700B0FB71 /* Settings.bundle in Resources */,
 				244DA142195C9DAF00BFAA8B /* bluetooth.png in Resources */,
+				249013A4196AB45200E5EF91 /* ISIGraphViewController.xib in Resources */,
 				24513CEE19545CE9007F240A /* Pause@2x.png in Resources */,
 				24513CF819545E5A007F240A /* Stimulate@2x.png in Resources */,
 				24513D0419545F5E007F240A /* WaveImage@2x.png in Resources */,
@@ -1069,6 +1109,7 @@
 				244DA13E195C9B0B00BFAA8B /* inputicon.png in Resources */,
 				FA2DAF7D16C85D7600EFF9D6 /* Icon-Small-50.png in Resources */,
 				247ED9BC193DEB8800871BAC /* release_notes.md in Resources */,
+				2490139C1966CD5E00E5EF91 /* GraphMatrixViewController.xib in Resources */,
 				FA2DAF7E16C85D7600EFF9D6 /* Icon-Small-50@2x.png in Resources */,
 				FA2DAF7F16C85D7600EFF9D6 /* Icon-Small.png in Resources */,
 				244DA13F195C9B0B00BFAA8B /* inputicon@2x.png in Resources */,
@@ -1086,6 +1127,7 @@
 				FA2DAF8B16C89AD600EFF9D6 /* Icon@2x.png in Resources */,
 				24513CE819545C50007F240A /* Record@2x.png in Resources */,
 				24513CF719545E5A007F240A /* Stimulate.png in Resources */,
+				24507B53196C333C00E27BD2 /* AutoGraphViewController.xib in Resources */,
 				246989361909898F00F5383F /* trash@2x.png in Resources */,
 				24513CE319545BCA007F240A /* FileNeuron.png in Resources */,
 				24513CED19545CE9007F240A /* Pause.png in Resources */,
@@ -1101,8 +1143,11 @@
 			files = (
 				FA14EC6C15D20ED000B0FB71 /* RecordingOverlayController.mm in Sources */,
 				FA90598D15A9F9830013688B /* NSData-SQLitePersistence.m in Sources */,
+				247038F7196C37E5002D15C3 /* AutoGraphCollectionViewCell.m in Sources */,
 				245F1C82194C791700AF0477 /* BBSignalEvent.m in Sources */,
+				24507B4E196AF50400E27BD2 /* ISIGraphCollectionViewCell.m in Sources */,
 				2402E83218EABDFC0090368A /* DSPAnalysis.mm in Sources */,
+				24507B52196C333C00E27BD2 /* AutoGraphViewController.mm in Sources */,
 				247115F51930BB1100D1B004 /* BBBTManager.m in Sources */,
 				FA90598F15A9F9830013688B /* NSDate-SQLitePersistence.m in Sources */,
 				FA90599115A9F9830013688B /* NSMutableArray-MultipleSort.m in Sources */,
@@ -1159,9 +1204,12 @@
 				240D805F190AC361009F9AEA /* SpikeTrainsTableViewController.mm in Sources */,
 				2474366918F6CAAC0044E11D /* SpikesCinderView.mm in Sources */,
 				FA14EC6215D1FF0000B0FB71 /* RecordingOverlay.mm in Sources */,
+				2490139B1966CD5E00E5EF91 /* GraphMatrixViewController.mm in Sources */,
+				2490139F1966D88200E5EF91 /* GraphCollectionViewCell.mm in Sources */,
 				249A246219058465005F5F03 /* AutocorrelationGraphViewController.m in Sources */,
 				FAFAEEFD1621CC0400632975 /* BBFile.mm in Sources */,
 				248C8EBB18E5CF5E00307C4C /* CCGLTouchAppDelegate.mm in Sources */,
+				249013A3196AB45200E5EF91 /* ISIGraphViewController.mm in Sources */,
 				245F1C7F194C762700AF0477 /* BBChannel.m in Sources */,
 				24D9DFD01951C4A600A78BED /* BBChannelSelectionTableViewController.m in Sources */,
 			);

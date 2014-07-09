@@ -136,17 +136,26 @@ static BBAnalysisManager *bbAnalysisManager = nil;
 
 #pragma mark - Spike Analysis
 
--(void) findSpikes:(BBFile *)aFile
+-(int) findSpikes:(BBFile *)aFile
 {
     _file = aFile;
+    int result = 0;
     [[_file allSpikes] removeAllObjects];
     for(int i=0;i<aFile.numberOfChannels;i++)
     {
-        [self findSpikes:aFile andChannel:i];
+        if([self findSpikes:aFile andChannel:i]==-1)
+        {
+            result = -1;
+        }
     }
+    return result;
 }
 
-
+//
+// Find spikes in one channel with index: channelIndex
+// In order to work this function need data that is without offset
+//(schmit triger needs that, maybe we should substract mean value or detrend)
+//
 - (int)findSpikes:(BBFile *)aFile andChannel:(int) channelIndex
 {
 
@@ -277,54 +286,60 @@ static BBAnalysisManager *bbAnalysisManager = nil;
         }
     }
     
-    
-    //Filter positive spikes using kill interval
     int i;
-    for(i=0;i<[peaksIndexes count]-1;i++) //look on the right
+    if([peaksIndexes count]>0)
     {
-        if([(BBSpike *)[peaksIndexes objectAtIndex:i] value]<[(BBSpike *)[peaksIndexes objectAtIndex:i+1] value])
+        //Filter positive spikes using kill interval
+ 
+        for(i=0;i<[peaksIndexes count]-1;i++) //look on the right
         {
-            if(([(BBSpike *)[peaksIndexes objectAtIndex:i+1] time]-[(BBSpike *)[peaksIndexes objectAtIndex:i] time])<killInterval)
+            if([(BBSpike *)[peaksIndexes objectAtIndex:i] value]<[(BBSpike *)[peaksIndexes objectAtIndex:i+1] value])
             {
-                [peaksIndexes removeObjectAtIndex:i];
-                i--;
+                if(([(BBSpike *)[peaksIndexes objectAtIndex:i+1] time]-[(BBSpike *)[peaksIndexes objectAtIndex:i] time])<killInterval)
+                {
+                    [peaksIndexes removeObjectAtIndex:i];
+                    i--;
+                }
+            }
+        }
+        
+        for(i=1;i<[peaksIndexes count];i++) //look on the left neighbor
+        {
+            if([(BBSpike *)[peaksIndexes objectAtIndex:i] value]<[(BBSpike *)[peaksIndexes objectAtIndex:i-1] value])
+            {
+                if(([(BBSpike *)[peaksIndexes objectAtIndex:i] time]-[(BBSpike *)[peaksIndexes objectAtIndex:i-1] time])<killInterval)
+                {
+                    [peaksIndexes removeObjectAtIndex:i];
+                    i--;
+                }
             }
         }
     }
     
-    for(i=1;i<[peaksIndexes count];i++) //look on the left neighbor
+    if([peaksIndexesNeg count]>0)
     {
-        if([(BBSpike *)[peaksIndexes objectAtIndex:i] value]<[(BBSpike *)[peaksIndexes objectAtIndex:i-1] value])
+        //Filter negative spikes using kill interval
+        for(i=0;i<[peaksIndexesNeg count]-1;i++)
         {
-            if(([(BBSpike *)[peaksIndexes objectAtIndex:i] time]-[(BBSpike *)[peaksIndexes objectAtIndex:i-1] time])<killInterval)
+            if([(BBSpike *)[peaksIndexesNeg objectAtIndex:i] value]>[(BBSpike *)[peaksIndexesNeg objectAtIndex:i+1] value])
             {
-                [peaksIndexes removeObjectAtIndex:i];
-                i--;
+                if(([(BBSpike *)[peaksIndexesNeg objectAtIndex:i+1] time]-[(BBSpike *)[peaksIndexesNeg objectAtIndex:i] time])<killInterval)
+                {
+                    [peaksIndexesNeg removeObjectAtIndex:i];
+                    i--;
+                }
             }
         }
-    }
-    
-    //Filter negative spikes using kill interval
-    for(i=0;i<[peaksIndexesNeg count]-1;i++)
-    {
-        if([(BBSpike *)[peaksIndexesNeg objectAtIndex:i] value]>[(BBSpike *)[peaksIndexesNeg objectAtIndex:i+1] value])
+        
+        for(i=1;i<[peaksIndexesNeg count];i++)
         {
-            if(([(BBSpike *)[peaksIndexesNeg objectAtIndex:i+1] time]-[(BBSpike *)[peaksIndexesNeg objectAtIndex:i] time])<killInterval)
+            if([(BBSpike *)[peaksIndexesNeg objectAtIndex:i] value]>[(BBSpike *)[peaksIndexesNeg objectAtIndex:i-1] value])
             {
-                [peaksIndexesNeg removeObjectAtIndex:i];
-                i--;
-            }
-        }
-    }
-    
-    for(i=1;i<[peaksIndexesNeg count];i++)
-    {
-        if([(BBSpike *)[peaksIndexesNeg objectAtIndex:i] value]>[(BBSpike *)[peaksIndexesNeg objectAtIndex:i-1] value])
-        {
-            if(([(BBSpike *)[peaksIndexesNeg objectAtIndex:i] time]-[(BBSpike *)[peaksIndexesNeg objectAtIndex:i-1] time])<killInterval)
-            {
-                [peaksIndexesNeg removeObjectAtIndex:i];
-                i--;
+                if(([(BBSpike *)[peaksIndexesNeg objectAtIndex:i] time]-[(BBSpike *)[peaksIndexesNeg objectAtIndex:i-1] time])<killInterval)
+                {
+                    [peaksIndexesNeg removeObjectAtIndex:i];
+                    i--;
+                }
             }
         }
     }

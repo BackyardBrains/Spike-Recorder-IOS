@@ -357,6 +357,65 @@
 }
 
 
+-(BBSpikeTrain *) getSpikeTrainWithIndex:(int) spikeTrainIndex
+{
+    int stCounter = 0;
+    for(int channelIndex = 0;channelIndex<[_allChannels count];channelIndex++)
+    {
+        BBChannel * tempChannel = (BBChannel *)[_allChannels objectAtIndex:channelIndex];
+        for(int stIndex=0;stIndex<[[tempChannel spikeTrains] count];stIndex++)
+        {
+            if(stCounter==spikeTrainIndex)
+            {
+                return [[tempChannel spikeTrains] objectAtIndex:stIndex];
+            }
+            stCounter++;
+        }
+    }
+    return nil;
+}
+
+
+-(NSInteger) getChannelIndexForSpikeTrainWithIndex: (int) spikeTrainIndex
+{
+    int stCounter = 0;
+    for(int channelIndex = 0;channelIndex<[_allChannels count];channelIndex++)
+    {
+        BBChannel * tempChannel = (BBChannel *)[_allChannels objectAtIndex:channelIndex];
+        for(int stIndex=0;stIndex<[[tempChannel spikeTrains] count];stIndex++)
+        {
+            if(stCounter==spikeTrainIndex)
+            {
+                return channelIndex;
+            }
+            stCounter++;
+        }
+    }
+    return 0;
+}
+
+-(NSInteger) getIndexInsideChannelForSpikeTrainWithIndex: (int) spikeTrainIndex
+{
+
+    int stCounter = 0;
+    for(int channelIndex = 0;channelIndex<[_allChannels count];channelIndex++)
+    {
+        BBChannel * tempChannel = (BBChannel *)[_allChannels objectAtIndex:channelIndex];
+        for(int stIndex=0;stIndex<[[tempChannel spikeTrains] count];stIndex++)
+        {
+            if(stCounter==spikeTrainIndex)
+            {
+                return stIndex;
+            }
+            stCounter++;
+        }
+    }
+    return 0;
+
+
+}
+
+
 - (void)deleteObject {
 	[super deleteObject];
 	

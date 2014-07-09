@@ -17,12 +17,13 @@
 @implementation CrossCorrViewController
 
 @synthesize hostingView;
+@synthesize graphTitle;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        // Custom initialization
+        graphTitle = @"Cross-correlation";
     }
     return self;
 }
@@ -72,7 +73,7 @@
     barChart.plotAreaFrame.paddingRight = 20.0;
     barChart.plotAreaFrame.paddingBottom = 40.0;
     
-    barChart.title = @"Cross-correlation";
+    barChart.title = graphTitle;
     
     CPTMutableTextStyle *textStyle = [CPTTextStyle textStyle];
     textStyle.color = [CPTColor grayColor];

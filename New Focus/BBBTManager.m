@@ -332,7 +332,7 @@ static BBBTManager *btManager = nil;
                     MSB = MSB<<7;
                     LSB  = allBytes[indexInData+1] & 0x7F;
                     finalIntMeasure = (int)(MSB|LSB);
-                    finalFloat = ((float)finalIntMeasure)* 0.00322265625f;//3.3/1024
+                    finalFloat = ((float)finalIntMeasure-512)* 0.00322265625f;//3.3/1024
                     [arrayOfFloats addObject:[NSNumber numberWithFloat:finalFloat]];
                     indexInData=indexInData+2;
                 }

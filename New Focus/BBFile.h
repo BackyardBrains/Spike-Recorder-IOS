@@ -10,6 +10,7 @@
 #import <AudioToolbox/AudioToolbox.h>
 #import "SQLitePersistentObject.h"
 #import "BBAudioManager.h"
+#import "BBSpikeTrain.h"
 
 #define FILE_SPIKE_SORTED @"filtered"
 #define FILE_NOT_SPIKE_SORTED @"notAnalized"
@@ -55,6 +56,8 @@
 
 -(int) numberOfSpikeTrains;
 -(void) setupChannels;
-
+-(BBSpikeTrain *) getSpikeTrainWithIndex:(int) spikeTrainIndex;
+-(NSInteger) getChannelIndexForSpikeTrainWithIndex: (int) spikeTrainIndex;
+-(NSInteger) getIndexInsideChannelForSpikeTrainWithIndex: (int) spikeTrainIndex;
 
 @end

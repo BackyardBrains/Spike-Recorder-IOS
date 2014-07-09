@@ -15,6 +15,9 @@
 #import "SpikeTrainsTableViewController.h"
 #import "SelectCrosscorelTableViewController.h"
 #import "CrossCorrViewController.h"
+#import "GraphMatrixViewController.h"
+#import "ISIGraphViewController.h"
+#import "AutoGraphViewController.h"
 
 @implementation BBFileActionViewControllerTBV
 
@@ -240,25 +243,43 @@
         hud.labelText = @"Analyzing Spikes";
         dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
             
-            [[BBAnalysisManager bbAnalysisManager] findSpikes:fileToAnalyze];
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
+            if([[BBAnalysisManager bbAnalysisManager] findSpikes:fileToAnalyze] != -1)
+            {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    
+                    [MBProgressHUD hideHUDForView:self.view animated:YES];
+                    SpikesAnalysisViewController *avc = [[SpikesAnalysisViewController alloc] initWithNibName:@"SpikesViewController" bundle:nil];
+                    avc.bbfile = [self.files objectAtIndex:0];
+                    [self.navigationController pushViewController:avc animated:YES];
+                    [avc release];
+                    
+                });
+            }
+            else
+            {
+                //we have error on spike searching
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [MBProgressHUD hideHUDForView:self.view animated:YES];
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Can't find spikes" message:@"File is too short or it has low sampling rate."
+                                                                   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+                    [alert show];    
+                    [alert release];
+                });
                 
-                [MBProgressHUD hideHUDForView:self.view animated:YES];
-                SpikesAnalysisViewController *avc = [[SpikesAnalysisViewController alloc] initWithNibName:@"SpikesViewController" bundle:nil];
-                avc.bbfile = [self.files objectAtIndex:0];
-                [self.navigationController pushViewController:avc animated:YES];
-                [avc release];
-                
-            });
+            }
             
         });
         
     }
     else if ([cell.textLabel.text isEqualToString: @"Autocorrelation"])
 	{
+        
+        AutoGraphViewController *autovc = [[AutoGraphViewController alloc] initWithNibName:@"AutoGraphViewController" bundle:nil];
+        [autovc setFileForGraph:(BBFile *)[self.files objectAtIndex:0]];
+        [self.navigationController pushViewController:autovc animated:YES];
+        [autovc release];
 
-        if([(BBFile *)[self.files objectAtIndex:0] numberOfSpikeTrains]<2)
+      /*  if([(BBFile *)[self.files objectAtIndex:0] numberOfSpikeTrains]<2)
         {
             MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
             hud.labelText = @"Calculating...";
@@ -279,12 +300,30 @@
             [self.navigationController pushViewController:avc animated:YES];
             [avc release];
             
-        }
+        }*/
         
     }
     else if ([cell.textLabel.text isEqualToString: @"ISI"])
 	{
-        if([(BBFile *)[self.files objectAtIndex:0] numberOfSpikeTrains]<2)
+        
+      /*  if([(BBFile *)[self.files objectAtIndex:0] numberOfSpikeTrains]<2)
+        {
+            
+        }
+        else
+        {*/
+            
+
+            ISIGraphViewController *isivc = [[ISIGraphViewController alloc] initWithNibName:@"ISIGraphViewController" bundle:nil];
+            [isivc setFileForGraph:(BBFile *)[self.files objectAtIndex:0]];
+            [self.navigationController pushViewController:isivc animated:YES];
+            [isivc release];
+            
+            
+
+       /* }*/
+        
+       /* if([(BBFile *)[self.files objectAtIndex:0] numberOfSpikeTrains]<2)
         {
             MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
             hud.labelText = @"Calculating...";
@@ -311,11 +350,19 @@
             [self.navigationController pushViewController:avc animated:YES];
             [avc release];
         
-        }
+        }*/
     }
     else if ([cell.textLabel.text isEqualToString: @"Cross-correlation"])
     {
-        if([(BBFile *)[self.files objectAtIndex:0] numberOfSpikeTrains]==2)
+        
+        //GraphMatrixViewController
+        GraphMatrixViewController *gmvc = [[GraphMatrixViewController alloc] initWithNibName:@"GraphMatrixViewController" bundle:nil];
+        gmvc.bbfile = (BBFile *)[self.files objectAtIndex:0];
+        [self.navigationController pushViewController:gmvc animated:YES];
+        [gmvc release];
+
+        
+       /* if([(BBFile *)[self.files objectAtIndex:0] numberOfSpikeTrains]==2)
         {
             MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
             hud.labelText = @"Calculating...";
@@ -337,7 +384,7 @@
             [self.navigationController pushViewController:avc animated:YES];
             [avc release];
             
-        }
+        }*/
     }
 	else if ([cell.textLabel.text isEqualToString:@"Share"])
 	{
