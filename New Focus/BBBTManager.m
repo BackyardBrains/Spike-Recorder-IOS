@@ -139,11 +139,13 @@ static BBBTManager *btManager = nil;
     NSArray *accessories = [[EAAccessoryManager sharedAccessoryManager]
                             connectedAccessories];
     
-
+    NSLog(@"Enter open session for protocol");
     EASession *session = nil;
     BOOL foundAccessory = NO;
     for (EAAccessory *obj in accessories)
     {
+        NSLog(@"We have accessory");
+        NSLog(@"%@",obj);
         if ([[obj protocolStrings] containsObject:protocolString])
         {
             if(_accessory == obj)
@@ -155,6 +157,7 @@ static BBBTManager *btManager = nil;
                 [[NSNotificationCenter defaultCenter] postNotification:notification];
                 return _session;
             }
+            NSLog(@"Did not open same accessory");
             _accessory = obj;
             foundAccessory = YES;
             NSNotification *notification = [NSNotification notificationWithName:FOUND_BT_CONNECTION object:self];
