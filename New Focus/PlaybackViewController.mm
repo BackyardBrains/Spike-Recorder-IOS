@@ -134,6 +134,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated
 {
+
     [[BBAudioManager bbAudioManager] clearWaveform];  
     
     [self.navigationController setNavigationBarHidden:NO animated:YES];

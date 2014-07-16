@@ -254,7 +254,14 @@ static BBAudioManager *bbAudioManager = nil;
         audioManager.inputBlock = nil;
     }
     if (thresholding)
+    {
         [self stopThresholding];
+    }
+    
+    if(self.playing)
+    {
+        [self stopPlaying];
+    }
     
     if(btOn)
     {
@@ -358,11 +365,28 @@ static BBAudioManager *bbAudioManager = nil;
     
     if (thresholding)
         return;
+    if(self.playing)
+    {
+        [self stopPlaying];
+    }
     
     thresholding = true;
     
     numPointsToSavePerThreshold = newNumPointsToSavePerThreshold;
     
+    
+    
+    if(btOn)
+    {
+        _sourceSamplingRate=[[BBBTManager btManager] samplingRate];
+        _sourceNumberOfChannels=[[BBBTManager btManager] numberOfChannels];
+    }
+    else
+    {
+        _sourceSamplingRate =  audioManager.samplingRate;
+        _sourceNumberOfChannels = audioManager.numInputChannels;
+    }
+
     if (dspThresholder) {
         dspThresholder->SetNumberOfChannels(_sourceNumberOfChannels);
     }
@@ -526,11 +550,7 @@ static BBAudioManager *bbAudioManager = nil;
     
     //Free memory
     delete ringBuffer;
-    /*free(tempCalculationBuffer);
-    free(tempResamplingIndexes);
-    free(tempResamplingBuffer);
-    free(tempResampledBuffer);
-*/
+
     
     //create new buffers
   
@@ -699,17 +719,22 @@ static BBAudioManager *bbAudioManager = nil;
 
 - (void)stopPlaying
 {
-    _file = nil;
-    // Mark ourselves as not playing
-    [self pausePlaying];
-    audioManager.outputBlock = nil;
-    _preciseTimeOfLastData = 0.0f;
-    // Toss the file reader.
-    [fileReader release];
-    fileReader = nil;
-    
-    ringBuffer->Clear();
+    if(self.playing)
+    {
+        [self pausePlaying];
+        audioManager.outputBlock = nil;
+        audioManager.inputBlock = nil;
+        _file = nil;
+        // Mark ourselves as not playing
 
+
+        _preciseTimeOfLastData = 0.0f;
+        // Toss the file reader.
+        [fileReader release];
+        fileReader = nil;
+        
+        ringBuffer->Clear();
+    }
 }
 
 - (void)pausePlaying

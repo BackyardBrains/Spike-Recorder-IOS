@@ -15,6 +15,8 @@
 #define HANDLE_RADIUS 20
 
 #define MAX_THRESHOLD_VISIBLE_TIME 1.5
+#define HIDE_HANDLES_AFTER_SECONDS 4.0
+
 
 @interface MultichannelCindeGLView ()
 {
@@ -33,6 +35,11 @@
     //debug variables
    // BOOL debugMultichannelOnSingleChannel;
     BOOL firstDrawAfterChannelChange;
+    
+    NSTimeInterval lastUserInteraction;//last time user taped screen
+    NSTimeInterval currentUserInteractionTime;//temp variable for calculation
+    BOOL handlesShouldBeVisible;
+    float offsetPositionOfHandles;
 }
 
 @end
@@ -71,6 +78,9 @@
     
     // Set up our font, which we'll use to display the unit scales
     mScaleFont = gl::TextureFont::create( Font("Helvetica", 18) );
+    lastUserInteraction = [[NSDate date] timeIntervalSince1970];
+    handlesShouldBeVisible = NO;
+    offsetPositionOfHandles = 0;
     
 }
 
@@ -362,11 +372,15 @@
         if(firstDrawAfterChannelChange)
         {
             //this is fix for bug. Draw text starts to paint background of text
-            //to same color as text if we don't make new instance here
+            //to the same color as text if we don't make new instance here
             //TODO: find a reason for this
             firstDrawAfterChannelChange = NO;
             mScaleFont = gl::TextureFont::create( Font("Helvetica", 18) );
         }
+        
+        currentUserInteractionTime = [[NSDate date] timeIntervalSince1970];
+        handlesShouldBeVisible = (currentUserInteractionTime-lastUserInteraction)<HIDE_HANDLES_AFTER_SECONDS;
+        
         //mScaleFont = gl::TextureFont::create( Font("Helvetica", 18) );
         // this pair of lines is the standard way to clear the screen in OpenGL
         gl::clear( Color( 0.0f, 0.0f, 0.0f ), true );
@@ -641,7 +655,26 @@
 
     float radiusXAxis = HANDLE_RADIUS*scaleXY.x;
     float radiusYAxis = HANDLE_RADIUS*scaleXY.y;
-
+    
+    //hide/show animation of handles
+    if(handlesShouldBeVisible)
+    {
+        offsetPositionOfHandles+=radiusXAxis/3.0;
+        if(offsetPositionOfHandles>0.0)
+        {
+            offsetPositionOfHandles = 0.0;
+        }
+    }
+    else
+    {
+        offsetPositionOfHandles-=radiusXAxis/5.0;
+        if(offsetPositionOfHandles<-2.6*radiusXAxis)
+        {
+            offsetPositionOfHandles = -2.6*radiusXAxis;
+        }
+    }
+    
+    centerOfCircleX += offsetPositionOfHandles;
     
     //put background of handles to black
     glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
@@ -969,6 +1002,9 @@
     //Selecting time interval and thresholding are mutualy exclusive
     else if (touches.size() == 1)
     {
+        //last time we tap screen with one finger. We use this to hide hanles
+        lastUserInteraction = [[NSDate date] timeIntervalSince1970];
+
         BOOL weAreHoldingHandle = NO;
         
         Vec2f touchPos = touches[0].getPos();

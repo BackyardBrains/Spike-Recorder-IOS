@@ -16,10 +16,14 @@
     
     CPTXYGraph *barChart;
     CPTGraphHostingView *_hostingView;
+    
+    UILabel * labelForTitle;
 }
 @end
 
 @implementation ISIGraphCollectionViewCell
+
+@synthesize titleOfGraph = _titleOfGraph;
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -38,6 +42,27 @@
     _limits = limits;
     [self drawGraph];
 
+}
+
+#pragma mark - Label title
+
+-(void) setTitleOfGraph:(NSString *)intitleOfGraph
+{
+    _titleOfGraph = intitleOfGraph;
+    if(labelForTitle)
+    {
+        [labelForTitle removeFromSuperview];
+        [labelForTitle release];
+        labelForTitle = nil;
+    }
+    
+    labelForTitle = [[UILabel alloc] initWithFrame:CGRectMake(self.frame.size.width-30, 2, 28, 12)];
+    labelForTitle.backgroundColor = [UIColor whiteColor];
+    labelForTitle.text = intitleOfGraph;
+    labelForTitle.textAlignment = NSTextAlignmentCenter;
+    labelForTitle.font = [UIFont fontWithName:@"Georgia" size:(11)];
+    [self addSubview:labelForTitle];
+    
 }
 
 
@@ -146,20 +171,17 @@
     barPlot.fill = [CPTFill fillWithColor:[CPTColor blueColor]];
     barPlot.lineStyle = nil;
     
-    //make width of bars on ipad greater
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        barPlot.barWidth = CPTDecimalFromFloat(10.0f);
-    }
-    else
-    {
-        barPlot.barWidth = CPTDecimalFromFloat(4.0f);
-    }
+    float widthOfBar = self.frame.size.width/[_values count];
+    barPlot.barWidth = CPTDecimalFromFloat(widthOfBar);
     
     barPlot.cornerRadius = 0.0f;
     barPlot.barWidthsAreInViewCoordinates = YES; //bar width are defined in pixels of screen
     barPlot.dataSource = self;
     [barChart addPlot:barPlot];
     [barChart.defaultPlotSpace scaleToFitPlots:[barChart allPlots]];
+    
+    [labelForTitle removeFromSuperview];
+    [self addSubview:labelForTitle];
 }
 
 

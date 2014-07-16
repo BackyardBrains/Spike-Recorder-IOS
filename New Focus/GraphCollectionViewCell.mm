@@ -20,16 +20,11 @@
 
 @implementation GraphCollectionViewCell
 
-@synthesize mainLabel = _mainLabel;
-
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     if (self) {
-        // Initialization code
-        //_mainLabel = [[UILabel alloc] initWithFrame:CGRectMake(10,10,180,180)];
-        //_mainLabel.text = @"This is label";
-        //[self addSubview:_mainLabel];
+
         [self.layer setBorderWidth:1.0f];
         [self.layer setBorderColor:[UIColor darkGrayColor].CGColor];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(redrawGraph:) name:@"kEndChangeCellSizeInMatrixView" object:nil];
@@ -171,14 +166,13 @@
     CPTBarPlot *barPlot = [[[CPTBarPlot alloc] init] autorelease];
     barPlot.fill = [CPTFill fillWithColor:[CPTColor colorWithComponentRed:0.0f green:0.27843137254901963 blue:1.0f alpha:1.0f]];
     barPlot.lineStyle = nil;
-    //make bars width greater if it is iPad
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        barPlot.barWidth = CPTDecimalFromFloat(10.0f);
-    }
-    else
+    
+    float widthOfBar = _hostingView.frame.size.width/[_values count];
+    if(widthOfBar<1.0)
     {
-        barPlot.barWidth = CPTDecimalFromFloat(4.0f);
+        widthOfBar = 1.0;
     }
+    barPlot.barWidth = CPTDecimalFromFloat(widthOfBar);
     
     barPlot.cornerRadius = 0.0f;
     barPlot.barWidthsAreInViewCoordinates = YES; //bar width are defined in pixels of screen

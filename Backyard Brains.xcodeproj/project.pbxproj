@@ -15,6 +15,8 @@
 		240D8062190C16E6009F9AEA /* SelectCrosscorelTableViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 240D8061190C16E6009F9AEA /* SelectCrosscorelTableViewController.mm */; };
 		240D8066190E98F6009F9AEA /* CrossCorrViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 240D8064190E98F6009F9AEA /* CrossCorrViewController.m */; };
 		240D8067190E98F6009F9AEA /* CrossCorrViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 240D8065190E98F6009F9AEA /* CrossCorrViewController.xib */; };
+		2410998A1975B7CF004FC15A /* RowHeaderColectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 241099891975B7CF004FC15A /* RowHeaderColectionViewCell.m */; };
+		2410998D1975BA99004FC15A /* ColumnHeaderCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2410998C1975BA99004FC15A /* ColumnHeaderCollectionViewCell.m */; };
 		244C6A3B1943742E0097F7D4 /* WavManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 244C6A3A1943742E0097F7D4 /* WavManager.mm */; };
 		244DA13E195C9B0B00BFAA8B /* inputicon.png in Resources */ = {isa = PBXBuildFile; fileRef = 244DA13C195C9B0B00BFAA8B /* inputicon.png */; };
 		244DA13F195C9B0B00BFAA8B /* inputicon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 244DA13D195C9B0B00BFAA8B /* inputicon@2x.png */; };
@@ -180,6 +182,10 @@
 		240D8063190E98F6009F9AEA /* CrossCorrViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CrossCorrViewController.h; sourceTree = "<group>"; };
 		240D8064190E98F6009F9AEA /* CrossCorrViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CrossCorrViewController.m; sourceTree = "<group>"; };
 		240D8065190E98F6009F9AEA /* CrossCorrViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CrossCorrViewController.xib; sourceTree = "<group>"; };
+		241099881975B7CF004FC15A /* RowHeaderColectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RowHeaderColectionViewCell.h; sourceTree = "<group>"; };
+		241099891975B7CF004FC15A /* RowHeaderColectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RowHeaderColectionViewCell.m; sourceTree = "<group>"; };
+		2410998B1975BA99004FC15A /* ColumnHeaderCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColumnHeaderCollectionViewCell.h; sourceTree = "<group>"; };
+		2410998C1975BA99004FC15A /* ColumnHeaderCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColumnHeaderCollectionViewCell.m; sourceTree = "<group>"; };
 		244C6A391943742E0097F7D4 /* WavManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WavManager.h; sourceTree = "<group>"; };
 		244C6A3A1943742E0097F7D4 /* WavManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WavManager.mm; sourceTree = "<group>"; };
 		244DA13C195C9B0B00BFAA8B /* inputicon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = inputicon.png; sourceTree = "<group>"; };
@@ -807,6 +813,10 @@
 				249013991966CD5E00E5EF91 /* GraphMatrixViewController.mm */,
 				2490139D1966D88200E5EF91 /* GraphCollectionViewCell.h */,
 				2490139E1966D88200E5EF91 /* GraphCollectionViewCell.mm */,
+				241099881975B7CF004FC15A /* RowHeaderColectionViewCell.h */,
+				241099891975B7CF004FC15A /* RowHeaderColectionViewCell.m */,
+				2410998B1975BA99004FC15A /* ColumnHeaderCollectionViewCell.h */,
+				2410998C1975BA99004FC15A /* ColumnHeaderCollectionViewCell.m */,
 				249013A0196AB45200E5EF91 /* ISIGraphViewController.h */,
 				249013A1196AB45200E5EF91 /* ISIGraphViewController.mm */,
 				24507B4C196AF50400E27BD2 /* ISIGraphCollectionViewCell.h */,
@@ -1208,8 +1218,10 @@
 				2490139F1966D88200E5EF91 /* GraphCollectionViewCell.mm in Sources */,
 				249A246219058465005F5F03 /* AutocorrelationGraphViewController.m in Sources */,
 				FAFAEEFD1621CC0400632975 /* BBFile.mm in Sources */,
+				2410998A1975B7CF004FC15A /* RowHeaderColectionViewCell.m in Sources */,
 				248C8EBB18E5CF5E00307C4C /* CCGLTouchAppDelegate.mm in Sources */,
 				249013A3196AB45200E5EF91 /* ISIGraphViewController.mm in Sources */,
+				2410998D1975BA99004FC15A /* ColumnHeaderCollectionViewCell.m in Sources */,
 				245F1C7F194C762700AF0477 /* BBChannel.m in Sources */,
 				24D9DFD01951C4A600A78BED /* BBChannelSelectionTableViewController.m in Sources */,
 			);

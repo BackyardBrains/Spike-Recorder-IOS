@@ -12,4 +12,5 @@
 @interface ISIGraphCollectionViewCell : UICollectionViewCell <CPTPlotDataSource>
 
 -(void) setValues:(NSMutableArray *) values andLimits:(NSMutableArray *) limits;
+@property (nonatomic, retain) NSString * titleOfGraph;
 @end

@@ -13,13 +13,16 @@
 {
     NSMutableArray * _values;
 
-    
     CPTXYGraph *barChart;
     CPTGraphHostingView *_hostingView;
+    
+    UILabel * labelForTitle;
 }
 @end
 
 @implementation AutoGraphCollectionViewCell
+
+@synthesize titleOfGraph = _titleOfGraph;
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -27,6 +30,8 @@
     if (self) {
         [self.layer setBorderWidth:1.0f];
         [self.layer setBorderColor:[UIColor darkGrayColor].CGColor];
+        _titleOfGraph = @"";
+        
     }
     return self;
 }
@@ -37,6 +42,28 @@
     [self drawGraph];
     
 }
+
+#pragma mark - Label title
+
+-(void) setTitleOfGraph:(NSString *)intitleOfGraph
+{
+    _titleOfGraph = intitleOfGraph;
+    if(labelForTitle)
+    {
+        [labelForTitle removeFromSuperview];
+        [labelForTitle release];
+        labelForTitle = nil;
+    }
+    
+    labelForTitle = [[UILabel alloc] initWithFrame:CGRectMake(self.frame.size.width-30, 2, 28, 12)];
+    labelForTitle.backgroundColor = [UIColor whiteColor];
+    labelForTitle.text = intitleOfGraph;
+    labelForTitle.textAlignment = NSTextAlignmentCenter;
+    labelForTitle.font = [UIFont fontWithName:@"Georgia" size:(11)];
+    [self addSubview:labelForTitle];
+    
+  }
+
 
 
 #pragma mark - CorePlot data protocol
@@ -166,14 +193,9 @@
     barPlot.barOffset = CPTDecimalFromFloat(1.0f);
     barPlot.baseValue = CPTDecimalFromString(@"0");
     
-    //make width of bars on ipad greater
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        barPlot.barWidth = CPTDecimalFromFloat(10.0f);
-    }
-    else
-    {
-        barPlot.barWidth = CPTDecimalFromFloat(4.0f);
-    }
+    float widthOfBar = self.frame.size.width/[_values count];   
+    barPlot.barWidth = CPTDecimalFromFloat(widthOfBar);
+    
     
     barPlot.cornerRadius = 0.0f;
     barPlot.barWidthsAreInViewCoordinates = YES; //bar width are defined in pixels of screen
@@ -181,5 +203,7 @@
     barPlot.dataSource = self;
     [barChart addPlot:barPlot];
     [barChart.defaultPlotSpace scaleToFitPlots:[barChart allPlots]];
+    [labelForTitle removeFromSuperview];
+    [self addSubview:labelForTitle];
 }
 @end

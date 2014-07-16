@@ -11,7 +11,7 @@
 #import "CorePlot-CocoaTouch.h"
 
 @interface GraphCollectionViewCell : UICollectionViewCell <CPTPlotDataSource>
-@property (nonatomic, strong) UILabel *mainLabel;
+
 
 -(void) setFile:(BBFile *) file andFirstIndex:(int) firstIndex andSecondIndex:(int) secondIndex;
 

@@ -140,6 +140,9 @@ static BBBTManager *btManager = nil;
                             connectedAccessories];
     
     NSLog(@"Enter open session for protocol");
+    
+    
+    
     EASession *session = nil;
     BOOL foundAccessory = NO;
     for (EAAccessory *obj in accessories)
@@ -188,23 +191,32 @@ static BBBTManager *btManager = nil;
     else
     {
         NSLog(@"No accessory found");
-        NSNotification *notification = [NSNotification notificationWithName:NO_BT_CONNECTION object:self];
-        [[NSNotificationCenter defaultCenter] postNotification:notification];
+       // NSNotification *notification = [NSNotification notificationWithName:NO_BT_CONNECTION object:self];
+       // [[NSNotificationCenter defaultCenter] postNotification:notification];
         
-       /* connectToDevice = YES;
+        connectToDevice = YES;
         [[EAAccessoryManager sharedAccessoryManager] showBluetoothAccessoryPickerWithNameFilter:nil completion:^(NSError *error) {
             if(error != nil && [error code] == EABluetoothAccessoryPickerResultCancelled)
             {
+                if([error code] == EABluetoothAccessoryPickerResultCancelled)
+                {
+                    NSLog(@"Canceled accessory chooser.");
+                }
+                else
+                {
+                    NSLog(@"Error accessory chooser %@",[error description]);
+                }
                 //if canceled
                 
             }
             else
             {
+                NSLog(@"Accessory chooser should connect on BT.....");
                 //_session = [self openSessionForProtocol:BT_PROTOCOL_STRING];
                 //numberOfBytesReceivedInLastSec = 0;
             }
             
-        }];*/
+        }];
     
     }
     
@@ -251,11 +263,27 @@ static BBBTManager *btManager = nil;
 - (void)_accessoryDidConnect:(NSNotification *)notification {
     deviceAlreadyDisconnected = NO;
     NSLog(@"Accessory connected");
-   /* if(connectToDevice)
+    if(connectToDevice)
     {
-        _session = [self openSessionForProtocol:BT_PROTOCOL_STRING];
-        numberOfBytesReceivedInLastSec = 0;
-    }*/
+        
+        NSArray *accessories = [[EAAccessoryManager sharedAccessoryManager]
+                                connectedAccessories];
+        
+        NSLog(@"Test if we have protocol");
+
+        for (EAAccessory *obj in accessories)
+        {
+            NSLog(@"Test:");
+            NSLog(@"%@",obj);
+            if ([[obj protocolStrings] containsObject:BT_PROTOCOL_STRING])
+            {
+                NSLog(@"We found one accessory with our protocol string");
+                connectToDevice = NO;
+                _session = [self openSessionForProtocol:BT_PROTOCOL_STRING];
+                numberOfBytesReceivedInLastSec = 0;
+            }
+        }
+    }
     
 }
 

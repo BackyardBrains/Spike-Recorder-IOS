@@ -23,6 +23,10 @@
         [glView release];
         glView = nil;
     }
+
+    
+    [[BBAudioManager bbAudioManager] startThresholding:8192];
+    
     glView = [[MultichannelCindeGLView alloc] initWithFrame:self.view.frame];
     glView.mode = MultichannelGLViewModeThresholding;
     [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels ] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
@@ -33,7 +37,7 @@
     // set our view controller's prop that will hold a pointer to our newly created CCGLTouchView
     [self setGLView:glView];
     
-    [[BBAudioManager bbAudioManager] startThresholding:8192];
+    
     [glView loadSettings:TRUE];
     [glView startAnimation];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(noBTConnection) name:NO_BT_CONNECTION object:nil];

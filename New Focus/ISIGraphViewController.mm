@@ -162,6 +162,7 @@
 
     [cell setValues:((NSMutableArray *) [allValues objectAtIndex:indexForItem]) andLimits:((NSMutableArray *) [allLimits objectAtIndex:indexForItem])];
     cell.backgroundColor=[UIColor whiteColor];
+    [cell setTitleOfGraph:[NSString stringWithFormat:@"ST%d",indexForItem+1]];
     return cell;
     
 }
@@ -200,10 +201,11 @@
 
 - (void) handleOrientationOnEnd:(UIInterfaceOrientation) orientation {
     
+    [self drawGraph];
     if (orientation == UIInterfaceOrientationPortrait || orientation == UIInterfaceOrientationPortraitUpsideDown)
     {
         NSLog(@"Will rotate");
-        [UIView animateWithDuration:.25 animations:^{
+        [UIView animateWithDuration:.65 animations:^{
             _collectionView.frame = CGRectMake(_collectionView.frame.origin.x,
                                                 _collectionView.frame.origin.y-101,
                                                 _collectionView.frame.size.width,
@@ -212,6 +214,7 @@
                                          _hostView.frame.origin.y,
                                          _hostView.frame.size.width,
                                          _hostView.frame.size.height-101);
+            
             
         } completion:^(BOOL finished){
             NSLog(@"Bottom finished");
@@ -223,7 +226,7 @@
     else if (orientation == UIInterfaceOrientationLandscapeLeft || orientation == UIInterfaceOrientationLandscapeRight)
     {
         NSLog(@"Will rotate");
-        [UIView animateWithDuration:.25 animations:^{
+        [UIView animateWithDuration:.65 animations:^{
             _collectionViewR.frame = CGRectMake(_collectionViewR.frame.origin.x-101,
                                                 _collectionViewR.frame.origin.y,
                                                 _collectionViewR.frame.size.width,
@@ -269,14 +272,19 @@
     }
     else if (orientation == UIInterfaceOrientationLandscapeLeft || orientation == UIInterfaceOrientationLandscapeRight)
     {
-        _collectionViewR.frame = CGRectMake(_collectionViewR.frame.origin.x+101,
-                                            _collectionViewR.frame.origin.y,
-                                            _collectionViewR.frame.size.width,
-                                            _collectionViewR.frame.size.height);
-        _hostView.frame = CGRectMake(_hostView.frame.origin.x,
-                                     _hostView.frame.origin.y,
-                                     _hostView.frame.size.width+101,
-                                     _hostView.frame.size.height);
+        [UIView animateWithDuration:.25 animations:^{
+            _collectionViewR.frame = CGRectMake(_collectionViewR.frame.origin.x+101,
+                                                _collectionViewR.frame.origin.y,
+                                                _collectionViewR.frame.size.width,
+                                                _collectionViewR.frame.size.height);
+            _hostView.frame = CGRectMake(_hostView.frame.origin.x,
+                                         _hostView.frame.origin.y,
+                                         _hostView.frame.size.width+101,
+                                         _hostView.frame.size.height);
+        } completion:^(BOOL finished){
+            NSLog(@"Bottom finished");
+            
+        }];
     }
 }
 
@@ -396,14 +404,8 @@
     barPlot.fill = [CPTFill fillWithColor:[CPTColor blueColor]];
     barPlot.lineStyle = nil;
     
-    //make width of bars on ipad greater
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        barPlot.barWidth = CPTDecimalFromFloat(10.0f);
-    }
-    else
-    {
-        barPlot.barWidth = CPTDecimalFromFloat(4.0f);
-    }
+    float widthOfBar = _hostView.frame.size.width/[_values count];
+    barPlot.barWidth = CPTDecimalFromFloat(widthOfBar);
     
     barPlot.cornerRadius = 0.0f;
     barPlot.barWidthsAreInViewCoordinates = YES; //bar width are defined in pixels of screen
