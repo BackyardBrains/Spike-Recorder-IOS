@@ -83,6 +83,11 @@
 		24D9DFCC1951C35600A78BED /* FPPopoverView.m in Sources */ = {isa = PBXBuildFile; fileRef = 24D9DFC81951C35600A78BED /* FPPopoverView.m */; };
 		24D9DFCD1951C35600A78BED /* FPTouchView.m in Sources */ = {isa = PBXBuildFile; fileRef = 24D9DFCA1951C35600A78BED /* FPTouchView.m */; };
 		24D9DFD01951C4A600A78BED /* BBChannelSelectionTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 24D9DFCF1951C4A600A78BED /* BBChannelSelectionTableViewController.m */; };
+		24DBA929197709DF00AEDE86 /* FFTViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 24DBA927197709DF00AEDE86 /* FFTViewController.mm */; };
+		24DBA92A197709DF00AEDE86 /* FFTViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 24DBA928197709DF00AEDE86 /* FFTViewController.xib */; };
+		24DBA92D1977107400AEDE86 /* FFTCinderGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 24DBA92C1977107400AEDE86 /* FFTCinderGLView.mm */; };
+		24DBA93019784CAC00AEDE86 /* spectrum.png in Resources */ = {isa = PBXBuildFile; fileRef = 24DBA92E19784CAC00AEDE86 /* spectrum.png */; };
+		24DBA93119784CAC00AEDE86 /* spectrum@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 24DBA92F19784CAC00AEDE86 /* spectrum@2x.png */; };
 		24F6696019476E9B00A78247 /* BBAudioFileWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 24F6695F19476E9B00A78247 /* BBAudioFileWriter.m */; };
 		FA14EC5C15D04AD700B0FB71 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = FA14EC5B15D04AD700B0FB71 /* Settings.bundle */; };
 		FA14EC5F15D05DD800B0FB71 /* StimulationParameterView.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA14EC5E15D05DD800B0FB71 /* StimulationParameterView.xib */; };
@@ -361,6 +366,13 @@
 		24D9DFCA1951C35600A78BED /* FPTouchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FPTouchView.m; sourceTree = "<group>"; };
 		24D9DFCE1951C4A600A78BED /* BBChannelSelectionTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BBChannelSelectionTableViewController.h; sourceTree = "<group>"; };
 		24D9DFCF1951C4A600A78BED /* BBChannelSelectionTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BBChannelSelectionTableViewController.m; sourceTree = "<group>"; };
+		24DBA926197709DF00AEDE86 /* FFTViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFTViewController.h; sourceTree = "<group>"; };
+		24DBA927197709DF00AEDE86 /* FFTViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FFTViewController.mm; sourceTree = "<group>"; };
+		24DBA928197709DF00AEDE86 /* FFTViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FFTViewController.xib; sourceTree = "<group>"; };
+		24DBA92B1977107400AEDE86 /* FFTCinderGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFTCinderGLView.h; sourceTree = "<group>"; };
+		24DBA92C1977107400AEDE86 /* FFTCinderGLView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FFTCinderGLView.mm; sourceTree = "<group>"; };
+		24DBA92E19784CAC00AEDE86 /* spectrum.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spectrum.png; sourceTree = "<group>"; };
+		24DBA92F19784CAC00AEDE86 /* spectrum@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "spectrum@2x.png"; sourceTree = "<group>"; };
 		24F6695E19476E9B00A78247 /* BBAudioFileWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BBAudioFileWriter.h; sourceTree = "<group>"; };
 		24F6695F19476E9B00A78247 /* BBAudioFileWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BBAudioFileWriter.m; sourceTree = "<group>"; };
 		FA14EC5B15D04AD700B0FB71 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = Settings.bundle; path = "New Focus/Settings.bundle"; sourceTree = "<group>"; };
@@ -849,6 +861,8 @@
 		FAA43D2715AB5F9C0024E445 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				24DBA92E19784CAC00AEDE86 /* spectrum.png */,
+				24DBA92F19784CAC00AEDE86 /* spectrum@2x.png */,
 				244DA140195C9DAF00BFAA8B /* bluetooth.png */,
 				244DA141195C9DAF00BFAA8B /* bluetooth@2x.png */,
 				244DA13C195C9B0B00BFAA8B /* inputicon.png */,
@@ -997,6 +1011,10 @@
 				FADF268015963630006C87BA /* MyCinderGLView.mm */,
 				247ED9AF1935EA3C00871BAC /* MultichannelCindeGLView.h */,
 				247ED9B01935EA3C00871BAC /* MultichannelCindeGLView.mm */,
+				24DBA926197709DF00AEDE86 /* FFTViewController.h */,
+				24DBA927197709DF00AEDE86 /* FFTViewController.mm */,
+				24DBA92B1977107400AEDE86 /* FFTCinderGLView.h */,
+				24DBA92C1977107400AEDE86 /* FFTCinderGLView.mm */,
 			);
 			name = MyClasses;
 			sourceTree = "<group>";
@@ -1004,6 +1022,7 @@
 		FADF268515963630006C87BA /* MyAssets */ = {
 			isa = PBXGroup;
 			children = (
+				24DBA928197709DF00AEDE86 /* FFTViewController.xib */,
 				24507B51196C333C00E27BD2 /* AutoGraphViewController.xib */,
 				249013A2196AB45200E5EF91 /* ISIGraphViewController.xib */,
 				2490139A1966CD5E00E5EF91 /* GraphMatrixViewController.xib */,
@@ -1105,11 +1124,13 @@
 				FAA27C1E15AD01CA00DCC60B /* ThresholdViewController.xib in Resources */,
 				FA9A665215BA3DC100CF1697 /* MainWindow-iPad.xib in Resources */,
 				FA9A665B15BB19B000CF1697 /* SettingsDefaults.plist in Resources */,
+				24DBA92A197709DF00AEDE86 /* FFTViewController.xib in Resources */,
 				244DA143195C9DAF00BFAA8B /* bluetooth@2x.png in Resources */,
 				240D8067190E98F6009F9AEA /* CrossCorrViewController.xib in Resources */,
 				FA14EC5C15D04AD700B0FB71 /* Settings.bundle in Resources */,
 				244DA142195C9DAF00BFAA8B /* bluetooth.png in Resources */,
 				249013A4196AB45200E5EF91 /* ISIGraphViewController.xib in Resources */,
+				24DBA93119784CAC00AEDE86 /* spectrum@2x.png in Resources */,
 				24513CEE19545CE9007F240A /* Pause@2x.png in Resources */,
 				24513CF819545E5A007F240A /* Stimulate@2x.png in Resources */,
 				24513D0419545F5E007F240A /* WaveImage@2x.png in Resources */,
@@ -1133,6 +1154,7 @@
 				FA2DAF8A16C89AD600EFF9D6 /* Icon.png in Resources */,
 				246989351909898F00F5383F /* trash.png in Resources */,
 				24513CEF19545CE9007F240A /* Play.png in Resources */,
+				24DBA93019784CAC00AEDE86 /* spectrum.png in Resources */,
 				247ED9BB193DEB8800871BAC /* README.md in Resources */,
 				FA2DAF8B16C89AD600EFF9D6 /* Icon@2x.png in Resources */,
 				24513CE819545C50007F240A /* Record@2x.png in Resources */,
@@ -1162,6 +1184,7 @@
 				FA90598F15A9F9830013688B /* NSDate-SQLitePersistence.m in Sources */,
 				FA90599115A9F9830013688B /* NSMutableArray-MultipleSort.m in Sources */,
 				24D9DFCB1951C35600A78BED /* FPPopoverController.m in Sources */,
+				24DBA929197709DF00AEDE86 /* FFTViewController.mm in Sources */,
 				FA90599315A9F9830013688B /* NSMutableData-SQLitePersistence.m in Sources */,
 				2405351D18FC62BB009A09FF /* MBProgressHUD.m in Sources */,
 				FA90599515A9F9830013688B /* NSNumber-SQLitePersistence.m in Sources */,
@@ -1170,6 +1193,7 @@
 				FA90599915A9F9830013688B /* NSObject-MissingKV.m in Sources */,
 				245F1C7C194B832C00AF0477 /* BBSpikeTrain.m in Sources */,
 				FA90599B15A9F9830013688B /* NSObject-SQLitePersistence.m in Sources */,
+				24DBA92D1977107400AEDE86 /* FFTCinderGLView.mm in Sources */,
 				FA90599D15A9F9830013688B /* NSString-NumberStuff.m in Sources */,
 				FA90599F15A9F9830013688B /* NSString-SQLiteColumnName.m in Sources */,
 				FA9059A115A9F9830013688B /* NSString-SQLitePersistence.m in Sources */,

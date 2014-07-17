@@ -92,6 +92,7 @@ typedef enum BBStimulationType
 @property (readonly) BOOL selecting;
 @property (readonly) BOOL playing;
 @property (readonly) BOOL btOn;
+@property (readonly) BOOL FFTOn;
 @property BOOL seeking;
 
 + (BBAudioManager *) bbAudioManager;
@@ -109,18 +110,28 @@ typedef enum BBStimulationType
 - (float)fetchAudio:(float *)data numFrames:(UInt32)numFrames whichChannel:(UInt32)whichChannel stride:(UInt32)stride;
 - (NSMutableArray *) getChannels;
 
+//Selection
 -(void) endSelection;
 -(void) updateSelection:(float) newSelectionTime;
 - (float) selectionStartTime;
 - (float) selectionEndTime;
+
 -(NSMutableArray *) getSpikes;
 -(float) getTimeForSpikes;
 - (void)saveSettingsToUserDefaults;
 -(void) clearWaveform;
+
+//Bluetooth
 -(void) testBluetoothConnection;
 -(void) switchToBluetoothWithNumOfChannels:(int) numOfChannelsBT andSampleRate:(int) inSampleRate;
 -(void) closeBluetooth;
 
 -(void) selectChannel:(int) selectedChannel;
+
+//FFT
+-(float *) getFFTResult;
+-(UInt32) lengthOfFFTData;
+-(void) stopFFT;
+-(void) startFFT;
 
 @end

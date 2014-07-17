@@ -48,6 +48,15 @@
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics"/>
                     <nil key="simulatedDestinationMetrics"/>
                 </viewController>
+                <viewController title="FFT" nibName="FFTViewController" wantsFullScreenLayout="YES" id="eGz-23-pcw" userLabel="FFT View Controller - FFT" customClass="FFTViewController">
+                    <extendedEdge key="edgesForExtendedLayout"/>
+                    <tabBarItem key="tabBarItem" title="Spectrum" image="spectrum.png" id="lak-eG-6L3"/>
+                    <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
+                    <nil key="simulatedTopBarMetrics"/>
+                    <nil key="simulatedBottomBarMetrics"/>
+                    <simulatedOrientationMetrics key="simulatedOrientationMetrics"/>
+                    <nil key="simulatedDestinationMetrics"/>
+                </viewController>
                 <navigationController definesPresentationContext="YES" id="27">
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <tabBarItem key="tabBarItem" title="Recordings" image="FileNeuron.png" id="31"/>
@@ -84,5 +93,6 @@
         <image name="FileNeuron.png" width="30" height="30"/>
         <image name="ThresholdImage.png" width="30" height="30"/>
         <image name="WaveImage.png" width="30" height="30"/>
+        <image name="spectrum.png" width="30" height="30"/>
     </resources>
 </document>

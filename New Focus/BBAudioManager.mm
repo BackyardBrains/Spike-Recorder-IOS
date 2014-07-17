@@ -100,7 +100,7 @@ static BBAudioManager *bbAudioManager = nil;
 @synthesize playing;
 @synthesize seeking;
 @synthesize btOn;
-
+@synthesize FFTOn;
 
 #pragma mark - Singleton Methods
 + (BBAudioManager *) bbAudioManager
@@ -1134,6 +1134,119 @@ static BBAudioManager *bbAudioManager = nil;
     return selectionRMS;
 }
 
+#pragma mark Helpers
+
+-(void) stopAllServices
+{
+    if (recording)
+        [self stopRecording];
+    
+    if (thresholding)
+    {
+        [self stopThresholding];
+    }
+    if(self.playing)
+    {
+        [self stopPlaying];
+    }
+    if(FFTOn)
+    {
+        [self stopFFT];
+    }
+
+}
+
+#pragma mark FFT code
+
+-(float *) getFFTResult
+{
+    return dspAnalizer->FFTMagnitude;
+}
+
+-(void) startFFT
+{
+    [self stopAllServices];
+    
+    FFTOn = true;
+    
+    if(btOn)
+    {
+        _sourceSamplingRate=[[BBBTManager btManager] samplingRate];
+        _sourceNumberOfChannels=[[BBBTManager btManager] numberOfChannels];
+    }
+    else
+    {
+        _sourceSamplingRate =  audioManager.samplingRate;
+        _sourceNumberOfChannels = audioManager.numInputChannels;
+    }
+
+    //TODO:make  length of FFT right so that all important frequencies are vidible
+    
+    
+    //Try to make under 1Hz resolution
+    //if it is too much than limit it to samplingRate/2^12
+    uint32_t log2n = log2f((float)_sourceSamplingRate);
+    if(log2n<12)
+    {
+        log2n +=1;
+    }
+    else
+    {
+        log2n = 12;
+    }
+    uint32_t n = 1 << (log2n);
+    
+    dspAnalizer->InitFFT(ringBuffer, _sourceNumberOfChannels, _sourceSamplingRate, n);
+    
+
+    if(btOn)
+    {
+        audioManager.inputBlock = nil;
+        //TODO:add BT input block here
+        [[BBBTManager btManager] setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
+         {
+             ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
+             dspAnalizer->CalculateFFT(_selectedChannel);//TODO: Make selection of channels
+         }];
+    }
+    else
+    {
+        [[BBBTManager btManager] setInputBlock:nil];
+        [audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
+            ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
+            dspAnalizer->CalculateFFT(_selectedChannel);//TODO: Make selection of channels
+        }];
+    }
+}
+
+-(void) stopFFT
+{
+    if (!FFTOn)
+        return;
+    
+    FFTOn = false;
+    if(btOn)
+    {
+        [[BBBTManager btManager] setInputBlock:nil];
+        [[BBBTManager btManager] setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
+         {
+             ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
+         }];
+    }
+    else
+    {
+        audioManager.inputBlock = nil;
+        // Replace the input block with the old input block, where we just save an in-memory copy of the audio.
+        [audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
+            ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
+        }];
+    }
+}
+
+-(UInt32) lengthOfFFTData
+{
+    return dspAnalizer->LengthOfFFTData;
+}
 
 #pragma mark - State
 
