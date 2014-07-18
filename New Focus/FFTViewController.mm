@@ -32,6 +32,8 @@
     glView = [[FFTCinderGLView alloc] initWithFrame:self.view.frame];
     float baseFreq = 0.5*((float)[[BBAudioManager bbAudioManager] sourceSamplingRate])/((float)[[BBAudioManager bbAudioManager] lengthOfFFTData]);
     [glView setupWithBaseFreq:baseFreq andLengthOfFFT:[[BBAudioManager bbAudioManager] lengthOfFFTData]];
+    [[BBAudioManager bbAudioManager] selectChannel:0];
+    _channelBtn.hidden = [[BBAudioManager bbAudioManager] sourceNumberOfChannels]<2;
     
 	[self.view addSubview:glView];
     [self.view sendSubviewToBack:glView];
@@ -108,12 +110,60 @@
     }
 }
 
+#pragma mark - Channel code
+
+- (IBAction)channelBtnClick:(id)sender {
+    SAFE_ARC_RELEASE(popover); popover=nil;
+    
+    //the controller we want to present as a popover
+    BBChannelSelectionTableViewController *controller = [[BBChannelSelectionTableViewController alloc] initWithStyle:UITableViewStylePlain];
+    
+    controller.delegate = self;
+    popover = [[FPPopoverController alloc] initWithViewController:controller];
+    popover.border = NO;
+    popover.tint = FPPopoverWhiteTint;
+    
+    
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+    {
+        popover.contentSize = CGSizeMake(300, 500);
+    }
+    else {
+        popover.contentSize = CGSizeMake(200, 300);
+    }
+    
+    popover.arrowDirection = FPPopoverArrowDirectionAny;
+    [popover presentPopoverFromView:sender];
+}
+
+
+-(NSMutableArray *) getAllRows
+{
+    NSMutableArray * allChannelsLabels = [[[NSMutableArray alloc] init] autorelease];
+    for(int i=0;i<[[BBAudioManager bbAudioManager] sourceNumberOfChannels];i++)
+    {
+        [allChannelsLabels addObject:[NSString stringWithFormat:@"Channel %d",i+1]];
+    }
+    return allChannelsLabels;
+}
+
+
+- (void)rowSelected:(NSInteger) rowIndex
+{
+    [[BBAudioManager bbAudioManager] selectChannel:rowIndex];
+    [popover dismissPopoverAnimated:YES];
+}
+
+#pragma mark - Destroy view
+
 - (void)dealloc {
+    [_channelBtn release];
     [super dealloc];
 }
 
 - (void)viewDidUnload {
     [super viewDidUnload];
 }
+
 
 @end

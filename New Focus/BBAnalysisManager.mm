@@ -415,7 +415,9 @@ static BBAnalysisManager *bbAnalysisManager = nil;
  }
 
 //
-// Calculate autocorrelation of spike train
+//Calculate autocorrelation for Spike Train with index aSpikeTrainIndex in channel with index aChanIndex in file afile
+//binsize: is size of one bin in seconds
+//maxtime: defines how far we shift the signal during correlation [-binsize*0.5, maxtime+binsize*0.5]
 //
 -(NSArray *) autocorrelationWithFile:(BBFile *) afile channelIndex:(NSInteger) aChanIndex spikeTrainIndex:(NSInteger) aSpikeTrainIndex maxtime:(float) maxtime andBinsize:(float) binsize
 {
@@ -425,9 +427,6 @@ static BBAnalysisManager *bbAnalysisManager = nil;
         BBSpike * firstSpike;
         BBSpike * secondSpike;
         int n = ceilf((maxtime+binsize)/binsize);
-        
-        //float C1 =[(BBSpike *)[afile.spikes objectAtIndex:[afile.spikes count]-1] time] - [(BBSpike *)[afile.spikes objectAtIndex:0] time];
-       // float C2= ((float)([afile.spikes count]*[afile.spikes count]*binsize))/C1*C1;
         
         int histogram [n];
         for (int x = 0; x < n; ++x)
@@ -477,12 +476,6 @@ static BBAnalysisManager *bbAnalysisManager = nil;
             }
         }
         
-        //Normalization
-       // for(int i=0;i<n;i++)
-       // {
-       //     histogram[i] = histogram[i]/C1 - C2;
-       // }
-        
         NSMutableArray* histMA = [NSMutableArray arrayWithCapacity:n];
         for ( int i = 0; i < n; ++i )
         {
@@ -496,7 +489,9 @@ static BBAnalysisManager *bbAnalysisManager = nil;
 }
 
 //
-// Calculate cross-correlation of two spike trains
+//Calculate crosscorrelation for two spike trains
+//binsize: is size of one bin in seconds
+//maxtime: defines how far we shift the signal during correlation in both directions[-maxtime-binsize*0.5, maxtime+binsize*0.5] (in seconds)
 //
 -(NSArray *) crosscorrelationWithFile:(BBFile *) afile firstChannelIndex:(NSInteger) fChanIndex firstSpikeTrainIndex:(NSInteger) fSpikeTrainIndex secondChannelIndex:(NSInteger) sChanIndex secondSpikeTrainIndex:(NSInteger) sSpikeTrainIndex maxtime:(float) maxtime andBinsize:(float) binsize
 {
@@ -507,9 +502,6 @@ static BBAnalysisManager *bbAnalysisManager = nil;
         BBSpike * firstSpike;
         BBSpike * secondSpike;
         int n = ceilf((2*maxtime+binsize)/binsize);
-        
-        //float C1 =[(BBSpike *)[afile.spikes objectAtIndex:[afile.spikes count]-1] time] - [(BBSpike *)[afile.spikes objectAtIndex:0] time];
-        // float C2= ((float)([afile.spikes count]*[afile.spikes count]*binsize))/C1*C1;
         
         int histogram [n];
         for (int x = 0; x < n; ++x)
@@ -561,9 +553,11 @@ static BBAnalysisManager *bbAnalysisManager = nil;
 }
 
 
-
-//Inter-spike-interval histogram generator
--(void) ISIWithFile:(BBFile *) afile channelIndex:(NSInteger) aChannelIndex spikeTrainIndex:(NSInteger) aSpikeTrainIndex maxtime:(float) maxtime numOfBins:(int) bins values:(NSMutableArray *) valuesY limits:(NSMutableArray *) limitsX
+//
+//Calculate Inter spike interval analysis with logarithmically spaced bins (number of bins = bins) and put result
+//in valuesY and limits of bins in limitsX. Limits of bins are always generated between 10^-3 and 10^1
+//
+-(void) ISIWithFile:(BBFile *) afile channelIndex:(NSInteger) aChannelIndex spikeTrainIndex:(NSInteger) aSpikeTrainIndex numOfBins:(int) bins values:(NSMutableArray *) valuesY limits:(NSMutableArray *) limitsX
 {
     NSMutableArray * spikeTrain = (NSMutableArray *)[[[[afile.allChannels objectAtIndex:aChannelIndex] spikeTrains] objectAtIndex:aSpikeTrainIndex] spikes];
     if(afile && [spikeTrain count]>1)
@@ -608,6 +602,7 @@ static BBAnalysisManager *bbAnalysisManager = nil;
 }
 
 //Generate logarithmically spaced vectors
+//From 10^min to 10^max with logBins number of values
 -(float *) generateLogSpaceWithMin:(int) min max:(int) max bins:(int) logBins
 {
     double logarithmicBase = M_E;
@@ -628,6 +623,10 @@ static BBAnalysisManager *bbAnalysisManager = nil;
 }
 
 #pragma mark - Thresholds
+
+//
+//Add another spike train (and it's thresholds) to current channel (currentChannel)
+//
 -(void) addAnotherThresholds
 {
     _currentTrainIndex = [[[[_file allChannels] objectAtIndex:_currentChannel] spikeTrains] count];
@@ -635,8 +634,12 @@ static BBAnalysisManager *bbAnalysisManager = nil;
     BBSpikeTrain * newSpikeTrain = [[BBSpikeTrain alloc] initWithName:nameOfSpikeTrain];
     //add spike train
     [[[[_file allChannels] objectAtIndex:_currentChannel] spikeTrains] addObject:newSpikeTrain];
+    [newSpikeTrain release];
 }
 
+//
+//Remove currentSpikeTrain spike train from currentChannel channel
+//
 -(void) removeSelectedThresholds
 {
     NSMutableArray * trains = (NSMutableArray *)[[[_file allChannels] objectAtIndex:_currentChannel] spikeTrains];
@@ -647,9 +650,10 @@ static BBAnalysisManager *bbAnalysisManager = nil;
     
     for(int i=0;i<[trains count];i++)
     {
-        NSString * nameOfSpikeTrain = [NSString stringWithFormat:@"Spike %d%@",(_currentChannel+1), [alphabetArray objectAtIndex:_currentTrainIndex] ];
+        NSString * nameOfSpikeTrain = [[NSString stringWithFormat:@"Spike %d%@",(_currentChannel+1), [alphabetArray objectAtIndex:_currentTrainIndex] ] copy];
         BBSpikeTrain * spikeTrain = [trains objectAtIndex:i];
-        spikeTrain.nameOfTrain = [nameOfSpikeTrain copy];
+        spikeTrain.nameOfTrain = nameOfSpikeTrain;
+        [nameOfSpikeTrain release];
     }
     _currentTrainIndex--;
     [self moveToNextSpikeTrain];
@@ -657,6 +661,9 @@ static BBAnalysisManager *bbAnalysisManager = nil;
 
 #pragma mark - Getters/ Setters
 
+//
+//Move index to next spike train on same channel
+//
 -(NSInteger) moveToNextSpikeTrain
 {
     
@@ -664,6 +671,9 @@ static BBAnalysisManager *bbAnalysisManager = nil;
     return _currentTrainIndex;
 }
 
+//
+//Set current spike train index
+//
 -(void) setCurrentSpikeTrain:(NSInteger) aCurrentSpikeTrain
 {
     
@@ -671,12 +681,17 @@ static BBAnalysisManager *bbAnalysisManager = nil;
     
 }
 
+//
+//Number of spike trains in current channel
+//
 -(int) numberOfSpikeTrainsOnCurrentChannel
 {
     return [[[[_file allChannels] objectAtIndex:_currentChannel] spikeTrains] count];
 }
 
-
+//
+//Cumulative number of spike trains in all channel
+//
 -(int) numberOfSpikeTrains
 {
     return [_file numberOfSpikeTrains];

@@ -22,7 +22,9 @@ DSPAnalysis::DSPAnalysis ()
     FFTMagnitude = nil;
 }
 
-
+//
+//Init FFT. Length of window must be 2^N. Frequency resolution samplingRate/LengthOfWindow
+//
 void DSPAnalysis::InitFFT(RingBuffer *externalRingBuffer, UInt32 numberOfChannels, UInt32 samplingRate, UInt32 lengthOfWindow)
 {
     mExternalRingBuffer = externalRingBuffer;
@@ -49,13 +51,16 @@ void DSPAnalysis::InitFFT(RingBuffer *externalRingBuffer, UInt32 numberOfChannel
     A.realp = (float*) malloc(sizeof(float) * LengthOfFFTData);
     A.imagp = (float*) malloc(sizeof(float) * LengthOfFFTData);
     
-    
+    //Make FFT config
     fftSetup = vDSP_create_fftsetup(log2n, FFT_RADIX2);
 }
 
+//
+//Calculate FFT for one channel and put result in FFTMagnitude array. We take input signal from mExternalRingBuffer
+//
 float * DSPAnalysis::CalculateFFT(UInt32 whichChannel)
 {
-    
+    //Get data from ring buffer
     mExternalRingBuffer->FetchFreshData2(mInputBuffer, mLengthOfWindow, whichChannel , 1);
     
     uint32_t log2n = log2f((float)mLengthOfWindow);
@@ -63,10 +68,10 @@ float * DSPAnalysis::CalculateFFT(UInt32 whichChannel)
     vDSP_ctoz((COMPLEX *) mInputBuffer, 2, &A, 1, LengthOfFFTData);
     vDSP_fft_zrip(fftSetup, &A, 1, log2n, FFT_FORWARD);
     
-    
+    //Calculate DC component
     FFTMagnitude[0] = sqrtf(A.realp[0]*A.realp[0]);
     
-    //get magnitude;
+    //Calculate magnitude for all freq.
     for(int i = 1; i < LengthOfFFTData; i++){
         FFTMagnitude[i] = sqrtf(A.realp[i]*A.realp[i] + A.imagp[i] * A.imagp[i]);
     }

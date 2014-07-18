@@ -10,10 +10,9 @@
 //
 
 #import "CCGLTouchViewController.h"
-#import "MyCinderGLView.h"
 #import "BBAudioManager.h"
 #import "BBFile.h"
-#import "RecordingOverlayController.h"
+
 #import "MultichannelCindeGLView.h"
 #import "FPPopoverController.h"
 #import "BBChannelSelectionTableViewController.h"

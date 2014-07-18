@@ -109,7 +109,9 @@
         [self calculateScale];
         [self calculateXAxisFreq];
         
-        offsetY = X_AXIS_OFFSET* scaleXY.y;
+
+        offsetY = X_AXIS_OFFSET* scaleXY.y/(2*retinaCorrection);
+        
         
         // Set the line color and width
         glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
@@ -213,7 +215,7 @@
         hzString << fixed << "Frequency (Hz)";
         xScaleTextSize = mScaleFont->measureString(hzString.str());
 
-        xScaleTextPosition.x = retinaCorrection*self.frame.size.width - xScaleTextSize.x*0.5 ;
+        xScaleTextPosition.x = 0.5f*self.frame.size.width - xScaleTextSize.x*0.5 ;
         
         xScaleTextPosition.y =self.frame.size.height- 15;
         mScaleFont->drawString(hzString.str(), xScaleTextPosition);

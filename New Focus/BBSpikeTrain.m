@@ -55,7 +55,7 @@
 
 - (id)initWithCoder:(NSCoder *)decoder {
     NSString * newName = [decoder decodeObjectForKey:kNameOfTrain];
-    [self initWithName:newName];
+    BBSpikeTrain * tempSelf = [self initWithName:newName];
     self.secondThreshold = [decoder decodeFloatForKey:kSecondThreshold];
     self.firstThreshold = [decoder decodeFloatForKey:kFirstThreshold];
     [self setSpikes:[decoder decodeObjectForKey:kSpikesArray]];
@@ -63,7 +63,7 @@
 
     [self CSVToSpikes];
     
-    return self;
+    return tempSelf;
 }
 
 //

@@ -7,7 +7,6 @@
 //
 
 #import "CCGLTouchViewController.h"
-#import "MyCinderGLView.h"
 #import "BBAudioManager.h"
 #import "BBFile.h"
 #import "MultichannelCindeGLView.h"

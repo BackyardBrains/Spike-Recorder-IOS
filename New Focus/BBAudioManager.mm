@@ -398,7 +398,6 @@ static BBAudioManager *bbAudioManager = nil;
     if(btOn)
     {
         audioManager.inputBlock = nil;
-        //TODO:add BT input block here
         [[BBBTManager btManager] setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
          {
              ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
@@ -1179,9 +1178,6 @@ static BBAudioManager *bbAudioManager = nil;
         _sourceSamplingRate =  audioManager.samplingRate;
         _sourceNumberOfChannels = audioManager.numInputChannels;
     }
-
-    //TODO:make  length of FFT right so that all important frequencies are vidible
-    
     
     //Try to make under 1Hz resolution
     //if it is too much than limit it to samplingRate/2^12
@@ -1202,7 +1198,6 @@ static BBAudioManager *bbAudioManager = nil;
     if(btOn)
     {
         audioManager.inputBlock = nil;
-        //TODO:add BT input block here
         [[BBBTManager btManager] setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
          {
              ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);

@@ -44,10 +44,10 @@
 
 - (id)initWithCoder:(NSCoder *)decoder {
     NSString * newNameOfChannel = [decoder decodeObjectForKey:kNameOfChannel];
-    [self initWithNameOfChannel:newNameOfChannel];
+    BBChannel* tempSelf = [self initWithNameOfChannel:newNameOfChannel];
     [self setSpikeTrains:[decoder decodeObjectForKey:kSpikeTrains]];
 
-    return self;
+    return tempSelf;
 }
 
 - (void)dealloc {

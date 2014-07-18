@@ -33,6 +33,7 @@
     float retinaCorrection;
     
     BOOL firstDrawAfterChannelChange;
+    
 }
 
 -(void) setupWithBaseFreq:(float) inBaseFreq andLengthOfFFT:(UInt32) inLengthOfFFT;

@@ -10,10 +10,6 @@
 #import "MyAppDelegate.h"
 #import "BBAnalysisManager.h"
 #import "MBProgressHUD.h"
-#import "AutocorrelationGraphViewController.h"
-#import "ISIHistogramViewController.h"
-#import "SpikeTrainsTableViewController.h"
-#import "SelectCrosscorelTableViewController.h"
 #import "CrossCorrViewController.h"
 #import "GraphMatrixViewController.h"
 #import "ISIGraphViewController.h"
@@ -273,118 +269,27 @@
     }
     else if ([cell.textLabel.text isEqualToString: @"Autocorrelation"])
 	{
-        
         AutoGraphViewController *autovc = [[AutoGraphViewController alloc] initWithNibName:@"AutoGraphViewController" bundle:nil];
         [autovc setFileForGraph:(BBFile *)[self.files objectAtIndex:0]];
         [self.navigationController pushViewController:autovc animated:YES];
         [autovc release];
-
-      /*  if([(BBFile *)[self.files objectAtIndex:0] numberOfSpikeTrains]<2)
-        {
-            MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-            hud.labelText = @"Calculating...";
-            dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-                NSArray * values = [[BBAnalysisManager bbAnalysisManager] autocorrelationWithFile:(BBFile *)[self.files objectAtIndex:0] spikeTrainIndex:0  maxtime:0.1f andBinsize:0.001f];
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [MBProgressHUD hideHUDForView:self.view animated:YES];
-                    AutocorrelationGraphViewController *avc = [[AutocorrelationGraphViewController alloc] initWithNibName:@"AutocorrelationGraphViewController" bundle:nil];
-                    avc.values = values;
-                    [self.navigationController pushViewController:avc animated:YES];
-                    [avc release];
-                });
-            });
-        }
-        else
-        {
-            SpikeTrainsTableViewController *avc = [[SpikeTrainsTableViewController alloc] initWithFile:(BBFile *)[self.files objectAtIndex:0] andFunction:kAUTOCORRELATION];
-            [self.navigationController pushViewController:avc animated:YES];
-            [avc release];
-            
-        }*/
-        
     }
     else if ([cell.textLabel.text isEqualToString: @"ISI"])
 	{
-        
-      /*  if([(BBFile *)[self.files objectAtIndex:0] numberOfSpikeTrains]<2)
-        {
-            
-        }
-        else
-        {*/
-            
 
-            ISIGraphViewController *isivc = [[ISIGraphViewController alloc] initWithNibName:@"ISIGraphViewController" bundle:nil];
-            [isivc setFileForGraph:(BBFile *)[self.files objectAtIndex:0]];
-            [self.navigationController pushViewController:isivc animated:YES];
-            [isivc release];
-            
-            
-
-       /* }*/
-        
-       /* if([(BBFile *)[self.files objectAtIndex:0] numberOfSpikeTrains]<2)
-        {
-            MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-            hud.labelText = @"Calculating...";
-            dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-                
-                NSMutableArray* values = [[NSMutableArray alloc] initWithCapacity:0];
-                NSMutableArray* limits = [[NSMutableArray alloc] initWithCapacity:0];
-                
-                [[BBAnalysisManager bbAnalysisManager] ISIWithFile:(BBFile *)[self.files objectAtIndex:0] spikeTrainIndex:0  maxtime:0.1f numOfBins:100 values:values limits:limits ];
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [MBProgressHUD hideHUDForView:self.view animated:YES];
-                    ISIHistogramViewController *avc = [[ISIHistogramViewController alloc] initWithNibName:@"ISIHistogramViewController" bundle:nil];
-                    avc.values = values;
-                    avc.limits = limits;
-                    [self.navigationController pushViewController:avc animated:YES];
-                    [avc release];
-
-                });
-            });
-        }
-        else
-        {
-            SpikeTrainsTableViewController *avc = [[SpikeTrainsTableViewController alloc] initWithFile:(BBFile *)[self.files objectAtIndex:0] andFunction:kISI];
-            [self.navigationController pushViewController:avc animated:YES];
-            [avc release];
-        
-        }*/
+        ISIGraphViewController *isivc = [[ISIGraphViewController alloc] initWithNibName:@"ISIGraphViewController" bundle:nil];
+        [isivc setFileForGraph:(BBFile *)[self.files objectAtIndex:0]];
+        [self.navigationController pushViewController:isivc animated:YES];
+        [isivc release];
+    
     }
     else if ([cell.textLabel.text isEqualToString: @"Cross-correlation"])
     {
-        
         //GraphMatrixViewController
         GraphMatrixViewController *gmvc = [[GraphMatrixViewController alloc] initWithNibName:@"GraphMatrixViewController" bundle:nil];
         gmvc.bbfile = (BBFile *)[self.files objectAtIndex:0];
         [self.navigationController pushViewController:gmvc animated:YES];
         [gmvc release];
-
-        
-       /* if([(BBFile *)[self.files objectAtIndex:0] numberOfSpikeTrains]==2)
-        {
-            MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-            hud.labelText = @"Calculating...";
-            dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-                NSArray *values = [[BBAnalysisManager bbAnalysisManager] crosscorrelationWithFile:(BBFile *)[self.files objectAtIndex:0] firstSpikeTrainIndex:0 secondSpikeTrainIndex:1 maxtime:0.1 andBinsize:0.001f];
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [MBProgressHUD hideHUDForView:self.view animated:YES];
-                    CrossCorrViewController *avc = [[CrossCorrViewController alloc] initWithNibName:@"CrossCorrViewController" bundle:nil];
-                    avc.values = values;
-                    [self.navigationController pushViewController:avc animated:YES];
-                    [avc release];
-                });
-            });
-        }
-        else
-        {
-            
-            SelectCrosscorelTableViewController *avc = [[SelectCrosscorelTableViewController alloc] initWithFile:(BBFile *)[self.files objectAtIndex:0]];
-            [self.navigationController pushViewController:avc animated:YES];
-            [avc release];
-            
-        }*/
     }
 	else if ([cell.textLabel.text isEqualToString:@"Share"])
 	{

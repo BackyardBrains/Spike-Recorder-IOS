@@ -188,11 +188,13 @@
     
     for (int i =0; i<self.numberOfChannels; i++)
     {
-        NSString * nameOfChannel = [NSString stringWithFormat:@"Channel %d",i+1];
-        BBChannel * newChannel = [[BBChannel alloc] initWithNameOfChannel:nameOfChannel];
+        NSString * nameOfChannel = [[NSString stringWithFormat:@"Channel %d",i+1] copy];
+        BBChannel * newChannel = [[[BBChannel alloc] initWithNameOfChannel:nameOfChannel] autorelease];
+        [nameOfChannel release];
         
-        NSString * nameOfSpikeTrain = [NSString stringWithFormat:@"Spike %da",(i+1)];
-        BBSpikeTrain * newSpikeTrain = [[BBSpikeTrain alloc]initWithName:nameOfSpikeTrain];
+        NSString * nameOfSpikeTrain = [[NSString stringWithFormat:@"Spike %da",(i+1)] copy];
+        BBSpikeTrain * newSpikeTrain = [[[BBSpikeTrain alloc]initWithName:nameOfSpikeTrain] autorelease];
+        [nameOfSpikeTrain release];
         
         [newChannel.spikeTrains addObject:newSpikeTrain];
         

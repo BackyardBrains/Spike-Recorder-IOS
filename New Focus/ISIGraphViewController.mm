@@ -77,13 +77,13 @@
         
         for(int spIndex=0;spIndex<[_file numberOfSpikeTrains];spIndex++)
         {
-            NSMutableArray* values = [[NSMutableArray alloc] initWithCapacity:0];
-            NSMutableArray* limits = [[NSMutableArray alloc] initWithCapacity:0];
+            NSMutableArray* values = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
+            NSMutableArray* limits = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
         
             int channelIndex = [_file getChannelIndexForSpikeTrainWithIndex:spIndex];
             int inChannelSTIndex = [_file getIndexInsideChannelForSpikeTrainWithIndex:spIndex];
             
-            [[BBAnalysisManager bbAnalysisManager] ISIWithFile:_file channelIndex:channelIndex spikeTrainIndex:inChannelSTIndex maxtime:0.1f numOfBins:100 values:values limits:limits ];
+            [[BBAnalysisManager bbAnalysisManager] ISIWithFile:_file channelIndex:channelIndex spikeTrainIndex:inChannelSTIndex numOfBins:100 values:values limits:limits ];
             
             [allLimits addObject:limits];
             [allValues addObject:values];

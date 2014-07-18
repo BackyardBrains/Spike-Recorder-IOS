@@ -387,6 +387,7 @@
 			default:
 				return;	// just ignore face up / face down, etc.
 		}
+        interfaceOrientation = interfaceOrientation;//just to supress warnings (variable never used)
 	}
 	else
 	{
@@ -435,7 +436,9 @@
     if (v != nil) {
         p = [v.superview convertPoint:v.frame.origin toView:self.view];
         width = v.frame.size.width;
+        width = width;//supress warning (unused wariable)
         height = v.frame.size.height;
+        height = height;//supress warning (unused wariable)
     }
     
     

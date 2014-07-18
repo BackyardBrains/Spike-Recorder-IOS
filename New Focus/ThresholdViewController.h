@@ -1,6 +1,5 @@
 
 #import "CCGLTouchViewController.h"
-#import "MyCinderGLView.h"
 #import "BBAudioManager.h"
 #import "MultichannelCindeGLView.h"
 
