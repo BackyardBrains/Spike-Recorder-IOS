@@ -27,7 +27,7 @@ static BBBTManager *btManager = nil;
     bool sendConfigData;
     int _confNumberOfChannels;
     int _confSamplingRate;
-    bool connectToDevice;
+   // bool connectToDevice;
     bool deviceAlreadyDisconnected;
 }
 
@@ -119,7 +119,7 @@ static BBBTManager *btManager = nil;
 
 -(void) startBluetooth
 {
-    connectToDevice = NO;
+   // connectToDevice = NO;
     _session = [self openSessionForProtocol:BT_PROTOCOL_STRING];
     numberOfBytesReceivedInLastSec = 0;
 }
@@ -136,6 +136,10 @@ static BBBTManager *btManager = nil;
 
 - (EASession *)openSessionForProtocol:(NSString *)protocolString
 {
+    
+    
+    
+    
     NSArray *accessories = [[EAAccessoryManager sharedAccessoryManager]
                             connectedAccessories];
     
@@ -191,12 +195,12 @@ static BBBTManager *btManager = nil;
     else
     {
         NSLog(@"No accessory found");
-       // NSNotification *notification = [NSNotification notificationWithName:NO_BT_CONNECTION object:self];
-       // [[NSNotificationCenter defaultCenter] postNotification:notification];
+         NSNotification *notification = [NSNotification notificationWithName:NO_BT_CONNECTION object:self];
+         [[NSNotificationCenter defaultCenter] postNotification:notification];
         
-        connectToDevice = YES;
+      /*  connectToDevice = YES;
         [[EAAccessoryManager sharedAccessoryManager] showBluetoothAccessoryPickerWithNameFilter:nil completion:^(NSError *error) {
-            if(error != nil && [error code] == EABluetoothAccessoryPickerResultCancelled)
+            if(error != nil)
             {
                 if([error code] == EABluetoothAccessoryPickerResultCancelled)
                 {
@@ -216,8 +220,8 @@ static BBBTManager *btManager = nil;
                 //numberOfBytesReceivedInLastSec = 0;
             }
             
-        }];
-    
+        }];*/
+        
     }
     
     return session;
@@ -263,7 +267,7 @@ static BBBTManager *btManager = nil;
 - (void)_accessoryDidConnect:(NSNotification *)notification {
     deviceAlreadyDisconnected = NO;
     NSLog(@"Accessory connected");
-    if(connectToDevice)
+    /*if(connectToDevice)
     {
         
         NSArray *accessories = [[EAAccessoryManager sharedAccessoryManager]
@@ -283,7 +287,7 @@ static BBBTManager *btManager = nil;
                 numberOfBytesReceivedInLastSec = 0;
             }
         }
-    }
+    }*/
     
 }
 

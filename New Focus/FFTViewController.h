@@ -7,14 +7,16 @@
 //
 
 #import "CCGLTouchViewController.h"
-#import "FFTCinderGLView.h"
+#import "DynamicFFTCinderGLView.h"
+#import "DynamicFFTGraphGLView.h"
 #import "BBAudioManager.h"
 #import "FPPopoverController.h"
 #import "BBChannelSelectionTableViewController.h"
 
 @interface FFTViewController : CCGLTouchViewController <FPPopoverControllerDelegate,BBSelectionTableDelegateProtocol>
 {
-    FFTCinderGLView *glView;
+    DynamicFFTCinderGLView *glView;
+    DynamicFFTGraphGLView *oGLView;
     FPPopoverController * popover;
 }
 @property (retain, nonatomic) IBOutlet UIButton *channelBtn;

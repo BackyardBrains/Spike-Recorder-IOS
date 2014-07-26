@@ -18,8 +18,36 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    float maxTime = 10.0f;
+    [[BBAudioManager bbAudioManager] startDynanimcFFTWithMaxNumberOfSeconds:maxTime];
     
-    [[BBAudioManager bbAudioManager] startFFT];
+    
+
+    oGLView = [[[DynamicFFTGraphGLView alloc] initWithFrame:self.view.frame] autorelease];
+    [self.view addSubview:oGLView];
+    [self.view sendSubviewToBack:oGLView];
+    
+    //Config GL view
+  /*  if(glView)
+    {
+        [glView stopAnimation];
+        [glView removeFromSuperview];
+        [glView release];
+        glView = nil;
+    }
+    glView = [[DynamicFFTCinderGLView alloc] initWithFrame:self.view.frame];
+    float baseFreq = 0.5*((float)[[BBAudioManager bbAudioManager] sourceSamplingRate])/((float)[[BBAudioManager bbAudioManager] lengthOfFFTData]);
+    [glView setupWithBaseFreq:baseFreq lengthOfFFT:[[BBAudioManager bbAudioManager] lengthOfFFTData] numberOfGraphs:[[BBAudioManager bbAudioManager] lenghtOfFFTGraphBuffer] maxTime:maxTime];
+    [[BBAudioManager bbAudioManager] selectChannel:0];
+    _channelBtn.hidden = [[BBAudioManager bbAudioManager] sourceNumberOfChannels]<2;
+   [self.view addSubview:glView];
+   [self.view sendSubviewToBack:glView];
+   [glView startAnimation];
+    */
+ /*   
+  
+  //Old one dimensional FFT graph
+  [[BBAudioManager bbAudioManager] startFFT];
     
    //Config GL view
     if(glView)
@@ -34,11 +62,11 @@
     [glView setupWithBaseFreq:baseFreq andLengthOfFFT:[[BBAudioManager bbAudioManager] lengthOfFFTData]];
     [[BBAudioManager bbAudioManager] selectChannel:0];
     _channelBtn.hidden = [[BBAudioManager bbAudioManager] sourceNumberOfChannels]<2;
-    
+  
 	[self.view addSubview:glView];
     [self.view sendSubviewToBack:glView];
 	[glView startAnimation];
-    
+    */
     //Bluetooth notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(noBTConnection) name:NO_BT_CONNECTION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(btDisconnected) name:BT_DISCONNECTED object:nil];
@@ -158,6 +186,7 @@
 
 - (void)dealloc {
     [_channelBtn release];
+    [oGLView release];
     [super dealloc];
 }
 

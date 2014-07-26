@@ -370,6 +370,11 @@ static BBAudioManager *bbAudioManager = nil;
         [self stopPlaying];
     }
     
+    if(FFTOn)
+    {
+        [self stopFFT];
+    }
+    
     thresholding = true;
     
     numPointsToSavePerThreshold = newNumPointsToSavePerThreshold;
@@ -551,7 +556,7 @@ static BBAudioManager *bbAudioManager = nil;
     delete ringBuffer;
 
     
-    //create new buffers
+    //create new buffers 
   
     ringBuffer = new RingBuffer(maxNumberOfSamplesToDisplay, _sourceNumberOfChannels);
     tempCalculationBuffer = (float *)calloc(maxNumberOfSamplesToDisplay*_sourceNumberOfChannels, sizeof(float));
@@ -1162,6 +1167,11 @@ static BBAudioManager *bbAudioManager = nil;
     return dspAnalizer->FFTMagnitude;
 }
 
+-(float **) getDynamicFFTResult
+{
+    return dspAnalizer->FFTDynamicMagnitude;
+}
+
 -(void) startFFT
 {
     [self stopAllServices];
@@ -1209,10 +1219,63 @@ static BBAudioManager *bbAudioManager = nil;
         [[BBBTManager btManager] setInputBlock:nil];
         [audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
             ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
-            dspAnalizer->CalculateFFT(_selectedChannel);//TODO: Make selection of channels
+            dspAnalizer->CalculateFFT(_selectedChannel);
         }];
     }
 }
+
+
+-(void) startDynanimcFFTWithMaxNumberOfSeconds:(float) maxNumOfSeconds
+{
+    [self stopAllServices];
+    
+    FFTOn = true;
+    
+    if(btOn)
+    {
+        _sourceSamplingRate=[[BBBTManager btManager] samplingRate];
+        _sourceNumberOfChannels=[[BBBTManager btManager] numberOfChannels];
+    }
+    else
+    {
+        _sourceSamplingRate =  audioManager.samplingRate;
+        _sourceNumberOfChannels = audioManager.numInputChannels;
+    }
+    
+    //Try to make under 1Hz resolution
+    //if it is too much than limit it to samplingRate/2^12
+    uint32_t log2n = log2f((float)_sourceSamplingRate);
+    if(log2n<10)
+    {
+        log2n +=1;
+    }
+    else
+    {
+        log2n = 11;
+    }
+    uint32_t n = 1 << (log2n);
+    
+    dspAnalizer->InitDynamicFFT(ringBuffer, _sourceNumberOfChannels, _sourceSamplingRate, n, 0, maxNumOfSeconds);
+    
+    if(btOn)
+    {
+        audioManager.inputBlock = nil;
+        [[BBBTManager btManager] setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
+         {
+             ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
+             dspAnalizer->CalculateDynamicFFT(data, numFrames, _selectedChannel);
+         }];
+    }
+    else
+    {
+        [[BBBTManager btManager] setInputBlock:nil];
+        [audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
+            ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
+            dspAnalizer->CalculateDynamicFFT(data, numFrames, _selectedChannel);
+        }];
+    }
+}
+
 
 -(void) stopFFT
 {
@@ -1241,6 +1304,16 @@ static BBAudioManager *bbAudioManager = nil;
 -(UInt32) lengthOfFFTData
 {
     return dspAnalizer->LengthOfFFTData;
+}
+
+-(UInt32) lenghtOfFFTGraphBuffer
+{
+    return dspAnalizer->NumberOfGraphsInBuffer;
+}
+
+-(UInt32) indexOfFFTGraphBuffer
+{
+    return dspAnalizer->GraphBufferIndex;
 }
 
 #pragma mark - State

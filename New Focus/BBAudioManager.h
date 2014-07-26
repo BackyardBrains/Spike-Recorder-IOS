@@ -130,8 +130,12 @@ typedef enum BBStimulationType
 
 //FFT
 -(float *) getFFTResult;
+-(float **) getDynamicFFTResult;
 -(UInt32) lengthOfFFTData;
 -(void) stopFFT;
 -(void) startFFT;
+-(void) startDynanimcFFTWithMaxNumberOfSeconds:(float) maxNumOfSeconds;
+-(UInt32) indexOfFFTGraphBuffer;
+-(UInt32) lenghtOfFFTGraphBuffer;
 
 @end
