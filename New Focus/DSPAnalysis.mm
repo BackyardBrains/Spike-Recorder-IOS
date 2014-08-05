@@ -13,7 +13,7 @@
 
 DSPAnalysis::~DSPAnalysis()
 {
-
+    
 }
 
 
@@ -53,7 +53,7 @@ void DSPAnalysis::InitFFT(RingBuffer *externalRingBuffer, UInt32 numberOfChannel
     FFTMagnitude = new float[LengthOfFFTData];
     
     uint32_t log2n = log2f((float)mLengthOfWindow);
-
+    
     A.realp = (float*) malloc(sizeof(float) * LengthOfFFTData);
     A.imagp = (float*) malloc(sizeof(float) * LengthOfFFTData);
     
@@ -82,7 +82,7 @@ float * DSPAnalysis::CalculateFFT(UInt32 whichChannel)
     for(int i = 1; i < LengthOfFFTData; i++){
         FFTMagnitude[i] = sqrtf(A.realp[i]*A.realp[i] + A.imagp[i] * A.imagp[i]);
     }
-
+    
     return FFTMagnitude;
 }
 
@@ -113,7 +113,7 @@ void DSPAnalysis::InitDynamicFFT(RingBuffer *externalRingBuffer, UInt32 numberOf
         percOverlapOfWindows = 99;
     }
     mPercOverlapOfWindow = percOverlapOfWindows;
-
+    
     mNumberOfSamplesBetweenWindows = mLengthOfWindow*(1.0f-(((float)percOverlapOfWindows)/100.0f));
     
     if(bufferMaxSeconds<=0.0f)

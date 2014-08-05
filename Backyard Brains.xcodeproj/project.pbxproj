@@ -43,8 +43,6 @@
 		245F1C7C194B832C00AF0477 /* BBSpikeTrain.m in Sources */ = {isa = PBXBuildFile; fileRef = 245F1C7B194B832C00AF0477 /* BBSpikeTrain.m */; };
 		245F1C7F194C762700AF0477 /* BBChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 245F1C7E194C762700AF0477 /* BBChannel.m */; };
 		245F1C82194C791700AF0477 /* BBSignalEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 245F1C81194C791700AF0477 /* BBSignalEvent.m */; };
-		24602F591983FA4E00AFBCEA /* FFTVertex.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 24602F581983FA4E00AFBCEA /* FFTVertex.glsl */; };
-		24602F5B1983FBB800AFBCEA /* FFTFragment.glsl in Resources */ = {isa = PBXBuildFile; fileRef = 24602F5A1983FBB800AFBCEA /* FFTFragment.glsl */; };
 		246989351909898F00F5383F /* trash.png in Resources */ = {isa = PBXBuildFile; fileRef = 246989331909898F00F5383F /* trash.png */; };
 		246989361909898F00F5383F /* trash@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 246989341909898F00F5383F /* trash@2x.png */; };
 		2469893919098C1900F5383F /* again.png in Resources */ = {isa = PBXBuildFile; fileRef = 2469893719098C1900F5383F /* again.png */; };
@@ -82,7 +80,6 @@
 		24D9DFCC1951C35600A78BED /* FPPopoverView.m in Sources */ = {isa = PBXBuildFile; fileRef = 24D9DFC81951C35600A78BED /* FPPopoverView.m */; };
 		24D9DFCD1951C35600A78BED /* FPTouchView.m in Sources */ = {isa = PBXBuildFile; fileRef = 24D9DFCA1951C35600A78BED /* FPTouchView.m */; };
 		24D9DFD01951C4A600A78BED /* BBChannelSelectionTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 24D9DFCF1951C4A600A78BED /* BBChannelSelectionTableViewController.m */; };
-		24DB9E5D1983F2B30079F79A /* DynamicFFTGraphGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = 24DB9E5C1983F2B30079F79A /* DynamicFFTGraphGLView.m */; };
 		24DBA929197709DF00AEDE86 /* FFTViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 24DBA927197709DF00AEDE86 /* FFTViewController.mm */; };
 		24DBA92A197709DF00AEDE86 /* FFTViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 24DBA928197709DF00AEDE86 /* FFTViewController.xib */; };
 		24DBA92D1977107400AEDE86 /* FFTCinderGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 24DBA92C1977107400AEDE86 /* FFTCinderGLView.mm */; };
@@ -216,8 +213,6 @@
 		245F1C7E194C762700AF0477 /* BBChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BBChannel.m; sourceTree = "<group>"; };
 		245F1C80194C791700AF0477 /* BBSignalEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BBSignalEvent.h; sourceTree = "<group>"; };
 		245F1C81194C791700AF0477 /* BBSignalEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BBSignalEvent.m; sourceTree = "<group>"; };
-		24602F581983FA4E00AFBCEA /* FFTVertex.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = FFTVertex.glsl; sourceTree = "<group>"; };
-		24602F5A1983FBB800AFBCEA /* FFTFragment.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = FFTFragment.glsl; sourceTree = "<group>"; };
 		246989331909898F00F5383F /* trash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = trash.png; path = ../trash.png; sourceTree = "<group>"; };
 		246989341909898F00F5383F /* trash@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "trash@2x.png"; path = "../trash@2x.png"; sourceTree = "<group>"; };
 		2469893719098C1900F5383F /* again.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = again.png; path = ../again.png; sourceTree = "<group>"; };
@@ -356,8 +351,6 @@
 		24D9DFCA1951C35600A78BED /* FPTouchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FPTouchView.m; sourceTree = "<group>"; };
 		24D9DFCE1951C4A600A78BED /* BBChannelSelectionTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BBChannelSelectionTableViewController.h; sourceTree = "<group>"; };
 		24D9DFCF1951C4A600A78BED /* BBChannelSelectionTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BBChannelSelectionTableViewController.m; sourceTree = "<group>"; };
-		24DB9E5B1983F2B30079F79A /* DynamicFFTGraphGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DynamicFFTGraphGLView.h; sourceTree = "<group>"; };
-		24DB9E5C1983F2B30079F79A /* DynamicFFTGraphGLView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DynamicFFTGraphGLView.m; sourceTree = "<group>"; };
 		24DBA926197709DF00AEDE86 /* FFTViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFTViewController.h; sourceTree = "<group>"; };
 		24DBA927197709DF00AEDE86 /* FFTViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FFTViewController.mm; sourceTree = "<group>"; };
 		24DBA928197709DF00AEDE86 /* FFTViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FFTViewController.xib; sourceTree = "<group>"; };
@@ -712,10 +705,6 @@
 				24DBA92C1977107400AEDE86 /* FFTCinderGLView.mm */,
 				243AD4CA19800BD200671DFF /* DynamicFFTCinderGLView.h */,
 				243AD4CB19800BD200671DFF /* DynamicFFTCinderGLView.mm */,
-				24DB9E5B1983F2B30079F79A /* DynamicFFTGraphGLView.h */,
-				24DB9E5C1983F2B30079F79A /* DynamicFFTGraphGLView.m */,
-				24602F581983FA4E00AFBCEA /* FFTVertex.glsl */,
-				24602F5A1983FBB800AFBCEA /* FFTFragment.glsl */,
 			);
 			name = "GL Views";
 			sourceTree = "<group>";
@@ -1080,7 +1069,6 @@
 				24513CE719545C50007F240A /* Record.png in Resources */,
 				24513D0319545F5E007F240A /* WaveImage.png in Resources */,
 				249A246319058465005F5F03 /* AutocorrelationGraphViewController.xib in Resources */,
-				24602F591983FA4E00AFBCEA /* FFTVertex.glsl in Resources */,
 				FA905A4C15AA8CF00013688B /* BBFileTableCell.xib in Resources */,
 				FAA43D2B15AB5FBC0024E445 /* TickMarks.png in Resources */,
 				249A24681906AC59005F5F03 /* ISIHistogramViewController.xib in Resources */,
@@ -1090,7 +1078,6 @@
 				FAEEE79015ABB7890050F3E9 /* dropbox.png in Resources */,
 				FAEEE79215ABB8C00050F3E9 /* RecordButton.png in Resources */,
 				24513D0019545F3C007F240A /* ThresholdImage@2x.png in Resources */,
-				24602F5B1983FBB800AFBCEA /* FFTFragment.glsl in Resources */,
 				FA35CEFF15ABBADC0082FBC3 /* PlaybackViewController.xib in Resources */,
 				24513CE419545BCA007F240A /* FileNeuron@2x.png in Resources */,
 				2474366B18F6DBFF0044E11D /* SpikesViewController.xib in Resources */,
@@ -1168,7 +1155,6 @@
 				FA90599715A9F9830013688B /* NSObject-ClassName.m in Sources */,
 				FA90599915A9F9830013688B /* NSObject-MissingKV.m in Sources */,
 				245F1C7C194B832C00AF0477 /* BBSpikeTrain.m in Sources */,
-				24DB9E5D1983F2B30079F79A /* DynamicFFTGraphGLView.m in Sources */,
 				FA90599B15A9F9830013688B /* NSObject-SQLitePersistence.m in Sources */,
 				24DBA92D1977107400AEDE86 /* FFTCinderGLView.mm in Sources */,
 				FA90599D15A9F9830013688B /* NSString-NumberStuff.m in Sources */,

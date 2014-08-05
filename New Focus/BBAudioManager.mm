@@ -6,7 +6,7 @@
 //
 
 #import "BBAudioManager.h"
-#import "DSPAnalysis.h"
+
 #import "BBBTManager.h"
 #import "BBFile.h"
 #import "BBSpike.h"
@@ -1171,6 +1171,9 @@ static BBAudioManager *bbAudioManager = nil;
 {
     return dspAnalizer->FFTDynamicMagnitude;
 }
+
+
+
 
 -(void) startFFT
 {

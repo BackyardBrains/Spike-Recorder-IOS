@@ -22,13 +22,8 @@
     [[BBAudioManager bbAudioManager] startDynanimcFFTWithMaxNumberOfSeconds:maxTime];
     
     
-
-    oGLView = [[[DynamicFFTGraphGLView alloc] initWithFrame:self.view.frame] autorelease];
-    [self.view addSubview:oGLView];
-    [self.view sendSubviewToBack:oGLView];
-    
     //Config GL view
-  /*  if(glView)
+    if(glView)
     {
         [glView stopAnimation];
         [glView removeFromSuperview];
@@ -43,7 +38,7 @@
    [self.view addSubview:glView];
    [self.view sendSubviewToBack:glView];
    [glView startAnimation];
-    */
+    
  /*   
   
   //Old one dimensional FFT graph
@@ -186,7 +181,6 @@
 
 - (void)dealloc {
     [_channelBtn release];
-    [oGLView release];
     [super dealloc];
 }
 

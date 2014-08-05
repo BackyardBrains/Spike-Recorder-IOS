@@ -12,6 +12,7 @@
 #import "BBAudioFileWriter.h"
 #import "BBAudioFileReader.h"
 #import "DSPThreshold.h"
+#import "DSPAnalysis.h"
 
 @class BBFile;
 

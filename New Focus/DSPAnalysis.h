@@ -7,12 +7,7 @@
 //
 #import <Foundation/Foundation.h>
 #import "RingBuffer.h"
-#include <OpenGLES/ES2/gl.h>
 
-typedef struct {
-    float Position[3];
-    float Color[4];
-} Vertex;
 
 class DSPAnalysis {
     
