@@ -174,7 +174,8 @@ static SQLiteInstanceManager *sharedSQLiteManager = nil;
 	if (databaseFilepath == nil)
 	{
 		NSMutableString *ret = [NSMutableString string];
-		NSString *appName = [[NSProcessInfo processInfo] processName];
+		NSMutableString *appName = [[[NSProcessInfo processInfo] processName] mutableCopy];
+        [appName appendString:@"v2"];
 		for (int i = 0; i < [appName length]; i++)
 		{
 			NSRange range = NSMakeRange(i, 1);
@@ -188,6 +189,7 @@ static SQLiteInstanceManager *sharedSQLiteManager = nil;
 		NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
 		NSString *basePath = ([paths count] > 0) ? [paths objectAtIndex:0] : NSTemporaryDirectory();
 		NSString *saveDirectory = [basePath stringByAppendingPathComponent:appName];
+        
 #else
 		NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
 		NSString *saveDirectory = [paths objectAtIndex:0];
@@ -196,7 +198,7 @@ static SQLiteInstanceManager *sharedSQLiteManager = nil;
 		NSString *filepath = [saveDirectory stringByAppendingPathComponent:saveFileName];
 		
 		databaseFilepath = [filepath retain];
-		
+		[appName release];
 		if (![[NSFileManager defaultManager] fileExistsAtPath:saveDirectory]) 
 			[[NSFileManager defaultManager] createDirectoryAtPath:saveDirectory withIntermediateDirectories:YES attributes:nil error:nil];
 	}

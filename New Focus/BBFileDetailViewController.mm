@@ -27,7 +27,7 @@
     
     SCClassDefinition *fileDef = [SCClassDefinition
                                      definitionWithClass:[BBFile class]
-                                     propertyNamesString:@"shortname;comment;subname;samplingrate;gain;filelength"];
+                                     propertyNamesString:@"shortname;comment;subname;samplingrate;numberOfChannels;gain;filelength"];
     
     
     SCPropertyDefinition *titlePropertyDef = [fileDef propertyDefinitionWithName:@"shortname"];
@@ -43,7 +43,10 @@
     samplingRateDef.type = SCPropertyTypeLabel;
     samplingRateDef.title = @"Sampling Rate:";
     
-
+    SCPropertyDefinition *numberOfChannelsDef = [fileDef propertyDefinitionWithName:@"numberOfChannels"];
+    numberOfChannelsDef.type = SCPropertyTypeLabel;
+    numberOfChannelsDef.title = @"Number of channels:";
+    
     SCPropertyDefinition *gainDef = [fileDef propertyDefinitionWithName:@"gain"];
     gainDef.type = SCPropertyTypeLabel;
     gainDef.title = @"Gain:";

@@ -12,9 +12,6 @@
 #import "BBFile.h"
 
 @interface BBAnalysisManager : NSObject
-{
-    NSInteger _currentSpikeTrain;
-}
 
 + (BBAnalysisManager *) bbAnalysisManager;
 
@@ -23,20 +20,39 @@
 @property (readonly) float fileDuration;
 
 @property (nonatomic) NSInteger currentSpikeTrain;
+@property (nonatomic) NSInteger currentChannel;
 @property (nonatomic) float thresholdFirst;
 @property (nonatomic) float thresholdSecond;
 
 - (int)findSpikes:(BBFile *)aFile;
-
--(void) prepareFileForSelection:(BBFile *)aFile;
-- (void)fetchAudioAndSpikes:(float *)data numFrames:(UInt32)numFrames whichChannel:(UInt32)whichChannel stride:(UInt32)stride;
--(void) filterSpikes;
 -(NSMutableArray *) allSpikes;
--(NSArray *) autocorrelationWithFile:(BBFile *) afile spikeTrainIndex:(NSInteger) aSpikeTrainIndex maxtime:(float) maxtime andBinsize:(float) binsize;
--(void) ISIWithFile:(BBFile *) afile spikeTrainIndex:(NSInteger) aSpikeTrainIndex maxtime:(float) maxtime numOfBins:(int) bins values:(NSMutableArray *) valuesY limits:(NSMutableArray *) limitsX;
--(NSArray *) crosscorrelationWithFile:(BBFile *) afile firstSpikeTrainIndex:(NSInteger) fSpikeTrainIndex secondSpikeTrainIndex:(NSInteger) sSpikeTrainIndex maxtime:(float) maxtime andBinsize:(float) binsize;
+-(void) prepareFileForSelection:(BBFile *)aFile;
+- (void)fetchAudioAndSpikes:(float *)data numFrames:(UInt32)numFrames stride:(UInt32)stride;
+-(void) filterSpikes;
+
+//Calculate autocorrelation for Spike Train with index aSpikeTrainIndex in channel with index aChanIndex in file afile
+//binsize: is size of one bin in seconds
+//maxtime: defines how far we shift the signal during correlation [-binsize*0.5, maxtime+binsize*0.5] (in seconds)
+-(NSArray *) autocorrelationWithFile:(BBFile *) afile channelIndex:(NSInteger) aChanIndex spikeTrainIndex:(NSInteger) aSpikeTrainIndex maxtime:(float) maxtime andBinsize:(float) binsize;
+
+//Calculate crosscorrelation for two spike trains
+//binsize: is size of one bin in seconds
+//maxtime: defines how far we shift the signal during correlation in both directions[-maxtime-binsize*0.5, maxtime+binsize*0.5] (in seconds)
+-(NSArray *) crosscorrelationWithFile:(BBFile *) afile firstChannelIndex:(NSInteger) fChanIndex firstSpikeTrainIndex:(NSInteger) fSpikeTrainIndex secondChannelIndex:(NSInteger) sChanIndex secondSpikeTrainIndex:(NSInteger) sSpikeTrainIndex maxtime:(float) maxtime andBinsize:(float) binsize;
+
+
+//Calculate Inter spike interval analysis with logarithmically spaced bins (number of bins = bins) and put result
+//in valuesY and limits of bins in limitsX. Limits of bins are always generated between 10^-3 and 10^1
+-(void) ISIWithFile:(BBFile *) afile channelIndex:(NSInteger) aChannelIndex spikeTrainIndex:(NSInteger) aSpikeTrainIndex numOfBins:(int) bins values:(NSMutableArray *) valuesY limits:(NSMutableArray *) limitsX;
+
+//Move index to next spike train on same channel
 -(NSInteger) moveToNextSpikeTrain;
--(NSInteger) numberOfSpikeTrains;
+//Cumulative number of spike trains in all channel
+-(int) numberOfSpikeTrains;
+//Number of spike trains in current channel
+-(int) numberOfSpikeTrainsOnCurrentChannel;
+//Add another spike train (and it's thresholds) to current channel (currentChannel)
 -(void) addAnotherThresholds;
+//Remove currentSpikeTrain spike train from currentChannel channel
 -(void) removeSelectedThresholds;
 @end

@@ -14,7 +14,6 @@
 #import "CCGLTouchAppDelegate.h"
 
 #import "ViewAndRecordViewController.h"
-#import "MyCinderGLView.h"
 #import "BBAudioManager.h"
 
 @interface MyAppDelegate : CCGLTouchAppDelegate <UITabBarControllerDelegate>{

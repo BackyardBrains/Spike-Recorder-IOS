@@ -9,7 +9,6 @@
 #import "CCGLTouchView.h"
 #import "Novocaine.h"
 #import "RingBuffer.h"
-#import "AudioFileWriter.h"
 #import "BBAnalysisManager.h"
 #include "cinder/Font.h"
 #include "cinder/gl/TextureFont.h"
@@ -36,5 +35,5 @@
 
 - (void)saveSettings;
 - (void)loadSettings;
-
+-(void) channelChanged;
 @end

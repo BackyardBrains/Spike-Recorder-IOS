@@ -25,7 +25,7 @@
 #import <AudioToolbox/AudioToolbox.h>
 #import <Accelerate/Accelerate.h>
 
-#define kMaxNumChannels 4
+#define kMaxNumChannels 12
 
 class RingBuffer {
     

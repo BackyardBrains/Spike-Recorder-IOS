@@ -9,7 +9,7 @@
 #import "PlaybackViewController.h"
 
 @interface PlaybackViewController() {
-    dispatch_source_t callbackTimer;
+    dispatch_source_t callbackTimer; //timer for update of slider/scrubber
     BBFile *aFile;
     BBAudioManager *bbAudioManager;
     BOOL audioPaused;
@@ -53,11 +53,11 @@
     {
 
         if ([BBAudioManager bbAudioManager].playing == YES) {
-            [self.playPauseButton setBackgroundImage:[UIImage imageNamed:@"pause.png"] forState:UIControlStateNormal];
+            [self.playPauseButton setBackgroundImage:[UIImage imageNamed:@"Pause"] forState:UIControlStateNormal];
         }
         
         else {
-            [self.playPauseButton setBackgroundImage:[UIImage imageNamed:@"play.png"] forState:UIControlStateNormal];
+            [self.playPauseButton setBackgroundImage:[UIImage imageNamed:@"Play"] forState:UIControlStateNormal];
 
         }
 
@@ -66,18 +66,28 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    [super viewWillAppear:animated];
-    [self.navigationController setNavigationBarHidden:YES animated:YES];
-    [[BBAudioManager bbAudioManager] clearWaveform];
-    [glView startAnimation];
+    [self.navigationController setNavigationBarHidden:YES animated:NO];
+    if(glView)
+    {
+        [glView stopAnimation];
+        [glView removeFromSuperview];
+        [glView release];
+        glView = nil;
+    }
+    
+    // our CCGLTouchView being added as a subview
+    glView = [[MultichannelCindeGLView alloc] initWithFrame:self.view.frame];
 
-    audioPaused = NO;
-}
+    glView.mode = MultichannelGLViewModePlayback;
+	[self.view addSubview:glView];
+    [self.view sendSubviewToBack:glView];
+    
+    // set our view controller's prop that will hold a pointer to our newly created CCGLTouchView
+    [self setGLView:glView];
 
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-
+    //[[BBAudioManager bbAudioManager] clearWaveform];
+    //
+    
     // Make sure that we're playing out of the right audioroute, and if it changes
     // (e.g., if you unplug the headphones while playing), it just works
     [self ifNoHeadphonesConfigureAudioToPlayOutOfSpeakers];
@@ -86,17 +96,18 @@
     
     // Grab the audio file, and start buffering audio from it.
     bbAudioManager = [BBAudioManager bbAudioManager];
-    [[BBAudioManager bbAudioManager] clearWaveform];
+    //[[BBAudioManager bbAudioManager] clearWaveform];
     NSURL *theURL = [bbfile fileURL];
     NSLog(@"Playing a file at: %@", theURL);
     [bbAudioManager startPlaying:bbfile]; // startPlaying: initializes the file and buffers audio
     
-    // Set the slider to have the bounds of the audio file's duraiton
+       // Set the slider to have the bounds of the audio file's duraiton
     timeSlider.minimumValue = 0;
     timeSlider.maximumValue = bbAudioManager.fileDuration;
-
     // Periodically poll for the current position in the audio file, and update the
     // slider accordingly.
+    
+    
     callbackTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue());
     dispatch_source_set_timer(callbackTimer, dispatch_walltime(NULL, 0), 0.25*NSEC_PER_SEC, 0);
     dispatch_source_set_event_handler(callbackTimer, ^{
@@ -109,7 +120,14 @@
     });
     
     dispatch_resume(callbackTimer);
+    [super viewWillAppear:animated];
+}
 
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
+    audioPaused = NO;
 
 }
 
@@ -117,16 +135,19 @@
 - (void)viewWillDisappear:(BOOL)animated
 {
 
-    [super viewWillDisappear:animated];
+    [[BBAudioManager bbAudioManager] clearWaveform];  
+    
     [self.navigationController setNavigationBarHidden:NO animated:YES];
     [glView saveSettings:FALSE]; // save non-threshold settings
+    
     [glView stopAnimation];
     dispatch_suspend(callbackTimer);
     [[BBAudioManager bbAudioManager] stopPlaying];
+
     [[Novocaine audioManager] removeObserver:self forKeyPath:@"numOutputChannels"];
     [self restoreAudioOutputRouteToDefault];
     dispatch_suspend(callbackTimer);
-    
+    [super viewWillDisappear:animated];
 }
 
 
@@ -135,25 +156,31 @@
     [super viewDidLoad];
     self.timeSlider.continuous = YES;
     [self.timeSlider addTarget:self
-                  action:@selector(sliderTouchUpInside:)
-        forControlEvents:(UIControlEventTouchUpInside)];
+                        action:@selector(sliderTouchUpInside:)
+              forControlEvents:(UIControlEventTouchUpInside)];
     [self.timeSlider addTarget:self
                         action:@selector(sliderTouchDown:)
               forControlEvents:(UIControlEventTouchDown)];
+    
+
+      /* if(glView)
+    {
+        [glView stopAnimation];
+        [glView removeFromSuperview];
+        [glView release];
+        glView = nil;
+    }
+    
     // our CCGLTouchView being added as a subview
-	MyCinderGLView *aView = [[MyCinderGLView alloc] init];
-	glView = aView;
-	[aView release];
+    glView = [[MultichannelCindeGLView alloc] initWithFrame:self.view.frame];
     
-    glView = [[MyCinderGLView alloc] initWithFrame:self.view.frame];
-    
+    //[glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
+    glView.mode = MultichannelGLViewModePlayback;
 	[self.view addSubview:glView];
     [self.view sendSubviewToBack:glView];
     
     // set our view controller's prop that will hold a pointer to our newly created CCGLTouchView
-    [self setGLView:glView];
-    
-
+    [self setGLView:glView];*/
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
@@ -168,17 +195,74 @@
 
 
 
-- (void)setGLView:(MyCinderGLView *)view
+- (void)setGLView:(MultichannelCindeGLView *)view
 {
     glView = view;
     callbackTimer = nil;
 }
 
+#pragma mark - MultichannelGLViewDelegate function
+- (float) fetchDataToDisplay:(float *)data numFrames:(UInt32)numFrames whichChannel:(UInt32)whichChannel
+{
+
+    //Fetch data and get time of data as precise as posible. Used to sichronize
+    //display of waveform and spike marks
+    return [[BBAudioManager bbAudioManager] fetchAudio:data numFrames:numFrames whichChannel:whichChannel stride:1];
+}
+
+-(float) getCurrentTimeForSinc
+{
+    return [[BBAudioManager bbAudioManager] getTimeForSpikes];
+}
+
+-(NSMutableArray *) getChannels
+{
+    return [[BBAudioManager bbAudioManager] getChannels];
+}
+
+
+-(BOOL) shouldEnableSelection
+{
+    return ![[BBAudioManager bbAudioManager] playing];
+}
+
+-(void) updateSelection:(float) newSelectionTime
+{
+    [[BBAudioManager bbAudioManager] updateSelection:newSelectionTime];
+}
+
+-(float) selectionStartTime
+{
+    return [[BBAudioManager bbAudioManager] selectionStartTime];
+}
+
+-(float) selectionEndTime
+{
+    return [[BBAudioManager bbAudioManager] selectionEndTime];
+}
+
+-(void) endSelection
+{
+    [[BBAudioManager bbAudioManager] endSelection];
+}
+
+-(BOOL) selecting
+{
+    return [[BBAudioManager bbAudioManager] selecting];
+}
+
+-(float) rmsOfSelection
+{
+    return [[BBAudioManager bbAudioManager] rmsOfSelection];
+}
+
+#pragma mark - end of MultichannelGLViewDelegate
 
 - (void)dealloc {
     [timeSlider release];
     [super dealloc];
 }
+
 
 
 //
@@ -211,6 +295,11 @@
 {
     [self togglePlayback];
     audioPaused = !audioPaused;
+}
+
+-(void) selectChannel:(int) selectedChannel
+{
+    [bbAudioManager selectChannel:selectedChannel];
 }
 
 - (void)togglePlayback

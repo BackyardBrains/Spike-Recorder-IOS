@@ -27,9 +27,9 @@ typedef enum BBThresholdType
 
 typedef struct _triggeredSegmentHistory {
 	float triggeredSegments[kNumSegmentsInTriggerAverage][kNumPointsInVertexBuffer];
-    float averageSegment[kNumPointsInVertexBuffer];
-	UInt32 lastReadSample[kNumSegmentsInTriggerAverage];
-	UInt32 lastWrittenSample[kNumSegmentsInTriggerAverage];
+    float averageSegment[kNumPointsInVertexBuffer];//average vector
+	UInt32 lastReadSample[kNumSegmentsInTriggerAverage];//index of end of fresh data in segment
+	UInt32 lastWrittenSample[kNumSegmentsInTriggerAverage];//index of end of data added to average vector
 	UInt32 currentSegment;
 	UInt32 sizeOfMovingAverage; //Although there are kNumSegmentsInTriggerAverage,
     // we may choose to use a moving average less than that.
@@ -41,13 +41,13 @@ typedef struct _triggeredSegmentHistory {
 class DSPThreshold {
 
 	public:
-        DSPThreshold(RingBuffer *externalRingBuffer, UInt32 numSamplesInHistory, UInt32 numTriggersInHistory);
+        DSPThreshold(RingBuffer *externalRingBuffer, UInt32 numSamplesInHistory, UInt32 numTriggersInHistory, UInt32 numberOfChannels);
         ~DSPThreshold();
-		void ProcessNewAudio(const float *data, int numFrames, int numChannels);
-		
+        void ProcessNewAudio(float *incomingAudio, UInt32 numFrames);
+        void SetNumberOfChannels(UInt32 newNumOfChannels);
     
         // Puts the trigger point in the center of outData (it's best to display things that way
-        void GetCenteredTriggeredData(float *outData, UInt32 numFrames, UInt32 stride);
+        void GetCenteredTriggeredData(float *outData, UInt32 numFrames, UInt32 stride, UInt32 whichChannel);
 
 		BBThresholdType GetThresholdDirection() { return mThresholdDirection; }
         float GetThreshold() { return mThresholdValue; }
@@ -58,23 +58,25 @@ class DSPThreshold {
         void SetThreshold(float newThreshold);
 		void SetThresholdDirection(BBThresholdType newDirection) { mThresholdDirection = newDirection; }
         void SetNumTriggersInHistory(UInt32 numTriggersInHistory);
+        void SetSelectedChannel(int newSelectedChannel);
 	
 	private:
 	
 		RingBuffer *mExternalRingBuffer; // we'll let somebody else keep track of the streaming history
         float mThresholdValue;
-        UInt32 mLastFreshSample;
+        UInt32 mLastFreshSample;//last fresh samples in buffers (triggeredSegments[][mLastFreshSample])
         UInt32 mNumFramesLastUsedForDisplay;
         UInt32 mNumTriggersInHistory;
     
         bool isTriggered;
         bool haveAllAudio;
-    
+        int _numberOfChannels;
+        int _selectedChannel;
 		UInt32 mNumSamplesInTriggerBuffer;
 		BBThresholdType mThresholdDirection;
         TriggeredSegmentHistory     *triggeredSegmentHistory;
 
-        int FindThresholdCrossing(const float *data, UInt32 inNumberFrames, UInt32 stride);
+        int FindThresholdCrossing(const float *data, UInt32 inNumberFrames,UInt32 selectedChannel, UInt32 stride);
     
         void ClearHistory();
         // Deprecated threshold-crossing-finding

@@ -8,9 +8,13 @@
 
 #import "SpikesAnalysisViewController.h"
 #import "MBProgressHUD.h"
+#import "BBChannel.h"
+
 
 @interface SpikesAnalysisViewController (){
  dispatch_source_t callbackTimer;
+
+ NSInteger pickedChannelIndex;
 }
 @end
 
@@ -38,14 +42,20 @@
     [[BBAnalysisManager bbAnalysisManager] setCurrentFileTime: (float)self.timeSlider.value];
     
     //show buttons for spike trains if we have multiple trains
-    if([[BBAnalysisManager bbAnalysisManager] numberOfSpikeTrains]<2)
-    {
-        self.nextTrainBtn.hidden = YES;
-        self.removeTrainButton.hidden = YES;
-    }
+    [self setupButtons];
     
     [glView loadSettings];
     [glView startAnimation];
+}
+
+
+-(void) setupButtons
+{
+
+    self.nextTrainBtn.hidden = [[BBAnalysisManager bbAnalysisManager] numberOfSpikeTrainsOnCurrentChannel]<2;
+    self.removeTrainButton.hidden = [[BBAnalysisManager bbAnalysisManager] numberOfSpikeTrainsOnCurrentChannel]<2;
+    self.addTrainBtn.hidden = [[BBAnalysisManager bbAnalysisManager] numberOfSpikeTrainsOnCurrentChannel]>2;
+    self.channelBtn.hidden = [[[BBAnalysisManager bbAnalysisManager] fileToAnalyze] numberOfChannels]<2;
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -112,7 +122,12 @@
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
 {
-    return YES;
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        return (toInterfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
+    } else {
+        return YES;
+    }
+
 }
 
 - (void)dealloc {
@@ -122,6 +137,7 @@
     [addTrainBtn release];
     [removeTrainButton release];
     [nextTrainBtn release];
+    [_channelBtn release];
     [super dealloc];
 }
 
@@ -129,22 +145,43 @@
     [super viewDidUnload];
 }
 
+- (void)didRotate:(NSNotification *)note
+{
+   /* if(actionSheet)
+    {
+        [actionSheet dismissWithClickedButtonIndex:0 animated:YES];
+        [actionSheet release];
+        actionSheet = nil;
+        [self performSelector:@selector(channelClick:) withObject:nil afterDelay:1.0];
+    }
+*/
+}
+
+
 //Add another threshold pair (new spike train)
 - (IBAction)addTrainClick:(id)sender {
     [[BBAnalysisManager bbAnalysisManager] addAnotherThresholds];
 
     self.nextTrainBtn.hidden = NO;
     self.removeTrainButton.hidden = NO;
+    if([[BBAnalysisManager bbAnalysisManager] numberOfSpikeTrainsOnCurrentChannel]>2)
+    {
+        self.addTrainBtn.hidden = YES;
+    }
     
 }
 
 //Add threshold pair (spike train)
 - (IBAction)removeTrainClick:(id)sender {
     [[BBAnalysisManager bbAnalysisManager] removeSelectedThresholds];
-    if([[BBAnalysisManager bbAnalysisManager] numberOfSpikeTrains]<2)
+    if([[BBAnalysisManager bbAnalysisManager] numberOfSpikeTrainsOnCurrentChannel]<2)
     {
         self.nextTrainBtn.hidden = YES;
         self.removeTrainButton.hidden = YES;
+    }
+    if([[BBAnalysisManager bbAnalysisManager] numberOfSpikeTrainsOnCurrentChannel]<3)
+    {
+        self.addTrainBtn.hidden = NO;
     }
 }
 
@@ -152,4 +189,60 @@
 - (IBAction)nextTrainClick:(id)sender {
     [[BBAnalysisManager bbAnalysisManager] moveToNextSpikeTrain];
 }
+
+#pragma mark - Selection of channels Popover
+//====================================================================================
+
+- (IBAction)channelClick:(id)sender {
+    
+    SAFE_ARC_RELEASE(popover); popover=nil;
+    
+    //the controller we want to present as a popover
+    BBChannelSelectionTableViewController *controller = [[BBChannelSelectionTableViewController alloc] initWithStyle:UITableViewStylePlain];
+    
+    controller.delegate = self;
+    popover = [[FPPopoverController alloc] initWithViewController:controller];
+    popover.border = NO;
+    popover.tint = FPPopoverWhiteTint;
+
+    
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+    {
+        popover.contentSize = CGSizeMake(300, 500);
+    }
+    else {
+        popover.contentSize = CGSizeMake(200, 300);
+    }
+    /*if(sender == transparentPopover)
+    {
+        popover.alpha = 0.5;
+    }
+    */
+
+    popover.arrowDirection = FPPopoverArrowDirectionAny;
+    [popover presentPopoverFromView:sender];
+}
+
+
+-(NSMutableArray *) getAllRows
+{
+    NSMutableArray * allChannelsLabels = [[[NSMutableArray alloc] init] autorelease];
+    for(int i=0;i<[[bbfile allChannels] count];i++)
+    {
+        [allChannelsLabels addObject:[((BBChannel *)[[bbfile allChannels] objectAtIndex:i]) nameOfChannel]];
+    }
+    return allChannelsLabels;
+}
+
+
+- (void)rowSelected:(NSInteger) rowIndex
+{
+    [[BBAnalysisManager bbAnalysisManager] setCurrentChannel:rowIndex];
+    [self setupButtons];
+    [glView channelChanged];
+    [popover dismissPopoverAnimated:YES];
+}
+
+
+
 @end

@@ -17,12 +17,13 @@
 @implementation CrossCorrViewController
 
 @synthesize hostingView;
+@synthesize graphTitle;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        // Custom initialization
+        graphTitle = @"Cross-correlation";
     }
     return self;
 }
@@ -72,7 +73,7 @@
     barChart.plotAreaFrame.paddingRight = 20.0;
     barChart.plotAreaFrame.paddingBottom = 40.0;
     
-    barChart.title = @"Cross-correlation";
+    barChart.title = graphTitle;
     
     CPTMutableTextStyle *textStyle = [CPTTextStyle textStyle];
     textStyle.color = [CPTColor grayColor];
@@ -115,13 +116,8 @@
     barPlot.fill = [CPTFill fillWithColor:[CPTColor blueColor]];
     barPlot.lineStyle = nil;
     //make bars width greater if it is iPad
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        barPlot.barWidth = CPTDecimalFromFloat(10.0f);
-    }
-    else
-    {
-        barPlot.barWidth = CPTDecimalFromFloat(4.0f);
-    }
+    float widthOfBar = 1.8*hostingView.frame.size.width/[_values count];
+    barPlot.barWidth = CPTDecimalFromFloat(widthOfBar);
     
     barPlot.cornerRadius = 0.0f;
     barPlot.barWidthsAreInViewCoordinates = YES; //bar width are defined in pixels of screen

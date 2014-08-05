@@ -3,7 +3,7 @@
 //  Novocaine
 //
 // Copyright (c) 2012 Alex Wiltschko
-// 
+//
 // Permission is hereby granted, free of charge, to any person
 // obtaining a copy of this software and associated documentation
 // files (the "Software"), to deal in the Software without
@@ -12,10 +12,10 @@
 // copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following
 // conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be
 // included in all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
 // OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -111,8 +111,8 @@ static pthread_mutex_t outputAudioFileLock;
         pthread_mutex_init(&outputAudioFileLock, NULL);
         
         // mutex here //
-        if( 0 == pthread_mutex_trylock( &outputAudioFileLock ) ) 
-        {       
+        if( 0 == pthread_mutex_trylock( &outputAudioFileLock ) )
+        {
             CheckError( ExtAudioFileWriteAsync(self.outputFile, 0, NULL), "Initializing audio file");
         }
         pthread_mutex_unlock( &outputAudioFileLock );
@@ -132,8 +132,8 @@ static pthread_mutex_t outputAudioFileLock;
     outgoingAudio.mBuffers[0].mDataByteSize = numIncomingBytes;
     outgoingAudio.mBuffers[0].mData = self.outputBuffer;
     
-    if( 0 == pthread_mutex_trylock( &outputAudioFileLock ) ) 
-    {       
+    if( 0 == pthread_mutex_trylock( &outputAudioFileLock ) )
+    {
         ExtAudioFileWriteAsync(self.outputFile, thisNumFrames, &outgoingAudio);
     }
     pthread_mutex_unlock( &outputAudioFileLock );
@@ -178,7 +178,7 @@ static pthread_mutex_t outputAudioFileLock;
         dispatch_source_set_event_handler(self.callbackTimer, ^{
             
             
-            if (self.writerBlock) {                
+            if (self.writerBlock) {
                 // Call out with the audio that we've got.
                 self.writerBlock(self.outputBuffer, numSamplesPerCallback, self.numChannels);
                 
@@ -230,4 +230,3 @@ static pthread_mutex_t outputAudioFileLock;
 
 
 @end
-

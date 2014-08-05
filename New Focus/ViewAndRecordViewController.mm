@@ -11,6 +11,8 @@
 
 #import "ViewAndRecordViewController.h"
 #import "StimulationParameterViewController.h"
+#import "BBBTManager.h"
+
 
 @interface ViewAndRecordViewController() {
     dispatch_source_t callbackTimer;
@@ -37,8 +39,32 @@
 
     stimulateButton.hidden = !enabled;
     stimulatePreferenceButton.hidden = !enabled;
+    if(glView)
+    {
+        [glView stopAnimation];
+        [glView removeFromSuperview];
+        [glView release];
+        glView = nil;
+    }
+    glView = [[MultichannelCindeGLView alloc] initWithFrame:self.view.frame];
+    [self setGLView:glView];
+    glView.mode = MultichannelGLViewModeView;
+    [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels ] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
     
+	[self.view addSubview:glView];
+    [self.view sendSubviewToBack:glView];
+	[glView startAnimation];
+    // set our view controller's prop that will hold a pointer to our newly created CCGLTouchView
+    
+
+   /* [glView stopAnimation];
+    [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
     [glView startAnimation];
+    */
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(noBTConnection) name:NO_BT_CONNECTION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(btDisconnected) name:BT_DISCONNECTED object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(foundBTConnection) name:FOUND_BT_CONNECTION object:nil];
+    
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -54,6 +80,15 @@
     NSLog(@"Stopping regular view");
     [glView saveSettings:FALSE]; // save non-threshold settings
     [glView stopAnimation];
+    
+    
+   /* if([[BBAudioManager bbAudioManager] btOn])
+    {
+        [self btButtonPressed:nil];
+    }*/
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NO_BT_CONNECTION object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:FOUND_BT_CONNECTION object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:BT_DISCONNECTED object:nil];
 }
 
 - (void)viewDidLoad
@@ -62,19 +97,12 @@
     [super viewDidLoad];
     
     // our CCGLTouchView being added as a subview
-	MyCinderGLView *aView = [[MyCinderGLView alloc] init];
-	glView = aView;
-	[aView release];
-    glView = [[MyCinderGLView alloc] initWithFrame:self.view.frame];
-    
-	[self.view addSubview:glView];
-    [self.view sendSubviewToBack:glView];
-	
-    // set our view controller's prop that will hold a pointer to our newly created CCGLTouchView
-    [self setGLView:glView];
+	//MultichannelCindeGLView *aView = [[MultichannelCindeGLView alloc] init];
+	//glView = aView;
+	//[aView release];
     
     stimulateButton.selected = NO;
-    
+   // [[BBAudioManager bbAudioManager] startMonitoring];
     // Listen for going down
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate:) name:UIApplicationWillTerminateNotification object:nil];
 }
@@ -85,10 +113,19 @@
     [glView stopAnimation];
 }
 
-- (void)setGLView:(MyCinderGLView *)view
+- (void)setGLView:(MultichannelCindeGLView *)view
 {
     glView = view;
     callbackTimer = nil;
+}
+
+#pragma mark - MultichannelGLViewDelegate function
+- (float) fetchDataToDisplay:(float *)data numFrames:(UInt32)numFrames whichChannel:(UInt32)whichChannel
+{
+    
+    //Fetch data and get time of data as precise as posible. Used to sichronize
+    //display of waveform and spike marks
+    return [[BBAudioManager bbAudioManager] fetchAudio:data numFrames:numFrames whichChannel:whichChannel stride:1];
 }
 
 
@@ -133,7 +170,21 @@
     
     BBAudioManager *bbAudioManager = [BBAudioManager bbAudioManager];
     if (bbAudioManager.recording == false) {
-        aFile = [[BBFile alloc] init];
+        
+        //check if we have non-standard requirements for format and make custom wav
+        if([bbAudioManager sourceNumberOfChannels]>2 || [bbAudioManager sourceSamplingRate]!=44100.0f)
+        {
+            aFile = [[BBFile alloc] initWav];
+        }
+        else
+        {
+            //if everything is standard make .m4a file (it has beter compression )
+            aFile = [[BBFile alloc] init];
+        }
+        aFile.numberOfChannels = [bbAudioManager sourceNumberOfChannels];
+        aFile.samplingrate = [bbAudioManager sourceSamplingRate];
+        [aFile setupChannels];//create name of channels without spike trains
+        
         NSLog(@"URL: %@", [aFile fileURL]);
         [bbAudioManager startRecording:[aFile fileURL]];
         recordingTime = 0.0f;
@@ -168,6 +219,183 @@
     
     
 }
+
+
+#pragma mark - BT stuff
+
+- (IBAction)btButtonPressed:(id)sender {
+    
+    if([[BBAudioManager bbAudioManager] recording])
+    {
+        [self stopRecording:nil];
+    }
+    
+    
+    if([[BBAudioManager bbAudioManager] btOn])
+    {
+        if(glView)
+        {
+            [glView stopAnimation];
+            [glView removeFromSuperview];
+            [glView release];
+            glView = nil;
+        }
+
+        [[BBAudioManager bbAudioManager] closeBluetooth];
+        glView = [[MultichannelCindeGLView alloc] initWithFrame:self.view.frame];
+        
+        [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] numberOfChannels] samplingRate:[[BBAudioManager bbAudioManager] samplingRate] andDataSource:self];
+        glView.mode = MultichannelGLViewModeView;
+        [self.view addSubview:glView];
+        [self.view sendSubviewToBack:glView];
+        
+        // set our view controller's prop that will hold a pointer to our newly created CCGLTouchView
+        [self setGLView:glView];
+        [self.btButton setImage:[UIImage imageNamed:@"bluetooth.png"] forState:UIControlStateNormal];
+        stimulateButton.selected = NO;
+
+    }
+    else
+    {
+        [[BBAudioManager bbAudioManager] testBluetoothConnection];
+    }
+}
+
+
+-(void) foundBTConnection
+{
+    SAFE_ARC_RELEASE(popover); popover=nil;
+    
+    //the controller we want to present as a popover
+    BBChannelSelectionTableViewController *controller = [[BBChannelSelectionTableViewController alloc] initWithStyle:UITableViewStylePlain];
+    controller.delegate = self;
+    popover = [[FPPopoverController alloc] initWithViewController:controller];
+    popover.tint = FPPopoverWhiteTint;
+    popover.border = NO;
+    popover.arrowDirection = FPPopoverNoArrow;
+    popover.title = nil;
+    
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+    {
+        popover.contentSize = CGSizeMake(300, 500);
+    }
+    else {
+        popover.contentSize = CGSizeMake(200, 300);
+    }
+    /*if(sender == transparentPopover)
+     {
+     popover.alpha = 0.5;
+     }
+     */
+    
+
+    [popover presentPopoverFromPoint: CGPointMake(self.view.center.x, self.view.center.y - popover.contentSize.height/2)];
+    
+}
+
+
+- (void)rowSelected:(NSInteger) rowIndex
+{
+    [popover dismissPopoverAnimated:YES];
+    int tempSampleRate = 1000;
+    int tempNumOfChannels = 1;
+    switch (rowIndex) {
+        case 0:
+            tempNumOfChannels = 1;
+            tempSampleRate = 4000;
+            break;
+        case 1:
+            tempNumOfChannels = 2;
+            tempSampleRate = 2000;
+            break;
+        case 2:
+            tempNumOfChannels = 3;
+            tempSampleRate = 1333;
+            break;
+        case 3:
+            tempNumOfChannels = 4;
+            tempSampleRate = 1000;
+            break;
+        case 4:
+            tempNumOfChannels = 5;
+            tempSampleRate = 1000;
+            break;
+        case 5:
+            tempNumOfChannels = 6;
+            tempSampleRate = 1000;
+            break;
+        default:
+            break;
+    }
+    [self.btButton setImage:[UIImage imageNamed:@"inputicon.png"] forState:UIControlStateNormal];
+
+    if(glView)
+    {
+        [glView stopAnimation];
+        [glView removeFromSuperview];
+        [glView release];
+        glView = nil;
+    }
+    [[BBAudioManager bbAudioManager] switchToBluetoothWithNumOfChannels:tempNumOfChannels andSampleRate:tempSampleRate];
+    glView = [[MultichannelCindeGLView alloc] initWithFrame:self.view.frame];
+    
+    [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels ] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
+    glView.mode = MultichannelGLViewModeView;
+	[self.view addSubview:glView];
+    [self.view sendSubviewToBack:glView];
+	
+    // set our view controller's prop that will hold a pointer to our newly created CCGLTouchView
+    [self setGLView:glView];
+
+}
+-(NSMutableArray *) getAllRows
+{
+    NSMutableArray * allOptionsLabels = [[[NSMutableArray alloc] init] autorelease];
+
+    [allOptionsLabels addObject:@"1 channel (4000Hz)"];
+    [allOptionsLabels addObject:@"2 channel (2000Hz)"];
+    [allOptionsLabels addObject:@"3 channel (1333Hz)"];
+    [allOptionsLabels addObject:@"4 channel (1000Hz)"];
+    [allOptionsLabels addObject:@"5 channel (1000Hz)"];
+    [allOptionsLabels addObject:@"6 channel (1000Hz)"];
+    
+    return allOptionsLabels;
+}
+
+
+
+
+-(void) noBTConnection
+{
+    [self.btButton setImage:[UIImage imageNamed:@"bluetooth.png"] forState:UIControlStateNormal];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"No Bluetooth connection."
+                                                    message:@"Please pair with BYB bluetooth device in Bluetooth settings."
+                                                   delegate:nil
+                                          cancelButtonTitle:@"OK"
+                                          otherButtonTitles:nil];
+    [alert show];
+    [alert release];
+}
+
+-(void) btDisconnected
+{
+    if([[BBAudioManager bbAudioManager] btOn])
+    {
+        
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"No Bluetooth connection."
+                                                        message:@"Bluetooth device disconnected. Get in range of the device and try to pair with the device in Bluetooth settings again."
+                                                       delegate:self
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+        [alert show];
+        [alert release];
+    }
+}
+
+
+
+
+#pragma mark - Actions
 
 
 - (IBAction)stimulateButtonPressed:(id)sender {
@@ -208,6 +436,7 @@
     [stimulateButton release];
     [stimulatePreferenceButton release];
     [_stopButton release];
+    [_btButton release];
     [super dealloc];
 }
 

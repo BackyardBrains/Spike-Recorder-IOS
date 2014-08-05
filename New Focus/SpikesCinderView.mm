@@ -40,12 +40,15 @@
 	mCam.lookAt( Vec3f(0.0f, 0.0f, 40.0f), Vec3f::zero() );
 	
     [self loadSettings];
+
     
     // Setup multitouch
     [self enableMultiTouch:YES];
     
     // Setup manager
     analysisManager = [BBAnalysisManager bbAnalysisManager];
+    
+    //numSecondsMax = (numSecondsMax/[[[BBAnalysisManager bbAnalysisManager] fileToAnalyze] numberOfChannels])*1.5;
     
     // Setup display vector
     displayVector = PolyLine2f();
@@ -67,6 +70,10 @@
     [self getAllSpikes];
 }
 
+-(void) channelChanged
+{
+    [self getAllSpikes];
+}
 
 //Push all spikes in PolyLine2f object
 -(void) getAllSpikes
@@ -77,9 +84,9 @@
     {
         return;
     }
-    for (int i=0; i < [[[analysisManager allSpikes] objectAtIndex:0] count] ; ++i)
+    for (int i=0; i < [[analysisManager allSpikes] count]; ++i)
     {
-        tempSpike = (BBSpike *)[[[analysisManager allSpikes] objectAtIndex:0] objectAtIndex:i];
+        tempSpike = (BBSpike *)[[analysisManager allSpikes] objectAtIndex:i];
         allSpikes.push_back(Vec2f([tempSpike time] , [tempSpike value]));
     }
 }
@@ -92,6 +99,7 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
  
     numSecondsMax = [[defaults valueForKey:@"numSecondsMax"] floatValue];
+    numSecondsMax = (numSecondsMax/[[[BBAnalysisManager bbAnalysisManager] fileToAnalyze] numberOfChannels]*1.5);
     numSecondsMin = [[defaults valueForKey:@"numSecondsMin"] floatValue];
     numSecondsVisible = [[defaults valueForKey:@"numSecondsVisible"] floatValue];
     numVoltsMin = [[defaults valueForKey:@"numVoltsMin"] floatValue];
@@ -108,7 +116,7 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
    
-    [defaults setValue:[NSNumber numberWithFloat:numSecondsMax] forKey:@"numSecondsMax"];
+    //[defaults setValue:[NSNumber numberWithFloat:numSecondsMax] forKey:@"numSecondsMax"];
     [defaults setValue:[NSNumber numberWithFloat:numSecondsMin] forKey:@"numSecondsMin"];
     [defaults setValue:[NSNumber numberWithFloat:numSecondsVisible] forKey:@"numSecondsVisible"];
     [defaults setValue:[NSNumber numberWithFloat:numVoltsMin] forKey:@"numVoltsMin"];
@@ -133,31 +141,34 @@
     
  
     //Calculate ref size values in Cinder world
-    Vec2f refSizeS = [self worldToScreen:Vec2f(-numSecondsMin,0.0)];
+   /* Vec2f refSizeS = [self worldToScreen:Vec2f(-numSecondsMin,0.0)];
     Vec2f refSizeW = [self screenToWorld:Vec2f(refSizeS.x-10,refSizeS.y+10)];
     float tenPixX =refSizeW.x+numSecondsMin;
-    float tenPixY =refSizeW.y;
+    float tenPixY =refSizeW.y;*/
+    
+    Vec2f scaleXY = [self screenToWorld:Vec2f(1.0f,1.0f)];
+    Vec2f scaleXYZero = [self screenToWorld:Vec2f(0.0f,0.0f)];
+    scaleXY.x = fabsf(scaleXY.x - scaleXYZero.x);
+    scaleXY.y = fabsf(scaleXY.y - scaleXYZero.y);
     
     
     
    // gl::drawSolidRect(Rectf(refSize.x,refSize.y,refSize.x-refSize.x, refSize.y+refSize.y));
     // Set the line color and width
-    glColor4f(0.0f, 0.4f, 0.0f, 1.0f);
+    glColor4f(0.4f, 0.4f, 0.4f, 1.0f);
     glLineWidth(1.0f);
     // Put the audio on the screen
     [self fillDisplayVector];
     gl::draw(displayVector);
     
-    glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
     
     //Draw spikes
-    
+    gl::disableDepthRead();
     BOOL weAreInInterval = NO;
-    BOOL weFoundInterval = NO;
-    int tempCurrentSelectedInterval = [[BBAnalysisManager bbAnalysisManager] currentSpikeTrain];
     std::vector<Vec2f>	 spikes = allSpikes.getPoints();
-    float sizeOfPointX = 0.3*tenPixX;
-    float sizeOfPointY = 0.3*tenPixY;
+    float sizeOfPointX = 4*scaleXY.x;
+    float sizeOfPointY = 4*scaleXY.y;
     float startTimeToDisplay = [[BBAnalysisManager bbAnalysisManager] currentFileTime]-((numSecondsVisible> numSecondsMax)?numSecondsMax:numSecondsVisible);
     float endTimeToDisplay = [[BBAnalysisManager bbAnalysisManager] currentFileTime];
     for(int i=0; i < spikes.size(); i++)
@@ -165,39 +176,25 @@
         if(spikes[i].x>startTimeToDisplay && spikes[i].x<endTimeToDisplay)
         {
             weAreInInterval = YES;
-            weFoundInterval = NO;
-            int threshi=0;
             //check if spike is in one of the selected intervals
-            for(threshi=0;threshi<[[BBAnalysisManager bbAnalysisManager] numberOfSpikeTrains];threshi++)
+            if((spikes[i].y<[[BBAnalysisManager bbAnalysisManager] thresholdFirst] && spikes[i].y>[[BBAnalysisManager bbAnalysisManager] thresholdSecond]) || (spikes[i].y>[[BBAnalysisManager bbAnalysisManager] thresholdFirst] && spikes[i].y<[[BBAnalysisManager bbAnalysisManager] thresholdSecond]))
             {
-                [[BBAnalysisManager bbAnalysisManager] setCurrentSpikeTrain:threshi];
-                if((spikes[i].y<[[BBAnalysisManager bbAnalysisManager] thresholdFirst] && spikes[i].y>[[BBAnalysisManager bbAnalysisManager] thresholdSecond]) || (spikes[i].y>[[BBAnalysisManager bbAnalysisManager] thresholdFirst] && spikes[i].y<[[BBAnalysisManager bbAnalysisManager] thresholdSecond]))
-                {
-                
-                    weFoundInterval = YES;
-                    break;
-                }
-            }
-            //if we are in spike train interval
-            if(weFoundInterval)
-            {
-                [self setColorWithIndex:threshi transparency:1.0f]; //draw selected spike
+            
+               [self setColorWithIndex:[[BBAnalysisManager bbAnalysisManager] currentChannel]+[[BBAnalysisManager bbAnalysisManager] currentSpikeTrain] transparency:1.0f]; //draw selected spike
             }
             else
             {
-                glColor4f(0.5f, 0.0f, 0.0f, 1.0f); //draw unselected spike
+                glColor4f(0.9f, 0.9f, 0.9f, 1.0f); //draw unselected spike
             }
             //draw spike mark
-            gl::drawSolidRect(Rectf(spikes[i].x-sizeOfPointX-endTimeToDisplay,spikes[i].y-sizeOfPointY,spikes[i].x+sizeOfPointX-endTimeToDisplay,spikes[i].y+sizeOfPointY));
+            gl::drawSolidEllipse( Vec2f(spikes[i].x-endTimeToDisplay, spikes[i].y), sizeOfPointX,sizeOfPointY, 100 );
         }
         else if(weAreInInterval)
         {
             break;
         }
     }
-    
-    //put back index of selected interval
-    [[BBAnalysisManager bbAnalysisManager] setCurrentSpikeTrain:tempCurrentSelectedInterval];
+        gl::enableDepthRead();
 
     // Put a little grid on the screen.
     [self drawGrid];
@@ -208,7 +205,40 @@
     glColor4f(0.3f, 0.3f, 1.0f, 1.0f);
     float threshval1 = [[BBAnalysisManager bbAnalysisManager] thresholdFirst];
     float threshval2 = [[BBAnalysisManager bbAnalysisManager] thresholdSecond];
+    
+    
+
+    
+    float leftxcenterHandle = -numSecondsMin-20*scaleXY.x;
+    float rightxcenterHandle = -numSecondsVisible+20*scaleXY.x;
+    float radiusXAxis = 20*scaleXY.x;
+    float radiusYAxis = 20*scaleXY.y;
+    
+    [self setColorWithIndex:[[BBAnalysisManager bbAnalysisManager] currentSpikeTrain] transparency:1.0f];
+    gl::drawSolidEllipse( Vec2f(leftxcenterHandle, threshval1), radiusXAxis, radiusYAxis, 1000 );
+    gl::drawSolidTriangle(
+                          Vec2f(leftxcenterHandle-0.35*radiusXAxis, threshval1+radiusYAxis*0.97),
+                          Vec2f(leftxcenterHandle-1.6*radiusXAxis, threshval1),
+                          Vec2f(leftxcenterHandle-0.35*radiusXAxis, threshval1-radiusYAxis*0.97)
+                          );
+    
+    gl::drawSolidEllipse( Vec2f(rightxcenterHandle, threshval2), radiusXAxis, radiusYAxis, 1000 );
+    gl::drawSolidTriangle(
+                          Vec2f(rightxcenterHandle+0.35*radiusXAxis, threshval2+radiusYAxis*0.97),
+                          Vec2f(rightxcenterHandle+1.6*radiusXAxis, threshval2),
+                          Vec2f(rightxcenterHandle+0.35*radiusXAxis, threshval2-radiusYAxis*0.97)
+                          );
+    
     glLineWidth(2.0f);
+    gl::drawLine(Vec2f(-numSecondsVisible, threshval1), Vec2f(-numSecondsMin, threshval1));
+    gl::drawLine(Vec2f(-numSecondsVisible, threshval2), Vec2f(-numSecondsMin, threshval2));
+    glLineWidth(1.0f);
+    
+    
+    
+    
+    
+   /* glLineWidth(2.0f);
     gl::drawLine(Vec2f(-numSecondsVisible, threshval1), Vec2f(-numSecondsMin, threshval1));
     gl::drawLine(Vec2f(-numSecondsVisible, threshval2), Vec2f(-numSecondsMin, threshval2));
     glLineWidth(1.0f);
@@ -217,7 +247,7 @@
     
     gl::drawSolidRect(Rectf(-numSecondsVisible-5*tenPixX,threshval2-2*tenPixY,-numSecondsVisible,threshval2+2*tenPixY));
     gl::drawSolidTriangle(Vec2f(-numSecondsVisible-5*tenPixX,threshval2-2*tenPixY), Vec2f(-numSecondsVisible-5*tenPixX,threshval2+2*tenPixY), Vec2f(-numSecondsVisible-7*tenPixX,threshval2));
-    gl::enableDepthRead();
+    gl::enableDepthRead();*/
     
     
     
@@ -233,16 +263,16 @@
     iindex = iindex%5;
     switch (iindex) {
         case 0:
-            glColor4f(1.0f, 0.0f, 0.0f, transp);
+            glColor4f(0.9686274509803922f, 0.4980392156862745f, 0.011764705882352941f, transp);
             break;
         case 1:
-            glColor4f(0.0f, 0.0f, 1.0f, transp);
+            glColor4f(1.0f, 0.011764705882352941f, 0.011764705882352941f, transp);
             break;
         case 2:
-            glColor4f(0.0f, 1.0f, 1.0f, transp);
+            glColor4f( 0.9882352941176471f, 0.9372549019607843f, 0.011764705882352941f, transp);
             break;
         case 3:
-            glColor4f(1.0f, 1.0f, 0.0f, transp);
+            glColor4f(0.0f, 0.0f, 1.0f, transp);
             break;
         case 4:
             glColor4f(1.0f, 0.0f, 1.0f, transp);
@@ -375,7 +405,7 @@
     // Aight, now that we've got our ranges correct, let's ask for the audio.
     //Only fetch visible part (numPoints samples) and put it after offset.
     //Stride is equal to 2 since we have x and y coordinatesand we want to set only y
-    [analysisManager fetchAudioAndSpikes:(float *)&(displayVector.getPoints()[offset])+1 numFrames:numPoints whichChannel:0 stride:2];
+    [analysisManager fetchAudioAndSpikes:(float *)&(displayVector.getPoints()[offset])+1 numFrames:numPoints stride:2];
     
 }
 
@@ -420,7 +450,7 @@
 - (void)updateActiveTouches
 {
     [super updateActiveTouches];
-    NSLog(@"Num volts visible: %f", numVoltsVisible);
+   // NSLog(@"Num volts visible: %f", numVoltsVisible);
     
     std::vector<ci::app::TouchEvent::Touch> touches = [self getActiveTouches];
     
