@@ -9,7 +9,8 @@
 
 #import "BBFileViewControllerTBV.h"
 #import "MyAppDelegate.h"
-
+#import "ExperimentsMenuTableViewCell.h"
+#import "ExperimentsViewController.h"
 #define kSyncWaitTime 10 //seconds
 
 @interface BBFileViewControllerTBV()
@@ -169,11 +170,12 @@
         self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithImage:dbImage style:UIBarButtonItemStylePlain target:self action:@selector(dbButtonPressed)] autorelease];
         self.navigationItem.rightBarButtonItem.width = dbImage.size.width;
     }
-    
-	self.allFiles = [NSMutableArray arrayWithArray:[BBFile allObjects]];
+    //Filter and remove experiment files
+   
+    self.allFiles = [self getFilteredRecordings];
     
     self.contentSizeForViewInPopover =
-        CGSizeMake(310.0, (self.tableView.rowHeight * ([self.allFiles count] +1)));
+        CGSizeMake(310.0, (self.tableView.rowHeight * ([self.allFiles count] +2)));
     
     self.inPseudoEditMode = NO;
     
@@ -193,7 +195,7 @@
     {
         if ([self.allFiles count] > 0)
         {
-            NSIndexPath* ipath = [NSIndexPath indexPathForRow: [self.allFiles count]-1 inSection: 0];
+            NSIndexPath* ipath = [NSIndexPath indexPathForRow: [self.allFiles count] inSection: 0];
             [theTableView scrollToRowAtIndexPath: ipath atScrollPosition: UITableViewScrollPositionTop animated: YES];
             [self openActionViewWithFile:[self.allFiles objectAtIndex:[self.allFiles count]-1]];
         }
@@ -201,6 +203,19 @@
     }
 }
 
+
+-(NSMutableArray *) getFilteredRecordings
+{
+    NSMutableArray *tempArray = [NSMutableArray arrayWithArray:[BBFile allObjects]] ;
+    for(int i=[tempArray count]-1;i>=0;i--)
+    {
+        if( [(BBFile *)[tempArray objectAtIndex:i] fileUsage] != NORMAL_FILE_USAGE)
+        {
+            [tempArray removeObjectAtIndex:i];
+        }
+    }
+    return tempArray;
+}
 
 -(void) openActionViewWithFile:(BBFile *) file
 {
@@ -225,9 +240,9 @@
     MyAppDelegate * appDelegate = (MyAppDelegate*)[[UIApplication sharedApplication] delegate];
     if([appDelegate sharedFileShouldBeOpened])
     {
-        self.allFiles = [NSMutableArray arrayWithArray:[BBFile allObjects]];
+        self.allFiles = [self getFilteredRecordings];
         self.contentSizeForViewInPopover =
-        CGSizeMake(310.0, (self.tableView.rowHeight * ([self.allFiles count] +1)));
+        CGSizeMake(310.0, (self.tableView.rowHeight * ([self.allFiles count] +2)));
         self.inPseudoEditMode = NO;
         [self populateSelectedArray];
         [theTableView reloadData];
@@ -236,7 +251,7 @@
         
         if ([self.allFiles count] > 0)
         {
-            NSIndexPath* ipath = [NSIndexPath indexPathForRow: [self.allFiles count]-1 inSection: 0];
+            NSIndexPath* ipath = [NSIndexPath indexPathForRow: [self.allFiles count] inSection: 0];
             [theTableView scrollToRowAtIndexPath: ipath atScrollPosition: UITableViewScrollPositionTop animated: YES];
             [self openActionViewWithFile:[self.allFiles objectAtIndex:[self.allFiles count]-1]];
         }
@@ -272,36 +287,60 @@
     
 	if (indexPath.section == 0)
 	{
-		static int numcellsmade = 0;
-		numcellsmade += 1;
-		
-		static NSString *CellIdentifier = @"BBFileTableCell";    
-		BBFileTableCell *cell = (BBFileTableCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-		if (cell == nil) 
-		{
+        
+        //Menu "Experiments" cell
+        if(indexPath.row==0)
+        {
+            static NSString *CellIdentifier = @"ExperimentsMenuTableViewCell";
+            ExperimentsMenuTableViewCell *cell = (ExperimentsMenuTableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+            if (cell == nil)
+            {
+                
+                NSArray *topLevelObjects = [[NSBundle mainBundle] loadNibNamed:@"ExperimentsMenuTableViewCell" owner:nil options:nil];
+                
+                for(id currentObject in topLevelObjects)
+                {
+                    if([currentObject isKindOfClass:[ExperimentsMenuTableViewCell class]])
+                    {
+                        return  (ExperimentsMenuTableViewCell *)currentObject;
+                    }
+                }
+            }
+            return nil;
+        }
+        
+        //====== Recording cell
+        
+        static int numcellsmade = 0;
+        numcellsmade += 1;
+        
+        static NSString *CellIdentifier = @"BBFileTableCell";    
+        BBFileTableCell *cell = (BBFileTableCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        if (cell == nil) 
+        {
             
-			NSArray *topLevelObjects = [[NSBundle mainBundle] loadNibNamed:@"BBFileTableCell" owner:nil options:nil];
-			
-			for(id currentObject in topLevelObjects)
-			{
-				if([currentObject isKindOfClass:[BBFileTableCell class]])
-				{
-					cell = (BBFileTableCell *)currentObject;
-					break;
-				}
-			}
-		}
-		
-		BBFile *thisFile = [allFiles objectAtIndex:indexPath.row];
-		
-		if (thisFile.filelength > 0) {
-			cell.lengthname.text = [self stringWithFileLengthFromBBFile:thisFile];
-		} else {
-			cell.lengthname.text = @"";
-		}
-		
-		cell.shortname.text = thisFile.shortname; //[[allFiles objectAtIndex:indexPath.row] shortname];
-		cell.subname.text = thisFile.subname; //[[allFiles objectAtIndex:indexPath.row] subname];
+            NSArray *topLevelObjects = [[NSBundle mainBundle] loadNibNamed:@"BBFileTableCell" owner:nil options:nil];
+            
+            for(id currentObject in topLevelObjects)
+            {
+                if([currentObject isKindOfClass:[BBFileTableCell class]])
+                {
+                    cell = (BBFileTableCell *)currentObject;
+                    break;
+                }
+            }
+        }
+        
+        BBFile *thisFile = [allFiles objectAtIndex:indexPath.row-1];
+        
+        if (thisFile.filelength > 0) {
+            cell.lengthname.text = [self stringWithFileLengthFromBBFile:thisFile];
+        } else {
+            cell.lengthname.text = @"";
+        }
+        
+        cell.shortname.text = thisFile.shortname; //[[allFiles objectAtIndex:indexPath.row] shortname];
+        cell.subname.text = thisFile.subname; //[[allFiles objectAtIndex:indexPath.row] subname];
         
         if (self.inPseudoEditMode)
         {
@@ -321,6 +360,7 @@
         }
         
         return cell;
+
 	}
 	else if (indexPath.section == 1)
 	{
@@ -345,7 +385,10 @@
 {
     if ([indexPath indexAtPosition:0] == 0) //section # is 0
     {
-        cell.delegate = self;
+        if(indexPath.row>0)
+        {
+            cell.delegate = self;
+        }
     }
 }
 
@@ -353,7 +396,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 	if (section == 0) //tk or is it 1?
 	{
-		return [allFiles count];
+		return [allFiles count]+1;
 	} else if (section == 1) {
         
         if ([self.selectedArray containsObject:[NSNumber numberWithBool:YES]])
@@ -366,7 +409,7 @@
 
 - (void)checkForNewFilesAndReload
 {
-	self.allFiles = [NSMutableArray arrayWithArray:[BBFile allObjects]];
+	self.allFiles = [self getFilteredRecordings];
     [self.theTableView reloadData];
 }
 
@@ -375,6 +418,13 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     NSLog(@"=== Cell selected! === ");
+    if(indexPath.row == 0)
+    {
+        ExperimentsViewController *expVc = [[ExperimentsViewController alloc] initWithNibName:@"ExperimentsViewController" bundle:nil];
+        [self.navigationController pushViewController:expVc animated:YES];
+        [expVc release];
+        return;
+    }
     
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
     
@@ -520,7 +570,7 @@
 
 - (void)cellActionTriggeredFrom:(BBFileTableCell *) cell
 {
-    NSUInteger theRow = [[theTableView indexPathForCell:cell] row];
+    NSUInteger theRow = [[theTableView indexPathForCell:cell] row]-1;
     NSLog(@"Cell at row %u", theRow);
     
     if ([[self.theTableView indexPathForCell:cell] section] == 0)
@@ -734,7 +784,7 @@
     }
     
     
-    self.allFiles = [NSMutableArray arrayWithArray:[BBFile allObjects]];
+    self.allFiles = [self getFilteredRecordings];
     [self.theTableView reloadData];
     
     __block NSInteger count = 0;

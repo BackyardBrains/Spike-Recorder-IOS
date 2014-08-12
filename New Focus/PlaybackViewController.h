@@ -18,6 +18,7 @@
 
 - (void)setGLView:(CCGLTouchView *)view;
 
+@property (nonatomic) BOOL showNavigationBar;
 @property (retain, nonatomic) BBFile *bbfile;
 
 @property (retain, nonatomic) IBOutlet UIButton *playPauseButton;

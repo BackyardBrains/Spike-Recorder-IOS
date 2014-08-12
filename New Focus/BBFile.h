@@ -15,6 +15,10 @@
 #define FILE_SPIKE_SORTED @"filtered"
 #define FILE_NOT_SPIKE_SORTED @"notAnalized"
 
+#define NORMAL_FILE_USAGE 0
+#define EXPERIMENT_FILE_USAGE 2
+
+
 @interface BBFile : SQLitePersistentObject {
 	NSString *filename;
 	NSString *shortname;
@@ -26,6 +30,7 @@
 	float gain;
 	float filelength;
     int numberOfChannels;
+    int fileUsage;
     
 	NSMutableArray *_allSpikes;
     NSMutableArray *_allChannels;
@@ -42,6 +47,7 @@
 @property float gain;
 @property float filelength;
 @property int numberOfChannels;
+@property int fileUsage;
 
 @property (nonatomic, retain) NSMutableArray *allSpikes; //array of spike arrays (for every channel)
 @property (nonatomic, retain) NSMutableArray *allChannels; //array of BBChannel objects

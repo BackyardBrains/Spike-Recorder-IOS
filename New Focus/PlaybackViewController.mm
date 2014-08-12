@@ -25,6 +25,7 @@
 @synthesize timeSlider;
 @synthesize playPauseButton;
 @synthesize bbfile;
+@synthesize showNavigationBar;
 
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
@@ -66,7 +67,14 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    [self.navigationController setNavigationBarHidden:YES animated:NO];
+    if(showNavigationBar)
+    {
+        [self.navigationController setNavigationBarHidden:NO animated:NO];
+    }
+    else
+    {
+        [self.navigationController setNavigationBarHidden:YES animated:NO];
+    }
     if(glView)
     {
         [glView stopAnimation];

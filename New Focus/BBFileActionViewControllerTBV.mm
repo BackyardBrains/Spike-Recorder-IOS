@@ -207,14 +207,12 @@
     
     if ([cell.textLabel.text isEqualToString:@"Play"])
 	{
-        
-       // NSMutableArray *allViewControllers = [NSMutableArray arrayWithArray: self.navigationController.viewControllers];
-        //[allViewControllers removeObjectIdenticalTo: playbackController];
-        //self.navigationController.viewControllers = allViewControllers;
+    
         if(playbackController==nil)
         {
             playbackController = [[[PlaybackViewController alloc] initWithNibName:@"PlaybackViewController" bundle:nil] autorelease];
         }
+        playbackController.showNavigationBar = NO;
         playbackController.bbfile = [self.files objectAtIndex:0];
         [self.navigationController pushViewController:playbackController animated:YES];
         //[playbackController release];
