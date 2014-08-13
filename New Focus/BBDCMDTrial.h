@@ -15,6 +15,7 @@
     BBFile * _file;
     NSMutableArray * _angles;
     float timeOfImpact;
+    float startOfRecording;
     float distance;
 }
 
@@ -24,6 +25,8 @@
 @property (nonatomic,retain) BBFile * file;
 @property (nonatomic,retain) NSMutableArray * angles;//interlived format timestamp, angle
 @property float timeOfImpact;
+@property float startOfRecording;
 
 -(id) initWithSize:(float) inSize velocity:(float) inVelocity andDistance:(float) inDistance;
+- (NSDictionary *) createTrialDictionary;
 @end

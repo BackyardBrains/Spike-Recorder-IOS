@@ -9,10 +9,10 @@
 #import <UIKit/UIKit.h>
 #import "BBDCMDExperiment.h"
 
-@interface TrialsDCMDTableViewController : UIViewController<UITableViewDataSource, UITableViewDelegate>
+@interface TrialsDCMDTableViewController : UIViewController<UITableViewDataSource, UITableViewDelegate, UIActionSheetDelegate>
 
 @property (retain, nonatomic) IBOutlet UITableView *tableView;
 @property (nonatomic, retain) BBDCMDExperiment * experiment;
-
+@property (nonatomic, retain) NSArray *fileNamesToShare;
 
 @end

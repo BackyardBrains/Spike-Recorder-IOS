@@ -35,5 +35,6 @@
 @property (nonatomic,retain) NSMutableArray * trials;
 
 
+-(NSDictionary *) createExperimentDictionary;
 
 @end

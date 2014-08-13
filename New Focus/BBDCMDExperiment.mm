@@ -7,7 +7,7 @@
 //
 
 #import "BBDCMDExperiment.h"
-
+#import "BBDCMDTrial.h"
 @implementation BBDCMDExperiment
 
 @synthesize name;
@@ -25,7 +25,7 @@
 		self.name = @"Experiment";
 		self.comment = @"Your comment here";
         self.date = [NSDate date];
-        self.distance = 0.15;
+        self.distance = 0.09;
         self.numberOfTrialsPerPair = 5;
         self.delayBetweenTrials = 40.0;
         self.contrast = 100;//percentage
@@ -80,6 +80,27 @@
 -(NSMutableArray *) trials
 {
     return _trials;
+}
+
+
+-(NSDictionary *) createExperimentDictionary
+{
+    NSMutableArray * tempTrials = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
+    for(int i=0;i<[_trials count];i++)
+    {
+        [tempTrials addObject:[((BBDCMDTrial *)[_trials objectAtIndex:i]) createTrialDictionary]];
+    }
+    
+    NSDictionary * returnDict = [NSDictionary dictionaryWithObjectsAndKeys:name,@"name",
+                                  comment, @"comment",
+                                  [NSNumber numberWithFloat:distance], @"distance",
+                                  [tempTrials copy], @"trials",
+                                  [_velocities copy], @"velocities",
+                                  [_sizes copy], @"sizes",
+                                  [NSNumber numberWithInt:numberOfTrialsPerPair], @"trialsPerPair",
+                                  [NSNumber numberWithFloat:delayBetweenTrials], @"delayBetweenTrials",
+                                  nil] ;
+    return returnDict;
 }
 
 - (void)dealloc {

@@ -140,6 +140,7 @@
             expStartTime = self.getElapsedSeconds;
             glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
             [self calculateScale];
+            NSLog(@"Setup start of experiment");
         }
         
 //float fr = app::getFrameRate();
@@ -147,7 +148,7 @@
         
         switch (stateOfExp) {
             case STATE_BLANK_WAIT:
-                NSLog(@"StateBlank");
+                
                 if(currentTime>(self.experiment.delayBetweenTrials-START_RECORDING_SECONDS_BEFORE ))
                 {
                     BBAudioManager *bbAudioManager = [BBAudioManager bbAudioManager];
@@ -156,28 +157,30 @@
                         //check if we have non-standard requirements for format and make custom wav
                         if([bbAudioManager sourceNumberOfChannels]>2 || [bbAudioManager sourceSamplingRate]!=44100.0f)
                         {
-                            currentTrial.file = [[BBFile alloc] initWav];
+                            currentTrial.file = [[[BBFile alloc] initWav] autorelease];
                         }
                         else
                         {
                             //if everything is standard make .m4a file (it has beter compression )
-                            currentTrial.file = [[BBFile alloc] init];
+                            currentTrial.file = [[[BBFile alloc] init] autorelease];
                         }
                         currentTrial.file.numberOfChannels = [bbAudioManager sourceNumberOfChannels];
                         currentTrial.file.samplingrate = [bbAudioManager sourceSamplingRate];
                         [currentTrial.file setupChannels];//create name of channels without spike trains
                         
-                        NSLog(@"Start recording exp file URL: %@", [currentTrial.file fileURL]);
+                        NSLog(@"Start recording exp file URL: %@ time: %f", [currentTrial.file fileURL], currentTime);
                         [bbAudioManager startRecording:[currentTrial.file fileURL]];
-                        stateOfExp = STATE_RECORDING_STARTED;
+                        
+                        currentTrial.startOfRecording = (float)self.getElapsedSeconds-expStartTime;                        stateOfExp = STATE_RECORDING_STARTED;
                     }
                 }
                 break;
                 
             case STATE_RECORDING_STARTED:
-                NSLog(@"Recording started");
+                
                 if(currentTime>(self.experiment.delayBetweenTrials))
                 {
+                    NSLog(@"Stimulation Started. Time: %f", currentTime);
                     stateOfExp = STATE_STIMULATION_STARTED;
                     indexOfAngle = 0;
                 }
@@ -186,13 +189,22 @@
                 //NSLog(@"Stimulation Started");
 
                 [currentTrial.angles replaceObjectAtIndex:indexOfAngle+1 withObject:[NSNumber numberWithFloat:(float)currentTime]];
-                gl::drawSolidEllipse( centerOfScreen, sizesForEllipse[indexOfAngle], sizesForEllipse[indexOfAngle+1] );
+                if(!isRotated)
+                {
+                    gl::drawSolidEllipse( centerOfScreen, sizesForEllipse[indexOfAngle], sizesForEllipse[indexOfAngle+1] );
+                }
+                else
+                {
+                    gl::drawSolidEllipse( centerOfScreen, sizesForEllipse[indexOfAngle+1], sizesForEllipse[indexOfAngle] );
+                }
+                
                 if((indexOfAngle+=2) == maxIndexOfAngleInTrial)
                 {
                     currentTrial.timeOfImpact = currentTime;
                     radiusXAxis = sizesForEllipse[indexOfAngle-2];
                     radiusYAxis = sizesForEllipse[indexOfAngle-1];
                     stateOfExp = STATE_WHAIT_AFTER_STIMULATION;
+                    NSLog(@"Halt max angle started. Time: %f", currentTime);
                 }
                 break;
             case STATE_WHAIT_AFTER_STIMULATION:
@@ -203,14 +215,20 @@
                 
 
                 //Draw circle
-
-                gl::drawSolidEllipse( centerOfScreen, radiusXAxis, radiusYAxis );
+                if(!isRotated)
+                {
+                    gl::drawSolidEllipse( centerOfScreen, radiusYAxis, radiusXAxis );
+                }
+                else
+                {
+                    gl::drawSolidEllipse( centerOfScreen, radiusXAxis, radiusYAxis );
+                }
                 
                 if(currentTime> currentTrial.timeOfImpact + WHAIT_WITH_MAX_ANGLE_SECONDS)
                 {
                     
                     //End of trial
-                    
+                    NSLog(@"End of max angle whait. Time: %f", currentTime);
                     
                     BBAudioManager *bbAudioManager = [BBAudioManager bbAudioManager];
                     currentTrial.file.filelength = bbAudioManager.fileDuration;
@@ -248,6 +266,29 @@
 }
 
 
+-(void)rotated
+{
+    isRotated = !isRotated;
+    [self calculateScale];
+}
+
+-(void) removeAllTrialsThatAreNotSimulated
+{
+    NSUInteger index = [_experiment.trials indexOfObject:currentTrial];
+    NSMutableArray * tempArrayOfTrialsToDelete = [[NSMutableArray alloc] initWithCapacity:0];
+    
+    for(int i=trialIndex;i<[trialIndexes count];i++)
+    {
+            [tempArrayOfTrialsToDelete addObject:[self.experiment.trials objectAtIndex:[((NSNumber*)[trialIndexes objectAtIndex:i]) intValue]]];
+    }
+    for(int i=0;i<[tempArrayOfTrialsToDelete count];i++)
+    {
+        BBDCMDTrial * tempTrial = [tempArrayOfTrialsToDelete objectAtIndex:i];
+        [tempTrial deleteObject];
+        [_experiment.trials removeObject:tempTrial];
+    }
+}
+
 -(void) calculateSizesForEllipseForTrial:(BBDCMDTrial *) tempTrial
 {
     
@@ -258,7 +299,7 @@
         sizesForEllipse[i+1] =sizeOnScreen*pixelsPerMeter*scaleXY.y;
     }
     maxIndexOfAngleInTrial = [tempTrial.angles count];
-    
+    isRotated = NO;
 }
 
 - (void) restartCurrentTrial

@@ -109,6 +109,18 @@
     [self setSpikes:newSpikeTrain];
 }
 
+
+-(NSArray *) makeArrayOfTimestampsWithOffset:(float) offfset
+{
+    NSMutableArray * tempTimestamps = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
+    for(int i=0;i<[spikes count];i++)
+    {
+        [tempTimestamps addObject:[NSNumber numberWithFloat:offfset+[((BBSpike *)[spikes objectAtIndex:i]) time]]];
+    }
+    return [tempTimestamps copy];
+}
+
+
 - (void)dealloc {
     
     [spikes release];

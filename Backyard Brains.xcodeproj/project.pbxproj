@@ -87,6 +87,11 @@
 		249A246319058465005F5F03 /* AutocorrelationGraphViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 249A246119058465005F5F03 /* AutocorrelationGraphViewController.xib */; };
 		249A24681906AC59005F5F03 /* ISIHistogramViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 249A24661906AC59005F5F03 /* ISIHistogramViewController.xib */; };
 		24A13BD4192B8F3500BCE9D1 /* ExternalAccessory.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24A13BD3192B8F3500BCE9D1 /* ExternalAccessory.framework */; };
+		24BB8349199B6DE800C12932 /* ioapi.c in Sources */ = {isa = PBXBuildFile; fileRef = 24BB833F199B6DE800C12932 /* ioapi.c */; };
+		24BB834A199B6DE800C12932 /* mztools.c in Sources */ = {isa = PBXBuildFile; fileRef = 24BB8341199B6DE800C12932 /* mztools.c */; };
+		24BB834B199B6DE800C12932 /* unzip.c in Sources */ = {isa = PBXBuildFile; fileRef = 24BB8343199B6DE800C12932 /* unzip.c */; };
+		24BB834C199B6DE800C12932 /* zip.c in Sources */ = {isa = PBXBuildFile; fileRef = 24BB8345199B6DE800C12932 /* zip.c */; };
+		24BB834D199B6DE800C12932 /* ZipArchive.mm in Sources */ = {isa = PBXBuildFile; fileRef = 24BB8348199B6DE800C12932 /* ZipArchive.mm */; };
 		24D9DFCB1951C35600A78BED /* FPPopoverController.m in Sources */ = {isa = PBXBuildFile; fileRef = 24D9DFC61951C35600A78BED /* FPPopoverController.m */; };
 		24D9DFCC1951C35600A78BED /* FPPopoverView.m in Sources */ = {isa = PBXBuildFile; fileRef = 24D9DFC81951C35600A78BED /* FPPopoverView.m */; };
 		24D9DFCD1951C35600A78BED /* FPTouchView.m in Sources */ = {isa = PBXBuildFile; fileRef = 24D9DFCA1951C35600A78BED /* FPTouchView.m */; };
@@ -376,6 +381,17 @@
 		249A246119058465005F5F03 /* AutocorrelationGraphViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AutocorrelationGraphViewController.xib; sourceTree = "<group>"; };
 		249A24661906AC59005F5F03 /* ISIHistogramViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ISIHistogramViewController.xib; sourceTree = "<group>"; };
 		24A13BD3192B8F3500BCE9D1 /* ExternalAccessory.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ExternalAccessory.framework; path = System/Library/Frameworks/ExternalAccessory.framework; sourceTree = SDKROOT; };
+		24BB833E199B6DE800C12932 /* crypt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = crypt.h; sourceTree = "<group>"; };
+		24BB833F199B6DE800C12932 /* ioapi.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ioapi.c; sourceTree = "<group>"; };
+		24BB8340199B6DE800C12932 /* ioapi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ioapi.h; sourceTree = "<group>"; };
+		24BB8341199B6DE800C12932 /* mztools.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = mztools.c; sourceTree = "<group>"; };
+		24BB8342199B6DE800C12932 /* mztools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mztools.h; sourceTree = "<group>"; };
+		24BB8343199B6DE800C12932 /* unzip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = unzip.c; sourceTree = "<group>"; };
+		24BB8344199B6DE800C12932 /* unzip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = unzip.h; sourceTree = "<group>"; };
+		24BB8345199B6DE800C12932 /* zip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = zip.c; sourceTree = "<group>"; };
+		24BB8346199B6DE800C12932 /* zip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zip.h; sourceTree = "<group>"; };
+		24BB8347199B6DE800C12932 /* ZipArchive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZipArchive.h; sourceTree = "<group>"; };
+		24BB8348199B6DE800C12932 /* ZipArchive.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ZipArchive.mm; sourceTree = "<group>"; };
 		24D9DFC41951C35600A78BED /* ARCMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARCMacros.h; sourceTree = "<group>"; };
 		24D9DFC51951C35600A78BED /* FPPopoverController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FPPopoverController.h; sourceTree = "<group>"; };
 		24D9DFC61951C35600A78BED /* FPPopoverController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FPPopoverController.m; sourceTree = "<group>"; };
@@ -697,6 +713,32 @@
 			path = CorePlotHeaders;
 			sourceTree = "<group>";
 		};
+		24BB82F5199A7EA900C12932 /* Zip */ = {
+			isa = PBXGroup;
+			children = (
+				24BB833D199B6DE800C12932 /* minizip */,
+				24BB8347199B6DE800C12932 /* ZipArchive.h */,
+				24BB8348199B6DE800C12932 /* ZipArchive.mm */,
+			);
+			name = Zip;
+			sourceTree = "<group>";
+		};
+		24BB833D199B6DE800C12932 /* minizip */ = {
+			isa = PBXGroup;
+			children = (
+				24BB833E199B6DE800C12932 /* crypt.h */,
+				24BB833F199B6DE800C12932 /* ioapi.c */,
+				24BB8340199B6DE800C12932 /* ioapi.h */,
+				24BB8341199B6DE800C12932 /* mztools.c */,
+				24BB8342199B6DE800C12932 /* mztools.h */,
+				24BB8343199B6DE800C12932 /* unzip.c */,
+				24BB8344199B6DE800C12932 /* unzip.h */,
+				24BB8345199B6DE800C12932 /* zip.c */,
+				24BB8346199B6DE800C12932 /* zip.h */,
+			);
+			path = minizip;
+			sourceTree = "<group>";
+		};
 		24D9DFC31951C34800A78BED /* Popover */ = {
 			isa = PBXGroup;
 			children = (
@@ -756,6 +798,7 @@
 		24DBA9341979699D00AEDE86 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				24BB82F5199A7EA900C12932 /* Zip */,
 				24EBC1BB1997EE00001D3392 /* UIDeviceExt */,
 				24D9DFC31951C34800A78BED /* Popover */,
 				247ED9B3193DEB8700871BAC /* TestFlightSDK3.0.2 */,
@@ -1257,9 +1300,11 @@
 				24D9DFCD1951C35600A78BED /* FPTouchView.m in Sources */,
 				FADF266F1596362F006C87BA /* main.m in Sources */,
 				24EBC1B21997DD21001D3392 /* TrialActionsViewController.mm in Sources */,
+				24BB834A199B6DE800C12932 /* mztools.c in Sources */,
 				240435E118F7E00A00A85A1B /* BBSpike.m in Sources */,
 				248C8EB318E4785D00307C4C /* RingBuffer.mm in Sources */,
 				248C8EB018E4785D00307C4C /* AudioFileReader.mm in Sources */,
+				24BB8349199B6DE800C12932 /* ioapi.c in Sources */,
 				2489D81F1992284500C00A9C /* ExperimentSetupViewController.mm in Sources */,
 				244C6A3B1943742E0097F7D4 /* WavManager.mm in Sources */,
 				240435DE18F6EC3400A85A1B /* BBAnalysisManager.mm in Sources */,
@@ -1282,6 +1327,7 @@
 				24D9DFCC1951C35600A78BED /* FPPopoverView.m in Sources */,
 				FAA27C1B15AD013E00DCC60B /* ThresholdViewController.mm in Sources */,
 				FAA27C2215AD0CEF00DCC60B /* StimulationParameterViewController.mm in Sources */,
+				24BB834B199B6DE800C12932 /* unzip.c in Sources */,
 				2474366918F6CAAC0044E11D /* SpikesCinderView.mm in Sources */,
 				2490139B1966CD5E00E5EF91 /* GraphMatrixViewController.mm in Sources */,
 				2490139F1966D88200E5EF91 /* GraphCollectionViewCell.mm in Sources */,
@@ -1289,11 +1335,13 @@
 				245B183D1990E4F400943684 /* BBDCMDTrial.mm in Sources */,
 				FAFAEEFD1621CC0400632975 /* BBFile.mm in Sources */,
 				2489D8241993ABCA00C00A9C /* DCMDExperimentViewController.mm in Sources */,
+				24BB834C199B6DE800C12932 /* zip.c in Sources */,
 				2410998A1975B7CF004FC15A /* RowHeaderColectionViewCell.m in Sources */,
 				248C8EBB18E5CF5E00307C4C /* CCGLTouchAppDelegate.mm in Sources */,
 				249013A3196AB45200E5EF91 /* ISIGraphViewController.mm in Sources */,
 				2410998D1975BA99004FC15A /* ColumnHeaderCollectionViewCell.m in Sources */,
 				245F1C7F194C762700AF0477 /* BBChannel.m in Sources */,
+				24BB834D199B6DE800C12932 /* ZipArchive.mm in Sources */,
 				24D9DFD01951C4A600A78BED /* BBChannelSelectionTableViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

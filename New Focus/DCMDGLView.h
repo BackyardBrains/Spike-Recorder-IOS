@@ -46,6 +46,7 @@
     int indexOfAngle;
     int maxIndexOfAngleInTrial;
     float pixelsPerMeter;
+    BOOL isRotated;
 }
 
 @property (nonatomic, assign) id <DCMDGLDelegate> controllerDelegate;
@@ -58,4 +59,6 @@
 -(void) startSavingExperiment;
 -(void) endOfExperiment;
 -(void) userWantsInterupt;
+-(void) removeAllTrialsThatAreNotSimulated;
+-(void) rotated;
 @end

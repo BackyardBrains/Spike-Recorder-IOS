@@ -74,6 +74,15 @@
     });
 }
 
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+    //NSLog(@"Rotate+++++++++++++++++++++++++++++++++++++++++");
+    if(glView)
+    {
+        [glView rotated];
+    }
+}
+
 //Delegate method from glView
 -(void) endOfExperiment
 {
@@ -117,7 +126,9 @@
     {
         if(alertView.tag == PAUSE_EXPERIMENT_ALERT_TAG)
         {
-            [self endOfExperiment];
+            [glView removeAllTrialsThatAreNotSimulated];
+           // [_experiment.trials removeObjectAtIndex:[_experiment.trials count]-1];
+            [self startSavingExperiment];
         }
     }
 }
