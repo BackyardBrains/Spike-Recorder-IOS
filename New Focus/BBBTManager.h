@@ -26,7 +26,9 @@ typedef void (^BBBTInputBlock)(float *data, UInt32 numFrames, UInt32 numChannels
 -(void) startBluetooth;
 -(void) stopCurrentBluetoothConnection;
 -(void) configBluetoothWithChannels:(int)inNumOfChannels andSampleRate:(int) inSampleRate;
-
+-(void) needData:(float) timePeriod;
 -(int) numberOfChannels;
 -(int) samplingRate;
+-(int) numberOfFramesBuffered;
+
 @end

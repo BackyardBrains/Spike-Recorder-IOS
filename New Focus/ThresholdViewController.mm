@@ -52,6 +52,10 @@
     [glView stopAnimation];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NO_BT_CONNECTION object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:BT_DISCONNECTED object:nil];
+
+    [glView removeFromSuperview];
+    [glView release];
+    glView = nil;
 }
 
 - (void)viewDidLoad

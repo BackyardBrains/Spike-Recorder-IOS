@@ -41,7 +41,7 @@
     maxAngle = 80.0f*(2.0f*M_PI/360.0f);
     stateOfExp = STATE_BLANK_WAIT;
     trialIndexes = [[NSMutableArray alloc] init];
-    sizesForEllipse = (float*) malloc(sizeof(float) * 1000);//size is abritrary as long as it is big enough
+    sizesForEllipse = (float*) malloc(sizeof(float) * 10000);//size is abritrary as long as it is big enough
     for(int i=0;i<[self.experiment.trials count];i++)
     {
         [trialIndexes addObject:[NSNumber numberWithInt:i]];
@@ -65,13 +65,17 @@
         currentTime = 0.0f;
         while (angle<maxAngle) {
             
-            virtualDistance += tempTrial.velocity*currentTime;
+            virtualDistance += tempTrial.velocity*(1.0f/60.0f);
             currentTime+=1.0f/60.0f;
             if(virtualDistance<=0.0f)
             {
-                virtualDistance = 0.001;
+                virtualDistance = 0.00000001;
             }
             angle = atanf(tempTrial.size/(2.0f*virtualDistance));
+            if(angle>maxAngle)
+            {
+                angle = maxAngle;
+            }
             //sizeOnScreen = 2.0f*tempTrial.distance*tanf(angle);
             [tempTrial.angles addObject:[NSNumber numberWithFloat:(float)angle]];
             [tempTrial.angles addObject:[NSNumber numberWithFloat:0.0f]];
@@ -94,13 +98,19 @@
     gl::setMatrices( mCam );
     //[self enableAntiAliasing:YES];
     [self calculateScale];
+    retinaPonder = 1.0f;
+    if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] && [[UIScreen mainScreen] scale]==2.0)
+    {
+        retinaPonder = 0.5;
+    }
     
     [self calculateSizesForEllipseForTrial:currentTrial];
     // Make sure that we can autorotate 'n what not.
     self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     
     // Set up our font, which we'll use to display the unit scales
-    mScaleFont = gl::TextureFont::create( Font("Helvetica", 12) );
+   // mScaleFont = gl::TextureFont::create( Font("Helvetica", 12) );
+
 }
 
 
@@ -217,11 +227,11 @@
                 //Draw circle
                 if(!isRotated)
                 {
-                    gl::drawSolidEllipse( centerOfScreen, radiusYAxis, radiusXAxis );
+                    gl::drawSolidEllipse( centerOfScreen, radiusXAxis, radiusYAxis );
                 }
                 else
                 {
-                    gl::drawSolidEllipse( centerOfScreen, radiusXAxis, radiusYAxis );
+                    gl::drawSolidEllipse( centerOfScreen, radiusYAxis, radiusXAxis );
                 }
                 
                 if(currentTime> currentTrial.timeOfImpact + WHAIT_WITH_MAX_ANGLE_SECONDS)
@@ -274,7 +284,6 @@
 
 -(void) removeAllTrialsThatAreNotSimulated
 {
-    NSUInteger index = [_experiment.trials indexOfObject:currentTrial];
     NSMutableArray * tempArrayOfTrialsToDelete = [[NSMutableArray alloc] initWithCapacity:0];
     
     for(int i=trialIndex;i<[trialIndexes count];i++)
@@ -284,9 +293,12 @@
     for(int i=0;i<[tempArrayOfTrialsToDelete count];i++)
     {
         BBDCMDTrial * tempTrial = [tempArrayOfTrialsToDelete objectAtIndex:i];
+        [[tempTrial file] deleteObject];
+        [tempTrial setFile:nil];
         [tempTrial deleteObject];
         [_experiment.trials removeObject:tempTrial];
     }
+    [tempArrayOfTrialsToDelete release];
 }
 
 -(void) calculateSizesForEllipseForTrial:(BBDCMDTrial *) tempTrial
@@ -294,7 +306,8 @@
     
     for(int i=0;i<[tempTrial.angles count];i+=2)
     {
-        sizeOnScreen = 2.0f*tempTrial.distance*tanf([[tempTrial.angles objectAtIndex:i] floatValue]);
+        //sizeOnScreen = 2.0f*tempTrial.distance*tanf(([[tempTrial.angles objectAtIndex:i] floatValue]/2.0f));
+        sizeOnScreen = tempTrial.distance*tanf(([[tempTrial.angles objectAtIndex:i] floatValue]/2.0f));
         sizesForEllipse[i] =sizeOnScreen*pixelsPerMeter*scaleXY.x;
         sizesForEllipse[i+1] =sizeOnScreen*pixelsPerMeter*scaleXY.y;
     }

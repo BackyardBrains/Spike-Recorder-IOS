@@ -70,6 +70,12 @@
     [self getAllSpikes];
 }
 
+- (void)dealloc
+{
+    
+    [super dealloc];
+}
+
 -(void) channelChanged
 {
     [self getAllSpikes];

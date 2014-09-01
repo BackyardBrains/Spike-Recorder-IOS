@@ -15,7 +15,8 @@
 #import "TestFlight.h"
 #define kViewRecordTabBarIndex 0
 #define kThresholdTabBarIndex 1
-#define kRecordingsTabBarIndex 2
+#define kFFTTabBarIndex 2
+#define kRecordingsTabBarIndex 3
 
 @implementation MyAppDelegate
 @synthesize tabBarController;

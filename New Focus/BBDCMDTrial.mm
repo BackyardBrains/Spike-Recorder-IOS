@@ -53,7 +53,7 @@
 {
     NSMutableArray * tempAngles = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
     NSMutableArray * tempTimestamps = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
-    for(int i = 0;i<[_angles count]/2;i+=2)
+    for(int i = 0;i<[_angles count];i+=2)
     {
         [tempAngles addObject:(NSNumber *)[_angles objectAtIndex:i]];
         [tempTimestamps addObject:(NSNumber *)[_angles objectAtIndex:i+1]];
@@ -61,7 +61,7 @@
     BBChannel * tempChannel = (BBChannel *)[_file.allChannels objectAtIndex:0];
     BBSpikeTrain * tempSpikestrain = (BBSpikeTrain *)[[tempChannel spikeTrains] objectAtIndex:0];
     NSArray * tempSpikeTimestamps = [tempSpikestrain makeArrayOfTimestampsWithOffset:startOfRecording];
-    NSDictionary * returnDict = [[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:size],@"size",
+    NSDictionary * returnDict = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:size],@"size",
      [NSNumber numberWithFloat:velocity], @"velocity",
      [NSNumber numberWithFloat:distance], @"distance",
      [NSNumber numberWithFloat:timeOfImpact], @"timeOfImpact",
@@ -70,7 +70,7 @@
      [tempTimestamps copy], @"timestamps",
      _file.filename, @"filename",
      tempSpikeTimestamps, @"spikeTimestamps",
-     nil] autorelease];
+     nil] ;
     return returnDict;
 }
 

@@ -108,6 +108,11 @@ void DSPAnalysis::InitDynamicFFT(RingBuffer *externalRingBuffer, UInt32 numberOf
     mLengthOfWindow = lengthOfWindow;//1024 - must be 2^N
     LengthOfFFTData = lengthOfWindow/2;
     
+    if(LengthOfFFTData<2)
+    {
+        LengthOfFFTData = 2;
+    }
+    
     if(percOverlapOfWindows>99)
     {
         percOverlapOfWindows = 99;

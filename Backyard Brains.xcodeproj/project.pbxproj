@@ -40,6 +40,14 @@
 		24513D0019545F3C007F240A /* ThresholdImage@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 24513CFE19545F3C007F240A /* ThresholdImage@2x.png */; };
 		24513D0319545F5E007F240A /* WaveImage.png in Resources */ = {isa = PBXBuildFile; fileRef = 24513D0119545F5E007F240A /* WaveImage.png */; };
 		24513D0419545F5E007F240A /* WaveImage@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 24513D0219545F5E007F240A /* WaveImage@2x.png */; };
+		2454D8A419ACF9FD0056B71B /* charticon.png in Resources */ = {isa = PBXBuildFile; fileRef = 2454D8A219ACF9FD0056B71B /* charticon.png */; };
+		2454D8A519ACF9FD0056B71B /* charticon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2454D8A319ACF9FD0056B71B /* charticon@2x.png */; };
+		2454D8A919AD02010056B71B /* GraphDCMDExperimentViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2454D8A719AD02010056B71B /* GraphDCMDExperimentViewController.mm */; };
+		2454D8AA19AD02010056B71B /* GraphDCMDExperimentViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2454D8A819AD02010056B71B /* GraphDCMDExperimentViewController.xib */; };
+		2454D8AD19AD045F0056B71B /* ExperimentDCMDGraphView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2454D8AC19AD045F0056B71B /* ExperimentDCMDGraphView.mm */; };
+		2454D8B119AE18D50056B71B /* AverageSpikeGraphViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2454D8AF19AE18D50056B71B /* AverageSpikeGraphViewController.mm */; };
+		2454D8B219AE18D50056B71B /* AverageSpikeGraphViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2454D8B019AE18D50056B71B /* AverageSpikeGraphViewController.xib */; };
+		2454D8B519AE1EE00056B71B /* AverageSpikeGraphView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2454D8B419AE1EE00056B71B /* AverageSpikeGraphView.mm */; };
 		245B183A1990DDF200943684 /* BBDCMDExperiment.mm in Sources */ = {isa = PBXBuildFile; fileRef = 245B18391990DDF200943684 /* BBDCMDExperiment.mm */; };
 		245B183D1990E4F400943684 /* BBDCMDTrial.mm in Sources */ = {isa = PBXBuildFile; fileRef = 245B183C1990E4F400943684 /* BBDCMDTrial.mm */; };
 		245B1841199135ED00943684 /* ExperimentsMenuTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 245B183F199135ED00943684 /* ExperimentsMenuTableViewCell.m */; };
@@ -54,7 +62,7 @@
 		2469893919098C1900F5383F /* again.png in Resources */ = {isa = PBXBuildFile; fileRef = 2469893719098C1900F5383F /* again.png */; };
 		2469893A19098C1900F5383F /* again@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2469893819098C1900F5383F /* again@2x.png */; };
 		247038F7196C37E5002D15C3 /* AutoGraphCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 247038F6196C37E5002D15C3 /* AutoGraphCollectionViewCell.m */; };
-		247115F51930BB1100D1B004 /* BBBTManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 247115F41930BB1100D1B004 /* BBBTManager.m */; };
+		247115F51930BB1100D1B004 /* BBBTManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 247115F41930BB1100D1B004 /* BBBTManager.mm */; };
 		2474366918F6CAAC0044E11D /* SpikesCinderView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2474366818F6CAAC0044E11D /* SpikesCinderView.mm */; };
 		2474366B18F6DBFF0044E11D /* SpikesViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2474366A18F6DBFF0044E11D /* SpikesViewController.xib */; };
 		2474366E18F6DCA30044E11D /* SpikesAnalysisViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2474366D18F6DCA30044E11D /* SpikesAnalysisViewController.mm */; };
@@ -92,6 +100,11 @@
 		24BB834B199B6DE800C12932 /* unzip.c in Sources */ = {isa = PBXBuildFile; fileRef = 24BB8343199B6DE800C12932 /* unzip.c */; };
 		24BB834C199B6DE800C12932 /* zip.c in Sources */ = {isa = PBXBuildFile; fileRef = 24BB8345199B6DE800C12932 /* zip.c */; };
 		24BB834D199B6DE800C12932 /* ZipArchive.mm in Sources */ = {isa = PBXBuildFile; fileRef = 24BB8348199B6DE800C12932 /* ZipArchive.mm */; };
+		24BB8350199DFAD800C12932 /* checkmark@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 24BB834E199DFAD800C12932 /* checkmark@2x.png */; };
+		24BB8358199DFFC100C12932 /* checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = 24BB8357199DFFC100C12932 /* checkmark.png */; };
+		24BB835B199E66AA00C12932 /* TrialDCMDGraphView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 24BB835A199E66AA00C12932 /* TrialDCMDGraphView.mm */; };
+		24BB8364199E7D0C00C12932 /* GraphDCMDTrialViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 24BB8362199E7D0C00C12932 /* GraphDCMDTrialViewController.mm */; };
+		24BB8365199E7D0C00C12932 /* GraphDCMDTrialViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 24BB8363199E7D0C00C12932 /* GraphDCMDTrialViewController.xib */; };
 		24D9DFCB1951C35600A78BED /* FPPopoverController.m in Sources */ = {isa = PBXBuildFile; fileRef = 24D9DFC61951C35600A78BED /* FPPopoverController.m */; };
 		24D9DFCC1951C35600A78BED /* FPPopoverView.m in Sources */ = {isa = PBXBuildFile; fileRef = 24D9DFC81951C35600A78BED /* FPPopoverView.m */; };
 		24D9DFCD1951C35600A78BED /* FPTouchView.m in Sources */ = {isa = PBXBuildFile; fileRef = 24D9DFCA1951C35600A78BED /* FPTouchView.m */; };
@@ -228,6 +241,18 @@
 		24513CFE19545F3C007F240A /* ThresholdImage@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ThresholdImage@2x.png"; sourceTree = "<group>"; };
 		24513D0119545F5E007F240A /* WaveImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = WaveImage.png; sourceTree = "<group>"; };
 		24513D0219545F5E007F240A /* WaveImage@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "WaveImage@2x.png"; sourceTree = "<group>"; };
+		2454D8A219ACF9FD0056B71B /* charticon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = charticon.png; sourceTree = "<group>"; };
+		2454D8A319ACF9FD0056B71B /* charticon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "charticon@2x.png"; sourceTree = "<group>"; };
+		2454D8A619AD02010056B71B /* GraphDCMDExperimentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphDCMDExperimentViewController.h; sourceTree = "<group>"; };
+		2454D8A719AD02010056B71B /* GraphDCMDExperimentViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GraphDCMDExperimentViewController.mm; sourceTree = "<group>"; };
+		2454D8A819AD02010056B71B /* GraphDCMDExperimentViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GraphDCMDExperimentViewController.xib; sourceTree = "<group>"; };
+		2454D8AB19AD045F0056B71B /* ExperimentDCMDGraphView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExperimentDCMDGraphView.h; sourceTree = "<group>"; };
+		2454D8AC19AD045F0056B71B /* ExperimentDCMDGraphView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ExperimentDCMDGraphView.mm; sourceTree = "<group>"; };
+		2454D8AE19AE18D50056B71B /* AverageSpikeGraphViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AverageSpikeGraphViewController.h; sourceTree = "<group>"; };
+		2454D8AF19AE18D50056B71B /* AverageSpikeGraphViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AverageSpikeGraphViewController.mm; sourceTree = "<group>"; };
+		2454D8B019AE18D50056B71B /* AverageSpikeGraphViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AverageSpikeGraphViewController.xib; sourceTree = "<group>"; };
+		2454D8B319AE1EE00056B71B /* AverageSpikeGraphView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AverageSpikeGraphView.h; sourceTree = "<group>"; };
+		2454D8B419AE1EE00056B71B /* AverageSpikeGraphView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AverageSpikeGraphView.mm; sourceTree = "<group>"; };
 		245B18381990DDF200943684 /* BBDCMDExperiment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BBDCMDExperiment.h; sourceTree = "<group>"; };
 		245B18391990DDF200943684 /* BBDCMDExperiment.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BBDCMDExperiment.mm; sourceTree = "<group>"; };
 		245B183B1990E4F400943684 /* BBDCMDTrial.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BBDCMDTrial.h; sourceTree = "<group>"; };
@@ -251,7 +276,7 @@
 		247038F5196C37E5002D15C3 /* AutoGraphCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AutoGraphCollectionViewCell.h; sourceTree = "<group>"; };
 		247038F6196C37E5002D15C3 /* AutoGraphCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AutoGraphCollectionViewCell.m; sourceTree = "<group>"; };
 		247115F31930BB1100D1B004 /* BBBTManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BBBTManager.h; sourceTree = "<group>"; };
-		247115F41930BB1100D1B004 /* BBBTManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BBBTManager.m; sourceTree = "<group>"; };
+		247115F41930BB1100D1B004 /* BBBTManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BBBTManager.mm; sourceTree = "<group>"; };
 		2474366718F6CAAC0044E11D /* SpikesCinderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpikesCinderView.h; sourceTree = "<group>"; };
 		2474366818F6CAAC0044E11D /* SpikesCinderView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SpikesCinderView.mm; sourceTree = "<group>"; };
 		2474366A18F6DBFF0044E11D /* SpikesViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SpikesViewController.xib; sourceTree = "<group>"; };
@@ -392,6 +417,13 @@
 		24BB8346199B6DE800C12932 /* zip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zip.h; sourceTree = "<group>"; };
 		24BB8347199B6DE800C12932 /* ZipArchive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZipArchive.h; sourceTree = "<group>"; };
 		24BB8348199B6DE800C12932 /* ZipArchive.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ZipArchive.mm; sourceTree = "<group>"; };
+		24BB834E199DFAD800C12932 /* checkmark@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "checkmark@2x.png"; sourceTree = "<group>"; };
+		24BB8357199DFFC100C12932 /* checkmark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = checkmark.png; sourceTree = "<group>"; };
+		24BB8359199E66AA00C12932 /* TrialDCMDGraphView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrialDCMDGraphView.h; sourceTree = "<group>"; };
+		24BB835A199E66AA00C12932 /* TrialDCMDGraphView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = TrialDCMDGraphView.mm; sourceTree = "<group>"; };
+		24BB8361199E7D0C00C12932 /* GraphDCMDTrialViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphDCMDTrialViewController.h; sourceTree = "<group>"; };
+		24BB8362199E7D0C00C12932 /* GraphDCMDTrialViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GraphDCMDTrialViewController.mm; sourceTree = "<group>"; };
+		24BB8363199E7D0C00C12932 /* GraphDCMDTrialViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GraphDCMDTrialViewController.xib; sourceTree = "<group>"; };
 		24D9DFC41951C35600A78BED /* ARCMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARCMacros.h; sourceTree = "<group>"; };
 		24D9DFC51951C35600A78BED /* FPPopoverController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FPPopoverController.h; sourceTree = "<group>"; };
 		24D9DFC61951C35600A78BED /* FPPopoverController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FPPopoverController.m; sourceTree = "<group>"; };
@@ -774,6 +806,12 @@
 				24507B50196C333C00E27BD2 /* AutoGraphViewController.mm */,
 				247038F5196C37E5002D15C3 /* AutoGraphCollectionViewCell.h */,
 				247038F6196C37E5002D15C3 /* AutoGraphCollectionViewCell.m */,
+				24BB8361199E7D0C00C12932 /* GraphDCMDTrialViewController.h */,
+				24BB8362199E7D0C00C12932 /* GraphDCMDTrialViewController.mm */,
+				2454D8A619AD02010056B71B /* GraphDCMDExperimentViewController.h */,
+				2454D8A719AD02010056B71B /* GraphDCMDExperimentViewController.mm */,
+				2454D8AE19AE18D50056B71B /* AverageSpikeGraphViewController.h */,
+				2454D8AF19AE18D50056B71B /* AverageSpikeGraphViewController.mm */,
 			);
 			name = Graphs;
 			sourceTree = "<group>";
@@ -791,6 +829,12 @@
 				243AD4CB19800BD200671DFF /* DynamicFFTCinderGLView.mm */,
 				2489D8261993AC4900C00A9C /* DCMDGLView.h */,
 				2489D8271993AC4900C00A9C /* DCMDGLView.mm */,
+				24BB8359199E66AA00C12932 /* TrialDCMDGraphView.h */,
+				24BB835A199E66AA00C12932 /* TrialDCMDGraphView.mm */,
+				2454D8AB19AD045F0056B71B /* ExperimentDCMDGraphView.h */,
+				2454D8AC19AD045F0056B71B /* ExperimentDCMDGraphView.mm */,
+				2454D8B319AE1EE00056B71B /* AverageSpikeGraphView.h */,
+				2454D8B419AE1EE00056B71B /* AverageSpikeGraphView.mm */,
 			);
 			name = "GL Views";
 			sourceTree = "<group>";
@@ -858,7 +902,7 @@
 				240435DC18F6EC3400A85A1B /* BBAnalysisManager.h */,
 				240435DD18F6EC3400A85A1B /* BBAnalysisManager.mm */,
 				247115F31930BB1100D1B004 /* BBBTManager.h */,
-				247115F41930BB1100D1B004 /* BBBTManager.m */,
+				247115F41930BB1100D1B004 /* BBBTManager.mm */,
 			);
 			name = "Audio I/O";
 			sourceTree = "<group>";
@@ -939,10 +983,10 @@
 				24D9DFCF1951C4A600A78BED /* BBChannelSelectionTableViewController.m */,
 				245B183E199135ED00943684 /* ExperimentsMenuTableViewCell.h */,
 				245B183F199135ED00943684 /* ExperimentsMenuTableViewCell.m */,
-				245B1843199172D200943684 /* ExperimentsViewController.h */,
-				245B1844199172D200943684 /* ExperimentsViewController.mm */,
 				2489D81C1992284500C00A9C /* ExperimentSetupViewController.h */,
 				2489D81D1992284500C00A9C /* ExperimentSetupViewController.mm */,
+				245B1843199172D200943684 /* ExperimentsViewController.h */,
+				245B1844199172D200943684 /* ExperimentsViewController.mm */,
 				24EBC1AA1997852D001D3392 /* TrialsDCMDTableViewController.h */,
 				24EBC1AB1997852D001D3392 /* TrialsDCMDTableViewController.mm */,
 				24EBC1AF1997DD21001D3392 /* TrialActionsViewController.h */,
@@ -962,6 +1006,10 @@
 		FAA43D2715AB5F9C0024E445 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				2454D8A219ACF9FD0056B71B /* charticon.png */,
+				2454D8A319ACF9FD0056B71B /* charticon@2x.png */,
+				24BB8357199DFFC100C12932 /* checkmark.png */,
+				24BB834E199DFAD800C12932 /* checkmark@2x.png */,
 				24DBA92E19784CAC00AEDE86 /* spectrum.png */,
 				24DBA92F19784CAC00AEDE86 /* spectrum@2x.png */,
 				244DA140195C9DAF00BFAA8B /* bluetooth.png */,
@@ -1100,7 +1148,10 @@
 				FAA43D2715AB5F9C0024E445 /* Images */,
 				FA9A665015BA3DC000CF1697 /* iPad */,
 				24DBA928197709DF00AEDE86 /* FFTViewController.xib */,
+				2454D8B019AE18D50056B71B /* AverageSpikeGraphViewController.xib */,
 				24EBC1AC1997852D001D3392 /* TrialsDCMDTableViewController.xib */,
+				24BB8363199E7D0C00C12932 /* GraphDCMDTrialViewController.xib */,
+				2454D8A819AD02010056B71B /* GraphDCMDExperimentViewController.xib */,
 				245B1845199172D200943684 /* ExperimentsViewController.xib */,
 				2489D81E1992284500C00A9C /* ExperimentSetupViewController.xib */,
 				245B1840199135ED00943684 /* ExperimentsMenuTableViewCell.xib */,
@@ -1185,10 +1236,12 @@
 				FADF266D1596362F006C87BA /* InfoPlist.strings in Resources */,
 				FADF268715963630006C87BA /* MainWindow.xib in Resources */,
 				FADF268915963630006C87BA /* ViewAndRecordViewController.xib in Resources */,
+				2454D8A419ACF9FD0056B71B /* charticon.png in Resources */,
 				24513CE719545C50007F240A /* Record.png in Resources */,
 				24513D0319545F5E007F240A /* WaveImage.png in Resources */,
 				249A246319058465005F5F03 /* AutocorrelationGraphViewController.xib in Resources */,
 				FA905A4C15AA8CF00013688B /* BBFileTableCell.xib in Resources */,
+				2454D8AA19AD02010056B71B /* GraphDCMDExperimentViewController.xib in Resources */,
 				FAA43D2B15AB5FBC0024E445 /* TickMarks.png in Resources */,
 				249A24681906AC59005F5F03 /* ISIHistogramViewController.xib in Resources */,
 				24EBC1B31997DD21001D3392 /* TrialActionsViewController.xib in Resources */,
@@ -1201,12 +1254,14 @@
 				FA35CEFF15ABBADC0082FBC3 /* PlaybackViewController.xib in Resources */,
 				24513CE419545BCA007F240A /* FileNeuron@2x.png in Resources */,
 				245B1847199172D200943684 /* ExperimentsViewController.xib in Resources */,
+				24BB8365199E7D0C00C12932 /* GraphDCMDTrialViewController.xib in Resources */,
 				2474366B18F6DBFF0044E11D /* SpikesViewController.xib in Resources */,
 				2469893919098C1900F5383F /* again.png in Resources */,
 				24513CFF19545F3C007F240A /* ThresholdImage.png in Resources */,
 				FA9A5B311809A5DA00FF01A0 /* Default-568h@2x.png in Resources */,
 				24513CFB19545E91007F240A /* StimSettings.png in Resources */,
 				FAA27C1E15AD01CA00DCC60B /* ThresholdViewController.xib in Resources */,
+				24BB8350199DFAD800C12932 /* checkmark@2x.png in Resources */,
 				FA9A665215BA3DC100CF1697 /* MainWindow-iPad.xib in Resources */,
 				FA9A665B15BB19B000CF1697 /* SettingsDefaults.plist in Resources */,
 				24DBA92A197709DF00AEDE86 /* FFTViewController.xib in Resources */,
@@ -1235,9 +1290,11 @@
 				FA2DAF8116C85D7600EFF9D6 /* iTunesArtwork.png in Resources */,
 				2489D8201992284500C00A9C /* ExperimentSetupViewController.xib in Resources */,
 				FA2DAF8216C85D7600EFF9D6 /* iTunesArtwork@2x.png in Resources */,
+				2454D8B219AE18D50056B71B /* AverageSpikeGraphViewController.xib in Resources */,
 				245B1842199135ED00943684 /* ExperimentsMenuTableViewCell.xib in Resources */,
 				FA2DAF8816C89AD600EFF9D6 /* Icon-72.png in Resources */,
 				FA2DAF8916C89AD600EFF9D6 /* Icon-72@2x.png in Resources */,
+				2454D8A519ACF9FD0056B71B /* charticon@2x.png in Resources */,
 				FA2DAF8A16C89AD600EFF9D6 /* Icon.png in Resources */,
 				246989351909898F00F5383F /* trash.png in Resources */,
 				24513CEF19545CE9007F240A /* Play.png in Resources */,
@@ -1245,6 +1302,7 @@
 				247ED9BB193DEB8800871BAC /* README.md in Resources */,
 				FA2DAF8B16C89AD600EFF9D6 /* Icon@2x.png in Resources */,
 				24513CE819545C50007F240A /* Record@2x.png in Resources */,
+				24BB8358199DFFC100C12932 /* checkmark.png in Resources */,
 				2489D8251993ABCA00C00A9C /* DCMDExperimentViewController.xib in Resources */,
 				24EBC1AE1997852D001D3392 /* TrialsDCMDTableViewController.xib in Resources */,
 				24513CF719545E5A007F240A /* Stimulate.png in Resources */,
@@ -1269,7 +1327,8 @@
 				24507B4E196AF50400E27BD2 /* ISIGraphCollectionViewCell.m in Sources */,
 				2402E83218EABDFC0090368A /* DSPAnalysis.mm in Sources */,
 				24507B52196C333C00E27BD2 /* AutoGraphViewController.mm in Sources */,
-				247115F51930BB1100D1B004 /* BBBTManager.m in Sources */,
+				247115F51930BB1100D1B004 /* BBBTManager.mm in Sources */,
+				24BB8364199E7D0C00C12932 /* GraphDCMDTrialViewController.mm in Sources */,
 				245B1841199135ED00943684 /* ExperimentsMenuTableViewCell.m in Sources */,
 				FA90598F15A9F9830013688B /* NSDate-SQLitePersistence.m in Sources */,
 				FA90599115A9F9830013688B /* NSMutableArray-MultipleSort.m in Sources */,
@@ -1320,16 +1379,21 @@
 				FA9059BF15AA8AC70013688B /* BBFileTableCell.m in Sources */,
 				FA905A4F15AA8D420013688B /* BBFileActionViewControllerTBV.mm in Sources */,
 				248C8EB118E4785D00307C4C /* AudioFileWriter.m in Sources */,
+				2454D8B519AE1EE00056B71B /* AverageSpikeGraphView.mm in Sources */,
 				248C8EBD18E5CF5E00307C4C /* CCGLTouchViewController.mm in Sources */,
+				2454D8AD19AD045F0056B71B /* ExperimentDCMDGraphView.mm in Sources */,
 				2489D8281993AC4900C00A9C /* DCMDGLView.mm in Sources */,
 				FA35CEFE15ABBADC0082FBC3 /* PlaybackViewController.mm in Sources */,
 				FA4530B315ACDF3B00FA179A /* BBAudioFileReader.mm in Sources */,
 				24D9DFCC1951C35600A78BED /* FPPopoverView.m in Sources */,
+				2454D8A919AD02010056B71B /* GraphDCMDExperimentViewController.mm in Sources */,
 				FAA27C1B15AD013E00DCC60B /* ThresholdViewController.mm in Sources */,
 				FAA27C2215AD0CEF00DCC60B /* StimulationParameterViewController.mm in Sources */,
 				24BB834B199B6DE800C12932 /* unzip.c in Sources */,
 				2474366918F6CAAC0044E11D /* SpikesCinderView.mm in Sources */,
+				2454D8B119AE18D50056B71B /* AverageSpikeGraphViewController.mm in Sources */,
 				2490139B1966CD5E00E5EF91 /* GraphMatrixViewController.mm in Sources */,
+				24BB835B199E66AA00C12932 /* TrialDCMDGraphView.mm in Sources */,
 				2490139F1966D88200E5EF91 /* GraphCollectionViewCell.mm in Sources */,
 				245B1846199172D200943684 /* ExperimentsViewController.mm in Sources */,
 				245B183D1990E4F400943684 /* BBDCMDTrial.mm in Sources */,

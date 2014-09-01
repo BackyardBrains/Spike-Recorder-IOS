@@ -14,6 +14,7 @@
 #import "GraphMatrixViewController.h"
 #import "ISIGraphViewController.h"
 #import "AutoGraphViewController.h"
+#import "AverageSpikeGraphViewController.h"
 
 @implementation BBFileActionViewControllerTBV
 
@@ -86,7 +87,7 @@
                               @"Autocorrelation",
                               @"ISI",
                               @"Cross-correlation",
-                              //@"Average Spike",
+                              @"Average Spike",
                               //@"Email",
                               @"Share",
                               @"Delete", nil];
@@ -100,7 +101,7 @@
                                       @"Find Spikes",
                                       @"Autocorrelation",
                                       @"ISI",
-                                      //@"Average Spike",
+                                      @"Average Spike",
                                       //@"Email",
                                       @"Share",
                                       @"Delete", nil];
@@ -288,6 +289,15 @@
         gmvc.bbfile = (BBFile *)[self.files objectAtIndex:0];
         [self.navigationController pushViewController:gmvc animated:YES];
         [gmvc release];
+    }
+    else if ([cell.textLabel.text isEqualToString:@"Average Spike"])
+    {
+        //GraphMatrixViewController
+        AverageSpikeGraphViewController *asvc = [[AverageSpikeGraphViewController alloc] initWithNibName:@"AverageSpikeGraphViewController" bundle:nil];
+        [asvc calculateGraphForFile:(BBFile *)[self.files objectAtIndex:0] andChannelIndex:0];
+        [self.navigationController pushViewController:asvc animated:YES];
+        [asvc release];
+        
     }
 	else if ([cell.textLabel.text isEqualToString:@"Share"])
 	{

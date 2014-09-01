@@ -12,6 +12,7 @@
 #import "BBSpikeTrain.h"
 #import "BBChannel.h"
 #import "BBBTManager.h"
+#import "BBAudioManager.h"
 #define HANDLE_RADIUS 20
 
 #define MAX_THRESHOLD_VISIBLE_TIME 1.5
@@ -182,6 +183,22 @@
     [self startAnimation];
     
 }
+
+
+- (void)dealloc
+{
+    if(displayVectors!=nil)
+    {
+        //TODO: realease display vectors
+        delete[] displayVectors;
+        delete[] numVoltsVisible;
+        delete[] yOffsets;
+        delete[] tempDataBuffer;
+    }
+    [super dealloc];
+}
+
+
 
 - (void)loadSettings:(BOOL)useThresholdSettings
 {
@@ -725,9 +742,9 @@
     
     
     float realNumberOfSamplesVisible = numSamplesVisible;
-    if (realNumberOfSamplesVisible > numSamplesMax) {
+    /*if (realNumberOfSamplesVisible > numSamplesMax) {
         realNumberOfSamplesVisible = numSamplesMax;
-    }
+    }*/
     if (realNumberOfSamplesVisible < numSamplesMin) {
         realNumberOfSamplesVisible = numSamplesMin;
     }
@@ -843,6 +860,15 @@
      }*/
     //==================================================
     
+    
+    //==================================================
+    //Debug code for BT buffer size
+    if([[BBAudioManager bbAudioManager] btOn])
+    {
+        xStringStream.str("");
+        xStringStream << [[BBBTManager btManager] numberOfFramesBuffered] << " Samp.";
+    }
+    //==================================================
     
 	gl::color( ColorA( 1.0, 1.0f, 1.0f, 1.0f ) );
 
@@ -1057,8 +1083,8 @@
                 float zoom = maxVoltsSpan/ numVoltsVisible[selectedChannel];
                 float currentThreshold = [dataSourceDelegate threshold]*zoom;
 
-                float intersectionDistanceX = 8000*scaleXY.x*scaleXY.x;
-                float intersectionDistanceY = 8000*scaleXY.y*scaleXY.y;
+                float intersectionDistanceX = 16000*scaleXY.x*scaleXY.x;
+                float intersectionDistanceY = 18000*scaleXY.y*scaleXY.y;
                 
                 //check first if user grabbed selected channel
                 if((glWorldTouchPos.y - (yOffsets[selectedChannel]+currentThreshold))*(glWorldTouchPos.y - (yOffsets[selectedChannel]+currentThreshold)) < intersectionDistanceY && (glWorldTouchPos.x * glWorldTouchPos.x) <intersectionDistanceX)

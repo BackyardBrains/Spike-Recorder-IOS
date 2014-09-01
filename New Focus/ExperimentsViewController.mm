@@ -15,7 +15,7 @@
 
 @implementation ExperimentsViewController
 @synthesize allExperiments = _allExperiments;
-@synthesize newExperiment = _newExperiment;
+@synthesize myNewExperiment = _myNewExperiment;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -45,6 +45,7 @@
         UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
                                                                                  target:self
                                                                                  action:@selector(createNewExperiment:)];
+        
         self.navigationItem.rightBarButtonItem = rightButton;
     }
     [self.expTableView reloadData];
@@ -55,11 +56,18 @@
     [super didReceiveMemoryWarning];
 }
 
+- (void)dealloc {
+    [_expTableView release];
+    [super dealloc];
+}
+
+#pragma mark - Experiment procedure
+
 -(void) createNewExperiment:(id)sender
 {
     ExperimentSetupViewController *expSt = [[ExperimentSetupViewController alloc] initWithNibName:@"ExperimentSetupViewController" bundle:nil];
-    _newExperiment = [[BBDCMDExperiment alloc] init];
-    expSt.experiment = _newExperiment;
+    _myNewExperiment = [[BBDCMDExperiment alloc] init];
+    expSt.experiment = _myNewExperiment;
     expSt.masterDelegate = self;
     [self.navigationController pushViewController:expSt animated:YES];
     [expSt release];
@@ -69,7 +77,7 @@
 {
     [self.navigationController popViewControllerAnimated:NO];
     DCMDExperimentViewController *expVC = [[DCMDExperimentViewController alloc] initWithNibName:@"DCMDExperimentViewController" bundle:nil];
-    expVC.experiment = _newExperiment;
+    expVC.experiment = _myNewExperiment;
     expVC.masterDelegate = self;
     expVC.hidesBottomBarWhenPushed = YES;
     [self.navigationController pushViewController:expVC animated:YES];
@@ -81,7 +89,7 @@
     [self.navigationController popViewControllerAnimated:NO];
     [[self navigationController] setNavigationBarHidden:NO animated:YES];
     TrialsDCMDTableViewController *trialsVC = [[TrialsDCMDTableViewController alloc] initWithNibName:@"TrialsDCMDTableViewController" bundle:nil];
-    trialsVC.experiment = _newExperiment;
+    trialsVC.experiment = _myNewExperiment;
     [self.navigationController pushViewController:trialsVC animated:YES];
     [trialsVC release];
 }
@@ -95,10 +103,6 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     return [_allExperiments count];
-   /* for(int i=0;i<[allExperiments count];i++)
-    {
-        [(BBDCMDExperiment *)[allExperiments objectAtIndex:i] deleteObject];
-    }*/
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -110,6 +114,17 @@
         
          BBDCMDExperiment * tempExperiment = (BBDCMDExperiment *)[_allExperiments objectAtIndex:indexPath.row];
         [_allExperiments removeObjectAtIndex:indexPath.row];
+        for(int i=[[tempExperiment trials] count]-1;i>=0;i--)
+        {
+            BBDCMDTrial * tempTrial = [[tempExperiment trials] objectAtIndex:i];
+            if([tempTrial file] != nil)
+            {
+                [[tempTrial file] deleteObject];
+            }
+            [tempTrial setFile:nil];
+            [tempTrial deleteObject];
+            [tempExperiment.trials removeObject:tempTrial];
+        }
         [tempExperiment deleteObject];
         [tableView reloadData]; // tell table to refresh now
     }
@@ -139,13 +154,26 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    [self removeAllTrialsThatAreNotSimulated:[_allExperiments objectAtIndex:indexPath.row]];
     TrialsDCMDTableViewController *trialsVC = [[TrialsDCMDTableViewController alloc] initWithNibName:@"TrialsDCMDTableViewController" bundle:nil];
     trialsVC.experiment = [_allExperiments objectAtIndex:indexPath.row];
     [self.navigationController pushViewController:trialsVC animated:YES];
     [trialsVC release];
 }
-- (void)dealloc {
-    [_expTableView release];
-    [super dealloc];
+
+
+
+-(void) removeAllTrialsThatAreNotSimulated:(BBDCMDExperiment *) experimentToClean
+{
+    for(int i=[experimentToClean.trials count]-1;i>=0;i--)
+    {
+        BBDCMDTrial * tempTrial = [experimentToClean.trials objectAtIndex:i];
+        if([tempTrial file]==nil)
+        {
+            [tempTrial deleteObject];
+            [experimentToClean.trials removeObject:tempTrial];
+        }
+    }
 }
+
 @end

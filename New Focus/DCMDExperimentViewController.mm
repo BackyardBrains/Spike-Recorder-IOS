@@ -48,6 +48,7 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
+    [UIApplication sharedApplication].idleTimerDisabled = YES;
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -55,6 +56,7 @@
     [super viewWillDisappear:animated];
     NSLog(@"Stopping regular view");
     [glView stopAnimation];
+    [UIApplication sharedApplication].idleTimerDisabled = NO;
 }
 
 #pragma mark - GLView delegate

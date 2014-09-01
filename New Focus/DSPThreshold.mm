@@ -39,6 +39,10 @@ DSPThreshold :: DSPThreshold (RingBuffer *externalRingBuffer, UInt32 numSamplesI
 
 }
 
+void DSPThreshold:: SetRingBuffer(RingBuffer *newRingBuffer)
+{
+    mExternalRingBuffer = newRingBuffer;
+}
 
 void DSPThreshold:: SetNumberOfChannels(UInt32 newNumOfChannels)
 {

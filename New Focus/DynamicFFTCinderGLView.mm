@@ -444,7 +444,6 @@
     {
         Vec2f touchDistanceDelta = [self calculateTouchDistanceChange:touches];
         float oldMaxFreq = currentMaxFreq;
-        float oldMaxTime = currentMaxTime;
         currentMaxTime /= (sqrtf(touchDistanceDelta.x) - 1) + 1;
         currentMaxFreq /= (sqrtf(touchDistanceDelta.y) - 1) + 1;
         

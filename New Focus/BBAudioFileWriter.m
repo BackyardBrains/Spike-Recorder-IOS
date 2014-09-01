@@ -62,7 +62,7 @@ static pthread_mutex_t outputAudioFileLock;
    // thisNumChannels = 3;
     if (self)
     {
-        isWawFile = !([[[urlToAudioFile path] uppercaseString] rangeOfString:@".WAV"].location == NSNotFound);
+         isWawFile = !([[[urlToAudioFile pathExtension] uppercaseString] rangeOfString:@"WAV"].location == NSNotFound);
         if(isWawFile)
         {
             wavManager = [[WavManager alloc] init];

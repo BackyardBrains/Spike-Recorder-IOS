@@ -18,6 +18,7 @@
 #define kSchmittON 1
 #define kSchmittOFF 2
 
+#define AVERAGE_SPIKE_HALF_LENGTH_SECONDS 0.002
 
 static BBAnalysisManager *bbAnalysisManager = nil;
 
@@ -102,7 +103,10 @@ static BBAnalysisManager *bbAnalysisManager = nil;
     _currentTrainIndex = 0;
     _file = aFile;
     if (fileReader != nil)
+    {
+        [fileReader release];
         fileReader = nil;
+    }
     fileReader = [[BBAudioFileReader alloc]
                   initWithAudioFileURL:[aFile fileURL]
                   samplingRate:aFile.samplingrate
@@ -160,8 +164,10 @@ static BBAnalysisManager *bbAnalysisManager = nil;
 {
 
     if (fileReader != nil)
+    {
+        [fileReader release];
         fileReader = nil;
-    
+    }
 
     fileReader = [[BBAudioFileReader alloc]
                   initWithAudioFileURL:[aFile fileURL]
@@ -231,7 +237,7 @@ static BBAnalysisManager *bbAnalysisManager = nil;
         numberOfFramesRead = ibin == (numberOfBins-1) ? (numberOfSamples % lengthOfBin):lengthOfBin;
 
         [fileReader retrieveFreshAudio:tempCalculationBuffer numFrames:(UInt32)(numberOfFramesRead) numChannels:aFile.numberOfChannels seek:ibin*lengthOfBin];
-        //stdArray[ibin] = dspAnalizer->SDT(tempCalculationBuffer, numberOfFramesRead);
+      
         //get only one channel and put it on the begining of buffer in non-interleaved form
         vDSP_vsadd((float *)&tempCalculationBuffer[channelIndex],
                    aFile.numberOfChannels,
@@ -413,6 +419,265 @@ static BBAnalysisManager *bbAnalysisManager = nil;
         [_file save];
     }
  }
+
+//
+//Average spikes. It performs one pass calculation of everage and STD:
+//http://www.strchr.com/standard_deviation_in_one_pass
+//double std_dev2(double a[], int n) {
+//    if(n == 0)
+//        return 0.0;
+//    double sum = 0;
+//    double sq_sum = 0;
+//    for(int i = 0; i < n; ++i) {
+//        sum += a[i];
+//        sq_sum += a[i] * a[i];
+//    }
+//    double mean = sum / n;
+//    double variance = sq_sum / n - mean * mean;
+//    return sqrt(variance);
+//}
+//
+-(AverageSpikeData *) getAverageSpikesForChannel:(int) channelIndex inFile:(BBFile *) aFile
+{
+    if(![aFile.spikesFiltered isEqualToString:FILE_SPIKE_SORTED])
+    {
+        return nil;
+    }
+    
+    if (fileReader != nil)
+    {
+        [fileReader release];
+        fileReader = nil;
+    }
+    
+    fileReader = [[BBAudioFileReader alloc]
+                  initWithAudioFileURL:[aFile fileURL]
+                  samplingRate:aFile.samplingrate
+                  numChannels:aFile.numberOfChannels];
+    
+    
+    int numberOfSamples = (int)(fileReader.duration * aFile.samplingrate);
+    int lengthOfBin = (BUFFER_SIZE/aFile.numberOfChannels);
+    int numberOfBins = ceil((float)numberOfSamples/(float)lengthOfBin);
+    
+
+    int numberOfFramesRead;
+    int currentFrameOffset = 0;
+    int ibin;
+    float zero=0.0;
+    NSMutableArray * spikeTrains = [(BBChannel *)[[aFile allChannels] objectAtIndex:channelIndex] spikeTrains];
+    int halfSpikeLength = [aFile samplingrate] * AVERAGE_SPIKE_HALF_LENGTH_SECONDS ;
+    int spikeLength = 2*halfSpikeLength+1;
+    AverageSpikeData * avr = (AverageSpikeData *)calloc([spikeTrains count], sizeof(AverageSpikeData));
+    
+
+    
+    BBSpikeTrain * tempSpikeTrain;
+    BBSpike * tempSpike;
+    int * lastSpikeTrainIndex = (int *)calloc([spikeTrains count], sizeof(int));
+    //Init whole structure that contans result
+    for(int i=0;i<[spikeTrains count];i++)
+    {
+        avr[i].averageSpike = (float *)calloc(spikeLength, sizeof(float));
+        avr[i].topSTDLine = (float *)calloc(spikeLength, sizeof(float));
+        avr[i].bottomSTDLine = (float *)calloc(spikeLength, sizeof(float));
+        avr[i].numberOfSamplesInData = spikeLength;
+        avr[i].samplingRate = [aFile samplingrate];
+        avr[i].countOfSpikes = 0;
+    }
+    
+    //Buffer used just for calculation of STD
+    float * tempSqrBuffer = (float *)calloc(spikeLength, sizeof(float));
+    
+    //Got throungh all file and collect and summ spikes
+    for(ibin=0;ibin<numberOfBins;ibin++)
+    {
+        //read lengthOfBin frames except for last one reading where we should read only what is left
+        numberOfFramesRead = ibin == (numberOfBins-1) ? (numberOfSamples % lengthOfBin):lengthOfBin;
+        currentFrameOffset = ibin*lengthOfBin;
+        [fileReader retrieveFreshAudio:tempCalculationBuffer numFrames:(UInt32)(numberOfFramesRead) numChannels:aFile.numberOfChannels seek:currentFrameOffset];
+        
+        //get only one channel and put it on the begining of buffer in non-interleaved form
+        //get new batch of samples
+        vDSP_vsadd((float *)&tempCalculationBuffer[channelIndex],
+                   aFile.numberOfChannels,
+                   &zero,
+                   tempCalculationBuffer,
+                   1,
+                   numberOfFramesRead);
+        
+        // go through all spike trains and check if we can find spikes inside current batch
+        //of samples. If we find it we will add it to average buffer (averageSpike)
+        for(int spikeTrainIndex = 0;spikeTrainIndex<[spikeTrains count];spikeTrainIndex++)
+        {
+            tempSpikeTrain = (BBSpikeTrain *)[spikeTrains objectAtIndex:spikeTrainIndex];
+            for(int spikeIndex = lastSpikeTrainIndex[spikeTrainIndex];spikeIndex<[[tempSpikeTrain spikes] count];spikeIndex++)
+            {
+                
+                tempSpike = (BBSpike *)[[tempSpikeTrain spikes] objectAtIndex:spikeIndex];
+                //if our spike is outside current batch of samples go to next channel
+                if((tempSpike.index+halfSpikeLength)>(currentFrameOffset+numberOfFramesRead))
+                {
+                    break;
+                }
+                   //if we have full left side of spike
+                if((tempSpike.index-halfSpikeLength)>=currentFrameOffset)
+                {
+                    //add spike to average buffer
+                    vDSP_vadd (
+                               avr[spikeTrainIndex].averageSpike,
+                               1,
+                               &tempCalculationBuffer[tempSpike.index-halfSpikeLength-currentFrameOffset],
+                               1,
+                               avr[spikeTrainIndex].averageSpike,
+                               1,
+                               spikeLength
+                               );
+                    
+                    avr[spikeTrainIndex].countOfSpikes++;
+                    
+                    //One pass STD and mean !!!
+                   //Calculate squared value of vector elements
+                   vDSP_vsq(
+                            &tempCalculationBuffer[tempSpike.index-halfSpikeLength-currentFrameOffset],1
+                                ,tempSqrBuffer
+                                ,1
+                                ,spikeLength);
+                    
+                    //add to summ of squared elements
+                    vDSP_vadd (
+                               avr[spikeTrainIndex].topSTDLine,
+                               1,
+                               tempSqrBuffer,
+                               1,
+                               avr[spikeTrainIndex].topSTDLine,
+                               1,
+                               spikeLength
+                               );
+
+                }
+                //increment index of last checked spike so that we don't have to
+                //check it again
+                lastSpikeTrainIndex[spikeTrainIndex]++;
+            }
+        }
+    }
+    
+    //divide sum of spikes with number of spikes
+    //and find max and min
+    for(int i=0;i<[spikeTrains count];i++)
+    {
+        if(avr[i].countOfSpikes>1)
+        {
+            float divider = (float) avr[i].countOfSpikes;
+            vDSP_vsdiv (
+                    avr[i].averageSpike,
+                    1,
+                    &divider,
+                    avr[i].averageSpike,
+                    1,
+                    spikeLength
+                    );
+            
+            //fined max
+            vDSP_maxv(avr[i].averageSpike,
+                       1,
+                       &(avr[i].maxAverageSpike),
+                       spikeLength
+                       );
+            //find min
+            vDSP_minv (
+                       avr[i].averageSpike,
+                       1,
+                       &(avr[i].minAverageSpike),
+                       spikeLength
+                       );
+            
+            //Calculate STD
+            //mean of square sum
+            vDSP_vsdiv (
+                        avr[i].topSTDLine,
+                        1,
+                        &divider,
+                        avr[i].topSTDLine,
+                        1,
+                        spikeLength
+                        );
+            //square of mean
+            vDSP_vsq(
+                     avr[i].averageSpike
+                     ,1
+                     ,tempSqrBuffer
+                     ,1
+                     ,spikeLength);
+            
+            //substract mean of square summ and square of mean
+            //vDSP_vsub has documentation error/contradiction in order of operands
+            //we will get variance
+            vDSP_vsub (
+                       tempSqrBuffer,
+                       1,
+                       avr[i].topSTDLine,
+                       1,
+                       tempSqrBuffer,
+                       1,
+                       spikeLength
+                       );
+            
+            //calculate STD from variance
+            for(int k=0;k<spikeLength;k++)
+            {
+                tempSqrBuffer[k] = sqrtf(tempSqrBuffer[k]);
+            }
+            
+            //Make top line and bottom line around mean that represent one STD deviation from mean
+            
+            //vDSP_vsub has documentation error/contradiction in order of operands
+            //bottom line
+            vDSP_vsub (
+                       tempSqrBuffer,
+                       1,
+                       avr[i].averageSpike,
+                       1,
+                       avr[i].bottomSTDLine,
+                       1,
+                       spikeLength
+                       );
+            
+            //top line
+            vDSP_vadd (
+                       avr[i].averageSpike,
+                       1,
+                       tempSqrBuffer,
+                       1,
+                       avr[i].topSTDLine,
+                       1,
+                       spikeLength
+                       );
+            
+            //Find max and min of top and bottom std line respectively
+            //fined max
+            vDSP_maxv(avr[i].topSTDLine,
+                      1,
+                      &(avr[i].maxStd),
+                      spikeLength
+                      );
+            //find min
+            vDSP_minv (
+                       avr[i].bottomSTDLine,
+                       1,
+                       &(avr[i].minStd),
+                       spikeLength
+                       );
+            
+        }
+    }
+    
+    free(tempSqrBuffer);
+    return avr;
+}
+
+
 
 //
 //Calculate autocorrelation for Spike Train with index aSpikeTrainIndex in channel with index aChanIndex in file afile

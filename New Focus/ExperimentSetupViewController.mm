@@ -66,7 +66,11 @@
 #pragma mark - Experiment code
 
 - (IBAction)doneClick:(id)sender {
-    [self getDataFromFormToExperiment];
+    
+    if(![self getDataFromFormToExperiment])
+    {
+        return;
+    }
     [self createTrialsForExperiment];
     [_experiment save];
     [self.masterDelegate endOfSetup];
@@ -143,7 +147,7 @@
     _cumulativeNumberOfTrialsLBL.text = [NSString stringWithFormat:@"Cummulative number of trials: %d (aprox. time %dmin)", cumulNumOfTrials, (int)(((float)(_experiment.delayBetweenTrials*cumulNumOfTrials))/60.0f)];
 }
 
--(void) getDataFromFormToExperiment
+-(BOOL) getDataFromFormToExperiment
 {
     _experiment.name  = [self.nameTB.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
 	if([_experiment.name isEqualToString:@""])
@@ -153,27 +157,103 @@
     
     _experiment.comment  = [self.commentTB.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     
-    _experiment.distance = [self.distanceTB.text floatValue];
-    _experiment.delayBetweenTrials = [self.delayTB.text floatValue];
-    _experiment.numberOfTrialsPerPair = [self.numOfTrialsTB.text intValue];
+    NSNumber * tempNumber = [[[NSNumber alloc] initWithFloat:0.0f] autorelease];
+    if([self stringIsNumeric:self.distanceTB.text andNumber:&tempNumber] && [tempNumber floatValue]>0.0)
+    {
+        
+        _experiment.distance = [tempNumber floatValue];
+    }
+    else
+    {
+        [self validationAlertWithText:@"Enter valid number for distance."];
+        return NO;
+    }
+    
+    if([self stringIsNumeric:self.delayTB.text andNumber:&tempNumber] && [tempNumber floatValue]>0.0)
+    {
+        _experiment.delayBetweenTrials = [tempNumber floatValue];
+    }
+    else
+    {
+        [self validationAlertWithText:@"Enter valid number for delay between trials."];
+        return NO;
+    }
+    
+    if([self stringIsNumeric:self.numOfTrialsTB.text andNumber:&tempNumber] && [tempNumber intValue]>0)
+    {
+        _experiment.numberOfTrialsPerPair = [tempNumber intValue];
+    }
+    else
+    {
+        [self validationAlertWithText:@"Enter valid (positive integer) value for number of trials per velocity/size pair."];
+        return NO;
+    }
     
     NSArray *items = [self.sizeTB.text componentsSeparatedByString:@","];
     [_experiment.sizes removeAllObjects];
     for(int i=0;i<[items count];i++)
     {
-        [_experiment.sizes addObject:[NSNumber numberWithFloat:[(NSString *)[items objectAtIndex:i] floatValue]]];
+        if([[(NSString *)[items objectAtIndex:i] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] isEqualToString:@""])
+        {
+            continue;
+        }
+        
+        if([self stringIsNumeric:(NSString *)[items objectAtIndex:i] andNumber:&tempNumber] && [tempNumber floatValue]>0)
+        {
+            [_experiment.sizes addObject:[NSNumber numberWithFloat:[tempNumber floatValue]]];
+        }
+        else
+        {
+            [self validationAlertWithText:@"Enter valid values for size of stimullus. It should be comma separated positive numbers."];
+            return NO;
+        }
+        
+        //[_experiment.sizes addObject:[NSNumber numberWithFloat:[(NSString *)[items objectAtIndex:i] floatValue]]];
     }
     
     items = [self.velocityTB.text componentsSeparatedByString:@","];
     [_experiment.velocities removeAllObjects];
     for(int i=0;i<[items count];i++)
     {
-        [_experiment.velocities addObject:[NSNumber numberWithFloat:[(NSString *)[items objectAtIndex:i] floatValue]]];
+        
+        if([[(NSString *)[items objectAtIndex:i] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] isEqualToString:@""])
+        {
+            continue;
+        }
+        
+        if([self stringIsNumeric:(NSString *)[items objectAtIndex:i] andNumber:&tempNumber] && [tempNumber floatValue]<0)
+        {
+            [_experiment.velocities addObject:[NSNumber numberWithFloat:[tempNumber floatValue]]];
+        }
+        else
+        {
+            [self validationAlertWithText:@"Enter valid values for velocity of stimullus. It should be comma separated negative numbers."];
+            return NO;
+        }
     }
     
      int cumulNumOfTrials = [_experiment.velocities count]*[_experiment.sizes count]*_experiment.numberOfTrialsPerPair;
      _cumulativeNumberOfTrialsLBL.text = [NSString stringWithFormat:@"Cummulative number of trials: %d (aprox. time %dmin)", cumulNumOfTrials, (int)(((float)(_experiment.delayBetweenTrials*cumulNumOfTrials))/60.0f)];
 
+   // [tempNumber release];
+    return YES;
+}
+
+-(BOOL) stringIsNumeric:(NSString *) str andNumber: (NSNumber**) outNumberValue
+{
+    NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
+    [formatter setDecimalSeparator:@"."];
+    *outNumberValue = [formatter numberFromString:str];
+    [formatter release];
+    return !!(*outNumberValue); // If the string is not numeric, number will be nil
+}
+
+-(void) validationAlertWithText:(NSString *) errorString
+{
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Invalid parameters" message:errorString
+                                                   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+    [alert show];
+    [alert release];
 }
 
 

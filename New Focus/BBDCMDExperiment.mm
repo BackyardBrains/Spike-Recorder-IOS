@@ -31,9 +31,9 @@
         self.contrast = 100;//percentage
         self.typeOfStimulus = 1;//Type of stimulus 1 - circle, 2 - ?
         _velocities = [[NSMutableArray alloc] initWithCapacity:0];
-        [_velocities addObject:[NSNumber numberWithFloat:-0.5f]];
-        [_velocities addObject:[NSNumber numberWithFloat:-0.4f]];
-        [_velocities addObject:[NSNumber numberWithFloat:-0.6f]];
+        [_velocities addObject:[NSNumber numberWithFloat:-3.0f]];
+        [_velocities addObject:[NSNumber numberWithFloat:-2.0f]];
+        [_velocities addObject:[NSNumber numberWithFloat:-4.0f]];
         _sizes = [[NSMutableArray alloc] initWithCapacity:0];
         [_sizes addObject:[NSNumber numberWithFloat:0.06f]];
         [_sizes addObject:[NSNumber numberWithFloat:0.1f]];

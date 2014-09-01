@@ -16,5 +16,5 @@
 
 @property (retain, nonatomic) IBOutlet UITableView *expTableView;
 @property (nonatomic,retain) NSMutableArray* allExperiments;
-@property (nonatomic, retain) BBDCMDExperiment * newExperiment;
+@property (nonatomic, retain) BBDCMDExperiment * myNewExperiment;
 @end

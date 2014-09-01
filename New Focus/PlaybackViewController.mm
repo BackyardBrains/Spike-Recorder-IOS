@@ -155,6 +155,10 @@
     [[Novocaine audioManager] removeObserver:self forKeyPath:@"numOutputChannels"];
     [self restoreAudioOutputRouteToDefault];
     dispatch_suspend(callbackTimer);
+    
+    [glView removeFromSuperview];
+    [glView release];
+    glView = nil;
     [super viewWillDisappear:animated];
 }
 

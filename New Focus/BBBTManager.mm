@@ -7,10 +7,11 @@
 //
 
 #import "BBBTManager.h"
-
+#import "RingBuffer.h"
 //#define BT_PROTOCOL_STRING @"com.AmpedRFTech.Demo"
 #define BT_PROTOCOL_STRING @"com.backyardbrains.ext.bt"
 #define EAD_INPUT_BUFFER_SIZE 16384
+#define NUMBER_OF_SECONDS_DELAY 1
 
 static BBBTManager *btManager = nil;
 
@@ -29,6 +30,8 @@ static BBBTManager *btManager = nil;
     int _confSamplingRate;
    // bool connectToDevice;
     bool deviceAlreadyDisconnected;
+    RingBuffer *ringBuffer;
+    bool bufferIsReady;
 }
 
 @end
@@ -81,7 +84,9 @@ static BBBTManager *btManager = nil;
 {
     if (self = [super init])
     {
+        ringBuffer = nil;
         self.inputBlock = nil;
+        bufferIsReady = false;
         deviceAlreadyDisconnected = NO;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_accessoryDidConnect:) name:EAAccessoryDidConnectNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_accessoryDidDisconnect:) name:EAAccessoryDidDisconnectNotification object:nil];
@@ -130,6 +135,13 @@ static BBBTManager *btManager = nil;
     _confSamplingRate = inSampleRate;
     _confNumberOfChannels = inNumOfChannels;
     NSLog(@"Start bluetooth with Num of channels: %d and Sample rate: %d", inNumOfChannels, inSampleRate);
+    if(ringBuffer)
+    {
+        delete ringBuffer;
+    }
+    
+    bufferIsReady = false;
+    ringBuffer = new RingBuffer(2*NUMBER_OF_SECONDS_DELAY*inSampleRate, _confNumberOfChannels);
     sendConfigData = YES;
     [self writeDataFunc];
 }
@@ -413,14 +425,67 @@ static BBBTManager *btManager = nil;
         {
             dataToLoad[i] = [[arrayOfFloats objectAtIndex:i] floatValue];
         }
-        
-        if(self.inputBlock!=nil)
+        if(ringBuffer)
         {
-            self.inputBlock(dataToLoad, [arrayOfFloats count]/_confNumberOfChannels, _confNumberOfChannels);//TODO: make it multy channel
+            ringBuffer->AddNewInterleavedFloatData(dataToLoad, [arrayOfFloats count]/_confNumberOfChannels, _confNumberOfChannels);
+            
+            if(((float)(ringBuffer->NumUnreadFrames())/(float)_confSamplingRate)>NUMBER_OF_SECONDS_DELAY)
+            {
+                bufferIsReady = true;
+            }
         }
+        
         [arrayOfFloats removeAllObjects];
         [arrayOfFloats release];
         free(dataToLoad);
+    }
+}
+
+//This should be called periodicaly
+-(void) needData:(float) timePeriod
+{
+    
+    //TODO: We should use here real sampling rate and not configured
+    //since real sampling rate depends on timer precision on micro side
+    //that precision depends on temperature and other factors. Or we should send
+    //corection parameter to micro that will change number in counter compare register
+    UInt32 numberOfFrames = timePeriod*_confSamplingRate;
+    
+    
+    float * dataToLoad = (float *)calloc(numberOfFrames*_confNumberOfChannels, sizeof(float));
+    
+    if(self.inputBlock!=nil)
+    {
+        if(bufferIsReady)
+        {
+            ringBuffer->FetchInterleavedData(dataToLoad, numberOfFrames, _confNumberOfChannels);
+            self.inputBlock(dataToLoad, numberOfFrames, _confNumberOfChannels);
+        }
+        else
+        {
+            memset(dataToLoad, 0, numberOfFrames*_confNumberOfChannels*sizeof(float));
+            self.inputBlock(dataToLoad, numberOfFrames, _confNumberOfChannels);
+        }
+    }
+    //NSLog(@"S: %d", (int)ringBuffer->NumUnreadFrames());
+    if(ringBuffer->NumUnreadFrames()<=0)
+    {
+        bufferIsReady = false;
+    }
+    
+    free(dataToLoad);
+}
+
+
+-(int) numberOfFramesBuffered
+{
+    if(ringBuffer)
+    {
+        return (int)ringBuffer->NumUnreadFrames();
+    }
+    else
+    {
+        return 0;
     }
 }
 
@@ -436,7 +501,7 @@ static BBBTManager *btManager = nil;
 
         
         
-        NSInteger bytesWritten = [[_session outputStream] write:[data bytes] maxLength:[data length]];
+        NSInteger bytesWritten = [[_session outputStream] write:(uint8_t *)[data bytes] maxLength:[data length]];
         
         if (bytesWritten == -1)
         {

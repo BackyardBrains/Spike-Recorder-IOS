@@ -44,9 +44,6 @@ typedef enum BBStimulationType
     UInt32 numTriggersInThresholdHistory;
     BBStimulationType stimulationType;
     
-    //TODO: delete this flag
-    BOOL viewAndRecordFunctionalityActive;//used when app is in ViewAndRecord and not recording
-    
     BOOL recording;
     BOOL stimulating;
     BOOL thresholding;
@@ -86,7 +83,6 @@ typedef enum BBStimulationType
 @property float currentFileTime;
 @property (readonly) float fileDuration;
 
-@property BOOL viewAndRecordFunctionalityActive;
 @property (readonly) BOOL recording;
 @property BOOL stimulating;
 @property (readonly) BOOL thresholding;
@@ -126,8 +122,8 @@ typedef enum BBStimulationType
 -(void) testBluetoothConnection;
 -(void) switchToBluetoothWithNumOfChannels:(int) numOfChannelsBT andSampleRate:(int) inSampleRate;
 -(void) closeBluetooth;
-
 -(void) selectChannel:(int) selectedChannel;
+-(int) numberOfFramesBuffered;
 
 //FFT
 -(float *) getFFTResult;

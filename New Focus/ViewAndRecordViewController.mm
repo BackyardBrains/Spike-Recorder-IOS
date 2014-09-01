@@ -70,13 +70,11 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    [[BBAudioManager bbAudioManager] setViewAndRecordFunctionalityActive:YES];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    [[BBAudioManager bbAudioManager] setViewAndRecordFunctionalityActive:NO];
     NSLog(@"Stopping regular view");
     [glView saveSettings:FALSE]; // save non-threshold settings
     [glView stopAnimation];

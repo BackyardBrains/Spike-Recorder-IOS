@@ -794,7 +794,7 @@
         {
             NSString *shortName = [[self.allFiles objectAtIndex:m] shortname];
             NSString *actualFilePath = [[self.allFiles objectAtIndex:m] filename];
-            NSString *theFile = [shortName stringByAppendingString:@".wav"];//.m4a
+            NSString *theFile = [shortName stringByAppendingString:@".m4a"];//.m4a
 
             NSString *theFilePath = [self.docPath stringByAppendingPathComponent:actualFilePath];
             NSString *dbPath = @"/";

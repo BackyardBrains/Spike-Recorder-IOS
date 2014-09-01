@@ -47,18 +47,19 @@
     int maxIndexOfAngleInTrial;
     float pixelsPerMeter;
     BOOL isRotated;
+    float retinaPonder;
 }
 
 @property (nonatomic, assign) id <DCMDGLDelegate> controllerDelegate;
 @property (nonatomic, retain) BBDCMDExperiment* experiment;
 - (id)initWithFrame:(CGRect)frame andExperiment:(BBDCMDExperiment *) exp;
 - (void) restartCurrentTrial;
+-(void) rotated;
+-(void) removeAllTrialsThatAreNotSimulated;
 @end
 
 @protocol DCMDGLDelegate <NSObject>
 -(void) startSavingExperiment;
 -(void) endOfExperiment;
 -(void) userWantsInterupt;
--(void) removeAllTrialsThatAreNotSimulated;
--(void) rotated;
 @end

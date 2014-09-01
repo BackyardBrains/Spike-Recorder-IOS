@@ -8,7 +8,16 @@
 
 #import <UIKit/UIKit.h>
 #import "BBDCMDTrial.h"
-@interface TrialActionsViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
+#import "SpikesAnalysisViewController.h"
+
+@protocol TrialActionsDelegate;
+
+@interface TrialActionsViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, BBSpikeSortingViewControllerDelegate, UIAlertViewDelegate>
 @property (retain, nonatomic) IBOutlet UITableView *tableView;
 @property (nonatomic,retain) BBDCMDTrial * currentTrial;
+@property (nonatomic, assign) id <TrialActionsDelegate> masterDelegate;
+@end
+@protocol TrialActionsDelegate <NSObject>
+-(void) deleteTrial:(BBDCMDTrial *) trialToDelete;
+-(void) applySameThresholdsToAllTrials:(BBDCMDTrial *) trialToCopyFrom;
 @end

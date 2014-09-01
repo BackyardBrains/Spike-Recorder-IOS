@@ -92,7 +92,6 @@ static BBAudioManager *bbAudioManager = nil;
 @synthesize stimulationType;
 @synthesize threshold;
 @synthesize thresholdDirection;
-@synthesize viewAndRecordFunctionalityActive;
 @synthesize recording;
 @synthesize stimulating;
 @synthesize thresholding;
@@ -280,8 +279,13 @@ static BBAudioManager *bbAudioManager = nil;
         ringBuffer = new RingBuffer(maxNumberOfSamplesToDisplay, _sourceNumberOfChannels);
         tempCalculationBuffer = (float *)calloc(maxNumberOfSamplesToDisplay*_sourceNumberOfChannels, sizeof(float));
 
+            
         [[BBBTManager btManager] setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
             ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
+        }];
+        [audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
+            [[BBBTManager btManager] needData:((float)numFrames)/((float)audioManager.samplingRate) ];
+            memset(data, 0, numChannels*numFrames*sizeof(float));
         }];
 
     }
@@ -337,8 +341,16 @@ static BBAudioManager *bbAudioManager = nil;
     ringBuffer = new RingBuffer(maxNumberOfSamplesToDisplay, _sourceNumberOfChannels);
     tempCalculationBuffer = (float *)calloc(maxNumberOfSamplesToDisplay*_sourceNumberOfChannels, sizeof(float));
     debugCalculationBuffer = (float *)calloc(maxNumberOfSamplesToDisplay*_sourceNumberOfChannels, sizeof(float));
+    
+    
+    
     [[BBBTManager btManager] setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
         ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
+    }];
+    
+    [audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
+        [[BBBTManager btManager] needData:((float)numFrames)/((float)audioManager.samplingRate) ];
+        memset(data, 0, numChannels*numFrames*sizeof(float));
     }];
 }
 
@@ -355,6 +367,11 @@ static BBAudioManager *bbAudioManager = nil;
     {
         [self startMonitoring];
     }
+}
+
+-(int) numberOfFramesBuffered
+{
+    return [[BBBTManager btManager] numberOfFramesBuffered];
 }
 
 
@@ -393,9 +410,15 @@ static BBAudioManager *bbAudioManager = nil;
     }
 
     if (dspThresholder) {
+        dspThresholder->SetRingBuffer(ringBuffer);
         dspThresholder->SetNumberOfChannels(_sourceNumberOfChannels);
+        
     }
-    dspThresholder = new DSPThreshold(ringBuffer, numPointsToSavePerThreshold, 50,_sourceNumberOfChannels);
+    else
+    {
+        dspThresholder = new DSPThreshold(ringBuffer, numPointsToSavePerThreshold, 50,_sourceNumberOfChannels);
+       
+    }
     dspThresholder->SetThreshold(_threshold);
     dspThresholder->SetSelectedChannel(_selectedChannel);
     
@@ -408,10 +431,15 @@ static BBAudioManager *bbAudioManager = nil;
              ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
              dspThresholder->ProcessNewAudio(data, numFrames);
          }];
+        [audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
+            [[BBBTManager btManager] needData:((float)numFrames)/((float)audioManager.samplingRate) ];
+            memset(data, 0, numChannels*numFrames*sizeof(float));
+        }];
     }
     else
     {
         [[BBBTManager btManager] setInputBlock:nil];
+        [audioManager setOutputBlock:nil];
         [audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
             ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
             dspThresholder->ProcessNewAudio(data, numFrames);//always trigger on first channel (selectedChannel=0)
@@ -434,10 +462,15 @@ static BBAudioManager *bbAudioManager = nil;
          {
              ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
          }];
+        [audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
+            [[BBBTManager btManager] needData:((float)numFrames)/((float)audioManager.samplingRate) ];
+            memset(data, 0, numChannels*numFrames*sizeof(float));
+        }];
     }
     else
     {
         audioManager.inputBlock = nil;
+        audioManager.outputBlock = nil;
         // Replace the input block with the old input block, where we just save an in-memory copy of the audio.
         [audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
             ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
@@ -510,6 +543,7 @@ static BBAudioManager *bbAudioManager = nil;
     [fileWriter stop];
     // do the breakdown
     [fileWriter release];
+    fileWriter = nil;
 
 }
 
@@ -554,8 +588,10 @@ static BBAudioManager *bbAudioManager = nil;
     
     //Free memory
     delete ringBuffer;
-
-    
+    free(tempCalculationBuffer);
+    free(debugCalculationBuffer);
+    free(tempResamplingBuffer);
+    free(tempResampledBuffer);
     //create new buffers 
   
     ringBuffer = new RingBuffer(maxNumberOfSamplesToDisplay, _sourceNumberOfChannels);
@@ -1216,10 +1252,15 @@ static BBAudioManager *bbAudioManager = nil;
              ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
              dspAnalizer->CalculateFFT(_selectedChannel);//TODO: Make selection of channels
          }];
+        [audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
+            [[BBBTManager btManager] needData:((float)numFrames)/((float)audioManager.samplingRate) ];
+            memset(data, 0, numChannels*numFrames*sizeof(float));
+        }];
     }
     else
     {
         [[BBBTManager btManager] setInputBlock:nil];
+        audioManager.outputBlock = nil;
         [audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
             ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
             dspAnalizer->CalculateFFT(_selectedChannel);
@@ -1268,10 +1309,15 @@ static BBAudioManager *bbAudioManager = nil;
              ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
              dspAnalizer->CalculateDynamicFFT(data, numFrames, _selectedChannel);
          }];
+        [audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
+            [[BBBTManager btManager] needData:((float)numFrames)/((float)audioManager.samplingRate) ];
+            memset(data, 0, numChannels*numFrames*sizeof(float));
+        }];
     }
     else
     {
         [[BBBTManager btManager] setInputBlock:nil];
+        audioManager.outputBlock = nil;
         [audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
             ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
             dspAnalizer->CalculateDynamicFFT(data, numFrames, _selectedChannel);
