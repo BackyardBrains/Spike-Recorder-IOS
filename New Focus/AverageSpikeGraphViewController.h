@@ -9,11 +9,15 @@
 #import "CCGLTouchViewController.h"
 #import "AverageSpikeGraphView.h"
 #import "BBFile.h"
-@interface AverageSpikeGraphViewController : CCGLTouchViewController
+#import "FPPopoverController.h"
+#import "BBChannelSelectionTableViewController.h"
+
+@interface AverageSpikeGraphViewController : CCGLTouchViewController <FPPopoverControllerDelegate,BBSelectionTableDelegateProtocol, UIBarPositioningDelegate >
 {
     AverageSpikeGraphView *glView;
     BBFile * currentFile;
     int indexOfChannel;
+    FPPopoverController * popover;
 }
 
 -(void) calculateGraphForFile:(BBFile * )newFile andChannelIndex:(int) newChannelIndex;

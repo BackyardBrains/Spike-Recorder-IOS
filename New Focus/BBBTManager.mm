@@ -211,7 +211,7 @@ static BBBTManager *btManager = nil;
          [[NSNotificationCenter defaultCenter] postNotification:notification];
         
       /*  connectToDevice = YES;
-        [[EAAccessoryManager sharedAccessoryManager] showBluetoothAccessoryPickerWithNameFilter:nil completion:^(NSError *error) {
+        [[EAAccessoryManager sharedAccessoryManager]                                               :nil completion:^(NSError *error) {
             if(error != nil)
             {
                 if([error code] == EABluetoothAccessoryPickerResultCancelled)

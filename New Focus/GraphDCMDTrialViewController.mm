@@ -26,7 +26,7 @@
         [glView release];
         glView = nil;
     }
-    glView = [[TrialDCMDGraphView alloc] initWithFrame:self.view.frame];
+    glView = [[TrialDCMDGraphView alloc] initWithFrame:CGRectMake(self.view.frame.origin.x, 0.0f , self.view.frame.size.width, self.view.frame.size.height)];
     
     [glView createGraphForTrial:self.currentTrial];
     [self.view addSubview:glView];
