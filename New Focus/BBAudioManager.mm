@@ -811,6 +811,13 @@ static BBAudioManager *bbAudioManager = nil;
     
 }
 
+- (float)fetchAudioForSelectedChannel:(float *)data numFrames:(UInt32)numFrames stride:(UInt32)stride
+{
+    return [self fetchAudio:data numFrames:numFrames whichChannel:_selectedChannel stride:stride];
+    
+}
+
+
 
 -(NSMutableArray *) getChannels
 {
@@ -1287,19 +1294,19 @@ static BBAudioManager *bbAudioManager = nil;
     }
     
     //Try to make under 1Hz resolution
-    //if it is too much than limit it to samplingRate/2^12
+    //if it is too much than limit it to samplingRate/2^11
     uint32_t log2n = log2f((float)_sourceSamplingRate);
-    if(log2n<10)
+    /*if(log2n<10)
     {
         log2n +=1;
     }
     else
     {
         log2n = 11;
-    }
-    uint32_t n = 1 << (log2n);
+    }*/
+    uint32_t n = 1 << (log2n+1);
     
-    dspAnalizer->InitDynamicFFT(ringBuffer, _sourceNumberOfChannels, _sourceSamplingRate, n, 0, maxNumOfSeconds);
+    dspAnalizer->InitDynamicFFT(ringBuffer, _sourceNumberOfChannels, _sourceSamplingRate, n, 95, maxNumOfSeconds);
     
     if(btOn)
     {
@@ -1353,6 +1360,11 @@ static BBAudioManager *bbAudioManager = nil;
 -(UInt32) lengthOfFFTData
 {
     return dspAnalizer->LengthOfFFTData;
+}
+
+-(UInt32) lengthOf30HzData
+{
+    return dspAnalizer->LengthOf30HzData;
 }
 
 -(UInt32) lenghtOfFFTGraphBuffer

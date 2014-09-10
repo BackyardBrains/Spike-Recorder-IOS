@@ -60,9 +60,21 @@
     NSArray * tempArrayOfSpikes;
     float lastRecordedTime;
     float firstAngleTime;
-    for(int i=0;i<[[currentExperiment trials] count];i++)
+    
+
+    NSSortDescriptor * sortDescriptorVelocity = [[NSSortDescriptor alloc] initWithKey:@"velocity"
+                                                 ascending:YES];
+    NSSortDescriptor * sortDescriptorSize = [[NSSortDescriptor alloc] initWithKey:@"size"
+                                                         ascending:YES];
+    NSArray *sortDescriptors = [NSArray arrayWithObjects:sortDescriptorSize,sortDescriptorVelocity, nil];
+
+    NSArray *sortedArray;
+    sortedArray = [[currentExperiment trials] sortedArrayUsingDescriptors:sortDescriptors];
+    
+    
+    for(int i=0;i<[sortedArray count];i++)
     {
-        tempTrial = [[currentExperiment trials] objectAtIndex:i];
+        tempTrial = [sortedArray objectAtIndex:i];
         tempChannel = (BBChannel *)[tempTrial.file.allChannels objectAtIndex:0];
         tempSpikestrain = (BBSpikeTrain *)[[tempChannel spikeTrains] objectAtIndex:0];
         tempArrayOfSpikes = [tempSpikestrain makeArrayOfTimestampsWithOffset:tempTrial.startOfRecording-tempTrial.timeOfImpact];
@@ -83,7 +95,8 @@
         
         [spikesCoordinatesArray addObject:tempArrayOfSpikes];
     }
-    
+    [sortDescriptorSize release];
+    [sortDescriptorVelocity release];
     
     //Make histogram
     

@@ -19,7 +19,8 @@
     gl::Texture mColorScale;
     gl::TextureFontRef mScaleFont;
     
-    PolyLine2f* displayVectors;
+    //PolyLine2f* displayVectors;
+    PolyLine2f rawSignal;
     float baseFreq;
     float baseTime;
     UInt32 lengthOfFFTData;
@@ -33,10 +34,15 @@
     float offsetX;
     float currentMaxFreq;
     float currentMaxTime;
+    
+    float rawSignalVoltsVisible;
+    float rawSignalTimeVisible;
+    
     float markIntervalXAxis;
     float markIntervalYAxis;
     float retinaCorrection;
-    
+    float samplingRate;
+    UInt32 numberOfSamplesMax;
     BOOL firstDrawAfterChannelChange;
 }
 

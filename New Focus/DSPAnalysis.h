@@ -37,6 +37,7 @@ public:
 
     //length of FFT window. Must be 2^N
     UInt32 LengthOfFFTData;
+    UInt32 LengthOf30HzData;
     UInt32 GraphBufferIndex;
     UInt32 NumberOfGraphsInBuffer;
 private:
@@ -61,4 +62,5 @@ private:
     FFTSetup fftSetup;
     float maxMagnitude;
     float halfMaxMagnitude;
+    float oneFrequencyStep;
 };

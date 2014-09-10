@@ -105,6 +105,7 @@ typedef enum BBStimulationType
 - (void)pausePlaying;
 - (void)resumePlaying;
 - (float)fetchAudio:(float *)data numFrames:(UInt32)numFrames whichChannel:(UInt32)whichChannel stride:(UInt32)stride;
+- (float)fetchAudioForSelectedChannel:(float *)data numFrames:(UInt32)numFrames stride:(UInt32)stride;
 - (NSMutableArray *) getChannels;
 
 //Selection
@@ -129,6 +130,7 @@ typedef enum BBStimulationType
 -(float *) getFFTResult;
 -(float **) getDynamicFFTResult;
 -(UInt32) lengthOfFFTData;
+-(UInt32) lengthOf30HzData;
 -(void) stopFFT;
 -(void) startFFT;
 -(void) startDynanimcFFTWithMaxNumberOfSeconds:(float) maxNumOfSeconds;

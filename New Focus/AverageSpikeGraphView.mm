@@ -266,24 +266,30 @@
             float sizeToTop = spikes[i].maxAverageSpike*zoom+actualOffSet;
             timeString.str("");
             //timeString.precision(2);
-            timeString << fixed << (int)((spikes[i].maxAverageSpike-spikes[i].minAverageSpike)*1000.0f);
-            xScaleTextSize = mScaleFont->measureString(timeString.str());
-            
-            xScaleTextPosition.x = 21.0-0.5f*xScaleTextSize.x;
-            
-            xScaleTextPosition.y =10+self.frame.size.height-retinaCorrection*(sizeToTop/scaleXY.y);
-            mScaleFont->drawString(timeString.str(), xScaleTextPosition);
-            
-            timeString.str("");
-            timeString << fixed << "mV";
-            xScaleTextSize = mScaleFont->measureString(timeString.str());
-            
-            xScaleTextPosition.x = 21.0-0.5f*xScaleTextSize.x;
-            
-            xScaleTextPosition.y =23+self.frame.size.height-retinaCorrection*(sizeToTop/scaleXY.y);
-            
-            
-            mScaleFont->drawString(timeString.str(), xScaleTextPosition);
+            float yScale = (spikes[i].maxAverageSpike-spikes[i].minAverageSpike);
+            if(yScale>=0.2f)
+            {
+                timeString.precision(2);
+                timeString << fixed << ((spikes[i].maxAverageSpike-spikes[i].minAverageSpike)) << "V";
+                xScaleTextSize = mScaleFont->measureString(timeString.str());
+                xScaleTextPosition.x = 25.0-0.5f*xScaleTextSize.x;
+                xScaleTextPosition.y =10+self.frame.size.height-retinaCorrection*(sizeToTop/scaleXY.y);
+                mScaleFont->drawString(timeString.str(), xScaleTextPosition);
+            }
+            else
+            {
+                timeString << fixed << (int)((spikes[i].maxAverageSpike-spikes[i].minAverageSpike)*1000.0f);
+                xScaleTextSize = mScaleFont->measureString(timeString.str());
+                xScaleTextPosition.x = 21.0-0.5f*xScaleTextSize.x;
+                xScaleTextPosition.y =10+self.frame.size.height-retinaCorrection*(sizeToTop/scaleXY.y);
+                mScaleFont->drawString(timeString.str(), xScaleTextPosition);
+                timeString.str("");
+                timeString << fixed << "mV";
+                xScaleTextSize = mScaleFont->measureString(timeString.str());
+                xScaleTextPosition.x = 21.0-0.5f*xScaleTextSize.x;
+                xScaleTextPosition.y =23+self.frame.size.height-retinaCorrection*(sizeToTop/scaleXY.y);
+                mScaleFont->drawString(timeString.str(), xScaleTextPosition);
+            }
             
             baseYOffset+=sizeOfOneGraph;
         }

@@ -9,6 +9,7 @@
 #import "DynamicFFTCinderGLView.h"
 #define X_AXIS_OFFSET 0
 #define Y_AXIS_OFFSET 0
+#define SIZE_OF_RAW 0.4f
 
 @implementation DynamicFFTCinderGLView
 
@@ -39,6 +40,7 @@
     
     // Set up our font, which we'll use to display the unit scales
     mScaleFont = gl::TextureFont::create( Font("Helvetica", 12) );
+
     
     retinaCorrection = 1.0f;
     if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] && [[UIScreen mainScreen] scale]==2.0)
@@ -73,8 +75,29 @@
     currentMaxTime = maxTime;
     
     [self calculateScale];
-    
 
+    
+    // Setup display vector
+    
+    NSDictionary *defaultsDict = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"SettingsDefaults" ofType:@"plist"]];
+    [[NSUserDefaults standardUserDefaults] registerDefaults:defaultsDict];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    numberOfSamplesMax = [[defaults valueForKey:@"numSamplesMax"] floatValue];
+    
+    //Make x coordinates for raw signal
+    rawSignal = PolyLine2f();
+    samplingRate = [[BBAudioManager bbAudioManager] sourceSamplingRate];
+   // float offset = ((float)numberOfSamplesMax)/samplingRate;
+    float oneStep = maxTime/((float)numberOfSamplesMax);
+    for (float i=0; i < numberOfSamplesMax; ++i)
+    {
+        float x = i *oneStep - maxTime;
+        rawSignal.push_back(Vec2f(x, 0.0f));
+    }
+    rawSignal.setClosed(false);
+    rawSignalTimeVisible = 1.0f;
+    rawSignalVoltsVisible = 10.0f;
     
     [self startAnimation];
 }
@@ -104,6 +127,7 @@
 - (void)draw {
     
     float ** graphBuffer = [[BBAudioManager bbAudioManager] getDynamicFFTResult];
+    [[BBAudioManager bbAudioManager] fetchAudioForSelectedChannel:(float *)&(rawSignal.getPoints()[0])+1 numFrames:numberOfSamplesMax stride:2];
     if(graphBuffer)
     {
         if(firstDrawAfterChannelChange)
@@ -121,7 +145,7 @@
         
         
         // Look at it right
-        mCam.setOrtho(-currentMaxTime, 0, 0, currentMaxFreq, 1, 100);
+        mCam.setOrtho(-currentMaxTime, 0, 0, currentMaxFreq*(1.0f+SIZE_OF_RAW), 1, 100);
         gl::setMatrices( mCam );
         
         [self calculateScale];
@@ -131,6 +155,23 @@
         offsetY = Y_AXIS_OFFSET* scaleXY.y/(2*retinaCorrection);
         
         int indexOfGraphs = [[BBAudioManager bbAudioManager] indexOfFFTGraphBuffer];
+        
+        float offsetOfRawSignal = currentMaxFreq + 0.5f*(currentMaxFreq*(1.0f+SIZE_OF_RAW)-currentMaxFreq);
+
+        vDSP_vsmsa ((float *)&(rawSignal.getPoints()[0])+1,
+                    2,
+                    &rawSignalVoltsVisible,
+                    &offsetOfRawSignal,
+                    (float *)&(rawSignal.getPoints()[0])+1,
+                    2,
+                    numberOfSamplesMax
+                    );
+        
+        
+        
+        glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+        glLineWidth(1.0f);
+        gl::draw(rawSignal);
         
         glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         glLineWidth(10.0f);
@@ -180,8 +221,15 @@
                 }
                 tempRect.y1 = currFreq;
                 currFreq+=baseFreq;
+                if(currFreq>currentMaxFreq)
+                {
+                    currFreq=currentMaxFreq;
+                }
                 tempRect.y2 = currFreq;
+                
+                //draw one freq/time sqare
                 gl::drawSolidRect(tempRect);
+                
                 freqIndex++;
             }
         }
@@ -242,6 +290,10 @@
             }
             
             markPos+=markIntervalYAxis;
+            if(markPos>currentMaxFreq)
+            {
+                break;
+            }
         }
         
         
@@ -259,6 +311,9 @@
         Vec2f xScaleTextSize;
         Vec2f xScaleTextPosition = Vec2f(0.,0.);
         glLineWidth(2.0f);
+        
+        float topEdgeOfSpectrogram = self.frame.size.height - retinaCorrection*(currentMaxFreq/scaleXY.y);
+        
         for(i=0;i<17;i++)
         {
             //draw number
@@ -274,7 +329,7 @@
             {
                 xScaleTextPosition.x = self.frame.size.width +(markPos/scaleXY.x)*retinaCorrection;
             }
-            xScaleTextPosition.y =15;
+            xScaleTextPosition.y =15+ topEdgeOfSpectrogram;
             if(xScaleTextPosition.x>20)
             {
                 mScaleFont->drawString(hzString.str(), xScaleTextPosition);
@@ -292,7 +347,7 @@
         
         xScaleTextPosition.x = self.frame.size.width - xScaleTextSize.x*1.5 ;
         
-        xScaleTextPosition.y =35;
+        xScaleTextPosition.y =35+topEdgeOfSpectrogram;
         mScaleFont->drawString(hzString.str(), xScaleTextPosition);
         
         
@@ -302,6 +357,7 @@
         markPos=offsetY;
         hzString.precision(1);
         glLineWidth(2.0f);
+        
         for(i=0;i<17;i++)
         {
             //draw number
@@ -318,7 +374,7 @@
                 xScaleTextPosition.y = self.frame.size.height - (markPos/scaleXY.y)*retinaCorrection+ xScaleTextSize.y;
             }
             xScaleTextPosition.x =15;
-            if(xScaleTextPosition.y>30)
+            if(xScaleTextPosition.y>30+topEdgeOfSpectrogram)
             {
                 mScaleFont->drawString(hzString.str(), xScaleTextPosition);
             }
@@ -442,29 +498,90 @@
     // Pinching to zoom the display
     if (touches.size() == 2)
     {
-        Vec2f touchDistanceDelta = [self calculateTouchDistanceChange:touches];
-        float oldMaxFreq = currentMaxFreq;
-        currentMaxTime /= (sqrtf(touchDistanceDelta.x) - 1) + 1;
-        currentMaxFreq /= (sqrtf(touchDistanceDelta.y) - 1) + 1;
+
+        // Convert into GL coordinate
+        Vec2f position1 = [self screenToWorld:touches[0].getPos()];
+        Vec2f position2 = [self screenToWorld:touches[1].getPos()];
         
-        // Make sure that we don't go out of bounds
-        if (currentMaxFreq < baseFreq )
+        if(position1.y<currentMaxFreq && position2.y<currentMaxFreq)
         {
-            currentMaxFreq = oldMaxFreq;
-        }
-        if (currentMaxFreq > maxFreq)
-        {
-            currentMaxFreq = maxFreq;
-        }
+            Vec2f touchDistanceDelta = [self calculateTouchDistanceChange:touches];
+            float oldMaxFreq = currentMaxFreq;
+            float oldMaxTime = currentMaxTime;
+            currentMaxTime /= (sqrtf(touchDistanceDelta.x) - 1) + 1;
+            currentMaxFreq /= (sqrtf(touchDistanceDelta.y) - 1) + 1;
+            
+            // Make sure that we don't go out of bounds
+            if (currentMaxFreq < baseFreq )
+            {
+                currentMaxFreq = oldMaxFreq;
+            }
+            if (currentMaxFreq > maxFreq)
+            {
+                currentMaxFreq = maxFreq;
+            }
+            
+            if (currentMaxTime < 1.1 )
+            {
+                currentMaxTime = 1.1;
+            }
+            
+            if(currentMaxTime>maxTime)
+            {
+                currentMaxTime = maxTime;
+            }
         
-        if (currentMaxTime < 1.1 )
-        {
-            currentMaxTime = 1.1;
+            
+            float zero = 0.0f;
+            float zoom = currentMaxTime/oldMaxTime;
+            
+
+            //compensate for camera move so that raw signal is not zoomed
+            
+            vDSP_vsmsa ((float *)&(rawSignal.getPoints()[0]),
+                            2,
+                            &zoom,
+                            &zero,
+                            (float *)&(rawSignal.getPoints()[0]),
+                            2,
+                            numberOfSamplesMax
+                            );
+            
+            rawSignalVoltsVisible *= currentMaxFreq/oldMaxFreq;
+            
+            
+            
         }
-        
-        if(currentMaxTime>maxTime)
+        if(position1.y>currentMaxFreq && position2.y>currentMaxFreq)
         {
-            currentMaxTime = maxTime;
+            Vec2f touchDistanceDelta = [self calculateTouchDistanceChange:touches];
+            float oldTimeVisible = rawSignalTimeVisible;
+            rawSignalTimeVisible /= (sqrtf(touchDistanceDelta.x) - 1) + 1;
+            rawSignalVoltsVisible *= (sqrtf(touchDistanceDelta.y) - 1) + 1;
+        
+            if(rawSignalTimeVisible<1.0f)
+            {
+                
+                float zero = 0.0f;
+                float zoom = oldTimeVisible/rawSignalTimeVisible;
+                
+                
+                //compensate for camera move so that raw signal is not zoomed
+                
+                vDSP_vsmsa ((float *)&(rawSignal.getPoints()[0]),
+                            2,
+                            &zoom,
+                            &zero,
+                            (float *)&(rawSignal.getPoints()[0]),
+                            2,
+                            numberOfSamplesMax
+                            );
+            }
+            else
+            {
+                rawSignalTimeVisible = 1.0f;
+            }
+        
         }
     }
     
