@@ -13,6 +13,9 @@
 #import "BBAudioFileReader.h"
 #import "DSPThreshold.h"
 #import "DSPAnalysis.h"
+#import "NVDSP.h"
+#import "NVHighpassFilter.h"
+#import "NVLowpassFilter.h"
 
 @class BBFile;
 
@@ -49,7 +52,6 @@ typedef enum BBStimulationType
     BOOL thresholding;
     BOOL selecting;
     BOOL playing;
-    
 }
 
 @property (getter=samplingRate, readonly) float samplingRate;
@@ -90,7 +92,12 @@ typedef enum BBStimulationType
 @property (readonly) BOOL playing;
 @property (readonly) BOOL btOn;
 @property (readonly) BOOL FFTOn;
+@property (readonly) BOOL ECGOn;
 @property BOOL seeking;
+
+@property (readonly) float heartRate;
+@property (readonly) BOOL heartBeatPresent;
+
 
 + (BBAudioManager *) bbAudioManager;
 - (void)startMonitoring;
@@ -127,14 +134,17 @@ typedef enum BBStimulationType
 -(int) numberOfFramesBuffered;
 
 //FFT
--(float *) getFFTResult;
 -(float **) getDynamicFFTResult;
 -(UInt32) lengthOfFFTData;
 -(UInt32) lengthOf30HzData;
 -(void) stopFFT;
--(void) startFFT;
--(void) startDynanimcFFTWithMaxNumberOfSeconds:(float) maxNumOfSeconds;
+-(void) startDynanimcFFT;
 -(UInt32) indexOfFFTGraphBuffer;
 -(UInt32) lenghtOfFFTGraphBuffer;
+
+//ECG
+-(void) startECG;
+-(void) stopECG;
+
 
 @end

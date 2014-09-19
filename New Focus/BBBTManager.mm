@@ -28,7 +28,7 @@ static BBBTManager *btManager = nil;
     bool sendConfigData;
     int _confNumberOfChannels;
     int _confSamplingRate;
-   // bool connectToDevice;
+    bool connectToDevice; //Did we just connected to device
     bool deviceAlreadyDisconnected;
     RingBuffer *ringBuffer;
     bool bufferIsReady;
@@ -45,7 +45,6 @@ static BBBTManager *btManager = nil;
 	{
 		if (btManager == nil) {
 			btManager = [[BBBTManager alloc] init];
-            
 		}
 	}
     return btManager;
@@ -92,7 +91,7 @@ static BBBTManager *btManager = nil;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_accessoryDidDisconnect:) name:EAAccessoryDidDisconnectNotification object:nil];
         [[EAAccessoryManager sharedAccessoryManager] registerForLocalNotifications];
         
-        //Make timer that we are displaying while recording
+        //Make timer for calculation of average baudrate
         _baudRateTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue());
         if (_baudRateTimer)
         {
@@ -117,19 +116,21 @@ static BBBTManager *btManager = nil;
     return bitsPerSec;
 }
 
-#pragma mark - 
+#pragma mark - BT controll functions
 
-
-
-
+//
+// Start bluetooth procedure
+//
 -(void) startBluetooth
 {
-   // connectToDevice = NO;
+    connectToDevice = NO;
     _session = [self openSessionForProtocol:BT_PROTOCOL_STRING];
     numberOfBytesReceivedInLastSec = 0;
 }
 
-
+//
+// Call for configuring BT sampling rate and number of channels on local and on remote BT
+//
 -(void) configBluetoothWithChannels:(int)inNumOfChannels andSampleRate:(int) inSampleRate
 {
     _confSamplingRate = inSampleRate;
@@ -146,39 +147,38 @@ static BBBTManager *btManager = nil;
     [self writeDataFunc];
 }
 
+//
+// Try to find accessory with our protocol. If it finds it it opens session if it doesn't find it
+// than it opens accessory picker that shows paired (not connected) bluetooth accessories
+// After user choses to connect to accessory it will open config popup
+//
 - (EASession *)openSessionForProtocol:(NSString *)protocolString
 {
-    
-    
-    
-    
     NSArray *accessories = [[EAAccessoryManager sharedAccessoryManager]
                             connectedAccessories];
     
     NSLog(@"Enter open session for protocol");
-    
-    
-    
+
     EASession *session = nil;
     BOOL foundAccessory = NO;
+    //Try to find accessory that has our protocol
     for (EAAccessory *obj in accessories)
     {
         NSLog(@"We have accessory");
         NSLog(@"%@",obj);
         if ([[obj protocolStrings] containsObject:protocolString])
         {
+            //if this accessory is the same accessory that we have been previously connected to
+            //than... TODO: probably this is not needed now that we reset session
             if(_accessory == obj)
             {
                 NSLog(@"Open same accessory");
                 sendConfigData = YES;
-                [self writeDataFunc];
-                NSNotification *notification = [NSNotification notificationWithName:FOUND_BT_CONNECTION object:self];
-                [[NSNotificationCenter defaultCenter] postNotification:notification];
-                return _session;
             }
             NSLog(@"Did not open same accessory");
             _accessory = obj;
             foundAccessory = YES;
+            //notify rest of the program that we have bluetooth. It will open config popup
             NSNotification *notification = [NSNotification notificationWithName:FOUND_BT_CONNECTION object:self];
             [[NSNotificationCenter defaultCenter] postNotification:notification];
             break;
@@ -187,31 +187,38 @@ static BBBTManager *btManager = nil;
     
     if (foundAccessory)
     {
-        NSLog(@"Open new BT session");
-        _session = session;
+        NSLog(@"Open new BT session **************************************");
+        
+        //If we found accessory create new sesion with it
         session = [[EASession alloc] initWithAccessory:_accessory
                                            forProtocol:protocolString];
+        _session = session;
+        
+        //add run loop and init streams for the session
         if (session)
         {
             [[session inputStream] setDelegate:self];
             [[session inputStream] scheduleInRunLoop:[NSRunLoop currentRunLoop]
                                              forMode:NSDefaultRunLoopMode];
             [[session inputStream] open];
+            
             [[session outputStream] setDelegate:self];
             [[session outputStream] scheduleInRunLoop:[NSRunLoop currentRunLoop]
                                               forMode:NSDefaultRunLoopMode];
             [[session outputStream] open];
-            [session autorelease];
         }
     }
     else
     {
         NSLog(@"No accessory found");
-         NSNotification *notification = [NSNotification notificationWithName:NO_BT_CONNECTION object:self];
-         [[NSNotificationCenter defaultCenter] postNotification:notification];
         
-      /*  connectToDevice = YES;
-        [[EAAccessoryManager sharedAccessoryManager]                                               :nil completion:^(NSError *error) {
+        //If we didn't find connected accessory that has our protocol
+        //open picker that weill allow user to connect to paired devices
+        connectToDevice = YES;
+        [[EAAccessoryManager sharedAccessoryManager] showBluetoothAccessoryPickerWithNameFilter:nil completion:^(NSError *error) {
+            //We don't do anything with response, just log
+            //BT will dispatch connected event and than we will continue with creating session
+            // and configuration popup
             if(error != nil)
             {
                 if([error code] == EABluetoothAccessoryPickerResultCancelled)
@@ -222,17 +229,15 @@ static BBBTManager *btManager = nil;
                 {
                     NSLog(@"Error accessory chooser %@",[error description]);
                 }
-                //if canceled
-                
             }
             else
             {
                 NSLog(@"Accessory chooser should connect on BT.....");
-                //_session = [self openSessionForProtocol:BT_PROTOCOL_STRING];
-                //numberOfBytesReceivedInLastSec = 0;
+                //TODO: add notification that will inform rest of programm that we are waiting for connection
+                // some view should display some spinner: connecting ... etc.
+                
             }
-            
-        }];*/
+        }];
         
     }
     
@@ -240,34 +245,50 @@ static BBBTManager *btManager = nil;
 }
 
 
+//
+// Close current session
+// It also calls for stoping transmission on BT side
+//
+-(void)CloseSession
+{
+    [self stopTransmision];
+	if(_session)
+	{
+		[[_session inputStream] removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+		[[_session inputStream] setDelegate:nil];
+        [[_session inputStream] close];
+		
+		
+		[[_session outputStream] removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+		[[_session outputStream] setDelegate:nil];
+        [[_session outputStream] close];
+        NSLog(@"Close BT session *******************************************");
+        [_session release];
+        
+        _session = nil;
+	}
+}
+
+//
+// Public function for quiting BT session
+//
 -(void) stopCurrentBluetoothConnection
 {
     NSLog(@"stopCurrentBluetoothConnection");
     if(_session)
     {
-        
-       /* [[_session inputStream] removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-        [[_session inputStream] setDelegate:nil];
-        [[_session inputStream] close];
-        
-        
-        [[_session outputStream] removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-        [[_session outputStream] setDelegate:nil];
-       // [[_session outputStream] close];
-        
-        _session = nil;
-        [_readData release];
-        _readData = nil;
-        
-        [_accessory setDelegate:nil];
-        [_accessory release];
-        _accessory = nil;*/
+        [self CloseSession];
     }
 }
 
+
+//
+// Called when we loose BT in range or similar.
+//
 - (void)_accessoryDidDisconnect:(NSNotification *)notification {
     
     NSLog(@"Accessory disconnected");
+    [self CloseSession];
     if(!deviceAlreadyDisconnected)
     {
         deviceAlreadyDisconnected = YES;
@@ -279,9 +300,11 @@ static BBBTManager *btManager = nil;
 - (void)_accessoryDidConnect:(NSNotification *)notification {
     deviceAlreadyDisconnected = NO;
     NSLog(@"Accessory connected");
-    /*if(connectToDevice)
+    
+    
+    //If we just connected to device that find connected accessory and try to initialize session
+    if(connectToDevice)
     {
-        
         NSArray *accessories = [[EAAccessoryManager sharedAccessoryManager]
                                 connectedAccessories];
         
@@ -299,7 +322,7 @@ static BBBTManager *btManager = nil;
                 numberOfBytesReceivedInLastSec = 0;
             }
         }
-    }*/
+    }
     
 }
 
@@ -329,6 +352,13 @@ static BBBTManager *btManager = nil;
     }
 }
 
+
+//
+// Stream receive handler.
+// It receives data, unpack frames and put it in circular buffer
+// from which other part of code will pick up data
+// on external periodic "needData" function call
+//
 - (void) readDataFunc {
 
     uint8_t buf[EAD_INPUT_BUFFER_SIZE];
@@ -441,7 +471,11 @@ static BBBTManager *btManager = nil;
     }
 }
 
-//This should be called periodicaly
+//
+//This should be called periodicaly from external timer etc.
+// When it is called this function calls external self.inputBlock
+// render block of code
+//
 -(void) needData:(float) timePeriod
 {
     
@@ -489,18 +523,19 @@ static BBBTManager *btManager = nil;
     }
 }
 
+//
+// Sends config data to BT
+//
 -(void) writeDataFunc
 {
     if(sendConfigData)
     {
         sendConfigData = NO;
         int tempCounterNum = 16000000/_confSamplingRate;
-        NSString *yourString  = [NSString stringWithFormat:@"conf s:%d;c:%d;",tempCounterNum,_confNumberOfChannels];
+        NSString *configString  = [NSString stringWithFormat:@"conf s:%d;c:%d;",tempCounterNum,_confNumberOfChannels];
         
-        NSData *data = [yourString dataUsingEncoding:NSUTF8StringEncoding];
+        NSData *data = [configString dataUsingEncoding:NSUTF8StringEncoding];
 
-        
-        
         NSInteger bytesWritten = [[_session outputStream] write:(uint8_t *)[data bytes] maxLength:[data length]];
         
         if (bytesWritten == -1)
@@ -513,7 +548,24 @@ static BBBTManager *btManager = nil;
             bytesWritten =bytesWritten;
         }
     }
+}
 
+//
+// Sends command to BT that will stop sampling and sending of data. It is important since
+// we can't stop session if we don't stop sampling. Not sure why
+//
+-(void) stopTransmision
+{
+    NSLog(@"Aend stop to BT");
+    NSString *configString  = @"h:;";//halt
+    
+    NSData *data = [configString dataUsingEncoding:NSUTF8StringEncoding];
+    
+    NSInteger bytesWritten = [[_session outputStream] write:(uint8_t *)[data bytes] maxLength:[data length]];
+    if (bytesWritten == -1)
+    {
+        NSLog(@"BT stop write error");
+    }
 }
 
 -(int) numberOfChannels

@@ -19,6 +19,7 @@
     BBFile *aFile;
     dispatch_source_t _timer;
     float recordingTime;
+    BOOL rawSelected;
 }
 
 @end
@@ -268,11 +269,12 @@
     BBChannelSelectionTableViewController *controller = [[BBChannelSelectionTableViewController alloc] initWithStyle:UITableViewStylePlain];
     controller.delegate = self;
     popover = [[FPPopoverController alloc] initWithViewController:controller];
+    popover.delegate = self;
     popover.tint = FPPopoverWhiteTint;
     popover.border = NO;
     popover.arrowDirection = FPPopoverNoArrow;
     popover.title = nil;
-    
+    rawSelected = NO;
     if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
     {
         popover.contentSize = CGSizeMake(300, 500);
@@ -292,8 +294,21 @@
 }
 
 
+- (void)popoverControllerDidDismissPopover:(FPPopoverController *)popoverController
+{
+    NSLog(@"Dismiss popover");
+    if(!rawSelected)
+    {
+        //stop BT when dismising config popover since it is started before popover was opened
+        [[BBAudioManager bbAudioManager] closeBluetooth];
+    }
+    rawSelected = NO;
+
+}
+
 - (void)rowSelected:(NSInteger) rowIndex
 {
+    rawSelected = YES;
     [popover dismissPopoverAnimated:YES];
     int tempSampleRate = 1000;
     int tempNumOfChannels = 1;

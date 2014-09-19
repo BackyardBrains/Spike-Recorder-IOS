@@ -67,11 +67,23 @@
 
 - (void)applicationWillTerminate:(UIApplication *)application {
     
+    if([[BBAudioManager bbAudioManager] btOn])
+    {
+        [[BBAudioManager bbAudioManager] closeBluetooth];
+    }
     NSLog(@"Going into background.");
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setValue:[NSNumber numberWithInt:tabBarController.selectedIndex] forKey:@"tabIndex"];
     [defaults synchronize];
     
+}
+
+- (void)applicationWillResignActive:(UIApplication *)application
+{
+    if([[BBAudioManager bbAudioManager] btOn])
+    {
+        [[BBAudioManager bbAudioManager] closeBluetooth];
+    }
 }
 
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {

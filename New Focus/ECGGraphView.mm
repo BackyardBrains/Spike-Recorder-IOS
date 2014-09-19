@@ -1,68 +1,76 @@
 //
-//  FFTCinderGLView.m
+//  ECGGraphView.m
 //  Backyard Brains
 //
-//  Created by Stanislav Mircic on 7/16/14.
+//  Created by Stanislav Mircic on 9/11/14.
 //  Copyright (c) 2014 Datta Lab, Harvard University. All rights reserved.
 //
 
-#import "FFTCinderGLView.h"
-#define X_AXIS_OFFSET 120
-
-@implementation FFTCinderGLView
+#import "ECGGraphView.h"
+#import "BBAudioManager.h"
+@implementation ECGGraphView
 
 //
 // Called by super on initWithFrame. It will start animation.
 //
 - (void)setup
 {
-    lengthOfFFTData = 1024;
-    baseFreq = 12.0;//Hz
-    maxFreq = baseFreq*lengthOfFFTData;
-    maxPow = 10;
-    
     [self enableMultiTouch:YES];
-    
-    offsetY = 1;
     
     [super setup];//this calls [self startAnimation]
     
     // Setup the camera
 	mCam.lookAt( Vec3f(0.0f, 0.0f, 40.0f), Vec3f::zero() );
     
-    [self enableAntiAliasing:YES];
+    [self enableAntiAliasing:NO];
     
     // Make sure that we can autorotate 'n what not.
     self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     
     // Set up our font, which we'll use to display the unit scales
-    mScaleFont = gl::TextureFont::create( Font("Helvetica", 12) );
+    heartRateFont = gl::TextureFont::create( Font("Helvetica", 32) );
+    mScaleFont = gl::TextureFont::create( Font("Helvetica", 18) );
+    foundBeat = NO;
     
-    retinaCorrection = 1.0f;
-    if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] && [[UIScreen mainScreen] scale]==2.0)
-    {//if it is retina correct scale
-        retinaCorrection = 0.5f;
-    }
 }
+
+
 
 //
 // Setup all parameters of view
 //
--(void) setupWithBaseFreq:(float) inBaseFreq andLengthOfFFT:(UInt32) inLengthOfFFT
+-(void) setupWithBaseFreq:(float) inSamplingRate
 {
-    firstDrawAfterChannelChange = YES;
+
     [self stopAnimation];
     
-    lengthOfFFTData = inLengthOfFFT;
-    baseFreq = inBaseFreq;
+    firstDrawAfterChannelChange = YES;
+    samplingRate = inSamplingRate;
     
-    maxFreq = baseFreq*lengthOfFFTData;
-    currentMaxFreq = maxFreq;
-    maxPow = 10;
-    currentMaxPow = maxPow;
+    // Setup display vector
+    NSDictionary *defaultsDict = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"SettingsDefaults" ofType:@"plist"]];
+    [[NSUserDefaults standardUserDefaults] registerDefaults:defaultsDict];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
-    [self calculateScale];
+    numSamplesMax = [[defaults valueForKey:@"numSamplesMax"] floatValue];
+    numSamplesMin  = (int) (0.1*samplingRate);
+    numSamplesVisible = (float)(int) (numSamplesMax + numSamplesMin)/2;
     
+    
+    numVoltsVisible = 0.1f;
+    
+    //Make x coordinates for signal
+    displayVector = PolyLine2f();
+
+    // float offset = ((float)numberOfSamplesMax)/samplingRate;
+    float oneStep = 1.0f/samplingRate;
+    float maxTime = numSamplesMax * oneStep;
+    for (float i=0; i < numSamplesMax; ++i)
+    {
+        float x = i *oneStep - maxTime;
+        displayVector.push_back(Vec2f(x, 0.0f));
+    }
+    displayVector.setClosed(false);
     
     [self startAnimation];
 }
@@ -75,155 +83,118 @@
     scaleXY.y = fabsf(scaleXY.y - scaleXYZero.y);
 }
 
--(void) calculateXAxisFreq
-{
-    uint32_t log10n = log10f(currentMaxFreq);
-    markIntervalXAxis = powf(10,log10n);
-    markIntervalXAxis/=10.0;
-}
-
 //
 // Draw graph
 //
 - (void)draw {
     
-    float * powBuffer = [[BBAudioManager bbAudioManager] getFFTResult];
-    if(powBuffer)
-    {
+        [[BBAudioManager bbAudioManager] fetchAudioForSelectedChannel:(float *)&(displayVector.getPoints()[0])+1 numFrames:numSamplesMax stride:2];
+    
         if(firstDrawAfterChannelChange)
         {
             //this is fix for bug. Draw text starts to paint background of text
             //to the same color as text if we don't make new instance here
             //TODO: find a reason for this
             firstDrawAfterChannelChange = NO;
-            mScaleFont = gl::TextureFont::create( Font("Helvetica", 12) );
+            heartRateFont = gl::TextureFont::create( Font("Helvetica", 32) );
+            mScaleFont = gl::TextureFont::create( Font("Helvetica", 18) );
         }
-
+    
+    
+        if(foundBeat != [[BBAudioManager bbAudioManager] heartBeatPresent])
+        {
+            foundBeat = [[BBAudioManager bbAudioManager] heartBeatPresent];
+            [self.masterDelegate changeHeartActive:foundBeat];
+        }
         // this pair of lines is the standard way to clear the screen in OpenGL
         gl::clear( Color( 0.0f, 0.0f, 0.0f ), true );
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+        
+        [self elasticZoomEfect];
         // Look at it right
-        mCam.setOrtho(0, currentMaxFreq, 0, currentMaxPow, 1, 100);
+        float leftBoundary = -numSamplesVisible*(1.0f/samplingRate);
+        mCam.setOrtho(-numSamplesVisible*(1.0f/samplingRate), 0, -numVoltsVisible, numVoltsVisible, 1, 100);
         gl::setMatrices( mCam );
         
         [self calculateScale];
-        [self calculateXAxisFreq];
+    
         
-
-        offsetY = X_AXIS_OFFSET* scaleXY.y/(2*retinaCorrection);
-        
-        
-        // Set the line color and width
         glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         glLineWidth(1.0f);
-        float currFreq = 0;
-        float * powBuffer = [[BBAudioManager bbAudioManager] getFFTResult];
-        int i=0;
-        for(currFreq=0.0;currFreq<maxFreq;currFreq+=baseFreq)
-        {
-            if(currFreq>0.1 && currFreq<=3.5)
-            {
-                //delta
-                glColor4f(0.9686274509803922f, 0.4980392156862745f, 0.011764705882352941f, 1.0);
-            }
-            else if (currFreq>3.5 && currFreq<=7.5)
-            {
-                //theta
-                glColor4f(1.0f, 0.011764705882352941f, 0.011764705882352941f, 1.0);
-            }
-            else if (currFreq>7.5 && currFreq<=15.5)
-            {
-                //alpha
-                glColor4f( 0.9882352941176471f, 0.9372549019607843f, 0.011764705882352941f, 1.0);
-            }
-            else if (currFreq>15.5 && currFreq<=31.5)
-            {
-                //beta
-                glColor4f(0.0f, 0.0f, 1.0f, 1.0);
-            }
-            else if (currFreq>31.5 && currFreq<=100)
-            {
-                //gama
-                glColor4f(1.0f, 0.0f, 1.0f, 1.0);
-            }
-            else
-            {
-                glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-            }
-            
-            gl::drawSolidRect(Rectf(currFreq,offsetY, currFreq+baseFreq,powBuffer[i]+offsetY));
-            i++;
-        }
-        float markPos=0;
-        float thirdOfMark = offsetY*0.05;
-        float twoThirdOfMark = offsetY*0.1;
-        float sizeOfMark = offsetY*0.15;
-        glLineWidth(2.0f);
-        for(i=0;i<100;i++)
-        {
-            if(i%10==0)
-            {
-                gl::drawLine(Vec2f(markPos, offsetY-sizeOfMark), Vec2f(markPos, offsetY));
-            }
-            else if (i%5==0)
-            {
-                gl::drawLine(Vec2f(markPos, offsetY-twoThirdOfMark), Vec2f(markPos, offsetY));
-            }
-            else
-            {
-                gl::drawLine(Vec2f(markPos, offsetY-thirdOfMark), Vec2f(markPos, offsetY));
-            }
-            
-            markPos+=markIntervalXAxis;
-        }
-        
-        
-        
-        //========== Draw scale text ==================
-        
+        gl::draw(displayVector);
+        glLineWidth(4.0f);
+        glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+        //gl::drawLine(Vec2f(-numSamplesVisible*(1.0f/samplingRate), [[BBAudioManager bbAudioManager] movingAverage]*2.3), Vec2f(0.0f, [[BBAudioManager bbAudioManager] movingAverage]*2.3));
+    
+       //gl::drawLine(Vec2f(-0.01, 0.0f), Vec2f(-0.01, 1.0f));
+    
+    
+        // Draw X scale ---------------
+    
+        float lineY = -numVoltsVisible + 100.0f*scaleXY.y;
+        float halfSizeOfScale = leftBoundary/4.0f;
+    
+        Vec2f leftPoint = Vec2f(leftBoundary*0.5+halfSizeOfScale, lineY);
+        Vec2f rightPoint = Vec2f(leftBoundary*0.5-halfSizeOfScale, lineY);
+        glColor4f(0.8, 0.8, 0.8, 1.0);
+        glLineWidth(1.0f);
+        gl::drawLine(leftPoint, rightPoint);
+    
+    
+    
+    
+        //=================== Draw string ====================================
         gl::disableDepthRead();
         gl::setMatricesWindow( Vec2i(self.frame.size.width, self.frame.size.height) );
         gl::enableAlphaBlending();
-        
-        markPos=0;
-        std::stringstream hzString;
-        hzString.precision(1);
+    
+    
+        //Draw heart bit rate text
+    
+        std::stringstream rateString;
+        glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         Vec2f xScaleTextSize;
         Vec2f xScaleTextPosition = Vec2f(0.,0.);
         glLineWidth(2.0f);
-        for(i=0;i<10;i++)
-        {
-            //draw number
-            
-            hzString.str("");
-            hzString << fixed << (int)markPos;
-            xScaleTextSize = mScaleFont->measureString(hzString.str());
-            if(i!=0)
-            {
-                xScaleTextPosition.x = (markPos/scaleXY.x)*retinaCorrection -xScaleTextSize.x*0.5 ;
-            }
-            else
-            {
-                xScaleTextPosition.x = (markPos/scaleXY.x)*retinaCorrection;
-            }
-            xScaleTextPosition.y =self.frame.size.height-37;
-            mScaleFont->drawString(hzString.str(), xScaleTextPosition);
-            markPos+=10*markIntervalXAxis;
-        }
-        
-        hzString.str("");
-        hzString << fixed << "Frequency (Hz)";
-        xScaleTextSize = mScaleFont->measureString(hzString.str());
 
-        xScaleTextPosition.x = 0.5f*self.frame.size.width - xScaleTextSize.x*0.5 ;
-        
-        xScaleTextPosition.y =self.frame.size.height- 15;
-        mScaleFont->drawString(hzString.str(), xScaleTextPosition);
-        
-    }
+        rateString << fixed << (int) [[BBAudioManager bbAudioManager] heartRate] ;
+        xScaleTextSize = heartRateFont->measureString(rateString.str());
+        xScaleTextPosition.x = 56;
+        xScaleTextPosition.y =43;
+        if(foundBeat)
+        {
+            heartRateFont->drawString(rateString.str(), xScaleTextPosition);
+        }
+    
+    
+        //Draw X scale text
+    
+        float xScale = -1000*leftBoundary/2.0f;
+        std::stringstream xStringStream;
+        xStringStream.precision(1);
+        if (xScale >= 1000) {
+            xScale /= 1000.0;
+            //xStringStream.precision(1);
+            xStringStream << fixed << xScale << " s";
+        }
+        else {
+            // xStringStream.precision(2);
+            xStringStream << fixed << xScale << " msec";
+        }
+
+    
+        xScaleTextSize = mScaleFont->measureString(xStringStream.str());
+        xScaleTextPosition = Vec2f(0.,0.);
+        xScaleTextPosition.x = (self.frame.size.width - xScaleTextSize.x)/2.0;
+        xScaleTextPosition.y =self.frame.size.height - 18;
+        mScaleFont->drawString(xStringStream.str(), xScaleTextPosition);
+    
 }
 
-//====================================== TOUCH ===================
+
+
+
+//====================================== TOUCH ===============================
 #pragma mark - Touch Navigation - Zoom
 
 //
@@ -266,13 +237,30 @@
     return Vec2f(deltaX, deltaY);
 }
 
+
+-(void) elasticZoomEfect
+{
+    if ([self getActiveTouches].size() != 2)
+    {
+        // Make sure that we don't go out of bounds
+        if (numSamplesVisible < numSamplesMin)
+        {
+            numSamplesVisible += 0.6*((numSamplesMin+1) - numSamplesVisible);
+        }
+        if(numSamplesVisible>numSamplesMax)
+        {
+            numSamplesVisible += 0.6*((numSamplesMax-1) - numSamplesVisible);
+        }
+    }
+}
+
 //
 // React on one and two finger gestures
 //
 - (void)updateActiveTouches
 {
     [super updateActiveTouches];
-
+    //NSLog(@"Num volts visible: %f", numVoltsVisible[0]);
     
     std::vector<ci::app::TouchEvent::Touch> touches = [self getActiveTouches];
     
@@ -280,42 +268,29 @@
     if (touches.size() == 2)
     {
         Vec2f touchDistanceDelta = [self calculateTouchDistanceChange:touches];
-        float oldMaxFreq = currentMaxFreq;
-        currentMaxFreq /= (touchDistanceDelta.x - 1) + 1;
-        currentMaxPow /= (touchDistanceDelta.y - 1) + 1;
+        float oldNumVoltsVisible = numVoltsVisible;
+        numSamplesVisible /= (touchDistanceDelta.x - 1) + 1;
+        numVoltsVisible /= (touchDistanceDelta.y - 1) + 1;
         
-        // Make sure that we don't go out of bounds
-        if (currentMaxFreq < baseFreq )
+       
+        if (numVoltsVisible < 0.001)
         {
-            currentMaxFreq = oldMaxFreq;
-        }
-        if (currentMaxFreq > maxFreq)
-        {
-            currentMaxFreq = maxFreq;
+            touchDistanceDelta.y = 1.0f;
+            numVoltsVisible = oldNumVoltsVisible;
         }
         
-        if (currentMaxPow < 0.01 )
-        {
-            currentMaxPow = 0.01;
-        }
     }
-    
-    // Touching to change the threshold value, if we're thresholding
-    //Selecting time interval and thresholding are mutualy exclusive
     else if (touches.size() == 1)
     {
         
         
         
     }
-    
 }
 
 
 
-#pragma mark - Utility
-
-
+#pragma mark - helper functions
 //
 // Calculate position in GL world units based on point in screen pixels
 //
@@ -382,7 +357,5 @@
     
     return outPoint;
 }
-
-
 
 @end
