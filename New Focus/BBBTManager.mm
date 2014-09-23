@@ -32,6 +32,7 @@ static BBBTManager *btManager = nil;
     bool deviceAlreadyDisconnected;
     RingBuffer *ringBuffer;
     bool bufferIsReady;
+    BOOL measurementTimerShouldBeActive;
 }
 
 @end
@@ -87,6 +88,7 @@ static BBBTManager *btManager = nil;
         self.inputBlock = nil;
         bufferIsReady = false;
         deviceAlreadyDisconnected = NO;
+        measurementTimerShouldBeActive = NO;
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_accessoryDidConnect:) name:EAAccessoryDidConnectNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_accessoryDidDisconnect:) name:EAAccessoryDidDisconnectNotification object:nil];
         [[EAAccessoryManager sharedAccessoryManager] registerForLocalNotifications];
@@ -100,7 +102,21 @@ static BBBTManager *btManager = nil;
             dispatch_source_set_event_handler(_baudRateTimer, ^{
 
                 bitsPerSec = ((float)numberOfBytesReceivedInLastSec)/1.0;
+                //NSLog(@"Number of Bytes : %d", numberOfBytesReceivedInLastSec);
+                if(numberOfBytesReceivedInLastSec>3000)
+                {
+                    measurementTimerShouldBeActive = YES;
+                }
+                if(measurementTimerShouldBeActive)
+                {
+                    if(numberOfBytesReceivedInLastSec<2000 && !deviceAlreadyDisconnected)
+                    {
+                        NSNotification *notification = [NSNotification notificationWithName:BT_SLOW_CONNECTION object:self];
+                        [[NSNotificationCenter defaultCenter] postNotification:notification];
+                    }
+                }
                 numberOfBytesReceivedInLastSec = 0;
+                
                 
             });
             dispatch_resume(_baudRateTimer);
@@ -135,6 +151,7 @@ static BBBTManager *btManager = nil;
 {
     _confSamplingRate = inSampleRate;
     _confNumberOfChannels = inNumOfChannels;
+
     NSLog(@"Start bluetooth with Num of channels: %d and Sample rate: %d", inNumOfChannels, inSampleRate);
     if(ringBuffer)
     {
@@ -215,6 +232,7 @@ static BBBTManager *btManager = nil;
         //If we didn't find connected accessory that has our protocol
         //open picker that weill allow user to connect to paired devices
         connectToDevice = YES;
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"self CONTAINS 'BYB'"];
         [[EAAccessoryManager sharedAccessoryManager] showBluetoothAccessoryPickerWithNameFilter:nil completion:^(NSError *error) {
             //We don't do anything with response, just log
             //BT will dispatch connected event and than we will continue with creating session
@@ -224,6 +242,12 @@ static BBBTManager *btManager = nil;
                 if([error code] == EABluetoothAccessoryPickerResultCancelled)
                 {
                     NSLog(@"Canceled accessory chooser.");
+                }
+                else if([error code] == EABluetoothAccessoryPickerResultNotFound)
+                {
+                    NSLog(@"Error EABluetoothAccessoryPickerResultNotFound  %@",[error description]);
+                    NSNotification *notification = [NSNotification notificationWithName:BT_BAD_CONNECTION object:self];
+                    [[NSNotificationCenter defaultCenter] postNotification:notification];
                 }
                 else
                 {
@@ -288,10 +312,12 @@ static BBBTManager *btManager = nil;
 - (void)_accessoryDidDisconnect:(NSNotification *)notification {
     
     NSLog(@"Accessory disconnected");
-    [self CloseSession];
+
     if(!deviceAlreadyDisconnected)
     {
+
         deviceAlreadyDisconnected = YES;
+        [self CloseSession];
         NSNotification *newnotification = [NSNotification notificationWithName:BT_DISCONNECTED object:self];
         [[NSNotificationCenter defaultCenter] postNotification:newnotification];
     }
@@ -528,24 +554,28 @@ static BBBTManager *btManager = nil;
 //
 -(void) writeDataFunc
 {
-    if(sendConfigData)
+    if(!deviceAlreadyDisconnected)
     {
-        sendConfigData = NO;
-        int tempCounterNum = 16000000/_confSamplingRate;
-        NSString *configString  = [NSString stringWithFormat:@"conf s:%d;c:%d;",tempCounterNum,_confNumberOfChannels];
-        
-        NSData *data = [configString dataUsingEncoding:NSUTF8StringEncoding];
-
-        NSInteger bytesWritten = [[_session outputStream] write:(uint8_t *)[data bytes] maxLength:[data length]];
-        
-        if (bytesWritten == -1)
+        if(sendConfigData)
         {
-            NSLog(@"BT config write error");
+            sendConfigData = NO;
             
-        }
-        else if (bytesWritten > 0)
-        {
-            bytesWritten =bytesWritten;
+            int tempCounterNum = 16000000/_confSamplingRate;
+            NSString *configString  = [NSString stringWithFormat:@"conf s:%d;c:%d;",tempCounterNum,_confNumberOfChannels];
+            
+            NSData *data = [configString dataUsingEncoding:NSUTF8StringEncoding];
+
+            NSInteger bytesWritten = [[_session outputStream] write:(uint8_t *)[data bytes] maxLength:[data length]];
+            
+            if (bytesWritten == -1)
+            {
+                NSLog(@"BT config write error");
+                
+            }
+            else if (bytesWritten > 0)
+            {
+                bytesWritten =bytesWritten;
+            }
         }
     }
 }
@@ -556,15 +586,46 @@ static BBBTManager *btManager = nil;
 //
 -(void) stopTransmision
 {
-    NSLog(@"Aend stop to BT");
-    NSString *configString  = @"h:;";//halt
-    
-    NSData *data = [configString dataUsingEncoding:NSUTF8StringEncoding];
-    
-    NSInteger bytesWritten = [[_session outputStream] write:(uint8_t *)[data bytes] maxLength:[data length]];
-    if (bytesWritten == -1)
+    measurementTimerShouldBeActive = NO;
+    if(!deviceAlreadyDisconnected)
     {
-        NSLog(@"BT stop write error");
+        NSLog(@"Aend stop to BT");
+        NSString *configString  = @"h:;";//halt
+        
+        NSData *data = [configString dataUsingEncoding:NSUTF8StringEncoding];
+        
+        
+        
+        /*unsigned char* databytes= (unsigned char*)[data bytes];
+        int databytesLen=[data length];
+
+
+        while( [[_session outputStream] hasSpaceAvailable] )
+        {
+            
+            unsigned char* senddatabytes=databytes + offset;
+            int bytesWritten = [[_CurSession outputStream] write:senddatabytes maxLength:shouldSendLen ];
+            if (bytesWritten == -1)
+            {
+                break;
+            }
+            if(offset >= databytesLen)
+            {
+                NSLog(@"BT stop write error");
+                break;
+            }
+            //			[NSThread sleepForTimeInterval:0.001];
+        }*/
+
+        
+        
+        
+        
+        NSInteger bytesWritten = [[_session outputStream] write:(uint8_t *)[data bytes] maxLength:[data length]];
+        if (bytesWritten == -1)
+        {
+            NSLog(@"BT stop write error");
+        }
     }
 }
 

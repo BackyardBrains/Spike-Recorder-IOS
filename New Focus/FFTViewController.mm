@@ -43,6 +43,7 @@
     //Bluetooth notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(noBTConnection) name:NO_BT_CONNECTION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(btDisconnected) name:BT_DISCONNECTED object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(btSlowConnection) name:BT_SLOW_CONNECTION object:nil];    
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -59,6 +60,7 @@
 
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NO_BT_CONNECTION object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:BT_DISCONNECTED object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:BT_SLOW_CONNECTION object:nil];
 }
 
 - (void)viewDidLoad
@@ -109,6 +111,21 @@
         [alert show];
         [alert release];
     }
+}
+
+-(void) btSlowConnection
+{
+    /*if([[BBAudioManager bbAudioManager] btOn])
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Slow Bluetooth connection."
+                                                        message:@"Bluetooth connection is very slow. Try moving closer to Bluetooth device and start session again."
+                                                       delegate:self
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+        [alert show];
+        [alert release];
+    }
+    */
 }
 
 #pragma mark - Channel code

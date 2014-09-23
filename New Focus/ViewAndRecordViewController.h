@@ -16,6 +16,7 @@
 #import "MultichannelCindeGLView.h"
 #import "FPPopoverController.h"
 #import "BBChannelSelectionTableViewController.h"
+//#import <CoreBluetooth/CoreBluetooth.h>
 
 @interface ViewAndRecordViewController : CCGLTouchViewController <MultichannelGLViewDelegate, FPPopoverControllerDelegate, BBSelectionTableDelegateProtocol>{
     MultichannelCindeGLView *glView;

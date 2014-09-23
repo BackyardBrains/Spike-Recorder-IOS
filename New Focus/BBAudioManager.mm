@@ -270,11 +270,11 @@ static BBAudioManager *bbAudioManager = nil;
 
 -(void) closeBluetooth
 {
-    [[BBBTManager btManager] stopCurrentBluetoothConnection];
-    btOn = NO;
     [self stopAllInputOutput];
+    [[BBBTManager btManager] stopCurrentBluetoothConnection];
     _sourceSamplingRate =  audioManager.samplingRate;
     _sourceNumberOfChannels = audioManager.numInputChannels;
+    btOn = NO;
     [self makeInputOutput];
 }
 
@@ -796,6 +796,10 @@ static BBAudioManager *bbAudioManager = nil;
 
 - (float)fetchAudio:(float *)data numFrames:(UInt32)numFrames whichChannel:(UInt32)whichChannel stride:(UInt32)stride
 {
+    if(whichChannel>=_sourceNumberOfChannels)
+    {
+        return 0.0f;
+    }
     if (!thresholding) {
         //Fetch data and get time of data as precise as posible. Used to sichronize
         //display of waveform and spike marks

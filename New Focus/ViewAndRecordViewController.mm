@@ -20,6 +20,7 @@
     dispatch_source_t _timer;
     float recordingTime;
     BOOL rawSelected;
+   // CBCentralManager * testBluetoothManager;
 }
 
 @end
@@ -57,6 +58,15 @@
 	[glView startAnimation];
     // set our view controller's prop that will hold a pointer to our newly created CCGLTouchView
     
+    if([[BBAudioManager bbAudioManager] btOn])
+    {
+        [self.btButton setImage:[UIImage imageNamed:@"inputicon.png"] forState:UIControlStateNormal];
+        
+    }
+    else
+    {
+        [self.btButton setImage:[UIImage imageNamed:@"bluetooth.png"] forState:UIControlStateNormal];
+    }
 
    /* [glView stopAnimation];
     [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
@@ -64,6 +74,7 @@
     */
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(noBTConnection) name:NO_BT_CONNECTION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(btDisconnected) name:BT_DISCONNECTED object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(btSlowConnection) name:BT_SLOW_CONNECTION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(foundBTConnection) name:FOUND_BT_CONNECTION object:nil];
     
 }
@@ -88,6 +99,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NO_BT_CONNECTION object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:FOUND_BT_CONNECTION object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:BT_DISCONNECTED object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:BT_SLOW_CONNECTION object:nil];
 }
 
 - (void)viewDidLoad
@@ -222,6 +234,34 @@
 
 #pragma mark - BT stuff
 
+/*- (void)detectBluetooth
+{
+    if(!testBluetoothManager)
+    {
+        // Put on main queue so we can call UIAlertView from delegate callbacks.
+        testBluetoothManager = [[[CBCentralManager alloc] initWithDelegate:self queue:dispatch_get_main_queue()] autorelease];
+    }
+    [self centralManagerDidUpdateState:testBluetoothManager]; // Show initial state
+}
+
+- (void)centralManagerDidUpdateState:(CBCentralManager *)central
+{
+    NSString *stateString = nil;
+    switch(testBluetoothManager.state)
+    {
+        case CBCentralManagerStateResetting: stateString = @"The connection with the system service was momentarily lost, update imminent."; break;
+        case CBCentralManagerStateUnsupported: stateString = @"The platform doesn't support Bluetooth Low Energy."; break;
+        case CBCentralManagerStateUnauthorized: stateString = @"The app is not authorized to use Bluetooth Low Energy."; break;
+        case CBCentralManagerStatePoweredOff: stateString = @"Bluetooth is currently powered off."; break;
+        case CBCentralManagerStatePoweredOn: stateString = @"Bluetooth is currently powered on and available to use."; break;
+        default: stateString = @"State unknown, update imminent."; break;
+    }
+    
+    NSLog(@"BT state: %@ ************", stateString);
+}
+*/
+
+#pragma mark - BT connection
 - (IBAction)btButtonPressed:(id)sender {
     
     if([[BBAudioManager bbAudioManager] recording])
@@ -394,7 +434,7 @@
 {
     if([[BBAudioManager bbAudioManager] btOn])
     {
-        
+        [self.btButton setImage:[UIImage imageNamed:@"bluetooth.png"] forState:UIControlStateNormal];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"No Bluetooth connection."
                                                         message:@"Bluetooth device disconnected. Get in range of the device and try to pair with the device in Bluetooth settings again."
                                                        delegate:self
@@ -405,7 +445,15 @@
     }
 }
 
+-(void) btSlowConnection
+{
+    if([[BBAudioManager bbAudioManager] btOn])
+    {
+        [self.btButton setImage:[UIImage imageNamed:@"bluetooth.png"] forState:UIControlStateNormal];
 
+    }
+    
+}
 
 
 #pragma mark - Actions

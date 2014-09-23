@@ -13,6 +13,8 @@
 #import <DropboxSDK/DropboxSDK.h>
 #import "BBAudioFileReader.h"
 #import "TestFlight.h"
+#import "BBBTManager.h"
+
 #define kViewRecordTabBarIndex 0
 #define kThresholdTabBarIndex 1
 #define kFFTTabBarIndex 2
@@ -62,8 +64,40 @@
                             root:kDBRootAppFolder] autorelease];
 
     [DBSession setSharedSession:dbSession];
+    
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(btSlowConnection) name:BT_SLOW_CONNECTION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(btBadConnection) name:BT_BAD_CONNECTION object:nil];
 }
 
+
+-(void) btSlowConnection
+{
+    if([[BBAudioManager bbAudioManager] btOn])
+    {
+        [[BBAudioManager bbAudioManager] closeBluetooth];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Bluetooth device out of range."
+                                                        message:@"Bluetooth connection is slow or device is out of range. Check if your Bluetooth device is turned on or try moving closer to device and start session again."
+                                                       delegate:self
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+        [alert show];
+        [alert release];
+    }
+}
+
+-(void) btBadConnection
+{
+
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Bluetooth connection error."
+                                                        message:@"Disable and enable Bluetooth on your phone to reset device connection."
+                                                       delegate:self
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+        [alert show];
+        [alert release];
+    
+}
 
 - (void)applicationWillTerminate:(UIApplication *)application {
     

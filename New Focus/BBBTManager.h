@@ -10,6 +10,8 @@
 #import <ExternalAccessory/ExternalAccessory.h>
 #define NO_BT_CONNECTION @"noBtConnection"
 #define BT_DISCONNECTED @"btDisconnected"
+#define BT_SLOW_CONNECTION @"btSlowConnection"
+#define BT_BAD_CONNECTION @"btBadConnection"
 #define FOUND_BT_CONNECTION @"foundBtConnection"
 
 typedef void (^BBBTInputBlock)(float *data, UInt32 numFrames, UInt32 numChannels);
