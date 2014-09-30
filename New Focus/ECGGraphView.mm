@@ -8,6 +8,10 @@
 
 #import "ECGGraphView.h"
 #import "BBAudioManager.h"
+
+#define HANDLE_RADIUS 20
+#define HIDE_HANDLES_AFTER_SECONDS 4.0
+
 @implementation ECGGraphView
 
 //
@@ -31,7 +35,9 @@
     heartRateFont = gl::TextureFont::create( Font("Helvetica", 32) );
     mScaleFont = gl::TextureFont::create( Font("Helvetica", 18) );
     foundBeat = NO;
-    
+    lastUserInteraction = [[NSDate date] timeIntervalSince1970];
+    handlesShouldBeVisible = NO;
+    offsetPositionOfHandle = 0.0f;
 }
 
 
@@ -46,7 +52,7 @@
     
     firstDrawAfterChannelChange = YES;
     samplingRate = inSamplingRate;
-    
+    [[BBAudioManager bbAudioManager] setEcgThreshold:0.0f];
     // Setup display vector
     NSDictionary *defaultsDict = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"SettingsDefaults" ofType:@"plist"]];
     [[NSUserDefaults standardUserDefaults] registerDefaults:defaultsDict];
@@ -89,6 +95,10 @@
 - (void)draw {
     
         [[BBAudioManager bbAudioManager] fetchAudioForSelectedChannel:(float *)&(displayVector.getPoints()[0])+1 numFrames:numSamplesMax stride:2];
+    
+        currentUserInteractionTime = [[NSDate date] timeIntervalSince1970];
+        handlesShouldBeVisible = (currentUserInteractionTime-lastUserInteraction)<HIDE_HANDLES_AFTER_SECONDS;
+    
     
         if(firstDrawAfterChannelChange)
         {
@@ -140,7 +150,7 @@
         glLineWidth(1.0f);
         gl::drawLine(leftPoint, rightPoint);
     
-    
+        [self drawThreshold];
     
     
         //=================== Draw string ====================================
@@ -189,6 +199,74 @@
         xScaleTextPosition.y =self.frame.size.height - 18;
         mScaleFont->drawString(xStringStream.str(), xScaleTextPosition);
     
+}
+
+
+
+-(void) drawThreshold
+{
+   
+        glColor4f(1.0, 0.0, 0.0, 1.0);
+        glLineWidth(1.0f);
+        float leftEdge = -numSamplesVisible*(1.0f/samplingRate);
+        // Draw a line from left to right at the voltage threshold value.
+        float threshval = [[BBAudioManager bbAudioManager] ecgThreshold];
+        
+        float centerOfCircleX = -20*scaleXY.x;
+        float radiusXAxis = HANDLE_RADIUS*scaleXY.x;
+        float radiusYAxis = HANDLE_RADIUS*scaleXY.y;
+    
+        BOOL makeThrLineThin = NO;
+        //hide/show animation of handles
+        if(handlesShouldBeVisible)
+        {
+            offsetPositionOfHandle+=radiusXAxis/3.0;
+            if(offsetPositionOfHandle>0.0)
+            {
+                offsetPositionOfHandle = 0.0;
+            }
+        }
+        else
+        {
+            offsetPositionOfHandle-=radiusXAxis/5.0;
+            if(offsetPositionOfHandle<-2.6*radiusXAxis)
+            {
+                offsetPositionOfHandle = -2.6*radiusXAxis;
+                makeThrLineThin = YES;
+            }
+        }
+        
+        centerOfCircleX -= offsetPositionOfHandle;
+    
+    
+        
+
+        
+        //draw all handles
+        
+        gl::drawSolidEllipse( Vec2f(centerOfCircleX, threshval), radiusXAxis, radiusYAxis, 100 );
+        gl::drawSolidTriangle(
+                              Vec2f(centerOfCircleX-0.35*radiusXAxis, threshval+radiusYAxis*0.97),
+                              Vec2f(centerOfCircleX-1.6*radiusXAxis, threshval),
+                              Vec2f(centerOfCircleX-0.35*radiusXAxis, threshval-radiusYAxis*0.97)
+                              );
+        if(makeThrLineThin)
+        {
+            glLineWidth(1.0f);
+            glColor4f(0.8, 0.0, 0.0, 1.0);
+        }
+        else
+        {
+            glLineWidth(2.0f);
+        }
+        float linePart = radiusXAxis*0.7;
+        for(float pos=leftEdge;pos<-linePart; pos+=linePart+linePart)
+        {
+            gl::drawLine(Vec2f(pos, threshval), Vec2f(pos+linePart, threshval));
+        }
+        
+        glLineWidth(1.0f);
+  
 }
 
 
@@ -260,7 +338,6 @@
 - (void)updateActiveTouches
 {
     [super updateActiveTouches];
-    //NSLog(@"Num volts visible: %f", numVoltsVisible[0]);
     
     std::vector<ci::app::TouchEvent::Touch> touches = [self getActiveTouches];
     
@@ -282,8 +359,23 @@
     }
     else if (touches.size() == 1)
     {
+        //last time we tap screen with one finger. We use this to hide hanles
+        lastUserInteraction = [[NSDate date] timeIntervalSince1970];
         
+        Vec2f touchPos = touches[0].getPos();
+        // Convert into GL coordinate
+        Vec2f glWorldTouchPos = [self screenToWorld:touchPos];
+
+        float currentThreshold = [[BBAudioManager bbAudioManager] ecgThreshold];
         
+        float intersectionDistanceX = 16000*scaleXY.x*scaleXY.x;
+        float intersectionDistanceY = 18000*scaleXY.y*scaleXY.y;
+        
+        //check first if user grabbed selected channel
+        if((glWorldTouchPos.y - currentThreshold)*(glWorldTouchPos.y - currentThreshold) < intersectionDistanceY && (glWorldTouchPos.x * glWorldTouchPos.x) <intersectionDistanceX)
+        {
+            [[BBAudioManager bbAudioManager] setEcgThreshold:glWorldTouchPos.y];
+        }
         
     }
 }

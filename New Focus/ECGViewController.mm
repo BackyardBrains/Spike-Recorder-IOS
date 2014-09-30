@@ -9,7 +9,7 @@
 #import "ECGViewController.h"
 #import "BBBTManager.h"
 #import "BBECGAnalysis.h"
-
+#import "MyAppDelegate.h"
 
 @interface ECGViewController ()
 
@@ -17,6 +17,7 @@
 
 @implementation ECGViewController
 @synthesize activeHeartImg;
+@synthesize healthStore;
 
 - (void)viewWillAppear:(BOOL)animated
 {
@@ -43,6 +44,10 @@
     [self.view sendSubviewToBack:glView];
     [glView startAnimation];
     
+    
+    MyAppDelegate * appDelegate = (MyAppDelegate*)[[UIApplication sharedApplication] delegate];
+    self.healthStore = appDelegate.healthStore;
+    
         //Bluetooth notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(noBTConnection) name:NO_BT_CONNECTION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(btDisconnected) name:BT_DISCONNECTED object:nil];
@@ -53,7 +58,71 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
+    dataSouldBeSavedToHK = NO;
+    //Try to init health kit
+    
+    if ([HKHealthStore isHealthDataAvailable]) {
+        NSSet *writeDataTypes = [self dataTypesToWrite];
+        NSSet *readDataTypes = [self dataTypesToRead];
+        
+        [self.healthStore requestAuthorizationToShareTypes:writeDataTypes readTypes:readDataTypes completion:^(BOOL success, NSError *error) {
+            if (!success) {
+                NSLog(@"You didn't allow HealthKit to write hearth rate data. In your app, try to handle this error gracefully when a user decides not to provide access. The error was: %@. If you're using a simulator, try it on a device.", error);
+                
+                return;
+            }
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                // Update the user interface based on the current user's health information.
+                dataSouldBeSavedToHK = YES;
+            });
+        }];
+    }
 }
+
+
+- (void)storeHeartBeatsAtMinute:(double)beats
+                      startDate:(NSDate *)startDate endDate:(NSDate *)endDate
+                     completion:(void (^)(NSError *error))compeltion
+{
+    HKQuantityType *rateType = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierHeartRate];
+    HKQuantity *rateQuantity = [HKQuantity quantityWithUnit:[[HKUnit countUnit] unitDividedByUnit:[HKUnit minuteUnit]]
+                                                doubleValue:(double)beats];
+    HKQuantitySample *rateSample = [HKQuantitySample quantitySampleWithType:rateType
+                                                                   quantity:rateQuantity
+                                                                  startDate:startDate
+                                                                    endDate:endDate];
+    
+    [healthStore saveObject:rateSample withCompletion:^(BOOL success, NSError *error) {
+        if(compeltion) {
+            compeltion(error);
+        }
+    }];
+}
+
+
+
+// Returns the types of data that Fit wishes to write to HealthKit.
+- (NSSet *)dataTypesToWrite {
+    HKQuantityType *heartRateType = [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierHeartRate];
+    
+    return [NSSet setWithObjects:heartRateType, nil];
+}
+
+// Returns the types of data that Fit wishes to read from HealthKit.
+- (NSSet *)dataTypesToRead {
+    /*HKQuantityType *dietaryCalorieEnergyType = [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierDietaryEnergyConsumed];
+    HKQuantityType *activeEnergyBurnType = [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierActiveEnergyBurned];
+    HKQuantityType *heightType = [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierHeight];
+    HKQuantityType *weightType = [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierBodyMass];
+    HKCharacteristicType *birthdayType = [HKObjectType characteristicTypeForIdentifier:HKCharacteristicTypeIdentifierDateOfBirth];
+    HKCharacteristicType *biologicalSexType = [HKObjectType characteristicTypeForIdentifier:HKCharacteristicTypeIdentifierBiologicalSex];
+    
+    return [NSSet setWithObjects:dietaryCalorieEnergyType, activeEnergyBurnType, heightType, weightType, birthdayType, biologicalSexType, nil];*/
+    return nil;
+}
+
+
 
 - (void)viewWillDisappear:(BOOL)animated
 {
@@ -83,6 +152,17 @@
 {
     if([[BBAudioManager bbAudioManager] heartBeatPresent])
     {
+        
+        //Save data to HealthKit if user enabled it
+        if(dataSouldBeSavedToHK)
+        {
+            NSDate * currentDate = [[NSDate alloc] init];
+            [self storeHeartBeatsAtMinute:[[BBAudioManager bbAudioManager] heartRate] startDate:currentDate endDate:currentDate completion:nil];
+        
+        }
+        
+        
+        
         dispatch_async(dispatch_get_main_queue(), ^{
             
      

@@ -95,8 +95,7 @@ typedef enum BBStimulationType
 @property (readonly) BOOL ECGOn;
 @property BOOL seeking;
 
-@property (readonly) float heartRate;
-@property (readonly) BOOL heartBeatPresent;
+
 
 
 + (BBAudioManager *) bbAudioManager;
@@ -145,6 +144,8 @@ typedef enum BBStimulationType
 //ECG
 -(void) startECG;
 -(void) stopECG;
-
+@property (readonly) float heartRate;
+@property (readonly) BOOL heartBeatPresent;
+@property (nonatomic) float ecgThreshold;
 
 @end

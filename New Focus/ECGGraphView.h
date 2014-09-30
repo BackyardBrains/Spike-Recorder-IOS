@@ -35,6 +35,12 @@
     BOOL firstDrawAfterChannelChange;
     
     BOOL foundBeat;
+    
+    NSTimeInterval lastUserInteraction;//last time user taped screen
+    NSTimeInterval currentUserInteractionTime;//temp variable for calculation
+    BOOL handlesShouldBeVisible;
+    float offsetPositionOfHandle;
+
 }
 
 -(void) setupWithBaseFreq:(float) inSamplingRate;

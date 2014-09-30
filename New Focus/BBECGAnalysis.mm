@@ -7,17 +7,20 @@
 //
 
 #import "BBECGAnalysis.h"
-
+#define MIN_PEAK_TIME 0.200 //200ms
 
 @implementation BBECGAnalysis
 @synthesize heartRate;
 @synthesize heartBeatPresent;
+@synthesize extThreshold;
+
 
 -(void) initECGAnalysisWithSamplingRate:(float) samplingRate numOfChannels:(UInt32) numOfChannels
 {
     
     numberOfChannels = numOfChannels;
     channelSamplingRate = samplingRate;
+    //Filters for automatic heart rate detection
     LPF = [[NVLowpassFilter alloc] initWithSamplingRate:samplingRate];
     LPF.cornerFrequency = 80.0f;
     LPF.Q = 0.5f;
@@ -29,7 +32,8 @@
     LPF2 = [[NVLowpassFilter alloc] initWithSamplingRate:samplingRate];
     LPF2.cornerFrequency = 10.0f;
     LPF2.Q = 0.5f;
-
+    
+    
     singleChannelBuffer = (float *)calloc(1024, sizeof(float));
     bufferForDiff = (float *)calloc(1025, sizeof(float));
     maxValueForECG = 0.000001;
@@ -39,6 +43,62 @@
     lastSampleECG = 0.0f;
     heartBeatPresent = NO;
 }
+
+-(void) calculateECGWithThreshold:(float *) newData numberOfFrames:(UInt32) numOfFrames selectedChannel:(UInt32) selectedChannel
+{
+    float zero = 0.0f;
+    //get selected channel
+    vDSP_vsadd((float *)&newData[selectedChannel],
+               numberOfChannels,
+               &zero,
+               singleChannelBuffer,
+               1,
+               numOfFrames);
+    
+    float oneSampleTime = (1.0f/channelSamplingRate);
+    //find peaks
+    for(int i=0;i<numOfFrames;i++)
+    {
+        if(lastSampleECG<extThreshold && singleChannelBuffer[i]>extThreshold && (currentTimeECG+ i*oneSampleTime -lastTimePeak)>MIN_PEAK_TIME)
+        {
+            //we jumped over threshold
+            numberOfPeaksDetected++;
+            if(numberOfPeaksDetected>3)
+            {
+                heartBeatPresent = YES;
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName:HEART_BEAT_NOTIFICATION object:self];
+                
+                numberOfPeaksDetected = 4;
+                //calculate average for last 3 peaks
+                heartRate = ((secondLastTimePeak-thirdLastTimePeak)+(lastTimePeak-secondLastTimePeak)+((currentTimeECG+i*oneSampleTime)-lastTimePeak))/3.0f;
+                heartRate = 60.0f/heartRate;
+                //NSLog(@"%f",heartRate);
+            }
+            //refresh peaks
+            thirdLastTimePeak = secondLastTimePeak;
+            secondLastTimePeak = lastTimePeak;
+            lastTimePeak = currentTimeECG+i*oneSampleTime;
+            
+        }
+        lastSampleECG = singleChannelBuffer[i];
+    }
+    currentTimeECG+=numOfFrames*oneSampleTime;
+    
+    //if we didn't have any bumps in last 2.5 sec that
+    //set heart rate to zero
+    if(lastTimePeak<currentTimeECG-4.0f)
+    {
+        [self resetState];
+    }
+    
+    if(heartRate>300)
+    {
+        [self resetState];
+    }
+
+}
+
 
 -(void) calculateECGAnalysis:(float *) newData numberOfFrames:(UInt32) numOfFrames selectedChannel:(UInt32) selectedChannel
 {

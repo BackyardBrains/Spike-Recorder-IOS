@@ -377,7 +377,8 @@ static BBAudioManager *bbAudioManager = nil;
     
     if(ECGOn)
     {
-        [ecgAnalysis calculateECGAnalysis:data numberOfFrames:numFrames selectedChannel:_selectedChannel];
+         [ecgAnalysis calculateECGWithThreshold:data numberOfFrames:numFrames selectedChannel:_selectedChannel];
+       // [ecgAnalysis calculateECGAnalysis:data numberOfFrames:numFrames selectedChannel:_selectedChannel];
     }
     
 }
@@ -422,6 +423,9 @@ static BBAudioManager *bbAudioManager = nil;
     [self makeInputOutput];
 }
 
+
+#pragma mark - Thresholding
+
 - (void)startThresholding:(UInt32)newNumPointsToSavePerThreshold
 {
     [self quitAllFunctions];
@@ -449,6 +453,46 @@ static BBAudioManager *bbAudioManager = nil;
 {
     thresholding = false;
 }
+
+
+- (void)setThreshold:(float)newThreshold
+{
+    _threshold = newThreshold;
+    
+    if (dspThresholder)
+        dspThresholder->SetThreshold(newThreshold);
+}
+
+- (float)threshold
+{
+    
+    if (dspThresholder) {
+        _threshold = dspThresholder->GetThreshold();
+        return _threshold;
+    }
+    else {
+        return 0;
+    }
+}
+
+- (BBThresholdType)thresholdDirection
+{
+    if (dspThresholder) {
+        return dspThresholder->GetThresholdDirection();
+    }
+    
+    return BBThresholdTypeNone;
+    
+}
+
+- (void)setThresholdDirection:(BBThresholdType)newThresholdDirection
+{
+    if (dspThresholder) {
+        dspThresholder->SetThresholdDirection(newThresholdDirection);
+    }
+}
+
+#pragma mark - Recording
 
 - (void)startRecording:(NSURL *)urlToFile
 {
@@ -485,6 +529,8 @@ static BBAudioManager *bbAudioManager = nil;
 }
 
 
+#pragma mark - ECG code
+
 -(void) startECG
 {
     [self quitAllFunctions];
@@ -517,6 +563,17 @@ static BBAudioManager *bbAudioManager = nil;
     return [ecgAnalysis heartBeatPresent];
 }
 
+-(float) ecgThreshold
+{
+    return [ecgAnalysis extThreshold];
+}
+
+-(void) setEcgThreshold:(float) inEcgThreshold
+{
+    [ecgAnalysis setExtThreshold:inEcgThreshold];
+}
+
+#pragma mark - Playback
 
 - (void)startPlaying:(BBFile *) fileToPlay
 {
@@ -731,7 +788,7 @@ static BBAudioManager *bbAudioManager = nil;
 }
 
 
-#pragma mark FFT code
+#pragma mark - FFT code
 
 
 -(float **) getDynamicFFTResult
@@ -1213,42 +1270,7 @@ static BBAudioManager *bbAudioManager = nil;
     return _selectionEndTime;
 }
 
-- (void)setThreshold:(float)newThreshold
-{
-    _threshold = newThreshold;
-    
-    if (dspThresholder)
-        dspThresholder->SetThreshold(newThreshold);
-}
 
-- (float)threshold
-{
-    
-    if (dspThresholder) {
-        _threshold = dspThresholder->GetThreshold();
-        return _threshold;
-    }
-    else {
-        return 0;
-    }
-}
-
-- (BBThresholdType)thresholdDirection
-{
-    if (dspThresholder) {
-        return dspThresholder->GetThresholdDirection();
-    }
-
-    return BBThresholdTypeNone;
-    
-}
-
-- (void)setThresholdDirection:(BBThresholdType)newThresholdDirection
-{
-    if (dspThresholder) {
-        dspThresholder->SetThresholdDirection(newThresholdDirection);
-    }
-}
 
 - (float)currentFileTime
 {

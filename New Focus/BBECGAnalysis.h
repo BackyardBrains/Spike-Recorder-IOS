@@ -19,6 +19,7 @@
     NVHighpassFilter * HPF;
     NVLowpassFilter * LPF;
     NVLowpassFilter * LPF2;
+    
     float * singleChannelBuffer;
     UInt32 numberOfChannels;
     float channelSamplingRate;
@@ -37,11 +38,12 @@
 
 @property (readonly) float heartRate;
 @property (readonly) BOOL heartBeatPresent;
+@property (nonatomic) float extThreshold;
 
 
 -(void) initECGAnalysisWithSamplingRate:(float) samplingRate numOfChannels:(UInt32) numOfChannels;
 -(void) calculateECGAnalysis:(float *) newData numberOfFrames:(UInt32) numOfFrames selectedChannel:(UInt32) selectedChannel;
-
+-(void) calculateECGWithThreshold:(float *) newData numberOfFrames:(UInt32) numOfFrames selectedChannel:(UInt32) selectedChannel;
 @end
 
 
