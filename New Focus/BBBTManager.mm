@@ -232,7 +232,7 @@ static BBBTManager *btManager = nil;
         //If we didn't find connected accessory that has our protocol
         //open picker that weill allow user to connect to paired devices
         connectToDevice = YES;
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"self CONTAINS 'BYB'"];
+       // NSPredicate *predicate = [NSPredicate predicateWithFormat:@"self CONTAINS 'BYB'"];
         [[EAAccessoryManager sharedAccessoryManager] showBluetoothAccessoryPickerWithNameFilter:nil completion:^(NSError *error) {
             //We don't do anything with response, just log
             //BT will dispatch connected event and than we will continue with creating session

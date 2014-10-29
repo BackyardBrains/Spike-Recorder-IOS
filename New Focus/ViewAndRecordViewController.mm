@@ -12,6 +12,8 @@
 #import "ViewAndRecordViewController.h"
 #import "StimulationParameterViewController.h"
 #import "BBBTManager.h"
+#import "BBBTChooserViewController.h"
+#import "FilterSettingsViewController.h"
 
 
 @interface ViewAndRecordViewController() {
@@ -20,7 +22,7 @@
     dispatch_source_t _timer;
     float recordingTime;
     BOOL rawSelected;
-   // CBCentralManager * testBluetoothManager;
+    //CBCentralManager * testBluetoothManager;
 }
 
 @end
@@ -76,6 +78,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(btDisconnected) name:BT_DISCONNECTED object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(btSlowConnection) name:BT_SLOW_CONNECTION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(foundBTConnection) name:FOUND_BT_CONNECTION object:nil];
+    
+   // [self detectBluetooth];
     
 }
 
@@ -264,6 +268,9 @@
 #pragma mark - BT connection
 - (IBAction)btButtonPressed:(id)sender {
     
+    //[self openDevicesPopover];
+    
+    
     if([[BBAudioManager bbAudioManager] recording])
     {
         [self stopRecording:nil];
@@ -298,29 +305,73 @@
     {
         [[BBAudioManager bbAudioManager] testBluetoothConnection];
     }
+     
 }
 
 
+#pragma mark - Devices Popover
+
+-(void) openDevicesPopover
+{
+    SAFE_ARC_RELEASE(devicesPopover); devicesPopover=nil;
+    
+    //the controller we want to present as a popover
+    BBBTChooserViewController *deviceChooserVC = [[BBBTChooserViewController alloc] initWithNibName:@"BBBTChooserViewController" bundle:nil];
+    //deviceChooserVC.masterDelegate = self;
+    
+    devicesPopover = [[FPPopoverController alloc] initWithViewController:deviceChooserVC];
+    devicesPopover.delegate = self;
+    devicesPopover.tint = FPPopoverWhiteTint;
+    devicesPopover.border = NO;
+    devicesPopover.arrowDirection = FPPopoverNoArrow;
+    devicesPopover.title = nil;
+    rawSelected = NO;
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+    {
+        devicesPopover.contentSize = CGSizeMake(300, 450);
+    }
+    else {
+        devicesPopover.contentSize = CGSizeMake(300, 450);
+    }
+    /*if(sender == transparentPopover)
+     {
+     popover.alpha = 0.5;
+     }
+     */
+    
+    
+    [devicesPopover presentPopoverFromPoint: CGPointMake(self.view.center.x, self.view.center.y - devicesPopover.contentSize.height/2)];
+    
+    [deviceChooserVC release];
+    
+}
+
+
+
+
+
+#pragma mark - Channel Popover
+
 -(void) foundBTConnection
 {
-    SAFE_ARC_RELEASE(popover); popover=nil;
+    SAFE_ARC_RELEASE(channelPopover); channelPopover=nil;
     
     //the controller we want to present as a popover
     BBChannelSelectionTableViewController *controller = [[BBChannelSelectionTableViewController alloc] initWithStyle:UITableViewStylePlain];
     controller.delegate = self;
-    popover = [[FPPopoverController alloc] initWithViewController:controller];
-    popover.delegate = self;
-    popover.tint = FPPopoverWhiteTint;
-    popover.border = NO;
-    popover.arrowDirection = FPPopoverNoArrow;
-    popover.title = nil;
+    channelPopover = [[FPPopoverController alloc] initWithViewController:controller];
+    channelPopover.delegate = self;
+    channelPopover.tint = FPPopoverWhiteTint;
+    channelPopover.border = NO;
+    channelPopover.arrowDirection = FPPopoverNoArrow;
+    channelPopover.title = nil;
     rawSelected = NO;
     if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
     {
-        popover.contentSize = CGSizeMake(300, 500);
+        channelPopover.contentSize = CGSizeMake(300, 500);
     }
     else {
-        popover.contentSize = CGSizeMake(200, 300);
+        channelPopover.contentSize = CGSizeMake(200, 300);
     }
     /*if(sender == transparentPopover)
      {
@@ -329,7 +380,7 @@
      */
     
 
-    [popover presentPopoverFromPoint: CGPointMake(self.view.center.x, self.view.center.y - popover.contentSize.height/2)];
+    [channelPopover presentPopoverFromPoint: CGPointMake(self.view.center.x, self.view.center.y - channelPopover.contentSize.height/2)];
     
 }
 
@@ -349,7 +400,7 @@
 - (void)rowSelected:(NSInteger) rowIndex
 {
     rawSelected = YES;
-    [popover dismissPopoverAnimated:YES];
+    [channelPopover dismissPopoverAnimated:YES];
     int tempSampleRate = 1000;
     int tempNumOfChannels = 1;
     switch (rowIndex) {
@@ -413,6 +464,15 @@
     [allOptionsLabels addObject:@"6 channel (1000Hz)"];
     
     return allOptionsLabels;
+}
+
+- (IBAction)openSettingsTap:(id)sender {
+    
+    FilterSettingsViewController *fvc = [[FilterSettingsViewController alloc] initWithNibName:@"FilterSettingsViewController" bundle:nil];
+    [self presentViewController:fvc animated:YES completion:nil];
+    //[self.navigationController pushViewController:fvc animated:YES];
+    
+    [fvc release];
 }
 
 

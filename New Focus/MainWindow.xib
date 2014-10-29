@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="5056" systemVersion="13D65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6250" systemVersion="13F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none">
     <dependencies>
-        <deployment defaultVersion="1536" identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6244"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="UIApplication">
@@ -20,10 +20,7 @@
         <tabBarController definesPresentationContext="YES" id="20" customClass="BBTabBarViewController">
             <extendedEdge key="edgesForExtendedLayout"/>
             <nil key="simulatedStatusBarMetrics"/>
-            <nil key="simulatedTopBarMetrics"/>
             <nil key="simulatedBottomBarMetrics"/>
-            <simulatedOrientationMetrics key="simulatedOrientationMetrics"/>
-            <nil key="simulatedDestinationMetrics"/>
             <tabBar key="tabBar" contentMode="scaleToFill" barStyle="black" translucent="NO" id="21">
                 <rect key="frame" x="0.0" y="431" width="320" height="49"/>
                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
@@ -33,47 +30,22 @@
                 <viewController title="Awesome" nibName="ViewAndRecordViewController" id="17" customClass="ViewAndRecordViewController">
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <tabBarItem key="tabBarItem" title="View / Record" image="WaveImage.png" id="26"/>
-                    <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
-                    <nil key="simulatedTopBarMetrics"/>
-                    <nil key="simulatedBottomBarMetrics"/>
-                    <simulatedOrientationMetrics key="simulatedOrientationMetrics"/>
-                    <nil key="simulatedDestinationMetrics"/>
                 </viewController>
                 <viewController title="Threshold" nibName="ThresholdViewController" wantsFullScreenLayout="YES" id="42" customClass="ThresholdViewController">
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <tabBarItem key="tabBarItem" title="Threshold" image="ThresholdImage.png" id="43"/>
-                    <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
-                    <nil key="simulatedTopBarMetrics"/>
-                    <nil key="simulatedBottomBarMetrics"/>
-                    <simulatedOrientationMetrics key="simulatedOrientationMetrics"/>
-                    <nil key="simulatedDestinationMetrics"/>
                 </viewController>
                 <viewController title="FFT" nibName="FFTViewController" wantsFullScreenLayout="YES" id="eGz-23-pcw" userLabel="FFT View Controller - FFT" customClass="FFTViewController">
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <tabBarItem key="tabBarItem" title="Spectrum" image="spectrum.png" id="lak-eG-6L3"/>
-                    <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
-                    <nil key="simulatedTopBarMetrics"/>
-                    <nil key="simulatedBottomBarMetrics"/>
-                    <simulatedOrientationMetrics key="simulatedOrientationMetrics"/>
-                    <nil key="simulatedDestinationMetrics"/>
                 </viewController>
                 <viewController title="ECG" nibName="ECGViewController" id="Eo0-d5-QzC" userLabel="ECG View Controller - Ecg" customClass="ECGViewController">
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <tabBarItem key="tabBarItem" title="Ecg" image="ecg.png" id="9j2-bU-QAQ"/>
-                    <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
-                    <nil key="simulatedTopBarMetrics"/>
-                    <nil key="simulatedBottomBarMetrics"/>
-                    <simulatedOrientationMetrics key="simulatedOrientationMetrics"/>
-                    <nil key="simulatedDestinationMetrics"/>
                 </viewController>
                 <navigationController definesPresentationContext="YES" id="27">
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <tabBarItem key="tabBarItem" title="Recordings" image="FileNeuron.png" id="31"/>
-                    <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
-                    <nil key="simulatedTopBarMetrics"/>
-                    <nil key="simulatedBottomBarMetrics"/>
-                    <simulatedOrientationMetrics key="simulatedOrientationMetrics"/>
-                    <nil key="simulatedDestinationMetrics"/>
                     <navigationBar key="navigationBar" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="28">
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -82,11 +54,6 @@
                             <extendedEdge key="edgesForExtendedLayout"/>
                             <tabBarItem key="tabBarItem" title="Files" image="FileNeuron.png" id="25"/>
                             <navigationItem key="navigationItem" title="Item" id="33"/>
-                            <nil key="simulatedStatusBarMetrics"/>
-                            <nil key="simulatedTopBarMetrics"/>
-                            <nil key="simulatedBottomBarMetrics"/>
-                            <simulatedOrientationMetrics key="simulatedOrientationMetrics"/>
-                            <nil key="simulatedDestinationMetrics"/>
                         </viewController>
                     </viewControllers>
                 </navigationController>
@@ -96,6 +63,8 @@
             <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+            <nil key="simulatedStatusBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
         </window>
     </objects>
     <resources>
@@ -105,4 +74,9 @@
         <image name="ecg.png" width="30" height="30"/>
         <image name="spectrum.png" width="30" height="30"/>
     </resources>
+    <simulatedMetricsContainer key="defaultSimulatedMetrics">
+        <simulatedStatusBarMetrics key="statusBar"/>
+        <simulatedOrientationMetrics key="orientation"/>
+        <simulatedScreenMetrics key="destination" type="retina4"/>
+    </simulatedMetricsContainer>
 </document>

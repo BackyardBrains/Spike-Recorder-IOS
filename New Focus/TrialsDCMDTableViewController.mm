@@ -75,6 +75,7 @@
  
     }
     [[self tableView] reloadData];
+    [super viewWillAppear:animated];
 }
 
 -(void) openGraph:(id) sender

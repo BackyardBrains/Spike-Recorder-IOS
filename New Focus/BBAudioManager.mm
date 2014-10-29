@@ -329,9 +329,9 @@ static BBAudioManager *bbAudioManager = nil;
 
         [[BBBTManager btManager] setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
          {
-             [self additionalProcessingOfInputData:data forNumOfFrames:numFrames andNumChannels:numChannels];
-             ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
              
+             ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
+             [self additionalProcessingOfInputData:data forNumOfFrames:numFrames andNumChannels:numChannels];
          }];
         [audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
             [[BBBTManager btManager] needData:((float)numFrames)/((float)audioManager.samplingRate) ];
@@ -343,8 +343,9 @@ static BBAudioManager *bbAudioManager = nil;
         // Replace the input block with the old input block, where we just save an in-memory copy of the audio.
         [audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
            
-            [self additionalProcessingOfInputData:data forNumOfFrames:numFrames andNumChannels:numChannels];
+           
             ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
+            [self additionalProcessingOfInputData:data forNumOfFrames:numFrames andNumChannels:numChannels];
             
         }];
     }

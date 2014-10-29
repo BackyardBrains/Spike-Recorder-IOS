@@ -20,7 +20,8 @@
 
 @interface ViewAndRecordViewController : CCGLTouchViewController <MultichannelGLViewDelegate, FPPopoverControllerDelegate, BBSelectionTableDelegateProtocol>{
     MultichannelCindeGLView *glView;
-     FPPopoverController * popover;
+    FPPopoverController * channelPopover;
+    FPPopoverController * devicesPopover;
 }
 
 - (void)setGLView:(MultichannelCindeGLView *)view;
@@ -42,5 +43,6 @@
 //BT popover delegate function
 - (void)rowSelected:(NSInteger) rowIndex;
 -(NSMutableArray *) getAllRows;
+- (IBAction)openSettingsTap:(id)sender;
 
 @end
