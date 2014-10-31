@@ -16,6 +16,9 @@
 #import "NVDSP.h"
 #import "NVHighpassFilter.h"
 #import "NVLowpassFilter.h"
+#import "NVNotchFilter.h"
+
+#define FILTER_PARAMETERS_CHANGED @"filterParametersChanged"
 
 @class BBFile;
 
@@ -52,6 +55,12 @@ typedef enum BBStimulationType
     BOOL thresholding;
     BOOL selecting;
     BOOL playing;
+    
+    //Filtering
+    NVHighpassFilter * HPFilter;
+    NVLowpassFilter * LPFilter;
+    NVNotchFilter * NotchFilter;
+    BOOL notchIsOn;
 }
 
 @property (getter=samplingRate, readonly) float samplingRate;

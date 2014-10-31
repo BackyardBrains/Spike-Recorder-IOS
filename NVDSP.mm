@@ -147,7 +147,7 @@
     NSLog(@"b0: %f\n", b0);
     NSLog(@"b1: %f\n", b1);
     NSLog(@"b2: %f\n", b2);
-    NSLog(@"a1: %f\n", a0);
+    NSLog(@"a0: %f\n", a0);
     NSLog(@"a1: %f\n", a1);
     NSLog(@"a2: %f\n", a2);
     

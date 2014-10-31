@@ -223,6 +223,15 @@
         for(int i=0;i<numberOfChannels;i++)
         {
             numVoltsVisible[i] = [[defaults valueForKey:@"numVoltsVisibleThreshold"] floatValue];
+            NSLog(@"Max volts visible: %f", numVoltsVisible[i]);
+            if(numVoltsVisible[i] < 0.001)
+            {
+                numVoltsVisible[i] = 0.002;
+            }
+            if(numVoltsVisible[i]>1000)
+            {
+                numVoltsVisible[i] = 1.0;
+            }
         }
     }
     else {
@@ -235,7 +244,17 @@
         for(int i=0;i<numberOfChannels;i++)
         {
             numVoltsVisible[i] = [[defaults valueForKey:@"numVoltsVisible"] floatValue];
+             NSLog(@"Max volts visible: %f", numVoltsVisible[i]);
+            if(numVoltsVisible[i]>1000)
+            {
+                numVoltsVisible[i] = 1.0;
+            }
+            if(numVoltsVisible[i] < 0.001)
+            {
+                numVoltsVisible[i] = 0.002;
+            }
         }
+        
     }
     
 }

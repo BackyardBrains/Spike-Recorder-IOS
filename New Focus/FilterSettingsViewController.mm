@@ -22,6 +22,15 @@
     // Do any additional setup after loading the view from its nib.
     self.lowSlider.continuous = YES;
     self.highSlider.continuous = YES;
+    self.lowTI.delegate = self;
+    self.highTI.delegate = self;
+    
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(makeKeyboardDisapear)];
+    // prevents the scroll view from swallowing up the touch event of child buttons
+    tapGesture.cancelsTouchesInView = NO;
+    [self.view addGestureRecognizer:tapGesture];
+    [tapGesture release];
+
 }
 
 - (void)didReceiveMemoryWarning {
@@ -80,7 +89,7 @@
     
     // Set the slider to have the bounds of the audio file's duraiton
     self.lowSlider.minimumValue = 0;
-    self.lowSlider.maximumValue = [[BBAudioManager bbAudioManager] sourceSamplingRate];
+    self.lowSlider.maximumValue = [[BBAudioManager bbAudioManager] sourceSamplingRate]*0.29999999;
 
     if(lowFilterValue<0)
     {
@@ -96,7 +105,7 @@
     
     float highFilterValue = [[defaults valueForKey:@"highFilterFreq"] floatValue];
     self.highSlider.minimumValue = 0;
-    self.highSlider.maximumValue = [[BBAudioManager bbAudioManager] sourceSamplingRate];
+    self.highSlider.maximumValue = [[BBAudioManager bbAudioManager] sourceSamplingRate]*0.29999999;
     
     if(highFilterValue<0)
     {
@@ -127,6 +136,7 @@
     [defaults setValue:[NSNumber numberWithBool: self.notchFilterSwitch.on] forKey:@"notchFilterOn"];
     
     [defaults synchronize];
+    [[NSNotificationCenter defaultCenter] postNotificationName:FILTER_PARAMETERS_CHANGED object:self];
 }
 
 
@@ -139,29 +149,37 @@
     self.highTI.text = [NSString stringWithFormat:@"%d",(int)self.highSlider.value];
 }
 
+- (IBAction)doneButtonTap:(id)sender {
+    
+    
+    [self.masterDelegate finishedWithConfiguration];
+    
+    
+}
+
 -(BOOL) setSliderValuesFromTI
 {
     NSNumber * tempNumber = [[[NSNumber alloc] initWithFloat:0.0f] autorelease];
-    if([self stringIsNumeric:self.lowTI.text andNumber:&tempNumber] && [tempNumber floatValue]>0.0)
+    if([self stringIsNumeric:self.lowTI.text andNumber:&tempNumber] && ([tempNumber floatValue] >= 0.0f) && ([tempNumber floatValue]<=[[BBAudioManager bbAudioManager] sourceSamplingRate]*0.3))
     {
         
         [self.lowSlider setValue:[tempNumber floatValue]];
     }
     else
     {
-        [self validationAlertWithText:@"Enter valid number for low cutoff frequency."];
+        [self validationAlertWithText:@"Enter valid number for low cutoff frequency. (0 - Fs/3)"];
         return NO;
     }
     
     tempNumber = [[[NSNumber alloc] initWithFloat:0.0f] autorelease];
-    if([self stringIsNumeric:self.highTI.text andNumber:&tempNumber] && [tempNumber floatValue]>0.0)
+    if([self stringIsNumeric:self.highTI.text andNumber:&tempNumber]  && ([tempNumber floatValue] >= 0.0f) && ([tempNumber floatValue]<=[[BBAudioManager bbAudioManager] sourceSamplingRate]*0.3))
     {
         
         [self.highSlider setValue:[tempNumber floatValue]];
     }
     else
     {
-        [self validationAlertWithText:@"Enter valid number for high cutoff frequency."];
+        [self validationAlertWithText:@"Enter valid number for high cutoff frequency. (0 - Fs/3)"];
         return NO;
     }
     return YES;
@@ -205,6 +223,9 @@
     [textField resignFirstResponder];
     return NO;
 }
+
+
+
 
 
 /*
@@ -254,19 +275,14 @@
     self.scroller.scrollIndicatorInsets = contentInsets;
 }
 
-
+*/
 -(void) makeKeyboardDisapear
 {
-    [self.nameTB resignFirstResponder];
-    [self.commentTB resignFirstResponder];
-    [self.velocityTB resignFirstResponder];
-    [self.sizeTB resignFirstResponder];
-    [self.distanceTB resignFirstResponder];
-    [self.delayTB resignFirstResponder];
-    [self.numOfTrialsTB resignFirstResponder];
+    [self.lowTI resignFirstResponder];
+    [self.highTI resignFirstResponder];
 }
 
-*/
+
 
 
 

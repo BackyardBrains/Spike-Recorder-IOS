@@ -152,6 +152,9 @@ static BBAudioManager *bbAudioManager = nil;
 {
     if (self = [super init])
     {
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(filterParametersChanged) name:FILTER_PARAMETERS_CHANGED object:nil];
+        
         audioManager = [Novocaine audioManager];
         
         _sourceSamplingRate =  audioManager.samplingRate;
@@ -194,11 +197,61 @@ static BBAudioManager *bbAudioManager = nil;
         ECGOn = false;
         btOn = false;
         
+        [self filterParametersChanged];
+        
         [audioManager play];
     }
     
     return self;
 }
+
+
+-(void) filterParametersChanged
+{
+    NSDictionary *defaultsDict = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"SettingsDefaults" ofType:@"plist"]];
+    [[NSUserDefaults standardUserDefaults] registerDefaults:defaultsDict];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    float lowFilterValue = [[defaults valueForKey:@"lowFilterFreq"] floatValue];
+    float highFilterValue = [[defaults valueForKey:@"highFilterFreq"] floatValue];
+    notchIsOn = [[defaults valueForKey:@"notchFilterOn"] boolValue];
+    
+    NSLog(@" ************     MAKE FILTERS   ******************");
+    NSLog(@"Filter: %f - %f", lowFilterValue, highFilterValue);
+    if(notchIsOn)
+    {
+        NSLog(@"Notch active");
+    }
+    else
+    {
+        NSLog(@"Notch OFF");
+    }
+    
+    LPFilter= [[NVLowpassFilter alloc] initWithSamplingRate:_sourceSamplingRate];
+    LPFilter.cornerFrequency = highFilterValue;
+    LPFilter.Q = 0.8f;
+    
+    //[LPFilter logCoefficients];
+    
+    if(lowFilterValue<1.0)
+    {
+        HPFilter = nil;
+    }
+    else
+    {
+        HPFilter = [[NVHighpassFilter alloc] initWithSamplingRate:_sourceSamplingRate];
+        HPFilter.cornerFrequency = lowFilterValue;
+        HPFilter.Q = 0.5f;
+    }
+    //[HPFilter logCoefficients];
+    
+    NotchFilter = [[NVNotchFilter alloc] initWithSamplingRate:_sourceSamplingRate];
+    NotchFilter.centerFrequency = 60.0f;
+    NotchFilter.q = 1.0  ;
+    //[NotchFilter logCoefficients];
+}
+
+
 
 - (void)loadSettingsFromUserDefaults
 {
@@ -326,27 +379,31 @@ static BBAudioManager *bbAudioManager = nil;
     
     if(btOn)
     {
-
+        //Get the data
         [[BBBTManager btManager] setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
-         {
-             
-             ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
+        {
              [self additionalProcessingOfInputData:data forNumOfFrames:numFrames andNumChannels:numChannels];
-         }];
+            
+             ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
+        }];
+        
+        //Trigger data collection on precise timing
         [audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
             [[BBBTManager btManager] needData:((float)numFrames)/((float)audioManager.samplingRate) ];
             memset(data, 0, numChannels*numFrames*sizeof(float));
         }];
+        
+        
     }
     else
     {
         // Replace the input block with the old input block, where we just save an in-memory copy of the audio.
         [audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
            
-           
-            ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
             [self additionalProcessingOfInputData:data forNumOfFrames:numFrames andNumChannels:numChannels];
             
+            ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
+           
         }];
     }
 }
@@ -355,7 +412,15 @@ static BBAudioManager *bbAudioManager = nil;
 {
     
     //Note: For monitoring we dont have additional proccessing
-    
+    if(HPFilter)
+    {
+        [HPFilter filterData:data numFrames:numFrames numChannels:numChannels];
+    }
+    [LPFilter filterData:data numFrames:numFrames numChannels:numChannels];
+    if(notchIsOn)
+    {
+        [NotchFilter filterData:data numFrames:numFrames numChannels:numChannels];
+    }
     
     if (recording)
     {
