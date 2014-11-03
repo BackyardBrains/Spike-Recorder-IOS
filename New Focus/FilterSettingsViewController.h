@@ -20,7 +20,6 @@
 
 - (IBAction)lowSliderValueChanged:(id)sender;
 - (IBAction)highSliderValueChanged:(id)sender;
-- (IBAction)doneButtonTap:(id)sender;
 
 
 

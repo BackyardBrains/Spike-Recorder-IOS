@@ -193,7 +193,7 @@ void DSPAnalysis::CalculateDynamicFFT(const float *data, UInt32 numberOfFramesIn
     }
     
     //Get data from ring buffer
-    mExternalRingBuffer->FetchFreshData2(mInputBuffer, mNumberOfSamplesWhaitingForAnalysis, whichChannel , 1);
+    mExternalRingBuffer->FetchFreshData2(mInputBuffer, LengthOfFFTData*2, whichChannel , 1);
     
     for(int i=0;i<numberOfWindowsToAdd;i++)
     {
@@ -213,6 +213,7 @@ void DSPAnalysis::CalculateDynamicFFT(const float *data, UInt32 numberOfFramesIn
                 maxMagnitude = FFTDynamicMagnitude[GraphBufferIndex][ind];
                 halfMaxMagnitude = maxMagnitude*0.5f;
             }
+           // NSLog(@"%f", halfMaxMagnitude);
             FFTDynamicMagnitude[GraphBufferIndex][ind] = (FFTDynamicMagnitude[GraphBufferIndex][ind]/halfMaxMagnitude)-1.0;
             
         }

@@ -12,6 +12,9 @@
 #import "MyAppDelegate.h"
 
 @interface ECGViewController ()
+{
+    AVAudioPlayer * beepSound;
+}
 
 @end
 
@@ -58,6 +61,7 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
+     // [beepSound playAtTime:0];
     dataSouldBeSavedToHK = NO;
     //Try to init health kit
     
@@ -152,7 +156,11 @@
 {
     if([[BBAudioManager bbAudioManager] heartBeatPresent])
     {
+       // AudioServicesPlaySystemSound(beepSound);
         
+       // [beepSound seekToTime:CMTimeMake(0,1)];   // rewind if play occurs repeatedly and loading is only on init
+       // [beepSound play];
+        [beepSound playAtTime:0];
         //Save data to HealthKit if user enabled it
         if(dataSouldBeSavedToHK)
         {
@@ -286,6 +294,20 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
+  /*  NSURL *soundURL = [[NSBundle mainBundle] URLForResource:@"beep"
+                                              withExtension:@"wav"];
+    AudioServicesCreateSystemSoundID((CFURLRef)soundURL, &beepSound);*/
+    beepSound = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSBundle.mainBundle URLForResource:@"beep" withExtension:@"wav"] error:NULL];
+    beepSound.volume = 0.5;
+  
+      // OR...
+   // beepSound.currentTime = 0;
+   // [beepSound play];
+    
+    
+   // beepSound = [AVPlayer playerWithURL:[NSBundle.mainBundle URLForResource:@"beep" withExtension:@"wav"]];
+    // Note, no volume on this :(
+   // [beepSound seekToTime:CMTimeMake(0,1)];
 }
 
 - (void)didReceiveMemoryWarning
@@ -297,6 +319,7 @@
 - (void)dealloc {
     [_channelButton release];
     [activeHeartImg release];
+    // AudioServicesDisposeSystemSoundID(beepSound);
     [super dealloc];
 }
 

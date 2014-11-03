@@ -109,7 +109,7 @@ static BBBTManager *btManager = nil;
                 }
                 if(measurementTimerShouldBeActive)
                 {
-                    if(numberOfBytesReceivedInLastSec<2000 && !deviceAlreadyDisconnected)
+                    if(numberOfBytesReceivedInLastSec<1300 && !deviceAlreadyDisconnected)
                     {
                         NSNotification *notification = [NSNotification notificationWithName:BT_SLOW_CONNECTION object:self];
                         [[NSNotificationCenter defaultCenter] postNotification:notification];

@@ -16,10 +16,9 @@
 #import "MultichannelCindeGLView.h"
 #import "FPPopoverController.h"
 #import "BBChannelSelectionTableViewController.h"
-#import "FilterSettingsViewController.h"
 //#import <CoreBluetooth/CoreBluetooth.h>
 
-@interface ViewAndRecordViewController : CCGLTouchViewController <MultichannelGLViewDelegate, FPPopoverControllerDelegate, BBSelectionTableDelegateProtocol, BBFilterConfigDelegate>{
+@interface ViewAndRecordViewController : CCGLTouchViewController <MultichannelGLViewDelegate, FPPopoverControllerDelegate, BBSelectionTableDelegateProtocol>{
     MultichannelCindeGLView *glView;
     FPPopoverController * channelPopover;
     FPPopoverController * devicesPopover;
@@ -44,6 +43,5 @@
 //BT popover delegate function
 - (void)rowSelected:(NSInteger) rowIndex;
 -(NSMutableArray *) getAllRows;
-- (IBAction)openSettingsTap:(id)sender;
 
 @end

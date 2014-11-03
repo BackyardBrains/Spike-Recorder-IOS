@@ -16,6 +16,9 @@
 		2410998A1975B7CF004FC15A /* RowHeaderColectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 241099891975B7CF004FC15A /* RowHeaderColectionViewCell.m */; };
 		2410998D1975BA99004FC15A /* ColumnHeaderCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2410998C1975BA99004FC15A /* ColumnHeaderCollectionViewCell.m */; };
 		241337E319FEF08700659867 /* libCorePlot-CocoaTouch.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 241337E219FEF08700659867 /* libCorePlot-CocoaTouch.a */; };
+		242246DE1A03E49E00E01B84 /* settings.png in Resources */ = {isa = PBXBuildFile; fileRef = 242246DC1A03E49E00E01B84 /* settings.png */; };
+		242246DF1A03E49E00E01B84 /* settings@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 242246DD1A03E49E00E01B84 /* settings@2x.png */; };
+		242246E21A03F1EE00E01B84 /* beep.wav in Resources */ = {isa = PBXBuildFile; fileRef = 242246E11A03F1EE00E01B84 /* beep.wav */; };
 		242631AE19C2036900225E44 /* ecg.png in Resources */ = {isa = PBXBuildFile; fileRef = 242631AC19C2036900225E44 /* ecg.png */; };
 		242631AF19C2036900225E44 /* ecg@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 242631AD19C2036900225E44 /* ecg@2x.png */; };
 		242631B319C2042A00225E44 /* ECGViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 242631B119C2042A00225E44 /* ECGViewController.mm */; };
@@ -315,6 +318,9 @@
 		241337DC19FEEC6D00659867 /* NSDecimalNumberExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSDecimalNumberExtensions.h; sourceTree = "<group>"; };
 		241337DD19FEEC6D00659867 /* NSNumberExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSNumberExtensions.h; sourceTree = "<group>"; };
 		241337E219FEF08700659867 /* libCorePlot-CocoaTouch.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libCorePlot-CocoaTouch.a"; sourceTree = "<group>"; };
+		242246DC1A03E49E00E01B84 /* settings.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = settings.png; sourceTree = "<group>"; };
+		242246DD1A03E49E00E01B84 /* settings@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "settings@2x.png"; sourceTree = "<group>"; };
+		242246E11A03F1EE00E01B84 /* beep.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = beep.wav; sourceTree = "<group>"; };
 		242631AC19C2036900225E44 /* ecg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ecg.png; sourceTree = "<group>"; };
 		242631AD19C2036900225E44 /* ecg@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ecg@2x.png"; sourceTree = "<group>"; };
 		242631B019C2042A00225E44 /* ECGViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ECGViewController.h; sourceTree = "<group>"; };
@@ -750,6 +756,14 @@
 			path = CorePlotHeaders;
 			sourceTree = "<group>";
 		};
+		242246E01A03F1DE00E01B84 /* Sound */ = {
+			isa = PBXGroup;
+			children = (
+				242246E11A03F1EE00E01B84 /* beep.wav */,
+			);
+			name = Sound;
+			sourceTree = "<group>";
+		};
 		2437623E19C3545F00871B56 /* NVDSP */ = {
 			isa = PBXGroup;
 			children = (
@@ -1108,6 +1122,8 @@
 		FAA43D2715AB5F9C0024E445 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				242246DC1A03E49E00E01B84 /* settings.png */,
+				242246DD1A03E49E00E01B84 /* settings@2x.png */,
 				24A4CB8E19C749A600F2883E /* hasbeat.png */,
 				24A4CB8F19C749A600F2883E /* hasbeat@2x.png */,
 				24A4CB9019C749A600F2883E /* nobeat.png */,
@@ -1260,6 +1276,7 @@
 		FADF268515963630006C87BA /* Assets */ = {
 			isa = PBXGroup;
 			children = (
+				242246E01A03F1DE00E01B84 /* Sound */,
 				FA2DAF8316C85D7E00EFF9D6 /* Artwork */,
 				FAA43D2715AB5F9C0024E445 /* Images */,
 				FA9A665015BA3DC000CF1697 /* iPad */,
@@ -1369,6 +1386,7 @@
 				249A246319058465005F5F03 /* AutocorrelationGraphViewController.xib in Resources */,
 				FA905A4C15AA8CF00013688B /* BBFileTableCell.xib in Resources */,
 				2454D8AA19AD02010056B71B /* GraphDCMDExperimentViewController.xib in Resources */,
+				242246DE1A03E49E00E01B84 /* settings.png in Resources */,
 				FAA43D2B15AB5FBC0024E445 /* TickMarks.png in Resources */,
 				249A24681906AC59005F5F03 /* ISIHistogramViewController.xib in Resources */,
 				24A4CB9419C749A600F2883E /* nobeat.png in Resources */,
@@ -1430,9 +1448,11 @@
 				FA2DAF8A16C89AD600EFF9D6 /* Icon.png in Resources */,
 				246989351909898F00F5383F /* trash.png in Resources */,
 				24513CEF19545CE9007F240A /* Play.png in Resources */,
+				242246E21A03F1EE00E01B84 /* beep.wav in Resources */,
 				24DBA93019784CAC00AEDE86 /* spectrum.png in Resources */,
 				247ED9BB193DEB8800871BAC /* README.md in Resources */,
 				245E26FA19EAC01100EE298E /* BBBTChooserViewController.xib in Resources */,
+				242246DF1A03E49E00E01B84 /* settings@2x.png in Resources */,
 				FA2DAF8B16C89AD600EFF9D6 /* Icon@2x.png in Resources */,
 				24513CE819545C50007F240A /* Record@2x.png in Resources */,
 				24BB8358199DFFC100C12932 /* checkmark.png in Resources */,

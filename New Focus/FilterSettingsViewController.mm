@@ -41,7 +41,7 @@
 -(void) viewWillAppear:(BOOL)animated
 {
     
-    if (self.navigationItem.rightBarButtonItem==nil)
+   /* if (self.navigationItem.rightBarButtonItem==nil)
     {
         
         // create an array for the buttons
@@ -60,7 +60,7 @@
         self.navigationItem.rightBarButtonItems = buttons;
         [buttons release];
         
-    }
+    }*/
     
     [self loadSettings];
     
@@ -120,9 +120,6 @@
     
     BOOL notchIsOn = [[defaults valueForKey:@"notchFilterOn"] boolValue];
     [self.notchFilterSwitch setOn:notchIsOn];
-    
-    
-    
 }
 
 - (void)saveSettings
@@ -147,14 +144,6 @@
 
 - (IBAction)highSliderValueChanged:(UISlider *)sender {
     self.highTI.text = [NSString stringWithFormat:@"%d",(int)self.highSlider.value];
-}
-
-- (IBAction)doneButtonTap:(id)sender {
-    
-    
-    [self.masterDelegate finishedWithConfiguration];
-    
-    
 }
 
 -(BOOL) setSliderValuesFromTI

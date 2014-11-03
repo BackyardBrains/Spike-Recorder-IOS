@@ -18,6 +18,7 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    [[self navigationController] setNavigationBarHidden:YES animated:NO];
     [[BBAudioManager bbAudioManager] startDynanimcFFT];
     
     
@@ -54,6 +55,7 @@
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
+    [[self navigationController] setNavigationBarHidden:NO animated:NO];
     NSLog(@"Stopping regular view");
     [glView stopAnimation];
     [[BBAudioManager bbAudioManager] stopFFT];

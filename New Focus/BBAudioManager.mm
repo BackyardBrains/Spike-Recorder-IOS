@@ -411,21 +411,13 @@ static BBAudioManager *bbAudioManager = nil;
 -(void) additionalProcessingOfInputData:(float *) data forNumOfFrames:(UInt32) numFrames andNumChannels:(UInt32) numChannels
 {
     
-    //Note: For monitoring we dont have additional proccessing
-    if(HPFilter)
-    {
-        [HPFilter filterData:data numFrames:numFrames numChannels:numChannels];
-    }
-    [LPFilter filterData:data numFrames:numFrames numChannels:numChannels];
-    if(notchIsOn)
-    {
-        [NotchFilter filterData:data numFrames:numFrames numChannels:numChannels];
-    }
-    
     if (recording)
     {
         [fileWriter writeNewAudio:data numFrames:numFrames numChannels:numChannels];
     }
+    
+    [self filterData:data numFrames:numFrames numChannels:numChannels];
+   
     if (thresholding)
     {
         dspThresholder->ProcessNewAudio(data, numFrames);
@@ -448,6 +440,55 @@ static BBAudioManager *bbAudioManager = nil;
     }
     
 }
+
+-(void) filterData:(float *)newData numFrames:(UInt32)thisNumFrames numChannels:(UInt32)thisNumChannels
+{
+    int i;
+    if(thisNumChannels>2)
+    {
+        for(i=0;i<_sourceNumberOfChannels;i++)
+        {
+            float zero = 0.0f;
+            //get selected channel
+            vDSP_vsadd((float *)&newData[i],
+                       thisNumChannels,
+                       &zero,
+                       tempResamplingBuffer,
+                       1,
+                       thisNumFrames);
+            //
+            if(HPFilter)
+            {
+                [HPFilter filterData:tempResamplingBuffer numFrames:thisNumFrames numChannels:1];
+            }
+            [LPFilter filterData:tempResamplingBuffer numFrames:thisNumFrames numChannels:1];
+            if(notchIsOn)
+            {
+                [NotchFilter filterData:tempResamplingBuffer numFrames:thisNumFrames numChannels:1];
+            }
+            
+            vDSP_vsadd(tempResamplingBuffer,
+                       1,
+                       &zero,
+                       (float *)&newData[i],
+                       thisNumChannels,
+                       thisNumFrames);
+        }
+    }
+    else
+    {
+        if(HPFilter)
+        {
+            [HPFilter filterData:newData numFrames:thisNumFrames numChannels:thisNumChannels];
+        }
+        [LPFilter filterData:newData numFrames:thisNumFrames numChannels:thisNumChannels];
+        if(notchIsOn)
+        {
+            [NotchFilter filterData:newData numFrames:thisNumFrames numChannels:thisNumChannels];
+        }
+    }
+}
+
 
 -(void) quitAllFunctions
 {
@@ -728,6 +769,13 @@ static BBAudioManager *bbAudioManager = nil;
                     ringBuffer->SeekReadHeadPosition(0);
                     [fileReader retrieveFreshAudio:tempCalculationBuffer numFrames:(UInt32)(targetFrame-startFrame) numChannels:_sourceNumberOfChannels seek:(UInt32)startFrame];
                     
+                    
+                    //Filtering of recorded data while scrolling
+                    [self filterData:tempCalculationBuffer numFrames:(UInt32)(targetFrame-startFrame) numChannels:_sourceNumberOfChannels];
+                    
+                    
+                    
+                    
                     ringBuffer->AddNewInterleavedFloatData(tempCalculationBuffer, targetFrame-startFrame, _sourceNumberOfChannels);
                   
                     _preciseTimeOfLastData = (float)targetFrame/(float)_sourceSamplingRate;
@@ -758,6 +806,14 @@ static BBAudioManager *bbAudioManager = nil;
             
             //get all data (wil get more than 2 cannels in buffer)
             [fileReader retrieveFreshAudio:tempCalculationBuffer numFrames:realNumberOfFrames numChannels:_sourceNumberOfChannels];
+            
+            
+            
+            //FIltering of playback data
+             [self filterData:tempCalculationBuffer numFrames:realNumberOfFrames numChannels:_sourceNumberOfChannels];
+            
+            
+            
             
             //move just numChannels in buffer
             float zero = 0.0f;
@@ -872,7 +928,7 @@ static BBAudioManager *bbAudioManager = nil;
     //if it is too much than limit it to samplingRate/2^11
     uint32_t log2n = log2f((float)_sourceSamplingRate);
     
-    uint32_t n = 1 << (log2n+1);
+    uint32_t n = 1 << (log2n+2);
     
     [self makeInputOutput];// here we also create ring buffer so it must be before we set ring buffer
     

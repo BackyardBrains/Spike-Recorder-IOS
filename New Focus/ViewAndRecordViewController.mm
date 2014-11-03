@@ -466,15 +466,6 @@
     return allOptionsLabels;
 }
 
-- (IBAction)openSettingsTap:(id)sender {
-    
-    FilterSettingsViewController *fvc = [[FilterSettingsViewController alloc] initWithNibName:@"FilterSettingsViewController" bundle:nil];
-    fvc.masterDelegate = self;
-    [self presentViewController:fvc animated:YES completion:nil];
-    //[self.navigationController pushViewController:fvc animated:YES];
-    
-    [fvc release];
-}
 
 -(void) finishedWithConfiguration
 {
