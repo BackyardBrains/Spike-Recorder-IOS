@@ -101,7 +101,7 @@
 - (void)viewDidLoad {
     
     [super viewDidLoad];
-    
+    [self.navigationController setNavigationBarHidden:NO animated:NO];
     //grab preferences
     NSString *pathStr = [[NSBundle mainBundle] bundlePath];
     NSString *finalPath = [pathStr stringByAppendingPathComponent:@"BBFileViewController.plist"];
@@ -152,7 +152,7 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    
+    [self.navigationController setNavigationBarHidden:NO animated:NO];
     
     self.title = @"Recordings";
     

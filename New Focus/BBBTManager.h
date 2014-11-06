@@ -13,6 +13,7 @@
 #define BT_SLOW_CONNECTION @"btSlowConnection"
 #define BT_BAD_CONNECTION @"btBadConnection"
 #define FOUND_BT_CONNECTION @"foundBtConnection"
+#define BT_WAIT_TO_CONNECT @"btWhaitToConnect"
 
 typedef void (^BBBTInputBlock)(float *data, UInt32 numFrames, UInt32 numChannels);
 
@@ -23,6 +24,8 @@ typedef void (^BBBTInputBlock)(float *data, UInt32 numFrames, UInt32 numChannels
 - (void)setInputBlock:(BBBTInputBlock)block;
 @property (nonatomic, copy) BBBTInputBlock inputBlock;
 
+@property (nonatomic, assign) int currentState;
+
 - (float) currentBaudRate;
 
 -(void) startBluetooth;
@@ -32,5 +35,7 @@ typedef void (^BBBTInputBlock)(float *data, UInt32 numFrames, UInt32 numChannels
 -(int) numberOfChannels;
 -(int) samplingRate;
 -(int) numberOfFramesBuffered;
+-(int) maxNumberOfChannelsForDevice;
+-(int) maxSampleRateForDevice;
 
 @end

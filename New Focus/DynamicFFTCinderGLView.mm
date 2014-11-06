@@ -31,7 +31,7 @@
     [super setup];//this calls [self startAnimation]
     
     // Setup the camera
-	mCam.lookAt( Vec3f(0.0f, 0.0f, 40.0f), Vec3f::zero() );
+    mCam.lookAt( Vec3f(0.0f, 0.0f, 40.0f), Vec3f::zero() );
     
     [self enableAntiAliasing:NO];
     
@@ -40,7 +40,7 @@
     
     // Set up our font, which we'll use to display the unit scales
     mScaleFont = gl::TextureFont::create( Font("Helvetica", 12) );
-
+    
     
     retinaCorrection = 1.0f;
     if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] && [[UIScreen mainScreen] scale]==2.0)
@@ -75,7 +75,7 @@
     currentMaxTime = maxTime;
     
     [self calculateScale];
-
+    
     
     // Setup display vector
     
@@ -88,7 +88,7 @@
     //Make x coordinates for raw signal
     rawSignal = PolyLine2f();
     samplingRate = [[BBAudioManager bbAudioManager] sourceSamplingRate];
-   // float offset = ((float)numberOfSamplesMax)/samplingRate;
+    // float offset = ((float)numberOfSamplesMax)/samplingRate;
     float oneStep = maxTime/((float)numberOfSamplesMax);
     for (float i=0; i < numberOfSamplesMax; ++i)
     {
@@ -157,7 +157,7 @@
         int indexOfGraphs = [[BBAudioManager bbAudioManager] indexOfFFTGraphBuffer];
         
         float offsetOfRawSignal = currentMaxFreq + 0.5f*(currentMaxFreq*(1.0f+SIZE_OF_RAW)-currentMaxFreq);
-
+        
         vDSP_vsmsa ((float *)&(rawSignal.getPoints()[0])+1,
                     2,
                     &rawSignalVoltsVisible,
@@ -195,7 +195,7 @@
             {
                 indexOfGraphs = lengthOfFFTBuffer-1;
             }
-
+            
             freqIndex = 0;
             tempRect.x1 = currTime;
             tempRect.x2 = currTime-baseTime;
@@ -206,7 +206,7 @@
             holderOfFreqGraph = graphBuffer[indexOfGraphs];
             for(currFreq = offsetY;currFreq<currentMaxFreq;currFreq=currFreq)
             {
-            
+                
                 normPower = holderOfFreqGraph[freqIndex];
                 //glColor4f(normPower, normPower, normPower, 1.0f);
                 redC = red(normPower);
@@ -396,48 +396,48 @@
         
         
         
-       /*
-        
-        //========== Draw scale text ==================
-        
-        gl::disableDepthRead();
-        gl::setMatricesWindow( Vec2i(self.frame.size.width, self.frame.size.height) );
-        gl::enableAlphaBlending();
-        
-        markPos=0;
-        std::stringstream hzString;
-        hzString.precision(1);
-        Vec2f xScaleTextSize;
-        Vec2f xScaleTextPosition = Vec2f(0.,0.);
-        glLineWidth(2.0f);
-        for(i=0;i<10;i++)
-        {
-            //draw number
-            
-            hzString.str("");
-            hzString << fixed << (int)markPos;
-            xScaleTextSize = mScaleFont->measureString(hzString.str());
-            if(i!=0)
-            {
-                xScaleTextPosition.x = (markPos/scaleXY.x)*retinaCorrection -xScaleTextSize.x*0.5 ;
-            }
-            else
-            {
-                xScaleTextPosition.x = (markPos/scaleXY.x)*retinaCorrection;
-            }
-            xScaleTextPosition.y =self.frame.size.height-37;
-            mScaleFont->drawString(hzString.str(), xScaleTextPosition);
-            markPos+=10*markIntervalXAxis;
-        }
-        
-        hzString.str("");
-        hzString << fixed << "Frequency (Hz)";
-        xScaleTextSize = mScaleFont->measureString(hzString.str());
-        
-        xScaleTextPosition.x = 0.5f*self.frame.size.width - xScaleTextSize.x*0.5 ;
-        
-        xScaleTextPosition.y =self.frame.size.height- 15;
-        mScaleFont->drawString(hzString.str(), xScaleTextPosition);*/
+        /*
+         
+         //========== Draw scale text ==================
+         
+         gl::disableDepthRead();
+         gl::setMatricesWindow( Vec2i(self.frame.size.width, self.frame.size.height) );
+         gl::enableAlphaBlending();
+         
+         markPos=0;
+         std::stringstream hzString;
+         hzString.precision(1);
+         Vec2f xScaleTextSize;
+         Vec2f xScaleTextPosition = Vec2f(0.,0.);
+         glLineWidth(2.0f);
+         for(i=0;i<10;i++)
+         {
+         //draw number
+         
+         hzString.str("");
+         hzString << fixed << (int)markPos;
+         xScaleTextSize = mScaleFont->measureString(hzString.str());
+         if(i!=0)
+         {
+         xScaleTextPosition.x = (markPos/scaleXY.x)*retinaCorrection -xScaleTextSize.x*0.5 ;
+         }
+         else
+         {
+         xScaleTextPosition.x = (markPos/scaleXY.x)*retinaCorrection;
+         }
+         xScaleTextPosition.y =self.frame.size.height-37;
+         mScaleFont->drawString(hzString.str(), xScaleTextPosition);
+         markPos+=10*markIntervalXAxis;
+         }
+         
+         hzString.str("");
+         hzString << fixed << "Frequency (Hz)";
+         xScaleTextSize = mScaleFont->measureString(hzString.str());
+         
+         xScaleTextPosition.x = 0.5f*self.frame.size.width - xScaleTextSize.x*0.5 ;
+         
+         xScaleTextPosition.y =self.frame.size.height- 15;
+         mScaleFont->drawString(hzString.str(), xScaleTextPosition);*/
         
     }
 }
@@ -498,7 +498,7 @@
     // Pinching to zoom the display
     if (touches.size() == 2)
     {
-
+        
         // Convert into GL coordinate
         Vec2f position1 = [self screenToWorld:touches[0].getPos()];
         Vec2f position2 = [self screenToWorld:touches[1].getPos()];
@@ -530,22 +530,22 @@
             {
                 currentMaxTime = maxTime;
             }
-        
+            
             
             float zero = 0.0f;
             float zoom = currentMaxTime/oldMaxTime;
             
-
+            
             //compensate for camera move so that raw signal is not zoomed
             
             vDSP_vsmsa ((float *)&(rawSignal.getPoints()[0]),
-                            2,
-                            &zoom,
-                            &zero,
-                            (float *)&(rawSignal.getPoints()[0]),
-                            2,
-                            numberOfSamplesMax
-                            );
+                        2,
+                        &zoom,
+                        &zero,
+                        (float *)&(rawSignal.getPoints()[0]),
+                        2,
+                        numberOfSamplesMax
+                        );
             
             rawSignalVoltsVisible *= currentMaxFreq/oldMaxFreq;
             
@@ -558,7 +558,7 @@
             float oldTimeVisible = rawSignalTimeVisible;
             rawSignalTimeVisible /= (sqrtf(touchDistanceDelta.x) - 1) + 1;
             rawSignalVoltsVisible *= (sqrtf(touchDistanceDelta.y) - 1) + 1;
-        
+            
             if(rawSignalTimeVisible<1.0f)
             {
                 
@@ -581,7 +581,7 @@
             {
                 rawSignalTimeVisible = 1.0f;
             }
-        
+            
         }
     }
     

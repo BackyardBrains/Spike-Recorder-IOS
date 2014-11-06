@@ -213,7 +213,7 @@ void DSPAnalysis::CalculateDynamicFFT(const float *data, UInt32 numberOfFramesIn
                 maxMagnitude = FFTDynamicMagnitude[GraphBufferIndex][ind];
                 halfMaxMagnitude = maxMagnitude*0.5f;
             }
-           // NSLog(@"%f", halfMaxMagnitude);
+            // NSLog(@"%f", halfMaxMagnitude);
             FFTDynamicMagnitude[GraphBufferIndex][ind] = (FFTDynamicMagnitude[GraphBufferIndex][ind]/halfMaxMagnitude)-1.0;
             
         }
@@ -232,8 +232,8 @@ void DSPAnalysis::CalculateDynamicFFT(const float *data, UInt32 numberOfFramesIn
 float DSPAnalysis::RMSSelection(const float *data, int64_t mSizeOfBuffer)
 {
     float rms;
-	vDSP_rmsqv(data,1,&rms,mSizeOfBuffer);
-	return rms;
+    vDSP_rmsqv(data,1,&rms,mSizeOfBuffer);
+    return rms;
 }
 
 
@@ -258,5 +258,5 @@ float DSPAnalysis::SDT(const float *data, int64_t mSizeOfBuffer)
     vDSP_sve(squared,1,&sum,mSizeOfBuffer); //sum entire vector
     free(squared); // free squared vector
     std = sqrt(sum/mSizeOfBuffer); // calculated std deviation
-	return std;
+    return std;
 }

@@ -968,7 +968,10 @@ static BBAudioManager *bbAudioManager = nil;
     return dspAnalizer->GraphBufferIndex;
 }
 
-
+//-(float *) movingAverageFFT
+//{
+//    return dspAnalizer->movingAverageFFT;
+//}
 
 
 #pragma mark - data feed for graphs

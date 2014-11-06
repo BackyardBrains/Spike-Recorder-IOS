@@ -149,6 +149,7 @@ typedef enum BBStimulationType
 -(void) startDynanimcFFT;
 -(UInt32) indexOfFFTGraphBuffer;
 -(UInt32) lenghtOfFFTGraphBuffer;
+-(float *) movingAverageFFT;
 
 //ECG
 -(void) startECG;
