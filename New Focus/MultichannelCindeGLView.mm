@@ -41,6 +41,9 @@
     NSTimeInterval currentUserInteractionTime;//temp variable for calculation
     BOOL handlesShouldBeVisible;
     float offsetPositionOfHandles;
+    
+    float xPositionOfRemove;
+    float yPositionOfRemove;
 }
 
 @end
@@ -704,9 +707,9 @@
     else
     {
         offsetPositionOfHandles-=radiusXAxis/5.0;
-        if(offsetPositionOfHandles<-2.6*radiusXAxis)
+        if(offsetPositionOfHandles<-5.6*radiusXAxis)
         {
-            offsetPositionOfHandles = -2.6*radiusXAxis;
+            offsetPositionOfHandles = -5.6*radiusXAxis;
         }
     }
     
@@ -737,6 +740,22 @@
         {
             glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
             gl::drawSolidEllipse( Vec2f(centerOfCircleX, yOffsets[indexOfChannel]), radiusXAxis*0.8, radiusYAxis*0.8, 1000 );
+        }
+        else
+        {
+            if(self.mode == MultichannelGLViewModeView)
+            {
+                //Draw X icon for channel removal
+                xPositionOfRemove = - offsetPositionOfHandles -60*scaleXY.x;
+                yPositionOfRemove = yOffsets[indexOfChannel]+100*scaleXY.y;
+                gl::drawSolidEllipse( Vec2f(xPositionOfRemove, yPositionOfRemove), radiusXAxis+2*scaleXY.x, radiusYAxis+2*scaleXY.y, 1000 );
+                glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
+                gl::drawSolidEllipse( Vec2f(xPositionOfRemove, yPositionOfRemove), radiusXAxis+0.0*scaleXY.x, radiusYAxis+0.0*scaleXY.y, 1000 );
+                [self setColorWithIndex:indexOfChannel transparency:1.0f];
+                glLineWidth(2.0f);
+                gl::drawLine(Vec2f(xPositionOfRemove-radiusXAxis*0.7, yPositionOfRemove), Vec2f(xPositionOfRemove+radiusXAxis*0.7, yPositionOfRemove));
+                glLineWidth(1.0f);
+            }
         }
 
     }
@@ -1088,6 +1107,11 @@
         
         }
         
+        if([self checkIntesectionWithRemoveButton:glWorldTouchPos])
+        {
+            [dataSourceDelegate removeChannel:selectedChannel];
+        }
+        
         //if we are not moving channels check if need to make interval selection or threshold
         if(!weAreHoldingHandle)
         {
@@ -1129,6 +1153,19 @@
     }
     
 }
+
+-(BOOL) checkIntesectionWithRemoveButton:(Vec2f) touchPos
+{
+    float intersectionDistanceX = 800*scaleXY.x*scaleXY.x;
+    float intersectionDistanceY = 800*scaleXY.y*scaleXY.y;
+
+    //check first if user grabbed selected channel
+    if((touchPos.y - yPositionOfRemove)*(touchPos.y - yPositionOfRemove) < intersectionDistanceY && (touchPos.x - xPositionOfRemove)*(touchPos.x - xPositionOfRemove) <intersectionDistanceX)
+    {
+        return YES;
+    }
+}
+
 
 //
 // Check if touch is in vicinity of channel's handle

@@ -111,14 +111,8 @@
 {
     
     [super viewDidLoad];
-    
-    // our CCGLTouchView being added as a subview
-	//MultichannelCindeGLView *aView = [[MultichannelCindeGLView alloc] init];
-	//glView = aView;
-	//[aView release];
-    
+
     stimulateButton.selected = NO;
-   // [[BBAudioManager bbAudioManager] startMonitoring];
     // Listen for going down
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate:) name:UIApplicationWillTerminateNotification object:nil];
 }
@@ -143,6 +137,17 @@
     //display of waveform and spike marks
     return [[BBAudioManager bbAudioManager] fetchAudio:data numFrames:numFrames whichChannel:whichChannel stride:1];
 }
+
+
+-(void) removeChannel:(int) chanelIndex
+{
+
+    if([[BBAudioManager bbAudioManager] btOn])
+    {
+        [self removeBTChannel:chanelIndex];
+    }
+}
+
 
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
@@ -320,6 +325,11 @@
 
 #pragma mark - Devices Popover
 
+
+
+//
+// ------- THIS IS NOT USED -----------
+//
 -(void) openDevicesPopover
 {
     SAFE_ARC_RELEASE(devicesPopover); devicesPopover=nil;
@@ -419,6 +429,35 @@
 
     
     
+}
+
+
+-(void) removeBTChannel:(int) indexOfChannel
+{
+
+    int tempNumOfChannels = [[BBAudioManager bbAudioManager] sourceNumberOfChannels]-1;
+    int tempSampleRate = [[BBBTManager btManager] maxSampleRateForDevice]/tempNumOfChannels;
+    
+    [self.btButton setImage:[UIImage imageNamed:@"inputicon.png"] forState:UIControlStateNormal];
+    
+    if(glView)
+    {
+        [glView stopAnimation];
+        [glView removeFromSuperview];
+        [glView release];
+        glView = nil;
+    }
+    [[BBAudioManager bbAudioManager] switchToBluetoothWithNumOfChannels:tempNumOfChannels andSampleRate:tempSampleRate];
+    glView = [[MultichannelCindeGLView alloc] initWithFrame:self.view.frame];
+    
+    [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels ] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
+    glView.mode = MultichannelGLViewModeView;
+    [self.view addSubview:glView];
+    [self.view sendSubviewToBack:glView];
+    
+    // set our view controller's prop that will hold a pointer to our newly created CCGLTouchView
+    [self setGLView:glView];
+
 }
 
 

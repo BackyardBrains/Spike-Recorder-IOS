@@ -68,6 +68,7 @@ typedef enum {
 - (float) fetchDataToDisplay:(float *)data numFrames:(UInt32)numFrames whichChannel:(UInt32)whichChannel;
 
 @optional
+-(void) removeChannel:(int) chanelIndex;
 -(float) getCurrentTimeForSinc;//get current time of audio (used for sync of spikes and waveform)
 -(void) selectChannel:(int) selectedChannel;//set selected channel
 - (NSMutableArray *) getChannels;//get channels from BBfile object
