@@ -42,7 +42,8 @@
     [glView startAnimation];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(noBTConnection) name:NO_BT_CONNECTION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(btDisconnected) name:BT_DISCONNECTED object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(btSlowConnection) name:BT_SLOW_CONNECTION object:nil];    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(btSlowConnection) name:BT_SLOW_CONNECTION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reSetupScreen) name:RESETUP_SCREEN_NOTIFICATION object:nil];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -54,7 +55,8 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NO_BT_CONNECTION object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:BT_DISCONNECTED object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:BT_SLOW_CONNECTION object:nil];
-
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:RESETUP_SCREEN_NOTIFICATION object:nil];
+    
     [glView removeFromSuperview];
     [glView release];
     glView = nil;
@@ -120,6 +122,33 @@
         [alert show];
         [alert release];
     }*/
+
+}
+
+
+-(void) reSetupScreen
+{
+    NSLog(@"Resetup screen");
+    if(glView)
+    {
+        [glView stopAnimation];
+        [glView removeFromSuperview];
+        [glView release];
+        glView = nil;
+    }
+    
+    
+    [[BBAudioManager bbAudioManager] startThresholding:8192];
+    
+    glView = [[MultichannelCindeGLView alloc] initWithFrame:self.view.frame];
+    glView.mode = MultichannelGLViewModeThresholding;
+    [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels ] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
+    
+    [self.view addSubview:glView];
+    [self.view sendSubviewToBack:glView];
+    
+    // set our view controller's prop that will hold a pointer to our newly created CCGLTouchView
+    [self setGLView:glView];
 
 }
 

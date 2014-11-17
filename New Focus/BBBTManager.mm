@@ -488,6 +488,14 @@ static BBBTManager *btManager = nil;
         NSNotification *newnotification = [NSNotification notificationWithName:BT_DISCONNECTED object:self];
         [[NSNotificationCenter defaultCenter] postNotification:newnotification];
     }
+    
+    
+    if(self.currentState == STATE_WHAITING_FOR_RESPONSE_ON_CONFIG_INQUIRY)
+    {
+        
+        NSNotification *newnotification = [NSNotification notificationWithName:BT_ACCESSORY_DISCONNECTED_DURING_INQUIRY object:self];
+        [[NSNotificationCenter defaultCenter] postNotification:newnotification];
+    }
 }
 
 - (void)_accessoryDidConnect:(NSNotification *)notification {

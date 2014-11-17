@@ -18,6 +18,7 @@
 #import "NVLowpassFilter.h"
 #import "NVNotchFilter.h"
 
+#define RESETUP_SCREEN_NOTIFICATION @"resetupScreenNotification"
 #define FILTER_PARAMETERS_CHANGED @"filterParametersChanged"
 
 @class BBFile;

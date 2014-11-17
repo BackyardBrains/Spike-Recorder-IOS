@@ -44,7 +44,8 @@
     //Bluetooth notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(noBTConnection) name:NO_BT_CONNECTION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(btDisconnected) name:BT_DISCONNECTED object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(btSlowConnection) name:BT_SLOW_CONNECTION object:nil];    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(btSlowConnection) name:BT_SLOW_CONNECTION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reSetupScreen) name:RESETUP_SCREEN_NOTIFICATION object:nil];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -63,6 +64,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NO_BT_CONNECTION object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:BT_DISCONNECTED object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:BT_SLOW_CONNECTION object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:RESETUP_SCREEN_NOTIFICATION object:nil];
 }
 
 - (void)viewDidLoad
@@ -128,6 +130,33 @@
         [alert release];
     }
     */
+}
+
+
+-(void) reSetupScreen
+{
+   NSLog(@"Resetup screen");
+    [[BBAudioManager bbAudioManager] startDynanimcFFT];
+    
+    
+    //Config GL view
+    if(glView)
+    {
+        [glView stopAnimation];
+        [glView removeFromSuperview];
+        [glView release];
+        glView = nil;
+    }
+    float maxTime = 10.0f;
+    glView = [[DynamicFFTCinderGLView alloc] initWithFrame:self.view.frame];
+    float baseFreq = 0.5*((float)[[BBAudioManager bbAudioManager] sourceSamplingRate])/((float)[[BBAudioManager bbAudioManager] lengthOfFFTData]);
+    [glView setupWithBaseFreq:baseFreq lengthOfFFT:[[BBAudioManager bbAudioManager] lengthOf30HzData] numberOfGraphs:[[BBAudioManager bbAudioManager] lenghtOfFFTGraphBuffer] maxTime:maxTime];
+    [[BBAudioManager bbAudioManager] selectChannel:0];
+    _channelBtn.hidden = [[BBAudioManager bbAudioManager] sourceNumberOfChannels]<2;
+    [self.view addSubview:glView];
+    [self.view sendSubviewToBack:glView];
+    [glView startAnimation];
+
 }
 
 #pragma mark - Channel code

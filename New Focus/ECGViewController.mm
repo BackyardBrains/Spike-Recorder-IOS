@@ -56,6 +56,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(btDisconnected) name:BT_DISCONNECTED object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(btSlowConnection) name:BT_SLOW_CONNECTION object:nil];    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(beatTheHeart) name:HEART_BEAT_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reSetupScreen) name:RESETUP_SCREEN_NOTIFICATION object:nil];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -138,6 +139,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:BT_DISCONNECTED object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:BT_SLOW_CONNECTION object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:HEART_BEAT_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:RESETUP_SCREEN_NOTIFICATION object:nil];
 }
 
 -(void) changeHeartActive:(BOOL) active
@@ -286,6 +288,32 @@
         [alert release];
     }*/
     
+}
+
+-(void) reSetupScreen
+{
+    NSLog(@"Resetup screen");
+    [[BBAudioManager bbAudioManager] startECG];
+    
+    self.activeHeartImg.image = [UIImage imageNamed:@"nobeat.png"];
+    //Config GL view
+    if(glView)
+    {
+        [glView stopAnimation];
+        [glView removeFromSuperview];
+        [glView release];
+        glView = nil;
+    }
+    glView = [[ECGGraphView alloc] initWithFrame:self.view.frame];
+    glView.masterDelegate = self;
+    [glView setupWithBaseFreq:[[BBAudioManager bbAudioManager] sourceSamplingRate]];
+    [[BBAudioManager bbAudioManager] selectChannel:0];
+    
+    _channelButton.hidden = [[BBAudioManager bbAudioManager] sourceNumberOfChannels]<2;
+    
+    [self.view addSubview:glView];
+    [self.view sendSubviewToBack:glView];
+    [glView startAnimation];
 }
 
 #pragma mark - View code

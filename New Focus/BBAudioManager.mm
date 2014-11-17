@@ -15,6 +15,7 @@
 #import <Accelerate/Accelerate.h>
 #import "BBECGAnalysis.h"
 
+
 //#define RING_BUFFER_SIZE 524288
 
 static BBAudioManager *bbAudioManager = nil;
@@ -329,6 +330,7 @@ static BBAudioManager *bbAudioManager = nil;
     _sourceNumberOfChannels = audioManager.numInputChannels;
     btOn = NO;
     [self makeInputOutput];
+    [[NSNotificationCenter defaultCenter] postNotificationName:RESETUP_SCREEN_NOTIFICATION object:self];
 }
 
 -(int) numberOfFramesBuffered

@@ -23,6 +23,8 @@
     float recordingTime;
     BOOL rawSelected;
     //CBCentralManager * testBluetoothManager;
+    MBProgressHUD *hud;
+    BOOL showHud;
 }
 
 @end
@@ -35,7 +37,9 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    
     [super viewWillAppear:animated];
+    showHud = NO;
     [[BBAudioManager bbAudioManager] startMonitoring];
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -80,6 +84,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(foundBTConnection) name:FOUND_BT_CONNECTION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deviceChooserClosed) name:BT_WAIT_TO_CONNECT object:nil];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(accessoryDisconnectedDuringInquiry) name:BT_ACCESSORY_DISCONNECTED_DURING_INQUIRY object:nil];
+     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reSetupScreen) name:RESETUP_SCREEN_NOTIFICATION object:nil];
    // [self detectBluetooth];
     
 }
@@ -105,6 +111,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:FOUND_BT_CONNECTION object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:BT_DISCONNECTED object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:BT_SLOW_CONNECTION object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:RESETUP_SCREEN_NOTIFICATION object:nil];
 }
 
 - (void)viewDidLoad
@@ -294,18 +301,6 @@
         }
 
         [[BBAudioManager bbAudioManager] closeBluetooth];
-        glView = [[MultichannelCindeGLView alloc] initWithFrame:self.view.frame];
-        
-        [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] numberOfChannels] samplingRate:[[BBAudioManager bbAudioManager] samplingRate] andDataSource:self];
-        glView.mode = MultichannelGLViewModeView;
-        [self.view addSubview:glView];
-        [self.view sendSubviewToBack:glView];
-        
-        // set our view controller's prop that will hold a pointer to our newly created CCGLTouchView
-        [self setGLView:glView];
-        [self.btButton setImage:[UIImage imageNamed:@"bluetooth.png"] forState:UIControlStateNormal];
-        stimulateButton.selected = NO;
-
     }
     else
     {
@@ -315,10 +310,44 @@
 }
 
 
+-(void) reSetupScreen
+{
+    NSLog(@"Resetup screen");
+    if(glView)
+    {
+        [glView stopAnimation];
+        [glView removeFromSuperview];
+        [glView release];
+        glView = nil;
+    }
+    
+    glView = [[MultichannelCindeGLView alloc] initWithFrame:self.view.frame];
+    
+    [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
+    glView.mode = MultichannelGLViewModeView;
+    [self.view addSubview:glView];
+    [self.view sendSubviewToBack:glView];
+    
+    // set our view controller's prop that will hold a pointer to our newly created CCGLTouchView
+    [self setGLView:glView];
+    if([[BBAudioManager bbAudioManager] btOn])
+    {
+        [self.btButton setImage:[UIImage imageNamed:@"inputicon.png"] forState:UIControlStateNormal];
+    }
+    else
+    {
+        [self.btButton setImage:[UIImage imageNamed:@"bluetooth.png"] forState:UIControlStateNormal];
+    }
+    stimulateButton.selected = NO;
+
+}
+
+
 -(void) deviceChooserClosed
 {
-    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     hud.labelText = @"Configuring...";
+    showHud = YES;
 
 }
 
@@ -371,12 +400,32 @@
 
 #pragma mark - Channel Popover
 
+//
+// If connection break while whaiting 
+//
+-(void) accessoryDisconnectedDuringInquiry
+{
+    [self killHud];
+}
+
+-(void) killHud
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [hud hide:YES];
+        if(showHud)
+        {
+            showHud = NO;
+            [self performSelector:@selector(killHud) withObject:nil afterDelay:1.0];
+        }
+        
+    });
+}
+
+
 -(void) foundBTConnection
 {
     NSLog(@"foundConnection view function. Remove the Spinner");
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [MBProgressHUD hideHUDForView:self.view animated:YES];
-    });
+    [self killHud];
     SAFE_ARC_RELEASE(channelPopover); channelPopover=nil;
     
 /*    //the controller we want to present as a popover
