@@ -70,6 +70,8 @@
 {
     [super viewWillAppear:animated];
     
+    [[self navigationController] setNavigationBarHidden:NO animated:NO];
+    
     self.files = self.delegate.filesSelectedForAction;
     
     if ([self.files count] == 1) //single file

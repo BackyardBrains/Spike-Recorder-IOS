@@ -107,9 +107,6 @@
     [self calculateSizesForEllipseForTrial:currentTrial];
     // Make sure that we can autorotate 'n what not.
     self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    
-    // Set up our font, which we'll use to display the unit scales
-   // mScaleFont = gl::TextureFont::create( Font("Helvetica", 12) );
 
 }
 

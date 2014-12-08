@@ -24,6 +24,7 @@
     FPPopoverController * popover;
 }
 
+- (IBAction)backBtnClick:(id)sender;
 @property (retain, nonatomic) IBOutlet UISlider *timeSlider;
 @property (retain, nonatomic) IBOutlet UIButton *doneBtn;
 @property (retain, nonatomic) BBFile *bbfile;

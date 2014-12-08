@@ -65,7 +65,7 @@ static BBBTManager *btManager = nil;
     
     
     int _currentState;
-    
+    int _activeChannels;
 }
 
 @end
@@ -210,6 +210,8 @@ static BBBTManager *btManager = nil;
         deviceAlreadyDisconnected = NO;
         measurementTimerShouldBeActive = NO;
         
+        _activeChannels = 0;
+        
         _maxNumberOfChannelsForDevice = 0;
         _maxSamplingRateForDevice = 0;
         configurationBuffer = [[NSMutableString alloc] init];
@@ -257,10 +259,73 @@ static BBBTManager *btManager = nil;
     }
 }
 
+-(int) activeChannels
+{
+    return _activeChannels;
+}
+
+-(void) removeChannel:(UInt8) channelIndex
+{
+    if(channelIndex>_maxNumberOfChannelsForDevice)
+    {
+        return;
+    }
+    if(![self channelExists:channelIndex])
+    {
+        return;
+    }
+    _confNumberOfChannels--;
+    int tempMask = 1;
+    tempMask = tempMask<<channelIndex;
+    _activeChannels = _activeChannels & (~channelIndex);
+}
+
+-(void) addChannel:(UInt8) channelIndex
+{
+    if(channelIndex>_maxNumberOfChannelsForDevice)
+    {
+        return;
+    }
+    if([self channelExists:channelIndex])
+    {
+        return;
+    }
+    _confNumberOfChannels++;
+    int tempMask = 1;
+    tempMask = tempMask<<channelIndex;
+    _activeChannels = _activeChannels | tempMask;
+}
+
+-(BOOL) channelExists:(UInt8) channelIndex
+{
+    if(channelIndex>_maxNumberOfChannelsForDevice)
+    {
+        return NO;
+    }
+    int tempMask = 1;
+    tempMask = tempMask<<channelIndex;
+    return ((_activeChannels & tempMask) > 0);
+}
+
 
 - (float) currentBaudRate
 {
     return bitsPerSec;
+}
+
+
+-(int) countNumberOfChannels
+{
+    int returnNumberOfChannels = 0;
+    int tempMask = 1;
+    for(int i=0;i<_maxNumberOfChannelsForDevice;i++)
+    {
+        if((_activeChannels & (tempMask<<i))>0)
+        {
+            returnNumberOfChannels++;
+        }
+    }
+    return returnNumberOfChannels;
 }
 
 #pragma mark - BT controll functions
@@ -276,14 +341,18 @@ static BBBTManager *btManager = nil;
 }
 
 //
-// Call for configuring BT sampling rate and number of channels on local and on remote BT
+// Call for configuring BT sampling rate and channel configuration on local and on remote BT
+// channelConfiguration represent mask of channels
+// bit(n) = 1 n-th channel is active
+// bit(n) = 0 n-th channel is not active
 //
--(void) configBluetoothWithChannels:(int)inNumOfChannels andSampleRate:(int) inSampleRate
+-(void) configBluetoothWithChannelConfiguration:(int)channelConfiguration andSampleRate:(int) inSampleRate;
 {
     _confSamplingRate = inSampleRate;
-    _confNumberOfChannels = inNumOfChannels;
+    _activeChannels = channelConfiguration;
+    _confNumberOfChannels = [self countNumberOfChannels];
 
-    NSLog(@"Start bluetooth with Num of channels: %d and Sample rate: %d", inNumOfChannels, inSampleRate);
+    NSLog(@"Start bluetooth with config. of channels: %d and Sample rate: %d", _activeChannels, inSampleRate);
     if(ringBuffer)
     {
         delete ringBuffer;
@@ -859,7 +928,7 @@ static BBBTManager *btManager = nil;
         if(self.currentState == STATE_TRY_TO_SEND_CONFIG_TO_BT)
         {
             int tempCounterNum = 16000000/_confSamplingRate;
-            NSString *configString  = [NSString stringWithFormat:@"conf s:%d;c:%d;",tempCounterNum,_confNumberOfChannels];
+            NSString *configString  = [NSString stringWithFormat:@"conf s:%d;c:%d;",tempCounterNum,_activeChannels];
             
             NSData *data = [configString dataUsingEncoding:NSUTF8StringEncoding];
 

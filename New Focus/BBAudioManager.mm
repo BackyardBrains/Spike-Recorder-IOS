@@ -311,12 +311,12 @@ static BBAudioManager *bbAudioManager = nil;
     [[BBBTManager btManager] startBluetooth];
 }
 
--(void) switchToBluetoothWithNumOfChannels:(int) numOfChannelsBT andSampleRate:(int) inSampleRate
+-(void) switchToBluetoothWithChannels:(int) channelConfiguration andSampleRate:(int) inSampleRate
 {
     btOn = YES;
-    [[BBBTManager btManager] configBluetoothWithChannels:numOfChannelsBT andSampleRate:inSampleRate];
+    [[BBBTManager btManager] configBluetoothWithChannelConfiguration:channelConfiguration andSampleRate:inSampleRate];
     _sourceSamplingRate=inSampleRate;
-    _sourceNumberOfChannels=numOfChannelsBT;
+    _sourceNumberOfChannels=[[BBBTManager btManager] numberOfChannels];
     
     [self stopAllInputOutput];
     [self makeInputOutput];

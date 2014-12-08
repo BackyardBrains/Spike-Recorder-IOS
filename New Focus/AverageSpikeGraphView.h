@@ -39,6 +39,7 @@
     
     BOOL firstDrawAfterChange;
     float retinaCorrection;
+
 }
 
 

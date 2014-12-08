@@ -24,6 +24,7 @@
 @property (retain, nonatomic) IBOutlet UIButton *playPauseButton;
 @property (retain, nonatomic) IBOutlet UISlider *timeSlider;
 
+- (IBAction)backBtnClick:(id)sender;
 
 - (IBAction)sliderValueChanged:(id)sender;
 - (IBAction)playPauseButtonPressed:(id)sender;

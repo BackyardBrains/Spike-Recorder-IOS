@@ -66,11 +66,19 @@
     
     if([[BBAudioManager bbAudioManager] btOn])
     {
+        glView.channelsConfiguration = [[BBBTManager btManager] activeChannels];
         [self.btButton setImage:[UIImage imageNamed:@"inputicon.png"] forState:UIControlStateNormal];
-        
     }
     else
     {
+        if([[BBAudioManager bbAudioManager] sourceNumberOfChannels]==2)
+        {
+            glView.channelsConfiguration = 3;
+        }
+        else
+        {
+            glView.channelsConfiguration = 1;
+        }
         [self.btButton setImage:[UIImage imageNamed:@"bluetooth.png"] forState:UIControlStateNormal];
     }
 
@@ -145,13 +153,25 @@
     return [[BBAudioManager bbAudioManager] fetchAudio:data numFrames:numFrames whichChannel:whichChannel stride:1];
 }
 
-
--(void) removeChannel:(int) chanelIndex
+//
+// It works with extended channel index
+//
+- (void) removeChannel:(int) chanelIndex
 {
 
     if([[BBAudioManager bbAudioManager] btOn])
     {
         [self removeBTChannel:chanelIndex];
+    }
+}
+
+
+- (void) addChannel:(int) chanelIndex
+{
+    
+    if([[BBAudioManager bbAudioManager] btOn])
+    {
+        [self addBTChannel:chanelIndex];
     }
 }
 
@@ -322,7 +342,7 @@
     }
     
     glView = [[MultichannelCindeGLView alloc] initWithFrame:self.view.frame];
-    
+
     [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
     glView.mode = MultichannelGLViewModeView;
     [self.view addSubview:glView];
@@ -332,10 +352,19 @@
     [self setGLView:glView];
     if([[BBAudioManager bbAudioManager] btOn])
     {
+        glView.channelsConfiguration = [[BBBTManager btManager] activeChannels];
         [self.btButton setImage:[UIImage imageNamed:@"inputicon.png"] forState:UIControlStateNormal];
     }
     else
     {
+        if([[BBAudioManager bbAudioManager] sourceNumberOfChannels]==2)
+        {
+            glView.channelsConfiguration = 3;
+        }
+        else
+        {
+            glView.channelsConfiguration = 1;
+        }
         [self.btButton setImage:[UIImage imageNamed:@"bluetooth.png"] forState:UIControlStateNormal];
     }
     stimulateButton.selected = NO;
@@ -412,6 +441,7 @@
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         [hud hide:YES];
+        
         if(showHud)
         {
             showHud = NO;
@@ -428,34 +458,10 @@
     [self killHud];
     SAFE_ARC_RELEASE(channelPopover); channelPopover=nil;
     
-/*    //the controller we want to present as a popover
-    BBChannelSelectionTableViewController *controller = [[BBChannelSelectionTableViewController alloc] initWithStyle:UITableViewStylePlain];
-    controller.delegate = self;
-    channelPopover = [[FPPopoverController alloc] initWithViewController:controller];
-    channelPopover.delegate = self;
-    channelPopover.tint = FPPopoverWhiteTint;
-    channelPopover.border = NO;
-    channelPopover.arrowDirection = FPPopoverNoArrow;
-    channelPopover.title = nil;
-    rawSelected = NO;
-    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-    {
-        channelPopover.contentSize = CGSizeMake(300, 500);
-    }
-    else {
-        channelPopover.contentSize = CGSizeMake(200, 300);
-    }
-
- 
-
-    [channelPopover presentPopoverFromPoint: CGPointMake(self.view.center.x, self.view.center.y - channelPopover.contentSize.height/2)];
- */
-    
-    int tempNumOfChannels = [[BBBTManager btManager] maxNumberOfChannelsForDevice];
     int tempSampleRate = [[BBBTManager btManager] maxSampleRateForDevice]/[[BBBTManager btManager] maxNumberOfChannelsForDevice];
 
     [self.btButton setImage:[UIImage imageNamed:@"inputicon.png"] forState:UIControlStateNormal];
-
+    
     if(glView)
     {
         [glView stopAnimation];
@@ -463,9 +469,26 @@
         [glView release];
         glView = nil;
     }
-    [[BBAudioManager bbAudioManager] switchToBluetoothWithNumOfChannels:tempNumOfChannels andSampleRate:tempSampleRate];
+    
+    
+    
+    
+    
+    //Make configuration for channels so that all available channels are present
+    UInt8 configurationOfChannels = 0;
+    int tempMask = 1;
+    for(int i=0;i<[[BBBTManager btManager] maxNumberOfChannelsForDevice];i++)
+    {
+        configurationOfChannels = (tempMask<<i) | configurationOfChannels;
+    }
+    [[BBAudioManager bbAudioManager] switchToBluetoothWithChannels:configurationOfChannels andSampleRate:tempSampleRate];
+    
+    
+    
+    
+    
     glView = [[MultichannelCindeGLView alloc] initWithFrame:self.view.frame];
-
+    glView.channelsConfiguration = configurationOfChannels;
     [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels ] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
     glView.mode = MultichannelGLViewModeView;
     [self.view addSubview:glView];
@@ -473,19 +496,35 @@
 
     // set our view controller's prop that will hold a pointer to our newly created CCGLTouchView
     [self setGLView:glView];
-    
-    
+}
 
-    
-    
+//
+// Count number of channels in configuration
+//
+-(int) countNumberOfChannels:(int) channelsConfig
+{
+    int returnNumberOfChannels = 0;
+    int tempMask = 1;
+    for(int i=0;i<[[BBBTManager btManager] maxNumberOfChannelsForDevice];i++)
+    {
+        if((channelsConfig & (tempMask<<i))>0)
+        {
+            returnNumberOfChannels++;
+        }
+    }
+    return returnNumberOfChannels;
 }
 
 
 -(void) removeBTChannel:(int) indexOfChannel
 {
 
-    int tempNumOfChannels = [[BBAudioManager bbAudioManager] sourceNumberOfChannels]-1;
-    int tempSampleRate = [[BBBTManager btManager] maxSampleRateForDevice]/tempNumOfChannels;
+    int tempActiveChannels = [[BBBTManager btManager] activeChannels];
+    int tempMask = 1;
+    tempMask = tempMask<<indexOfChannel;
+    tempActiveChannels = tempActiveChannels & (~tempMask);
+    float * tempChannelsOffset = [glView getChannelOffsets];
+    int tempSampleRate = [[BBBTManager btManager] maxSampleRateForDevice]/[self countNumberOfChannels:tempActiveChannels];
     
     [self.btButton setImage:[UIImage imageNamed:@"inputicon.png"] forState:UIControlStateNormal];
     
@@ -496,10 +535,47 @@
         [glView release];
         glView = nil;
     }
-    [[BBAudioManager bbAudioManager] switchToBluetoothWithNumOfChannels:tempNumOfChannels andSampleRate:tempSampleRate];
+    [[BBAudioManager bbAudioManager] switchToBluetoothWithChannels:tempActiveChannels andSampleRate:tempSampleRate];
     glView = [[MultichannelCindeGLView alloc] initWithFrame:self.view.frame];
-    
+    glView.channelsConfiguration = tempActiveChannels;
+
     [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels ] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
+    [glView setChannelOffsets:tempChannelsOffset];
+    glView.mode = MultichannelGLViewModeView;
+    [self.view addSubview:glView];
+    [self.view sendSubviewToBack:glView];
+    
+    // set our view controller's prop that will hold a pointer to our newly created CCGLTouchView
+    [self setGLView:glView];
+
+}
+
+
+-(void) addBTChannel:(int) indexOfChannel
+{
+    int tempActiveChannels = [[BBBTManager btManager] activeChannels];
+    int tempMask = 1;
+    tempMask = tempMask<<indexOfChannel;
+    tempActiveChannels = tempActiveChannels | tempMask;
+    
+    float * tempChannelsOffset = [glView getChannelOffsets];
+    int tempSampleRate = [[BBBTManager btManager] maxSampleRateForDevice]/[self countNumberOfChannels:tempActiveChannels];
+    
+    [self.btButton setImage:[UIImage imageNamed:@"inputicon.png"] forState:UIControlStateNormal];
+    
+    if(glView)
+    {
+        [glView stopAnimation];
+        [glView removeFromSuperview];
+        [glView release];
+        glView = nil;
+    }
+    [[BBAudioManager bbAudioManager] switchToBluetoothWithChannels:tempActiveChannels andSampleRate:tempSampleRate];
+    glView = [[MultichannelCindeGLView alloc] initWithFrame:self.view.frame];
+    glView.channelsConfiguration = tempActiveChannels;
+
+    [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels ] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
+    [glView setChannelOffsets:tempChannelsOffset];
     glView.mode = MultichannelGLViewModeView;
     [self.view addSubview:glView];
     [self.view sendSubviewToBack:glView];
@@ -524,7 +600,9 @@
 
 - (void)rowSelected:(NSInteger) rowIndex
 {
-    rawSelected = YES;
+    
+    NSLog(@"Depricated function called");
+   /* rawSelected = YES;
     [channelPopover dismissPopoverAnimated:YES];
     int tempSampleRate = 1000;
     int tempNumOfChannels = 1;
@@ -574,7 +652,7 @@
     [self.view sendSubviewToBack:glView];
 	
     // set our view controller's prop that will hold a pointer to our newly created CCGLTouchView
-    [self setGLView:glView];
+    [self setGLView:glView]; */
 
 }
 -(NSMutableArray *) getAllRows

@@ -13,6 +13,8 @@
 		2405351D18FC62BB009A09FF /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 2405351C18FC62BB009A09FF /* MBProgressHUD.m */; };
 		240D8066190E98F6009F9AEA /* CrossCorrViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 240D8064190E98F6009F9AEA /* CrossCorrViewController.m */; };
 		240D8067190E98F6009F9AEA /* CrossCorrViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 240D8065190E98F6009F9AEA /* CrossCorrViewController.xib */; };
+		241020781A1BB22100C2BDFC /* backbtn.png in Resources */ = {isa = PBXBuildFile; fileRef = 241020761A1BB22100C2BDFC /* backbtn.png */; };
+		241020791A1BB22100C2BDFC /* backbtn@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 241020771A1BB22100C2BDFC /* backbtn@2x.png */; };
 		2410998A1975B7CF004FC15A /* RowHeaderColectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 241099891975B7CF004FC15A /* RowHeaderColectionViewCell.m */; };
 		2410998D1975BA99004FC15A /* ColumnHeaderCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2410998C1975BA99004FC15A /* ColumnHeaderCollectionViewCell.m */; };
 		241337E319FEF08700659867 /* libCorePlot-CocoaTouch.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 241337E219FEF08700659867 /* libCorePlot-CocoaTouch.a */; };
@@ -235,6 +237,8 @@
 		240D8063190E98F6009F9AEA /* CrossCorrViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CrossCorrViewController.h; sourceTree = "<group>"; };
 		240D8064190E98F6009F9AEA /* CrossCorrViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CrossCorrViewController.m; sourceTree = "<group>"; };
 		240D8065190E98F6009F9AEA /* CrossCorrViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CrossCorrViewController.xib; sourceTree = "<group>"; };
+		241020761A1BB22100C2BDFC /* backbtn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = backbtn.png; sourceTree = "<group>"; };
+		241020771A1BB22100C2BDFC /* backbtn@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "backbtn@2x.png"; sourceTree = "<group>"; };
 		241099881975B7CF004FC15A /* RowHeaderColectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RowHeaderColectionViewCell.h; sourceTree = "<group>"; };
 		241099891975B7CF004FC15A /* RowHeaderColectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RowHeaderColectionViewCell.m; sourceTree = "<group>"; };
 		2410998B1975BA99004FC15A /* ColumnHeaderCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColumnHeaderCollectionViewCell.h; sourceTree = "<group>"; };
@@ -1122,6 +1126,8 @@
 		FAA43D2715AB5F9C0024E445 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				241020761A1BB22100C2BDFC /* backbtn.png */,
+				241020771A1BB22100C2BDFC /* backbtn@2x.png */,
 				242246DC1A03E49E00E01B84 /* settings.png */,
 				242246DD1A03E49E00E01B84 /* settings@2x.png */,
 				24A4CB8E19C749A600F2883E /* hasbeat.png */,
@@ -1387,6 +1393,7 @@
 				FA905A4C15AA8CF00013688B /* BBFileTableCell.xib in Resources */,
 				2454D8AA19AD02010056B71B /* GraphDCMDExperimentViewController.xib in Resources */,
 				242246DE1A03E49E00E01B84 /* settings.png in Resources */,
+				241020791A1BB22100C2BDFC /* backbtn@2x.png in Resources */,
 				FAA43D2B15AB5FBC0024E445 /* TickMarks.png in Resources */,
 				249A24681906AC59005F5F03 /* ISIHistogramViewController.xib in Resources */,
 				24A4CB9419C749A600F2883E /* nobeat.png in Resources */,
@@ -1417,6 +1424,7 @@
 				242631B419C2042A00225E44 /* ECGViewController.xib in Resources */,
 				FA14EC5C15D04AD700B0FB71 /* Settings.bundle in Resources */,
 				244DA142195C9DAF00BFAA8B /* bluetooth.png in Resources */,
+				241020781A1BB22100C2BDFC /* backbtn.png in Resources */,
 				249013A4196AB45200E5EF91 /* ISIGraphViewController.xib in Resources */,
 				24A4CB9319C749A600F2883E /* hasbeat@2x.png in Resources */,
 				24A4CB9519C749A600F2883E /* nobeat@2x.png in Resources */,
@@ -1732,7 +1740,7 @@
 				);
 				PRODUCT_NAME = "Backyard Brains";
 				PROVISIONING_PROFILE = "";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "87487bd8-4255-482c-b26b-347bbf5e584f";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "4fe017bd-3dae-4068-b074-5e213859897a";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "$(CINDER_PATH)/include";

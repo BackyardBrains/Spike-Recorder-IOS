@@ -47,17 +47,24 @@ typedef enum {
     float* numVoltsVisible; //current zoom for every channel y axis
     
     float* yOffsets; //current offsets for all channels
+    int maxNumberOfChannels;
     
 }
 
-
+@property (assign) int channelsConfiguration;
 @property (assign) MultichannelGLViewMode mode;
+
+
+-(float *) getChannelOffsets;
+-(void) setChannelOffsets:(float *) tempChannelOffsets;
 
 - (void)saveSettings:(BOOL)useThresholdSettings;
 - (void)loadSettings:(BOOL)useThresholdSettings;
 - (void)setNumberOfChannels:(int) newNumberOfChannels samplingRate:(float) newSamplingRate andDataSource:(id <MultichannelGLViewDelegate>) newDataSource;
 
 @end
+
+
 
 
 /**
@@ -69,6 +76,7 @@ typedef enum {
 
 @optional
 -(void) removeChannel:(int) chanelIndex;
+- (void) addChannel:(int) chanelIndex;
 -(float) getCurrentTimeForSinc;//get current time of audio (used for sync of spikes and waveform)
 -(void) selectChannel:(int) selectedChannel;//set selected channel
 - (NSMutableArray *) getChannels;//get channels from BBfile object

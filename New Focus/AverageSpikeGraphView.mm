@@ -108,6 +108,7 @@
         //to the same color as text if we don't make new instance here
         //TODO: find a reason for this
         firstDrawAfterChange = NO;
+        mScaleFont = nil;
         mScaleFont = gl::TextureFont::create( Font("Helvetica", 12) );
     }
     

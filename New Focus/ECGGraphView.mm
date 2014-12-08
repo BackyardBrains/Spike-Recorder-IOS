@@ -20,7 +20,7 @@
 - (void)setup
 {
     [self enableMultiTouch:YES];
-    
+    firstDrawAfterChannelChange = YES;
     [super setup];//this calls [self startAnimation]
     
     // Setup the camera
@@ -106,8 +106,11 @@
             //to the same color as text if we don't make new instance here
             //TODO: find a reason for this
             firstDrawAfterChannelChange = NO;
+            heartRateFont = nil;
+            mScaleFont = nil;
             heartRateFont = gl::TextureFont::create( Font("Helvetica", 32) );
             mScaleFont = gl::TextureFont::create( Font("Helvetica", 18) );
+            
         }
     
     
@@ -269,7 +272,12 @@
   
 }
 
-
+- (void)dealloc
+{
+    mScaleFont = nil;
+    heartRateFont = nil;
+    [super dealloc];
+}
 
 
 //====================================== TOUCH ===============================
@@ -346,6 +354,19 @@
     {
         Vec2f touchDistanceDelta = [self calculateTouchDistanceChange:touches];
         float oldNumVoltsVisible = numVoltsVisible;
+        
+        float deltax = fabs(touchDistanceDelta.x-1.0f);
+        float deltay = fabs(touchDistanceDelta.y-1.0f);
+        // NSLog(@"Touch X: %f", deltax/deltay);
+        if((deltax/deltay)<0.4 || touchDistanceDelta.y != 1.0f)
+        {
+            touchDistanceDelta.x = 1.0f;
+        }
+        if((deltay/deltax)<0.4)
+        {
+            touchDistanceDelta.y = 1.0f;
+        }
+        
         numSamplesVisible /= (touchDistanceDelta.x - 1) + 1;
         numVoltsVisible /= (touchDistanceDelta.y - 1) + 1;
         

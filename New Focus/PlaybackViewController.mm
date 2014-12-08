@@ -298,6 +298,10 @@
 }
 
 //Seek to new place in file
+- (IBAction)backBtnClick:(id)sender {
+        [self.navigationController popViewControllerAnimated:YES];
+}
+
 - (IBAction)sliderValueChanged:(id)sender {
     
     bbAudioManager.currentFileTime = (float)self.timeSlider.value;

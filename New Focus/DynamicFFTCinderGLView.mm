@@ -121,6 +121,13 @@
     markIntervalXAxis/=10.0;
 }
 
+
+- (void)dealloc
+{
+    mScaleFont = nil;
+    [super dealloc];
+}
+
 //
 // Draw graph
 //
@@ -136,7 +143,8 @@
             //to the same color as text if we don't make new instance here
             //TODO: find a reason for this
             firstDrawAfterChannelChange = NO;
-            mScaleFont = gl::TextureFont::create( Font("Helvetica", 12) );
+            mScaleFont = nil;
+           mScaleFont = gl::TextureFont::create( Font("Helvetica", 12) );
         }
         
         // this pair of lines is the standard way to clear the screen in OpenGL
