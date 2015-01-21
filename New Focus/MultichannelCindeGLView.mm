@@ -44,6 +44,14 @@
     
     float xPositionOfRemove;
     float yPositionOfRemove;
+    
+    bool selectionEnabledAfterSecond;
+    
+    //detect touch 1s
+    NSTimer * touchTimer;
+    float startY;
+    float startX;
+    float timePos;
 }
 
 @end
@@ -85,6 +93,7 @@
     lastUserInteraction = [[NSDate date] timeIntervalSince1970];
     handlesShouldBeVisible = NO;
     offsetPositionOfHandles = 0;
+    selectionEnabledAfterSecond = false;
     
 }
 
@@ -1297,21 +1306,66 @@
                 }
             }
             
-            if ([dataSourceDelegate respondsToSelector:@selector(shouldEnableSelection)] & !changingThreshold) {
+            if ([dataSourceDelegate respondsToSelector:@selector(shouldEnableSelection)] && !changingThreshold) {
                 if([dataSourceDelegate shouldEnableSelection])
                 {
-                    float virtualVisibleTimeSpan = numSamplesVisible * 1.0f/samplingRate;
-                    float timePos = (glWorldTouchPos.x/(-maxTimeSpan))*virtualVisibleTimeSpan;
                     
-                    [dataSourceDelegate updateSelection:timePos];
+                    float virtualVisibleTimeSpan = numSamplesVisible * 1.0f/samplingRate;
+                    timePos = (glWorldTouchPos.x/(-maxTimeSpan))*virtualVisibleTimeSpan;
+                    if(selectionEnabledAfterSecond)
+                    {
+                       // if ([touchTimer isValid])
+                      //  {
+                       // [touchTimer invalidate];
+                       // }
+                        touchTimer = nil;
+                    
+                       // float virtualVisibleTimeSpan = numSamplesVisible * 1.0f/samplingRate;
+                       // timePos = (glWorldTouchPos.x/(-maxTimeSpan))*virtualVisibleTimeSpan;
+                        
+                        [dataSourceDelegate updateSelection:timePos];
                 
+                    }
+                    else
+                    {
+                        if (touchTimer==nil)
+                        {
+                            touchTimer = [NSTimer scheduledTimerWithTimeInterval:1.1 target:self selector:@selector(touchHasBeenHeld:) userInfo:nil repeats:NO];
+                            startX = touchPos.x;
+                            startY = touchPos.y;
+                        }
+                        else
+                        {
+                            if(abs(startY-touchPos.y)>2 || abs(startX-touchPos.x)>2)
+                            {
+                                [touchTimer invalidate];
+                                touchTimer = nil;
+                                touchTimer = [NSTimer scheduledTimerWithTimeInterval:1.1 target:self selector:@selector(touchHasBeenHeld:) userInfo:nil repeats:NO];
+                            }
+                            
+                        }
+                        
+                    }
+                    
                 }
             }
         
         }
         
     }
-    
+}
+
+-(void) touchHasBeenHeld:(id) e
+{
+    if(touchTimer!=nil)
+    {
+        selectionEnabledAfterSecond = true;
+        [dataSourceDelegate updateSelection:timePos*0.9999];
+        [dataSourceDelegate updateSelection:timePos];
+        [touchTimer invalidate];
+        touchTimer = nil;
+    }
+
 }
 
 -(BOOL) checkIntesectionWithRemoveButton:(Vec2f) touchPos
@@ -1368,6 +1422,13 @@
     if ([dataSourceDelegate respondsToSelector:@selector(endSelection)])
     {
         [dataSourceDelegate endSelection];
+        selectionEnabledAfterSecond = false;
+        //if[touchTimer ]
+        //if ([touchTimer isValid])
+        //{
+         [touchTimer invalidate];
+        //}
+        touchTimer = nil;
     }
     [super touchesBegan:touches withEvent:event];
     
@@ -1384,6 +1445,10 @@
             [dataSourceDelegate endSelection];
         }
     }
+   
+    [touchTimer invalidate];
+    touchTimer = nil;
+    
     [super touchesEnded:touches withEvent:event];
 }
 
