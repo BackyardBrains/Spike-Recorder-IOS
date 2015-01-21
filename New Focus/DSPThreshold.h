@@ -56,6 +56,7 @@ class DSPThreshold {
         UInt32 GetNumTriggersInHistory() { return mNumTriggersInHistory; }
     
         void SetThreshold(float newThreshold);
+        void SetRingBuffer(RingBuffer *newRingBuffer);
 		void SetThresholdDirection(BBThresholdType newDirection) { mThresholdDirection = newDirection; }
         void SetNumTriggersInHistory(UInt32 numTriggersInHistory);
         void SetSelectedChannel(int newSelectedChannel);

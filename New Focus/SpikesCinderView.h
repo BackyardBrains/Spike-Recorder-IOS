@@ -30,6 +30,7 @@
     float numVoltsMax;
     float numVoltsMin;
     float numVoltsVisible;
+
 }
 
 

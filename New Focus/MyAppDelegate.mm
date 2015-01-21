@@ -13,21 +13,24 @@
 #import <DropboxSDK/DropboxSDK.h>
 #import "BBAudioFileReader.h"
 #import "TestFlight.h"
+#import "BBBTManager.h"
+
 #define kViewRecordTabBarIndex 0
 #define kThresholdTabBarIndex 1
-#define kRecordingsTabBarIndex 2
+#define kFFTTabBarIndex 2
+#define kRecordingsTabBarIndex 3
 
 @implementation MyAppDelegate
 @synthesize tabBarController;
 @synthesize window;
-
+@synthesize healthStore;
 
 - (void)launch
 {    
    
     // start of your application:didFinishLaunchingWithOptions // ...
     [TestFlight takeOff:@"da7a715d-e6da-44e9-97a8-05b75525a9db"];
-
+    self.healthStore = [[HKHealthStore alloc] init];
     // Hide the status bar
 //    [[UIApplication sharedApplication] setStatusBarHidden:YES animated:NO];
     
@@ -61,16 +64,60 @@
                             root:kDBRootAppFolder] autorelease];
 
     [DBSession setSharedSession:dbSession];
+    
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(btSlowConnection) name:BT_SLOW_CONNECTION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(btBadConnection) name:BT_BAD_CONNECTION object:nil];
 }
 
 
+-(void) btSlowConnection
+{
+    if([[BBAudioManager bbAudioManager] btOn])
+    {
+        [[BBAudioManager bbAudioManager] closeBluetooth];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Bluetooth device out of range."
+                                                        message:@"Bluetooth connection is slow or device is out of range. Check if your Bluetooth device is turned on or try moving closer to device and start session again."
+                                                       delegate:self
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+        [alert show];
+        [alert release];
+    }
+}
+
+-(void) btBadConnection
+{
+
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Bluetooth connection error."
+                                                        message:@"Disable and enable Bluetooth on your phone to reset device connection."
+                                                       delegate:self
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+        [alert show];
+        [alert release];
+    
+}
+
 - (void)applicationWillTerminate:(UIApplication *)application {
     
+    if([[BBAudioManager bbAudioManager] btOn])
+    {
+        [[BBAudioManager bbAudioManager] closeBluetooth];
+    }
     NSLog(@"Going into background.");
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setValue:[NSNumber numberWithInt:tabBarController.selectedIndex] forKey:@"tabIndex"];
     [defaults synchronize];
     
+}
+
+- (void)applicationWillResignActive:(UIApplication *)application
+{
+    if([[BBAudioManager bbAudioManager] btOn])
+    {
+        [[BBAudioManager bbAudioManager] closeBluetooth];
+    }
 }
 
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
@@ -165,6 +212,7 @@
 - (void)dealloc
 {
     [tabBarController release];
+    [healthStore release];
     [window release];
     [super dealloc];
 }

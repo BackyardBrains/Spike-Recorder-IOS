@@ -70,6 +70,12 @@
     [self getAllSpikes];
 }
 
+- (void)dealloc
+{
+    mScaleFont = nil;
+    [super dealloc];
+}
+
 -(void) channelChanged
 {
     [self getAllSpikes];
@@ -156,13 +162,13 @@
    // gl::drawSolidRect(Rectf(refSize.x,refSize.y,refSize.x-refSize.x, refSize.y+refSize.y));
     // Set the line color and width
     glColor4f(0.4f, 0.4f, 0.4f, 1.0f);
-    glLineWidth(1.0f);
+    glLineWidth(2.0f);
     // Put the audio on the screen
     [self fillDisplayVector];
     gl::draw(displayVector);
     
     glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-    
+    glLineWidth(1.0f);
     //Draw spikes
     gl::disableDepthRead();
     BOOL weAreInInterval = NO;
@@ -460,6 +466,19 @@
         Vec2f touchDistanceDelta = [self calculateTouchDistanceChange:touches];
         float oldNumSecondsVisible = numSecondsVisible;
         float oldNumVoltsVisible = numVoltsVisible;
+        
+        float deltax = fabs(touchDistanceDelta.x-1.0f);
+        float deltay = fabs(touchDistanceDelta.y-1.0f);
+        // NSLog(@"Touch X: %f", deltax/deltay);
+        if((deltax/deltay)<0.4 || touchDistanceDelta.y != 1.0f)
+        {
+            touchDistanceDelta.x = 1.0f;
+        }
+        if((deltay/deltax)<0.4)
+        {
+            touchDistanceDelta.y = 1.0f;
+        }
+        
         numSecondsVisible /= (touchDistanceDelta.x - 1) + 1;
         numVoltsVisible /= (touchDistanceDelta.y - 1) + 1;
         

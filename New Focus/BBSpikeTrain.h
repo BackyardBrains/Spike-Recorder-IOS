@@ -20,4 +20,5 @@
 -(id) initWithName:(NSString *) inName;
 -(void) spikesToCSV;
 -(void) CSVToSpikes;
+-(NSArray *) makeArrayOfTimestampsWithOffset:(float) offfset;
 @end

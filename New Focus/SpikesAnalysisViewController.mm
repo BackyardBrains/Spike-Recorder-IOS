@@ -62,6 +62,8 @@
 {
     [glView saveSettings];
     [glView stopAnimation];
+    [glView release];
+    glView = nil;
     [self.navigationController setNavigationBarHidden:NO animated:YES];
 }
 
@@ -111,6 +113,10 @@
             doneBtn.enabled = YES;
             [MBProgressHUD hideHUDForView:self.view animated:YES];
             [self.navigationController popViewControllerAnimated:YES];
+            if(self.masterDelegate)
+            {
+                [self.masterDelegate spikesSortingFinished];
+            }
         });
     });
 }
@@ -245,4 +251,7 @@
 
 
 
+- (IBAction)backBtnClick:(id)sender {
+        [self.navigationController popViewControllerAnimated:YES];
+}
 @end

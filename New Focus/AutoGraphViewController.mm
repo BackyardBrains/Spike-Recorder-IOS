@@ -61,7 +61,7 @@
 {
     _file = file;
     
-    //Calculate ISI for all spike trains
+    //Calculate autocorrelation for all spike trains
     MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     hud.labelText = @"Calculating...";
     dataInitialized = NO;
@@ -73,7 +73,10 @@
             int inChannelSTIndex = [_file getIndexInsideChannelForSpikeTrainWithIndex:spIndex];
             
             NSArray * values = [[BBAnalysisManager bbAnalysisManager] autocorrelationWithFile:_file channelIndex:channelIndex spikeTrainIndex:inChannelSTIndex maxtime:0.1f andBinsize:0.001f];
-            
+            if(values == nil)
+            {
+                values = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
+            }
             [allValues addObject:values];
         }
         

@@ -40,6 +40,7 @@
     return [self initWithValue:someValue index:someIndex andTime:someTime];
 }
 
+
 - (void)dealloc {
 
 	[super dealloc];

@@ -24,7 +24,7 @@
 @synthesize numberOfChannels;
 @synthesize gain;
 @synthesize filelength;
-
+@synthesize fileUsage;
 
 @synthesize spikesFiltered;
 
@@ -88,7 +88,7 @@
     [dateFormatter release];
     
     self.comment = @"";
-    
+    self.fileUsage = NORMAL_FILE_USAGE;
     // Grab the sampling rate from NSUserDefaults
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     self.samplingrate   = [[BBAudioManager bbAudioManager] samplingRate];
@@ -149,7 +149,7 @@
 		
 		self.comment = @"";
 		
-        
+        self.fileUsage = NORMAL_FILE_USAGE;
         
         NSError *avPlayerError = nil;
         AVAudioPlayer *avPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:urlOfExistingFile error:&avPlayerError];

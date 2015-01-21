@@ -11,6 +11,25 @@
 #import "DSPAnalysis.h"
 #import "BBFile.h"
 
+
+typedef struct _averageSpikeData {
+	
+	float * averageSpike;//Main line
+    float graphOffset;
+    float maxAverageSpike;
+    float minAverageSpike;
+    float * topSTDLine;
+    float * bottomSTDLine;
+    float maxStd;
+    float minStd;
+    UInt32 numberOfSamplesInData;
+    float samplingRate;
+    UInt32 countOfSpikes;
+    /*PolyLine2f ** allSpikes;
+     float maxAllSpikes;
+     float minAllSpikes;*/
+} AverageSpikeData;
+
 @interface BBAnalysisManager : NSObject
 
 + (BBAnalysisManager *) bbAnalysisManager;
@@ -44,6 +63,8 @@
 //Calculate Inter spike interval analysis with logarithmically spaced bins (number of bins = bins) and put result
 //in valuesY and limits of bins in limitsX. Limits of bins are always generated between 10^-3 and 10^1
 -(void) ISIWithFile:(BBFile *) afile channelIndex:(NSInteger) aChannelIndex spikeTrainIndex:(NSInteger) aSpikeTrainIndex numOfBins:(int) bins values:(NSMutableArray *) valuesY limits:(NSMutableArray *) limitsX;
+
+-(AverageSpikeData *) getAverageSpikesForChannel:(int) channelIndex inFile:(BBFile *) aFile;
 
 //Move index to next spike train on same channel
 -(NSInteger) moveToNextSpikeTrain;

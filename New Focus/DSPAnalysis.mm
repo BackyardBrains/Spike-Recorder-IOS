@@ -108,6 +108,15 @@ void DSPAnalysis::InitDynamicFFT(RingBuffer *externalRingBuffer, UInt32 numberOf
     mLengthOfWindow = lengthOfWindow;//1024 - must be 2^N
     LengthOfFFTData = lengthOfWindow/2;
     
+    oneFrequencyStep = 0.5*samplingRate/((float)LengthOfFFTData);
+    LengthOf30HzData = 32/oneFrequencyStep;//we will use only low freq. data
+    
+    
+    if(LengthOfFFTData<2)
+    {
+        LengthOfFFTData = 2;
+    }
+    
     if(percOverlapOfWindows>99)
     {
         percOverlapOfWindows = 99;
@@ -145,15 +154,16 @@ void DSPAnalysis::InitDynamicFFT(RingBuffer *externalRingBuffer, UInt32 numberOf
     
     int i,k;
     
+    //Make main result buffer
     FFTDynamicMagnitude = new float*[NumberOfGraphsInBuffer];
     for(i=0;i<NumberOfGraphsInBuffer;i++)
     {
-        FFTDynamicMagnitude[i] = new float[LengthOfFFTData];
+        FFTDynamicMagnitude[i] = new float[LengthOf30HzData];
     }
     
     for(i=0;i<NumberOfGraphsInBuffer;i++)
     {
-        for(k=0;k<LengthOfFFTData;k++)
+        for(k=0;k<LengthOf30HzData;k++)
         {
             FFTDynamicMagnitude[i][k] = -1;
         }
@@ -183,7 +193,7 @@ void DSPAnalysis::CalculateDynamicFFT(const float *data, UInt32 numberOfFramesIn
     }
     
     //Get data from ring buffer
-    mExternalRingBuffer->FetchFreshData2(mInputBuffer, mNumberOfSamplesWhaitingForAnalysis, whichChannel , 1);
+    mExternalRingBuffer->FetchFreshData2(mInputBuffer, LengthOfFFTData*2, whichChannel , 1);
     
     for(int i=0;i<numberOfWindowsToAdd;i++)
     {
@@ -196,13 +206,14 @@ void DSPAnalysis::CalculateDynamicFFT(const float *data, UInt32 numberOfFramesIn
         FFTDynamicMagnitude[GraphBufferIndex][0] = (sqrtf(A.realp[0]*A.realp[0])/halfMaxMagnitude)-1.0;
         
         //Calculate magnitude for all freq.
-        for(int ind = 1; ind < LengthOfFFTData; ind++){
+        for(int ind = 1; ind < LengthOf30HzData; ind++){
             FFTDynamicMagnitude[GraphBufferIndex][ind] = sqrtf(A.realp[ind]*A.realp[ind] + A.imagp[ind] * A.imagp[ind]);
             if(FFTDynamicMagnitude[GraphBufferIndex][ind]>maxMagnitude)
             {
                 maxMagnitude = FFTDynamicMagnitude[GraphBufferIndex][ind];
                 halfMaxMagnitude = maxMagnitude*0.5f;
             }
+            // NSLog(@"%f", halfMaxMagnitude);
             FFTDynamicMagnitude[GraphBufferIndex][ind] = (FFTDynamicMagnitude[GraphBufferIndex][ind]/halfMaxMagnitude)-1.0;
             
         }
@@ -221,8 +232,8 @@ void DSPAnalysis::CalculateDynamicFFT(const float *data, UInt32 numberOfFramesIn
 float DSPAnalysis::RMSSelection(const float *data, int64_t mSizeOfBuffer)
 {
     float rms;
-	vDSP_rmsqv(data,1,&rms,mSizeOfBuffer);
-	return rms;
+    vDSP_rmsqv(data,1,&rms,mSizeOfBuffer);
+    return rms;
 }
 
 
@@ -247,5 +258,5 @@ float DSPAnalysis::SDT(const float *data, int64_t mSizeOfBuffer)
     vDSP_sve(squared,1,&sum,mSizeOfBuffer); //sum entire vector
     free(squared); // free squared vector
     std = sqrt(sum/mSizeOfBuffer); // calculated std deviation
-	return std;
+    return std;
 }

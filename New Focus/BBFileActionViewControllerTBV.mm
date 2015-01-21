@@ -14,6 +14,7 @@
 #import "GraphMatrixViewController.h"
 #import "ISIGraphViewController.h"
 #import "AutoGraphViewController.h"
+#import "AverageSpikeGraphViewController.h"
 
 @implementation BBFileActionViewControllerTBV
 
@@ -69,6 +70,8 @@
 {
     [super viewWillAppear:animated];
     
+    [[self navigationController] setNavigationBarHidden:NO animated:NO];
+    
     self.files = self.delegate.filesSelectedForAction;
     
     if ([self.files count] == 1) //single file
@@ -86,7 +89,7 @@
                               @"Autocorrelation",
                               @"ISI",
                               @"Cross-correlation",
-                              //@"Average Spike",
+                              @"Average Spike",
                               //@"Email",
                               @"Share",
                               @"Delete", nil];
@@ -100,7 +103,7 @@
                                       @"Find Spikes",
                                       @"Autocorrelation",
                                       @"ISI",
-                                      //@"Average Spike",
+                                      @"Average Spike",
                                       //@"Email",
                                       @"Share",
                                       @"Delete", nil];
@@ -207,14 +210,12 @@
     
     if ([cell.textLabel.text isEqualToString:@"Play"])
 	{
-        
-       // NSMutableArray *allViewControllers = [NSMutableArray arrayWithArray: self.navigationController.viewControllers];
-        //[allViewControllers removeObjectIdenticalTo: playbackController];
-        //self.navigationController.viewControllers = allViewControllers;
+    
         if(playbackController==nil)
         {
             playbackController = [[[PlaybackViewController alloc] initWithNibName:@"PlaybackViewController" bundle:nil] autorelease];
         }
+        playbackController.showNavigationBar = NO;
         playbackController.bbfile = [self.files objectAtIndex:0];
         [self.navigationController pushViewController:playbackController animated:YES];
         //[playbackController release];
@@ -291,6 +292,15 @@
         [self.navigationController pushViewController:gmvc animated:YES];
         [gmvc release];
     }
+    else if ([cell.textLabel.text isEqualToString:@"Average Spike"])
+    {
+        //GraphMatrixViewController
+        AverageSpikeGraphViewController *asvc = [[AverageSpikeGraphViewController alloc] initWithNibName:@"AverageSpikeGraphViewController" bundle:nil];
+        [asvc calculateGraphForFile:(BBFile *)[self.files objectAtIndex:0] andChannelIndex:0];
+        [self.navigationController pushViewController:asvc animated:YES];
+        [asvc release];
+        
+    }
 	else if ([cell.textLabel.text isEqualToString:@"Share"])
 	{
         //grab just the filenames
@@ -299,7 +309,6 @@
         {
             [thisFile saveWithoutArrays];
             [theFilenames addObject:[NSURL fileURLWithPath:[[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingPathComponent:thisFile.filename]]];
-
         }
         self.fileNamesToShare = (NSArray *)theFilenames;
         [theFilenames release];

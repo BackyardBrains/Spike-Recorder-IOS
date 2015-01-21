@@ -29,14 +29,15 @@ public:
     float * FFTMagnitude;
     
     //Dynamic FFT
-     void InitDynamicFFT(RingBuffer *externalRingBuffer, UInt32 numberOfChannels, UInt32 samplingRate, UInt32 lengthOfWindow, UInt32 percOverlapOfWindows, float bufferMaxSeconds);
+    void InitDynamicFFT(RingBuffer *externalRingBuffer, UInt32 numberOfChannels, UInt32 samplingRate, UInt32 lengthOfWindow, UInt32 percOverlapOfWindows, float bufferMaxSeconds);
     //Calculate FFT for new data (It can calculate one or more window depending on amount of data that arrived)
     void CalculateDynamicFFT(const float *data, UInt32 numberOfFramesInData, UInt32 whichChannel);
     float ** FFTDynamicMagnitude;
     
-
+    
     //length of FFT window. Must be 2^N
     UInt32 LengthOfFFTData;
+    UInt32 LengthOf30HzData;
     UInt32 GraphBufferIndex;
     UInt32 NumberOfGraphsInBuffer;
 private:
@@ -47,7 +48,7 @@ private:
     float mBufferMaxSec;
     UInt32 mNumberOfSamplesWhaitingForAnalysis;
     
-	// Ring buffer used as an input for FFT
+    // Ring buffer used as an input for FFT
     RingBuffer *mExternalRingBuffer;
     //Number of channels at input of FFT
     UInt32 mNumberOfChannels;
@@ -61,4 +62,5 @@ private:
     FFTSetup fftSetup;
     float maxMagnitude;
     float halfMaxMagnitude;
+    float oneFrequencyStep;
 };

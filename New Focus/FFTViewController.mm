@@ -18,8 +18,8 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    float maxTime = 10.0f;
-    [[BBAudioManager bbAudioManager] startDynanimcFFTWithMaxNumberOfSeconds:maxTime];
+    [[self navigationController] setNavigationBarHidden:YES animated:NO];
+    [[BBAudioManager bbAudioManager] startDynanimcFFT];
     
     
     //Config GL view
@@ -30,41 +30,22 @@
         [glView release];
         glView = nil;
     }
+    float maxTime = 10.0f;
     glView = [[DynamicFFTCinderGLView alloc] initWithFrame:self.view.frame];
     float baseFreq = 0.5*((float)[[BBAudioManager bbAudioManager] sourceSamplingRate])/((float)[[BBAudioManager bbAudioManager] lengthOfFFTData]);
-    [glView setupWithBaseFreq:baseFreq lengthOfFFT:[[BBAudioManager bbAudioManager] lengthOfFFTData] numberOfGraphs:[[BBAudioManager bbAudioManager] lenghtOfFFTGraphBuffer] maxTime:maxTime];
+    [glView setupWithBaseFreq:baseFreq lengthOfFFT:[[BBAudioManager bbAudioManager] lengthOf30HzData] numberOfGraphs:[[BBAudioManager bbAudioManager] lenghtOfFFTGraphBuffer] maxTime:maxTime];
     [[BBAudioManager bbAudioManager] selectChannel:0];
     _channelBtn.hidden = [[BBAudioManager bbAudioManager] sourceNumberOfChannels]<2;
    [self.view addSubview:glView];
    [self.view sendSubviewToBack:glView];
    [glView startAnimation];
     
- /*   
-  
-  //Old one dimensional FFT graph
-  [[BBAudioManager bbAudioManager] startFFT];
-    
-   //Config GL view
-    if(glView)
-    {
-        [glView stopAnimation];
-        [glView removeFromSuperview];
-        [glView release];
-        glView = nil;
-    }
-    glView = [[FFTCinderGLView alloc] initWithFrame:self.view.frame];
-    float baseFreq = 0.5*((float)[[BBAudioManager bbAudioManager] sourceSamplingRate])/((float)[[BBAudioManager bbAudioManager] lengthOfFFTData]);
-    [glView setupWithBaseFreq:baseFreq andLengthOfFFT:[[BBAudioManager bbAudioManager] lengthOfFFTData]];
-    [[BBAudioManager bbAudioManager] selectChannel:0];
-    _channelBtn.hidden = [[BBAudioManager bbAudioManager] sourceNumberOfChannels]<2;
-  
-	[self.view addSubview:glView];
-    [self.view sendSubviewToBack:glView];
-	[glView startAnimation];
-    */
+ 
     //Bluetooth notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(noBTConnection) name:NO_BT_CONNECTION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(btDisconnected) name:BT_DISCONNECTED object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(btSlowConnection) name:BT_SLOW_CONNECTION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reSetupScreen) name:RESETUP_SCREEN_NOTIFICATION object:nil];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -75,12 +56,15 @@
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
+    [[self navigationController] setNavigationBarHidden:NO animated:NO];
     NSLog(@"Stopping regular view");
     [glView stopAnimation];
     [[BBAudioManager bbAudioManager] stopFFT];
 
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NO_BT_CONNECTION object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:BT_DISCONNECTED object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:BT_SLOW_CONNECTION object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:RESETUP_SCREEN_NOTIFICATION object:nil];
 }
 
 - (void)viewDidLoad
@@ -131,6 +115,48 @@
         [alert show];
         [alert release];
     }
+}
+
+-(void) btSlowConnection
+{
+    /*if([[BBAudioManager bbAudioManager] btOn])
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Slow Bluetooth connection."
+                                                        message:@"Bluetooth connection is very slow. Try moving closer to Bluetooth device and start session again."
+                                                       delegate:self
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+        [alert show];
+        [alert release];
+    }
+    */
+}
+
+
+-(void) reSetupScreen
+{
+   NSLog(@"Resetup screen");
+    [[BBAudioManager bbAudioManager] startDynanimcFFT];
+    
+    
+    //Config GL view
+    if(glView)
+    {
+        [glView stopAnimation];
+        [glView removeFromSuperview];
+        [glView release];
+        glView = nil;
+    }
+    float maxTime = 10.0f;
+    glView = [[DynamicFFTCinderGLView alloc] initWithFrame:self.view.frame];
+    float baseFreq = 0.5*((float)[[BBAudioManager bbAudioManager] sourceSamplingRate])/((float)[[BBAudioManager bbAudioManager] lengthOfFFTData]);
+    [glView setupWithBaseFreq:baseFreq lengthOfFFT:[[BBAudioManager bbAudioManager] lengthOf30HzData] numberOfGraphs:[[BBAudioManager bbAudioManager] lenghtOfFFTGraphBuffer] maxTime:maxTime];
+    [[BBAudioManager bbAudioManager] selectChannel:0];
+    _channelBtn.hidden = [[BBAudioManager bbAudioManager] sourceNumberOfChannels]<2;
+    [self.view addSubview:glView];
+    [self.view sendSubviewToBack:glView];
+    [glView startAnimation];
+
 }
 
 #pragma mark - Channel code

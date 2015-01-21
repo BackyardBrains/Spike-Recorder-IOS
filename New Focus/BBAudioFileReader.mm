@@ -59,9 +59,7 @@ static pthread_mutex_t threadLock;
     self = [super init];
     if (self)
     {
-        
-        isWawFile = !([[[urlToAudioFile path] uppercaseString] rangeOfString:@".WAV"].location == NSNotFound);
-        
+        isWawFile = !([[[urlToAudioFile pathExtension] uppercaseString] rangeOfString:@"WAV"].location == NSNotFound);        
         if(isWawFile)
         {
             if(wavManager)

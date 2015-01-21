@@ -13,14 +13,23 @@
 #import "FPPopoverController.h"
 #import "BBChannelSelectionTableViewController.h"
 
+
+@protocol BBSpikeSortingViewControllerDelegate
+@required
+- (void) spikesSortingFinished;
+@end
+
 @interface SpikesAnalysisViewController : CCGLTouchViewController <FPPopoverControllerDelegate,BBSelectionTableDelegateProtocol> {
     SpikesCinderView *glView;
     FPPopoverController * popover;
 }
 
+- (IBAction)backBtnClick:(id)sender;
 @property (retain, nonatomic) IBOutlet UISlider *timeSlider;
 @property (retain, nonatomic) IBOutlet UIButton *doneBtn;
 @property (retain, nonatomic) BBFile *bbfile;
+@property (assign, nonatomic) id <BBSpikeSortingViewControllerDelegate> masterDelegate;
+
 
 
 - (void)setGLView:(CCGLTouchView *)view;
@@ -40,3 +49,5 @@
 - (void)rowSelected:(NSInteger) rowIndex;
 -(NSMutableArray *) getAllRows;
 @end
+
+

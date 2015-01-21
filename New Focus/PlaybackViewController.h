@@ -18,11 +18,13 @@
 
 - (void)setGLView:(CCGLTouchView *)view;
 
+@property (nonatomic) BOOL showNavigationBar;
 @property (retain, nonatomic) BBFile *bbfile;
 
 @property (retain, nonatomic) IBOutlet UIButton *playPauseButton;
 @property (retain, nonatomic) IBOutlet UISlider *timeSlider;
 
+- (IBAction)backBtnClick:(id)sender;
 
 - (IBAction)sliderValueChanged:(id)sender;
 - (IBAction)playPauseButtonPressed:(id)sender;
