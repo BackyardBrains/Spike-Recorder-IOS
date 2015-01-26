@@ -9,7 +9,6 @@
             <connections>
                 <outlet property="addTrainBtn" destination="diK-Vc-NFf" id="BMh-7N-ARq"/>
                 <outlet property="channelBtn" destination="Yj1-vm-0nW" id="LTJ-In-IbZ"/>
-                <outlet property="doneBtn" destination="NQU-Zy-XLn" id="PJc-14-qv6"/>
                 <outlet property="nextTrainBtn" destination="57g-gU-Rz0" id="Sh5-pu-WXa"/>
                 <outlet property="removeTrainButton" destination="dao-0q-8p1" id="6vh-sJ-Ksy"/>
                 <outlet property="timeSlider" destination="4Be-TN-JS7" id="ULT-we-RSG"/>
@@ -25,20 +24,8 @@
                     <rect key="frame" x="0.0" y="22" width="24" height="435"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" heightSizable="YES"/>
                 </imageView>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="NQU-Zy-XLn">
-                    <rect key="frame" x="260" y="389" width="49" height="30"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                    <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
-                    <state key="normal" title="Save">
-                        <color key="titleColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                    </state>
-                    <connections>
-                        <action selector="doneClickAction:" destination="-1" eventType="touchUpInside" id="URl-9J-jPg"/>
-                    </connections>
-                </button>
                 <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" id="4Be-TN-JS7">
-                    <rect key="frame" x="30" y="389" width="217" height="31"/>
+                    <rect key="frame" x="30" y="389" width="272" height="31"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                     <connections>
                         <action selector="timeValueChanged:" destination="-1" eventType="valueChanged" id="DJw-t5-eSx"/>

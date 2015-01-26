@@ -26,14 +26,12 @@
 
 - (IBAction)backBtnClick:(id)sender;
 @property (retain, nonatomic) IBOutlet UISlider *timeSlider;
-@property (retain, nonatomic) IBOutlet UIButton *doneBtn;
 @property (retain, nonatomic) BBFile *bbfile;
 @property (assign, nonatomic) id <BBSpikeSortingViewControllerDelegate> masterDelegate;
 
 
 
 - (void)setGLView:(CCGLTouchView *)view;
-- (IBAction)doneClickAction:(id)sender;
 - (IBAction)timeValueChanged:(id)sender;
 @property (retain, nonatomic) IBOutlet UIButton *addTrainBtn;
 @property (retain, nonatomic) IBOutlet UIButton *removeTrainButton;

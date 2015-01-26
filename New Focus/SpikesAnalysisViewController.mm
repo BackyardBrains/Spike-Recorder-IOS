@@ -20,7 +20,6 @@
 
 @implementation SpikesAnalysisViewController
 
-@synthesize doneBtn;
 @synthesize bbfile;
 @synthesize timeSlider;
 @synthesize addTrainBtn;
@@ -30,7 +29,7 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     NSLog(@"Starting Spikes Analysis view");
-    [self.navigationController setNavigationBarHidden:YES animated:YES];
+    [self.navigationController setNavigationBarHidden:YES animated:NO];
     [super viewWillAppear:animated];
     // Set the slider to have the bounds of the audio file's duraiton
 
@@ -44,10 +43,72 @@
     //show buttons for spike trains if we have multiple trains
     [self setupButtons];
     
-    [glView loadSettings];
-    [glView startAnimation];
+    if(glView!=nil)
+    {
+        [glView loadSettings];
+        [glView startAnimation];
+    }
+    
+    if([[self.bbfile allSpikes] count]==0)
+    {
+        [self recalculateSpikes];
+    }
 }
 
+-(void) recalculateSpikes
+{
+    BBFile * fileToAnalyze = self.bbfile;
+    
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    hud.labelText = @"Analyzing Spikes";
+    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+        
+        if([[BBAnalysisManager bbAnalysisManager] findSpikes:fileToAnalyze] != -1)
+        {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                [MBProgressHUD hideHUDForView:self.view animated:YES];
+                [self resetupGLView];
+            });
+        }
+        else
+        {
+            //we have error on spike searching
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [MBProgressHUD hideHUDForView:self.view animated:YES];
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Can't find spikes" message:@"File is too short or it has low sampling rate."
+                                                               delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+                [alert show];
+                [alert release];
+                
+                [self resetupGLView];
+            });
+            
+        }
+        
+    });
+
+
+}
+
+-(void) resetupGLView
+{
+    if(glView == nil)
+    {
+        glView = [[SpikesCinderView alloc] initWithFrame:self.view.frame];
+        
+        [self.view addSubview:glView];
+        [self.view sendSubviewToBack:glView];
+        
+        // set our view controller's prop that will hold a pointer to our newly created CCGLTouchView
+        [self setGLView:glView];
+        
+    }
+    
+    [glView loadSettings];
+    [glView startAnimation];
+
+}
 
 -(void) setupButtons
 {
@@ -60,11 +121,14 @@
 
 - (void)viewWillDisappear:(BOOL)animated
 {
+    [self saveAll];
+    [glView removeFromSuperview];
     [glView saveSettings];
     [glView stopAnimation];
     [glView release];
     glView = nil;
     [self.navigationController setNavigationBarHidden:NO animated:YES];
+    [super viewWillDisappear:animated];
 }
 
 - (void)viewDidLoad
@@ -103,21 +167,10 @@
 //
 // End of selecting/editing save selected spike trains
 //
-- (IBAction)doneClickAction:(id)sender {
-    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    hud.labelText = @"Saving selection";
-    doneBtn.enabled = NO;
+- (IBAction)saveAll {
+  
     dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         [[BBAnalysisManager bbAnalysisManager] filterSpikes];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            doneBtn.enabled = YES;
-            [MBProgressHUD hideHUDForView:self.view animated:YES];
-            [self.navigationController popViewControllerAnimated:YES];
-            if(self.masterDelegate)
-            {
-                [self.masterDelegate spikesSortingFinished];
-            }
-        });
     });
 }
 
@@ -138,7 +191,7 @@
 
 - (void)dealloc {
     //[triggerHistoryLabel release];
-    [doneBtn release];
+
     [timeSlider release];
     [addTrainBtn release];
     [removeTrainButton release];

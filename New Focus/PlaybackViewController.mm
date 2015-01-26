@@ -83,6 +83,12 @@
         glView = nil;
     }
     
+    if([[BBAudioManager bbAudioManager] btOn])
+    {
+        [[BBAudioManager bbAudioManager] closeBluetooth];
+    }
+    
+    
     // our CCGLTouchView being added as a subview
     glView = [[MultichannelCindeGLView alloc] initWithFrame:self.view.frame];
 

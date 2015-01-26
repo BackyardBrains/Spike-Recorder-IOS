@@ -168,6 +168,7 @@
 		24EBC1B31997DD21001D3392 /* TrialActionsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 24EBC1B11997DD21001D3392 /* TrialActionsViewController.xib */; };
 		24EBC1BE1997EE00001D3392 /* UIDeviceExt.m in Sources */ = {isa = PBXBuildFile; fileRef = 24EBC1BD1997EE00001D3392 /* UIDeviceExt.m */; };
 		24F6696019476E9B00A78247 /* BBAudioFileWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 24F6695F19476E9B00A78247 /* BBAudioFileWriter.m */; };
+		24FC91941A765DA200E81744 /* BYBHandleButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 24FC91931A765DA200E81744 /* BYBHandleButton.m */; };
 		FA14EC5C15D04AD700B0FB71 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = FA14EC5B15D04AD700B0FB71 /* Settings.bundle */; };
 		FA14EC5F15D05DD800B0FB71 /* StimulationParameterView.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA14EC5E15D05DD800B0FB71 /* StimulationParameterView.xib */; };
 		FA35CEFE15ABBADC0082FBC3 /* PlaybackViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA35CEFC15ABBADB0082FBC3 /* PlaybackViewController.mm */; };
@@ -551,6 +552,8 @@
 		24EBC1BD1997EE00001D3392 /* UIDeviceExt.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIDeviceExt.m; sourceTree = "<group>"; };
 		24F6695E19476E9B00A78247 /* BBAudioFileWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BBAudioFileWriter.h; sourceTree = "<group>"; };
 		24F6695F19476E9B00A78247 /* BBAudioFileWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BBAudioFileWriter.m; sourceTree = "<group>"; };
+		24FC91921A765DA200E81744 /* BYBHandleButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BYBHandleButton.h; sourceTree = "<group>"; };
+		24FC91931A765DA200E81744 /* BYBHandleButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BYBHandleButton.m; sourceTree = "<group>"; };
 		FA14EC5B15D04AD700B0FB71 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = Settings.bundle; path = "New Focus/Settings.bundle"; sourceTree = "<group>"; };
 		FA14EC5E15D05DD800B0FB71 /* StimulationParameterView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StimulationParameterView.xib; sourceTree = "<group>"; };
 		FA35CEFB15ABBADB0082FBC3 /* PlaybackViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaybackViewController.h; sourceTree = "<group>"; };
@@ -1002,6 +1005,15 @@
 			path = UIDeviceExt;
 			sourceTree = "<group>";
 		};
+		24FC91911A765D6C00E81744 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				24FC91921A765DA200E81744 /* BYBHandleButton.h */,
+				24FC91931A765DA200E81744 /* BYBHandleButton.m */,
+			);
+			name = Components;
+			sourceTree = "<group>";
+		};
 		FA2DAF8316C85D7E00EFF9D6 /* Artwork */ = {
 			isa = PBXGroup;
 			children = (
@@ -1277,6 +1289,7 @@
 		FADF267B1596362F006C87BA /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				24FC91911A765D6C00E81744 /* Components */,
 				24DBA932197967AD00AEDE86 /* Graphs */,
 				FA9059B915AA8AB00013688B /* Table UI */,
 				24DBA9331979687500AEDE86 /* GL Views */,
@@ -1604,6 +1617,7 @@
 				2490139B1966CD5E00E5EF91 /* GraphMatrixViewController.mm in Sources */,
 				24BB835B199E66AA00C12932 /* TrialDCMDGraphView.mm in Sources */,
 				2490139F1966D88200E5EF91 /* GraphCollectionViewCell.mm in Sources */,
+				24FC91941A765DA200E81744 /* BYBHandleButton.m in Sources */,
 				245B1846199172D200943684 /* ExperimentsViewController.mm in Sources */,
 				245B183D1990E4F400943684 /* BBDCMDTrial.mm in Sources */,
 				FAFAEEFD1621CC0400632975 /* BBFile.mm in Sources */,

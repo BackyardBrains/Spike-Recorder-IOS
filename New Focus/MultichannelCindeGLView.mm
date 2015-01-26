@@ -265,7 +265,12 @@
     
 }
 
-
+//
+// Check if channel is active\
+// channels configuration keeps info about active
+// and nonactive channels. Every channel is one bit.
+// if it is active than bit is set to 1 if not to 0
+//
 -(BOOL) channelActive:(UInt8) channelIndex
 {
     if(channelIndex>maxNumberOfChannels)
@@ -566,13 +571,15 @@
             }
 
         }
+        
+        //Draw spikes
         glLineWidth(1.0f);
         if(self.mode == MultichannelGLViewModePlayback)
         {
             [self drawSpikes];
         }
         
-        
+        //Draw handlws for movement of axis
         if(multichannel || self.mode == MultichannelGLViewModeView)
         {
             //draw handle
@@ -589,14 +596,14 @@
         }
         
 
-        
+        //Draw measurements on screen
         if(weAreDrawingSelection)
         {
             [self drawTimeAndRMS];
         }
         else
         {
-            // Put a little grid on the screen.
+            // Put a time scale
             [self drawGrid];
             // Draw scale on the screen
             [self drawScaleText];
@@ -908,11 +915,21 @@
     float virtualVisibleTimeSpan = realNumberOfSamplesVisible * 1.0f/samplingRate;
     
     //calc. real start and end time
-    float realStartTime =currentTime - virtualVisibleTimeSpan;
+    float graphStartTime =currentTime - virtualVisibleTimeSpan;
     float realEndTime = currentTime;
-    if(realStartTime<0.0f)
+    
+    //Graph start time represents smalest time of visible graph
+    //this is important since graph is limited to numSamplesMax
+    //and we have elastic animation if user zoom out more than numSamplesMax
+    //So we need to filter spikes to show only spikes that have graph in background
+
+    if (realNumberOfSamplesVisible > numSamplesMax) {
+        graphStartTime = currentTime - numSamplesMax * 1.0f/samplingRate;
+    }
+    
+    if(graphStartTime<0.0f)
     {
-        realStartTime = 0.0f;
+        graphStartTime = 0.0f;
     }
 
     //Draw spikes
@@ -948,7 +965,7 @@
                 i++;
                 //go through all spikes
                 for (tempSpike in tempSpikeTrain.spikes) {
-                    if([tempSpike time]>realStartTime && [tempSpike time]<realEndTime)
+                    if([tempSpike time]>graphStartTime && [tempSpike time]<realEndTime)
                     {
                         weAreInInterval = YES;//we are in visible interval
                         //reacalculate spikes to virtual GL x axis [-maxTimeSpan, 0]
@@ -1330,7 +1347,7 @@
                     {
                         if (touchTimer==nil)
                         {
-                            touchTimer = [NSTimer scheduledTimerWithTimeInterval:1.1 target:self selector:@selector(touchHasBeenHeld:) userInfo:nil repeats:NO];
+                            touchTimer = [NSTimer scheduledTimerWithTimeInterval:0.6 target:self selector:@selector(touchHasBeenHeld:) userInfo:nil repeats:NO];
                             startX = touchPos.x;
                             startY = touchPos.y;
                         }
@@ -1340,7 +1357,7 @@
                             {
                                 [touchTimer invalidate];
                                 touchTimer = nil;
-                                touchTimer = [NSTimer scheduledTimerWithTimeInterval:1.1 target:self selector:@selector(touchHasBeenHeld:) userInfo:nil repeats:NO];
+                                touchTimer = [NSTimer scheduledTimerWithTimeInterval:0.6 target:self selector:@selector(touchHasBeenHeld:) userInfo:nil repeats:NO];
                             }
                             
                         }

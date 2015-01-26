@@ -319,6 +319,7 @@ static BBAudioManager *bbAudioManager = nil;
     _sourceNumberOfChannels=[[BBBTManager btManager] numberOfChannels];
     
     [self stopAllInputOutput];
+    [self resetBuffers];
     [self makeInputOutput];
 }
 
@@ -377,7 +378,7 @@ static BBAudioManager *bbAudioManager = nil;
 
 -(void) makeInputOutput
 {
-    [self resetBuffers];
+   // [self resetBuffers];
     
     if(btOn)
     {
