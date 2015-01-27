@@ -185,8 +185,7 @@
             //check if spike is in one of the selected intervals
             if((spikes[i].y<[[BBAnalysisManager bbAnalysisManager] thresholdFirst] && spikes[i].y>[[BBAnalysisManager bbAnalysisManager] thresholdSecond]) || (spikes[i].y>[[BBAnalysisManager bbAnalysisManager] thresholdFirst] && spikes[i].y<[[BBAnalysisManager bbAnalysisManager] thresholdSecond]))
             {
-            
-               [self setColorWithIndex:[[BBAnalysisManager bbAnalysisManager] currentChannel]+[[BBAnalysisManager bbAnalysisManager] currentSpikeTrain] transparency:1.0f]; //draw selected spike
+                [self setGLColor:[BYBGLView getSpikeTrainColorWithIndex:[[BBAnalysisManager bbAnalysisManager] currentChannel]+[[BBAnalysisManager bbAnalysisManager] currentSpikeTrain] transparency:1.0f]];
             }
             else
             {
@@ -220,7 +219,8 @@
     float radiusXAxis = 20*scaleXY.x;
     float radiusYAxis = 20*scaleXY.y;
     
-    [self setColorWithIndex:[[BBAnalysisManager bbAnalysisManager] currentSpikeTrain] transparency:1.0f];
+   
+    [self setGLColor:[BYBGLView getSpikeTrainColorWithIndex:[[BBAnalysisManager bbAnalysisManager] currentSpikeTrain] transparency:1.0f]];
     gl::drawSolidEllipse( Vec2f(leftxcenterHandle, threshval1), radiusXAxis, radiusYAxis, 1000 );
     gl::drawSolidTriangle(
                           Vec2f(leftxcenterHandle-0.35*radiusXAxis, threshval1+radiusYAxis*0.97),
@@ -261,31 +261,7 @@
     [self drawScaleTextAndSelected];
 }
 
-//
-// Chenge color according to index
-//
--(void) setColorWithIndex:(int) iindex transparency:(float) transp
-{
-    iindex = iindex%5;
-    switch (iindex) {
-        case 0:
-            glColor4f(0.9686274509803922f, 0.4980392156862745f, 0.011764705882352941f, transp);
-            break;
-        case 1:
-            glColor4f(1.0f, 0.011764705882352941f, 0.011764705882352941f, transp);
-            break;
-        case 2:
-            glColor4f( 0.9882352941176471f, 0.9372549019607843f, 0.011764705882352941f, transp);
-            break;
-        case 3:
-            glColor4f(0.0f, 0.0f, 1.0f, transp);
-            break;
-        case 4:
-            glColor4f(1.0f, 0.0f, 1.0f, transp);
-            break;
-    }
 
-}
 
 - (void)drawScaleTextAndSelected
 {

@@ -12,7 +12,7 @@
 #import "BBFile.h"
 #import "FPPopoverController.h"
 #import "BBChannelSelectionTableViewController.h"
-
+#import "BYBHandleButton.h"
 
 @protocol BBSpikeSortingViewControllerDelegate
 @required
@@ -23,6 +23,7 @@
     SpikesCinderView *glView;
     FPPopoverController * popover;
 }
+@property (retain, nonatomic) IBOutlet BYBHandleButton *nextBtn;
 
 - (IBAction)backBtnClick:(id)sender;
 @property (retain, nonatomic) IBOutlet UISlider *timeSlider;
@@ -35,7 +36,6 @@
 - (IBAction)timeValueChanged:(id)sender;
 @property (retain, nonatomic) IBOutlet UIButton *addTrainBtn;
 @property (retain, nonatomic) IBOutlet UIButton *removeTrainButton;
-@property (retain, nonatomic) IBOutlet UIButton *nextTrainBtn;
 @property (retain, nonatomic) IBOutlet UIButton *channelBtn;
 
 
@@ -43,7 +43,7 @@
 
 - (IBAction)addTrainClick:(id)sender;
 - (IBAction)removeTrainClick:(id)sender;
-- (IBAction)nextTrainClick:(id)sender;
+
 - (void)rowSelected:(NSInteger) rowIndex;
 -(NSMutableArray *) getAllRows;
 @end

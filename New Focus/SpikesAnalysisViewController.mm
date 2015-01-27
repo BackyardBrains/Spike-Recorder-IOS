@@ -24,7 +24,7 @@
 @synthesize timeSlider;
 @synthesize addTrainBtn;
 @synthesize removeTrainButton;
-@synthesize nextTrainBtn;
+@synthesize nextBtn;
 
 - (void)viewWillAppear:(BOOL)animated
 {
@@ -113,10 +113,11 @@
 -(void) setupButtons
 {
 
-    self.nextTrainBtn.hidden = [[BBAnalysisManager bbAnalysisManager] numberOfSpikeTrainsOnCurrentChannel]<2;
+    self.nextBtn.hidden = [[BBAnalysisManager bbAnalysisManager] numberOfSpikeTrainsOnCurrentChannel]<2;
     self.removeTrainButton.hidden = [[BBAnalysisManager bbAnalysisManager] numberOfSpikeTrainsOnCurrentChannel]<2;
     self.addTrainBtn.hidden = [[BBAnalysisManager bbAnalysisManager] numberOfSpikeTrainsOnCurrentChannel]>2;
     self.channelBtn.hidden = [[[BBAnalysisManager bbAnalysisManager] fileToAnalyze] numberOfChannels]<2;
+    [self setNextColor];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -148,6 +149,12 @@
     [self setGLView:glView];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate:) name:UIApplicationWillTerminateNotification object:nil];
+    
+    UITapGestureRecognizer *singleFingerTap =
+    [[UITapGestureRecognizer alloc] initWithTarget:self
+                                            action:@selector(tapOnNextButton:)];
+    [self.nextBtn addGestureRecognizer:singleFingerTap];
+    [singleFingerTap release];
     
 }
 
@@ -195,8 +202,8 @@
     [timeSlider release];
     [addTrainBtn release];
     [removeTrainButton release];
-    [nextTrainBtn release];
     [_channelBtn release];
+    [nextBtn release];
     [super dealloc];
 }
 
@@ -221,7 +228,7 @@
 - (IBAction)addTrainClick:(id)sender {
     [[BBAnalysisManager bbAnalysisManager] addAnotherThresholds];
 
-    self.nextTrainBtn.hidden = NO;
+    self.nextBtn.hidden = NO;
     self.removeTrainButton.hidden = NO;
     if([[BBAnalysisManager bbAnalysisManager] numberOfSpikeTrainsOnCurrentChannel]>2)
     {
@@ -235,7 +242,7 @@
     [[BBAnalysisManager bbAnalysisManager] removeSelectedThresholds];
     if([[BBAnalysisManager bbAnalysisManager] numberOfSpikeTrainsOnCurrentChannel]<2)
     {
-        self.nextTrainBtn.hidden = YES;
+        self.nextBtn.hidden = YES;
         self.removeTrainButton.hidden = YES;
     }
     if([[BBAnalysisManager bbAnalysisManager] numberOfSpikeTrainsOnCurrentChannel]<3)
@@ -245,8 +252,28 @@
 }
 
 //Move to next spike train
-- (IBAction)nextTrainClick:(id)sender {
+/*- (IBAction)nextTrainClick:(id)sender {
     [[BBAnalysisManager bbAnalysisManager] moveToNextSpikeTrain];
+}*/
+
+//The event handling method
+- (void)tapOnNextButton:(UITapGestureRecognizer *)recognizer {
+    [[BBAnalysisManager bbAnalysisManager] moveToNextSpikeTrain];
+    [self setNextColor];
+}
+
+
+-(void) setNextColor
+{
+    int nextIndex = [[BBAnalysisManager bbAnalysisManager] currentSpikeTrain]+1;
+    int numberOfSpikeTrains = [[BBAnalysisManager bbAnalysisManager] numberOfSpikeTrainsOnCurrentChannel];
+    
+    if(nextIndex >= numberOfSpikeTrains)
+    {
+        nextIndex = 0;
+    }
+    
+    [self.nextBtn nextColor:[BYBGLView getSpikeTrainColorWithIndex:nextIndex transparency:1.0f]];
 }
 
 #pragma mark - Selection of channels Popover

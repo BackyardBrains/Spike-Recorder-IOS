@@ -188,9 +188,9 @@
     return ![[BBAudioManager bbAudioManager] playing];
 }
 
--(void) updateSelection:(float) newSelectionTime
+-(void) updateSelection:(float) newSelectionTime timeSpan:(float) timeSpan
 {
-    [[BBAudioManager bbAudioManager] updateSelection:newSelectionTime];
+    [[BBAudioManager bbAudioManager] updateSelection:newSelectionTime timeSpan:1.0f];
 }
 
 -(float) selectionStartTime

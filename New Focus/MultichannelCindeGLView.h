@@ -6,11 +6,12 @@
 //  Copyright (c) 2014 Datta Lab, Harvard University. All rights reserved.
 //
 
-#import "CCGLTouchView.h"
+
 #include "cinder/Font.h"
 #include "cinder/gl/TextureFont.h"
 #include "cinder/Text.h"
 #include "cinder/Utilities.h"
+#import "BYBGLView.h"
 
 @protocol MultichannelGLViewDelegate ;
 
@@ -25,7 +26,7 @@ typedef enum {
 } MultichannelGLViewMode;
 
 
-@interface MultichannelCindeGLView : CCGLTouchView
+@interface MultichannelCindeGLView : BYBGLView
 {
     CameraOrtho mCam;
     gl::Texture mColorScale;
@@ -81,12 +82,13 @@ typedef enum {
 -(void) selectChannel:(int) selectedChannel;//set selected channel
 - (NSMutableArray *) getChannels;//get channels from BBfile object
 -(BOOL) shouldEnableSelection;//should view enable interval selection
--(void) updateSelection:(float) newSelectionTime;
+-(void) updateSelection:(float) newSelectionTime timeSpan:(float) timeSpan;
 -(float) selectionStartTime;
 -(float) selectionEndTime;
 -(void) endSelection;
 -(BOOL) selecting;
 -(float) rmsOfSelection;
+-(NSMutableArray * ) spikesCount;
 
 -(BOOL) thresholding;
 -(float) threshold;

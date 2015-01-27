@@ -9,5 +9,13 @@
 #import <UIKit/UIKit.h>
 
 @interface BYBHandleButton : UIView
+{
+    UIColor * currentColor;
+
+}
+
+-(void) nextColor:(UIColor * ) theColor;
+
+
 
 @end

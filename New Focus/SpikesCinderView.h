@@ -6,7 +6,6 @@
 //  Copyright (c) 2014 Datta Lab, Harvard University. All rights reserved.
 //
 
-#import "CCGLTouchView.h"
 #import "Novocaine.h"
 #import "RingBuffer.h"
 #import "BBAnalysisManager.h"
@@ -14,8 +13,9 @@
 #include "cinder/gl/TextureFont.h"
 #include "cinder/Text.h"
 #include "cinder/Utilities.h"
+#import "BYBGLView.h"
 
-@interface SpikesCinderView : CCGLTouchView {
+@interface SpikesCinderView : BYBGLView {
     CameraOrtho mCam;
     gl::Texture mColorScale;
     gl::TextureFontRef mScaleFont;

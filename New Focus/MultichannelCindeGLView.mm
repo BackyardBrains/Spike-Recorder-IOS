@@ -52,6 +52,11 @@
     float startY;
     float startX;
     float timePos;
+    
+    //scrubbing on waveform
+    BOOL playerWasPlayingWhenStoped;
+    float lastXPosition;
+    
 }
 
 @end
@@ -535,14 +540,16 @@
         gl::clear( Color( 0.0f, 0.0f, 0.0f ), true );
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
         // Look at it right
-        mCam.setOrtho(-maxTimeSpan+((float)maxTimeSpan/(float)numSamplesMax), -0.0f, -maxVoltsSpan/2.0f, maxVoltsSpan/2.0f, 1, 100);
+        //+(((float)maxTimeSpan)/(float)numSamplesVisible)
+        mCam.setOrtho(-maxTimeSpan, -0.0f, -maxVoltsSpan/2.0f, maxVoltsSpan/2.0f, 1, 100);
         gl::setMatrices( mCam );
         
         scaleXY = [self screenToWorld:Vec2f(1.0f,1.0f)];
         Vec2f scaleXYZero = [self screenToWorld:Vec2f(0.0f,0.0f)];
         scaleXY.x = fabsf(scaleXY.x - scaleXYZero.x);
         scaleXY.y = fabsf(scaleXY.y - scaleXYZero.y);
-        
+
+
         
         if ([dataSourceDelegate respondsToSelector:@selector(selecting)])
         {
@@ -736,14 +743,28 @@
     
     
     //Draw RMS -------------------------------------------------
-    float xpositionOfCenterOfRMSBackground;
     
-    Vec2f rmsTextSize = mScaleFont->measureString(rmstream.str());
-    xpositionOfCenterOfRMSBackground = self.frame.size.width-4.25*rmsTextSize.y;
-    Vec2f rmsTextPosition = Vec2f(0.,0.);
-    rmsTextPosition.x = (xpositionOfCenterOfRMSBackground - 0.5*rmsTextSize.x);
+
+    
+    
+    
+    Vec2f textSize = mScaleFont->measureString(rmstream.str());
+    
+    float widthOfBackground = 160;// *scaleXY.x;
+    float paddingOfBackground = 10;// * scaleXY.x;
+    float heightOfOneRow = textSize.y * 1.4f;// * scaleXY.y;
+    float rowVerticalGap = 4;// * scaleXY.x;
+    
+    float xPositionOfBackground = self.frame.size.width-widthOfBackground-paddingOfBackground;
+    float yPositionOfBackground = 100;
+    
+    
+    float xpositionOfCenterOfRMSBackground = xPositionOfBackground+widthOfBackground*0.5;
+    Vec2f textPosition = Vec2f(0.,0.);
+    textPosition.x = (xpositionOfCenterOfRMSBackground - 0.5*textSize.x);
+    textPosition.y = yPositionOfBackground +heightOfOneRow - 0.4*(textSize.y);
     //if it is iPad put it on the right
-    UIInterfaceOrientation interfaceOrientation = [[UIApplication sharedApplication] statusBarOrientation];
+   /* UIInterfaceOrientation interfaceOrientation = [[UIApplication sharedApplication] statusBarOrientation];
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad || UIInterfaceOrientationIsLandscape(interfaceOrientation)) {
         rmsTextPosition.y =xScaleTextPosition.y;
     }
@@ -751,18 +772,78 @@
     {
         rmsTextPosition.y =0.23*self.frame.size.height + (mScaleFont->getAscent() / 2.0f);
     }
+    */
     glColor4f(0.0, 0.0, 0.0, 1.0);
     
     
     //draw background rectangle
-    //gl::enableDepthRead();
-    gl::drawSolidRect(Rectf(self.frame.size.width-8*rmsTextSize.y,rmsTextPosition.y-1.1*rmsTextSize.y,self.frame.size.width-0.5*rmsTextSize.y,rmsTextPosition.y+0.4*rmsTextSize.y));
-    //gl::disableDepthRead();
-    gl::color( ColorA( 0.0, 1.0f, 0.0f, 1.0f ) );
+    gl::drawSolidRect(Rectf(xPositionOfBackground, yPositionOfBackground, xPositionOfBackground+widthOfBackground, yPositionOfBackground+heightOfOneRow));
+    
     //draw text
-    mScaleFont->drawString(rmstream.str(), rmsTextPosition);
+    gl::color( ColorA( 0.0, 1.0f, 0.0f, 1.0f ) );
+    mScaleFont->drawString(rmstream.str(), textPosition);
 
-    //gl::enableDepthRead();
+    
+    
+    //Draw Spike count -----------------------------------------
+    
+    if(self.mode == MultichannelGLViewModePlayback)
+    {
+        NSMutableArray * spikeCountArray = [dataSourceDelegate spikesCount];
+        
+        int i;
+        BOOL hasSomeSpikes;
+        hasSomeSpikes = YES;
+        for(i=0;i<[spikeCountArray count];i++)
+        {
+            if([[spikeCountArray objectAtIndex:i] integerValue]>0)
+            {
+                hasSomeSpikes = YES;
+                break;
+            }
+        }
+        
+        rmstream.precision(1);
+        //Draw spike count
+        if(hasSomeSpikes)
+        {
+            for(i=0;i<[spikeCountArray count];i++)
+            {
+                //change vertical position of label
+                yPositionOfBackground = yPositionOfBackground-heightOfOneRow-rowVerticalGap;
+                
+                //get spike count and frequency
+                int cSpikeCount = [[spikeCountArray objectAtIndex:i] integerValue];
+                float cSpikeFrequency = ((float)cSpikeCount)/(sEndTime - sStartTime);
+                
+                //create string and measure size
+                rmstream.str("");
+                rmstream << fixed << (int)cSpikeCount<< "("<<cSpikeFrequency<<"Hz)";
+                textSize = mScaleFont->measureString(rmstream.str());
+
+                //draw background rectangle
+                glColor4f(0.0, 0.0, 0.0, 1.0);
+                gl::drawSolidRect(Rectf(xPositionOfBackground, yPositionOfBackground, xPositionOfBackground+widthOfBackground, yPositionOfBackground+heightOfOneRow));
+                
+                
+                float xpositionOfCenterOfSpikesBackground = xPositionOfBackground+widthOfBackground*0.5;
+               
+                textPosition.x = (xpositionOfCenterOfSpikesBackground - 0.5*textSize.x);
+                textPosition.y = yPositionOfBackground +heightOfOneRow - 0.4*(textSize.y);
+                
+                
+                //draw text
+                gl::color( ColorA( 0.0, 1.0f, 0.0f, 1.0f ) );
+                mScaleFont->drawString(rmstream.str(), textPosition);
+            
+                //[self setColorWithIndex:i transparency:1.0f];
+                [self setGLColor:[BYBGLView getSpikeTrainColorWithIndex:i transparency:1.0f]];
+                gl::drawSolidEllipse( Vec2f(xPositionOfBackground+10, yPositionOfBackground+heightOfOneRow*0.5), 5,5, 40 );
+            
+            }
+        }
+    
+    }
 
 }
 
@@ -961,7 +1042,8 @@
 
                 weAreInInterval = NO;
             
-                [self setColorWithIndex:(trainIndex+(channelIndex+1)) transparency:1.0f];
+                //[self setColorWithIndex:(trainIndex+(channelIndex+1)) transparency:1.0f];
+                [self setGLColor:[BYBGLView getSpikeTrainColorWithIndex:trainIndex transparency:1.0f]];
                 i++;
                 //go through all spikes
                 for (tempSpike in tempSpikeTrain.spikes) {
@@ -1227,6 +1309,7 @@
         Vec2f touchPos = touches[0].getPos();
         // Convert into GL coordinate
         Vec2f glWorldTouchPos = [self screenToWorld:touchPos];
+
         int grabbedHandleIndex;
         
         //if user grabbed the handle of channel
@@ -1328,33 +1411,38 @@
                 {
                     
                     float virtualVisibleTimeSpan = numSamplesVisible * 1.0f/samplingRate;
+                    
+                    //time from right end of the screen to touch position (positive value)
                     timePos = (glWorldTouchPos.x/(-maxTimeSpan))*virtualVisibleTimeSpan;
+                    
+                    //NSLog(@"%f",timePos);
+                    //if selection is enabled
                     if(selectionEnabledAfterSecond)
                     {
-                       // if ([touchTimer isValid])
-                      //  {
-                       // [touchTimer invalidate];
-                       // }
                         touchTimer = nil;
                     
-                       // float virtualVisibleTimeSpan = numSamplesVisible * 1.0f/samplingRate;
-                       // timePos = (glWorldTouchPos.x/(-maxTimeSpan))*virtualVisibleTimeSpan;
                         
-                        [dataSourceDelegate updateSelection:timePos];
+                        [dataSourceDelegate updateSelection:timePos timeSpan:virtualVisibleTimeSpan];
                 
                     }
                     else
                     {
-                        if (touchTimer==nil)
+                    // if selection is not enabled
+                        
+                        
+                        if (touchTimer==nil)//if timer is not running start it
                         {
                             touchTimer = [NSTimer scheduledTimerWithTimeInterval:0.6 target:self selector:@selector(touchHasBeenHeld:) userInfo:nil repeats:NO];
+                            //remember starting touch position
                             startX = touchPos.x;
                             startY = touchPos.y;
                         }
                         else
                         {
+                        //if timer is already running check if we are moving finger
                             if(abs(startY-touchPos.y)>2 || abs(startX-touchPos.x)>2)
                             {
+                                //if we are moving finger reset timer
                                 [touchTimer invalidate];
                                 touchTimer = nil;
                                 touchTimer = [NSTimer scheduledTimerWithTimeInterval:0.6 target:self selector:@selector(touchHasBeenHeld:) userInfo:nil repeats:NO];
@@ -1366,6 +1454,28 @@
                     
                 }
             }
+            
+            
+            //one finger scrubbing
+            if(self.mode == MultichannelGLViewModePlayback && !selectionEnabledAfterSecond)
+            {
+                if(![[BBAudioManager bbAudioManager] playing])
+                {
+                    //playerWasPlayingWhenStoped = [BBAudioManager]
+                    float windowWidth = self.frame.size.width;
+                    if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] && [[UIScreen mainScreen] scale]==2.0)
+                    {
+                        windowWidth += windowWidth;
+                    }
+                    float diffPix = touches[0].getPos().x - touches[0].getPrevPos().x;
+                    float timeDiff = -diffPix*(numSamplesVisible/windowWidth)*(1/[[BBAudioManager bbAudioManager] sourceSamplingRate]);
+                    [[BBAudioManager bbAudioManager] setSeeking:YES];
+                    [[BBAudioManager bbAudioManager] setCurrentFileTime:[[BBAudioManager bbAudioManager] currentFileTime] + timeDiff ];
+                }
+                
+            }
+            
+            
         
         }
         
@@ -1377,8 +1487,8 @@
     if(touchTimer!=nil)
     {
         selectionEnabledAfterSecond = true;
-        [dataSourceDelegate updateSelection:timePos*0.9999];
-        [dataSourceDelegate updateSelection:timePos];
+        [dataSourceDelegate updateSelection:timePos*0.9999 timeSpan:(numSamplesVisible * 1.0f/samplingRate)];
+        [dataSourceDelegate updateSelection:timePos timeSpan:(numSamplesVisible * 1.0f/samplingRate)];
         [touchTimer invalidate];
         touchTimer = nil;
     }
@@ -1440,13 +1550,12 @@
     {
         [dataSourceDelegate endSelection];
         selectionEnabledAfterSecond = false;
-        //if[touchTimer ]
-        //if ([touchTimer isValid])
-        //{
-         [touchTimer invalidate];
-        //}
+        [touchTimer invalidate];
         touchTimer = nil;
     }
+    
+    
+    
     [super touchesBegan:touches withEvent:event];
     
 }
@@ -1468,6 +1577,54 @@
     
     [super touchesEnded:touches withEvent:event];
 }
+
+
+
+
+/*
+ 
+ //
+ // Called when user stop dragging scruber
+ //
+ - (void)sliderTouchUpInside:(NSNotification *)notification {
+ if(!audioPaused)
+ {
+ [bbAudioManager setSeeking:NO];
+ [bbAudioManager resumePlaying];
+ }
+ }
+ 
+ //
+ // Called when user start dragging scruber
+ //
+ - (void)sliderTouchDown:(NSNotification *)notification {
+ [bbAudioManager setSeeking:YES];
+ [bbAudioManager pausePlaying];
+ audioPaused = YES;
+ }
+ 
+ //Seek to new place in file
+ - (IBAction)backBtnClick:(id)sender {
+ [self.navigationController popViewControllerAnimated:YES];
+ }
+ 
+ - (IBAction)sliderValueChanged:(id)sender {
+ 
+ bbAudioManager.currentFileTime = (float)self.timeSlider.value;
+ }
+ */
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

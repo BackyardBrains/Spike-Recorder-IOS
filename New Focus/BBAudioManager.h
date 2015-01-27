@@ -126,9 +126,10 @@ typedef enum BBStimulationType
 
 //Selection
 -(void) endSelection;
--(void) updateSelection:(float) newSelectionTime;
+-(void) updateSelection:(float) newSelectionTime timeSpan:(float) timeSpan;
 - (float) selectionStartTime;
 - (float) selectionEndTime;
+- (NSMutableArray *) spikesCount;
 
 -(NSMutableArray *) getSpikes;
 -(float) getTimeForSpikes;

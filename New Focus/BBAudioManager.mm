@@ -32,7 +32,9 @@ static BBAudioManager *bbAudioManager = nil;
     float _threshold;
     float _selectionStartTime;
     float _selectionEndTime;
+    float _timeSpan;
     float selectionRMS;
+    NSMutableArray* _spikeCountInSelection;
     BBFile * _file;
     //precise time used to sinc spikes display with waveform
     float _preciseTimeOfLastData;
@@ -162,6 +164,7 @@ static BBAudioManager *bbAudioManager = nil;
         _sourceNumberOfChannels = audioManager.numInputChannels;
         
         _selectedChannel = 0;
+        _spikeCountInSelection = [[NSMutableArray alloc] initWithCapacity:0];
         
         NSDictionary *defaultsDict = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"SettingsDefaults" ofType:@"plist"]];
         [[NSUserDefaults standardUserDefaults] registerDefaults:defaultsDict];
@@ -788,7 +791,7 @@ static BBAudioManager *bbAudioManager = nil;
                     if(selecting)
                     {
                          //if we have active selection recalculate RMS
-                        [self updateSelection:_selectionEndTime];
+                        [self updateSelection:_selectionEndTime timeSpan:_timeSpan];
                     }
                 });
             }
@@ -998,7 +1001,7 @@ static BBAudioManager *bbAudioManager = nil;
         //if we have active selection recalculate RMS
         if(selecting)
         {
-            [self updateSelection:_selectionEndTime];
+            [self updateSelection:_selectionEndTime timeSpan:_timeSpan];
             
         }
     }
@@ -1296,6 +1299,61 @@ static BBAudioManager *bbAudioManager = nil;
 
 #pragma mark - Selection analysis
 
+-(void) calculateSpikeCountInSelection
+{
+    [_spikeCountInSelection removeAllObjects];
+    
+    BBSpike * tempSpike;
+    BBChannel * tempChannel;
+    BBSpikeTrain * tempSpikeTrain;
+    float startTime, endTime;
+    //selection times are negative so we need oposite logic
+    if(_selectionEndTime> _selectionStartTime)
+    {
+        startTime = _selectionEndTime ;
+        endTime = _selectionStartTime ;
+
+    }
+    else
+    {
+        startTime = _selectionStartTime ;
+        endTime = _selectionEndTime ;
+    }
+   // startTime = _timeSpan-startTime;
+   // endTime = _timeSpan - endTime;
+    startTime = [self currentFileTime]-startTime;
+    endTime = [self currentFileTime] - endTime;
+    
+    BOOL weAreInInterval;
+
+    tempChannel = [[_file allChannels] objectAtIndex:_selectedChannel];
+
+    for(int trainIndex=0;trainIndex<[[tempChannel spikeTrains] count];trainIndex++)
+    {
+        tempSpikeTrain = [[tempChannel spikeTrains] objectAtIndex:trainIndex];
+        
+        
+        weAreInInterval = NO;
+
+  
+        int i = 0;
+        //go through all spikes
+        for (tempSpike in tempSpikeTrain.spikes) {
+           
+            if([tempSpike time]>startTime && [tempSpike time]<endTime)
+            {
+                i++;
+            }
+            else if(weAreInInterval)
+            {//if we pass last spike in selected interval
+                break;
+            }
+        }
+        [_spikeCountInSelection addObject:[NSNumber numberWithInt:i]];
+    }
+}
+
+
 -(float) calculateSelectionRMS
 {
     
@@ -1330,12 +1388,12 @@ static BBAudioManager *bbAudioManager = nil;
         selectionRMS =dspAnalizer->RMSSelection((tempCalculationBuffer+lastNumberOfSampleDisplayed-endSample), endSample-startSample);
 
     }
-    
-    
-    
-    
     return selectionRMS;
 }
+
+
+
+
 
 - (float)rmsOfSelection
 {
@@ -1373,12 +1431,17 @@ static BBAudioManager *bbAudioManager = nil;
 }
 
 //Update selection interval
--(void) updateSelection:(float) newSelectionTime
+//
+// newSelectionTime is time from right end of the screen to touch (positive value)
+//
+-(void) updateSelection:(float) newSelectionTime timeSpan:(float)timeSpan
 {
+    _timeSpan = timeSpan;
     if(selecting)
     {
         _selectionEndTime = newSelectionTime;
         selectionRMS = [self calculateSelectionRMS];
+        [self calculateSpikeCountInSelection];
     }
     else
     {
@@ -1398,6 +1461,10 @@ static BBAudioManager *bbAudioManager = nil;
     return _selectionEndTime;
 }
 
+-(NSMutableArray *) spikesCount
+{
+    return _spikeCountInSelection;
+}
 
 
 - (float)currentFileTime
@@ -1416,6 +1483,10 @@ static BBAudioManager *bbAudioManager = nil;
 {
     
     if (fileReader) {
+        if(fileReader.duration<newCurrentFileTime)
+        {
+            newCurrentFileTime = fileReader.duration;
+        }
         fileReader.currentTime = newCurrentFileTime;
     }
 }

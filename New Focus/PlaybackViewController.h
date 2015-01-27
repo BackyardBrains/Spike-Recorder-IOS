@@ -33,7 +33,7 @@
 - (float) fetchDataToDisplay:(float *)data numFrames:(UInt32)numFrames whichChannel:(UInt32)whichChannel;
 - (void) selectChannel:(int) selectedChannel;
 -(BOOL) shouldEnableSelection;
--(void) updateSelection:(float) newSelectionTime;
+-(void) updateSelection:(float) newSelectionTime timeSpan:(float) timeSpan;
 -(float) selectionStartTime;
 -(float) selectionEndTime;
 -(void) endSelection;
