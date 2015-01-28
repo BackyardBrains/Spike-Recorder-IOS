@@ -801,20 +801,22 @@
                 hasSomeSpikes = YES;
                 break;
             }
+            i++;
         }
         
         rmstream.precision(1);
         //Draw spike count
         if(hasSomeSpikes)
         {
-            for(i=0;i<[spikeCountArray count];i++)
+            for(i=0;i<[spikeCountArray count];i=i+2)//in array we have pairs. First is count of spikes and second is ISI based frequency
             {
                 //change vertical position of label
                 yPositionOfBackground = yPositionOfBackground-heightOfOneRow-rowVerticalGap;
                 
                 //get spike count and frequency
                 int cSpikeCount = [[spikeCountArray objectAtIndex:i] integerValue];
-                float cSpikeFrequency = ((float)cSpikeCount)/(sEndTime - sStartTime);
+                //in array we have pairs. First is count of spikes and second is ISI based frequency
+                float cSpikeFrequency =[[spikeCountArray objectAtIndex:i+1] floatValue];
                 
                 //create string and measure size
                 rmstream.str("");
@@ -837,9 +839,9 @@
                 mScaleFont->drawString(rmstream.str(), textPosition);
             
                 //[self setColorWithIndex:i transparency:1.0f];
-                [self setGLColor:[BYBGLView getSpikeTrainColorWithIndex:i transparency:1.0f]];
+                [self setGLColor:[BYBGLView getSpikeTrainColorWithIndex:i/2 transparency:1.0f]];
                 gl::drawSolidEllipse( Vec2f(xPositionOfBackground+10, yPositionOfBackground+heightOfOneRow*0.5), 5,5, 40 );
-            
+                
             }
         }
     

@@ -175,7 +175,7 @@
 // End of selecting/editing save selected spike trains
 //
 - (IBAction)saveAll {
-  
+    [[BBAnalysisManager bbAnalysisManager] solveOverlapForIndex];
     dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
         [[BBAnalysisManager bbAnalysisManager] filterSpikes];
     });
@@ -226,6 +226,7 @@
 
 //Add another threshold pair (new spike train)
 - (IBAction)addTrainClick:(id)sender {
+    [[BBAnalysisManager bbAnalysisManager] solveOverlapForIndex];
     [[BBAnalysisManager bbAnalysisManager] addAnotherThresholds];
 
     self.nextBtn.hidden = NO;
@@ -258,6 +259,7 @@
 
 //The event handling method
 - (void)tapOnNextButton:(UITapGestureRecognizer *)recognizer {
+    [[BBAnalysisManager bbAnalysisManager] solveOverlapForIndex];
     [[BBAnalysisManager bbAnalysisManager] moveToNextSpikeTrain];
     [self setNextColor];
 }

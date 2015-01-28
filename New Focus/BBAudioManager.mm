@@ -1304,6 +1304,8 @@ static BBAudioManager *bbAudioManager = nil;
     [_spikeCountInSelection removeAllObjects];
     
     BBSpike * tempSpike;
+    BBSpike * lastSpike;
+    float averageISI;
     BBChannel * tempChannel;
     BBSpikeTrain * tempSpikeTrain;
     float startTime, endTime;
@@ -1337,19 +1339,39 @@ static BBAudioManager *bbAudioManager = nil;
 
   
         int i = 0;
+        averageISI = 0.0f;
         //go through all spikes
         for (tempSpike in tempSpikeTrain.spikes) {
            
             if([tempSpike time]>startTime && [tempSpike time]<endTime)
             {
                 i++;
+
+                if(i>1)
+                {
+                    averageISI += tempSpike.time - lastSpike.time;
+                }
+                lastSpike = tempSpike;
+                
             }
             else if(weAreInInterval)
             {//if we pass last spike in selected interval
                 break;
             }
         }
+        
         [_spikeCountInSelection addObject:[NSNumber numberWithInt:i]];
+        if(i>1)
+        {
+            i--;
+            averageISI = averageISI/(float)i;
+            averageISI = 1.0f/averageISI;
+            [_spikeCountInSelection addObject:[NSNumber numberWithFloat:averageISI]];
+        }
+        else
+        {
+            [_spikeCountInSelection addObject:[NSNumber numberWithFloat:0.0f]];
+        }
     }
 }
 

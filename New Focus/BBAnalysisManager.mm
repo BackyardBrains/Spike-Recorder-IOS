@@ -1000,6 +1000,94 @@ static BBAnalysisManager *bbAnalysisManager = nil;
     spikeTrain.secondThreshold = aThresholdSecond;
 }
 
+
+-(void) solveOverlapForIndex
+{
+    NSMutableArray * trains = (NSMutableArray *)[[[_file allChannels] objectAtIndex:_currentChannel] spikeTrains];
+    BBSpikeTrain * spikeTrain = [trains objectAtIndex:_currentTrainIndex];
+    float masterHighThreshold, masterLowThreshold;
+    float currentHighThreshold, currentLowThreshold;
+    
+    if(spikeTrain.firstThreshold>spikeTrain.secondThreshold)
+    {
+        masterHighThreshold = spikeTrain.firstThreshold;
+        masterLowThreshold = spikeTrain.secondThreshold;
+    }
+    else
+    {
+        masterHighThreshold = spikeTrain.secondThreshold;
+        masterLowThreshold = spikeTrain.firstThreshold;
+    }
+    
+    //if interval is zero height just return
+    if(masterHighThreshold == masterLowThreshold)
+    {
+        return;
+    }
+    
+    int i;
+    for(i=0;i<[trains count];i++)
+    {
+        if(i==_currentTrainIndex)
+        {
+            continue;
+        }
+        BBSpikeTrain * tempSpikeTrain = [trains objectAtIndex:i];
+        if(tempSpikeTrain.firstThreshold>spikeTrain.secondThreshold)
+        {
+            currentHighThreshold = tempSpikeTrain.firstThreshold;
+            currentLowThreshold = tempSpikeTrain.secondThreshold;
+        }
+        else
+        {
+            currentHighThreshold = tempSpikeTrain.secondThreshold;
+            currentLowThreshold = tempSpikeTrain.firstThreshold;
+        }
+        
+        
+        //If master contains current spike trains
+        if(currentHighThreshold<=masterHighThreshold && currentLowThreshold<=masterHighThreshold && currentHighThreshold>=masterLowThreshold && currentLowThreshold>=masterLowThreshold)
+        {
+            //set spike train to zero and go to next spike train
+            tempSpikeTrain.firstThreshold = 0;
+            tempSpikeTrain.secondThreshold = 0;
+            continue;
+        }
+        
+        //if we ovelap so that master-high is in between high and low of temp spike train
+        if(currentHighThreshold>masterHighThreshold && currentLowThreshold<masterHighThreshold)
+        {
+            //set spike train to zero and go to next spike train
+            if(currentLowThreshold == tempSpikeTrain.firstThreshold)
+            {
+                tempSpikeTrain.firstThreshold = masterHighThreshold;
+            }
+            else
+            {
+                tempSpikeTrain.secondThreshold = masterHighThreshold;
+            }
+            continue;
+        }
+        
+        
+        //if we ovelap so that master-low is in between high and low of temp spike train
+        if(currentHighThreshold>masterLowThreshold && currentLowThreshold<masterLowThreshold)
+        {
+            //set spike train to zero and go to next spike train
+            if(currentHighThreshold == tempSpikeTrain.firstThreshold)
+            {
+                tempSpikeTrain.firstThreshold = masterLowThreshold;
+            }
+            else
+            {
+                tempSpikeTrain.secondThreshold = masterLowThreshold;
+            }
+            continue;
+        }
+    }
+}
+
+
 -(float) thresholdSecond
 {
     NSMutableArray * trains = (NSMutableArray *)[[[_file allChannels] objectAtIndex:_currentChannel] spikeTrains];

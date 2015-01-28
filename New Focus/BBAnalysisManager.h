@@ -76,4 +76,7 @@ typedef struct _averageSpikeData {
 -(void) addAnotherThresholds;
 //Remove currentSpikeTrain spike train from currentChannel channel
 -(void) removeSelectedThresholds;
+//Change threshold's limits so that we don't have overlapping
+-(void) solveOverlapForIndex;
+
 @end
