@@ -1,7 +1,7 @@
 /*
  *  SCTableViewController.h
  *  Sensible TableView
- *  Version: 3.0.5
+ *  Version: 3.3.0
  *
  *
  *	THIS SOURCE CODE AND ANY ACCOMPANYING DOCUMENTATION ARE PROTECTED BY UNITED STATES 
@@ -13,7 +13,7 @@
  *	USAGE OF THIS SOURCE CODE IS BOUND BY THE LICENSE AGREEMENT PROVIDED WITH THE 
  *	DOWNLOADED PRODUCT.
  *
- *  Copyright 2012 Sensible Cocoa. All rights reserved.
+ *  Copyright 2012-2013 Sensible Cocoa. All rights reserved.
  *
  *
  *	This notice may not be removed from this file.
@@ -32,18 +32,21 @@
 /*	class SCTableViewController	*/
 /****************************************************************************************/ 
 /**
- This class simplifies development with SCTableViewModel the same way that 
- UITableViewController simplifies development with UITableView.
+ This class functions as a means to simplify development with SCTableViewModel.
  
- 'SCTableViewController' conveniently creates an automatic tableViewModel that is ready
- to be populated with sections and cells. It also provides several ready made navigation
+ SCTableViewController conveniently provides several ready made navigation
  bar types based on SCNavigationBarType, provided that it is a subview of a navigation controller. 
- Furthermore, it automatically connects its doneButton (if present) to tableViewModel's commitButton.
- In addition, 'SCTableViewController' provides several delegate methods as part of SCTableViewControllerDelegate
- that notifies the delegate object of events like the view appearing or disappearing.
+ SCTableViewController also defines placeholders for a tableView and a tableViewModel that
+ the user can allocate and assign. If a tableViewModel is defined, SCTableViewController also
+ connects its doneButton (if present) to tableViewModel's commitButton automatically.
  
- @warning Important: You do NOT have to use 'SCTableViewController' in order to be able to use SCTableViewModel,
- but it's highly recommended that you do so whenever you need a UITableViewController. If you do use a UITableViewController directly, it's very importand that you manage reassigning the model's tableView after memory warnings occur. This is because a UITableViewController automatically releases its tableView when this happens, leaving the model without a valid table view. When you are using 'SCTableViewController', do you not need to worry about this as it's automatically taken care of for you. */
+ In addition, SCTableViewController fully manages memory warnings and makes sure the assigned table view is released once a memory warning occurs and reloaded once the view controller is loaded once more.
+ 
+ Finally, SCTableViewController provides several useful actions (SCTableViewControllerActions) and delegate methods (SCTableViewControllerDelegate) that notify the delegate object of events like the view appearing or disappearing.
+ 
+ @note You do NOT have to use SCTableViewController in order to be able to use SCTableViewModel, but it's highly recommended that you do so whenever you need a UITableViewController.
+ 
+ */
 
 
 @interface SCTableViewController : UITableViewController <UIPopoverControllerDelegate>
@@ -69,11 +72,12 @@
 /** The navigation bar's Cancel button. Only contains a value if the button exists on the bar. */
 @property (nonatomic, readonly) UIBarButtonItem *cancelButton;
 
+/** Set to TRUE to allow the cancel button to appear when entering editing mode. Default: TRUE.
+ @note: Only applicable if navigationBarType == SCNavigationBarTypeEditRight. */
+@property (nonatomic, readwrite) BOOL allowEditingModeCancelButton;
+
 /** The navigation bar's Done button. Only contains a value if the button exists on the bar. */
 @property (nonatomic, readonly) UIBarButtonItem	*doneButton;
-
-/** The toolbar that holds more than one button when needed (e.g. when navigationBarType==SCNavigationBarTypeAddEditRight). */
-@property (nonatomic, readonly) UIToolbar *buttonsToolbar;
 
 /** If the view controller is presented from within a popover controller, this property must be set to it. When set, the view controller takes over the delegate of the popover controller. */
 @property (nonatomic, strong) UIPopoverController *popoverController;
@@ -107,12 +111,18 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 
 /** The object that acts as the delegate of 'SCTableViewController'. The object must adopt the SCTableViewControllerDelegate protocol. */
-@property (nonatomic, unsafe_unretained) id delegate;
+@property (nonatomic, weak) id delegate;
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// @name Internal Properties & Methods (should only be used by the framework or when subclassing)
 //////////////////////////////////////////////////////////////////////////////////////////
 
+/** Returns TRUE if the view controller currently has been given focus by its master model. */
+@property (nonatomic, readonly) BOOL hasFocus;
+
+/** Method should be overridden by subclasses to perform any required initialization.
+ @warning Subclasses must call [super performInitialization] from within the method's implementation.
+ */
 - (void)performInitialization;
 
 /** 
@@ -128,6 +138,12 @@
  using SCTableViewControllerDelegate.
  */
 - (void)doneButtonAction;
+
+/** Method gets called when the Edit button is tapped. */
+- (void)editButtonAction;
+
+/** Method gets called when the Cancel button is tapped while the table view is in editing mode. */
+- (void)editingModeCancelButtonAction;
 
 /** Dismisses the view controller with the specified values for cancel and done. */
 - (void)dismissWithCancelValue:(BOOL)cancelValue doneValue:(BOOL)doneValue;
@@ -154,37 +170,37 @@
 @optional
 
 /** Notifies the delegate that the view controller will appear.
- *	@param viewController The view controller informing the delegate of the event.
+ *	@param tableViewController The view controller informing the delegate of the event.
  */
 - (void)tableViewControllerWillAppear:(SCTableViewController *)tableViewController;
 
 /** Notifies the delegate that the view controller has appeared.
- *	@param viewController The view controller informing the delegate of the event.
+ *	@param tableViewController The view controller informing the delegate of the event.
  */
 - (void)tableViewControllerDidAppear:(SCTableViewController *)tableViewController;
 
 /** Notifies the delegate that the view controller will disappear.
- *	@param viewController The view controller informing the delegate of the event.
+ *	@param tableViewController The view controller informing the delegate of the event.
  */
 - (void)tableViewControllerWillDisappear:(SCTableViewController *)tableViewController;
 
 /** Notifies the delegate that the view controller has disappeared.
- *	@param viewController The view controller informing the delegate of the event.
+ *	@param tableViewController The view controller informing the delegate of the event.
  */
 - (void)tableViewControllerDidDisappear:(SCTableViewController *)tableViewController;
 
 /** Notifies the delegate that the view controller will be presented.
- *	@param viewController The view controller informing the delegate of the event.
+ *	@param tableViewController The view controller informing the delegate of the event.
  */
 - (void)tableViewControllerWillPresent:(SCTableViewController *)tableViewController;
 
 /** Notifies the delegate that the view controller has been presented.
- *	@param viewController The view controller informing the delegate of the event.
+ *	@param tableViewController The view controller informing the delegate of the event.
  */
 - (void)tableViewControllerDidPresent:(SCTableViewController *)tableViewController;
 
 /** Asks the delegate if the view controller should be dismissed.
- *	@param viewController The view controller informing the delegate of the event.
+ *	@param tableViewController The view controller informing the delegate of the event.
  *	@param cancelTapped TRUE if Cancel button has been tapped to dismiss the view controller.
  *	@param doneTapped TRUE if Done button has been tapped to dismiss the view controller.
  *  @return Retrun TRUE to have the view controller dismissed, otherwise return FALSE.
@@ -193,7 +209,7 @@
                  cancelButtonTapped:(BOOL)cancelTapped doneButtonTapped:(BOOL)doneTapped;
 
 /** Notifies the delegate that the view controller will be dismissed.
- *	@param viewController The view controller informing the delegate of the event.
+ *	@param tableViewController The view controller informing the delegate of the event.
  *	@param cancelTapped TRUE if Cancel button has been tapped to dismiss the view controller.
  *	@param doneTapped TRUE if Done button has been tapped to dismiss the view controller.
  */
@@ -201,7 +217,7 @@
                cancelButtonTapped:(BOOL)cancelTapped doneButtonTapped:(BOOL)doneTapped;
 
 /** Notifies the delegate that the view controller has been dismissed.
- *	@param viewController The view controller informing the delegate of the event.
+ *	@param tableViewController The view controller informing the delegate of the event.
  *	@param cancelTapped TRUE if Cancel button has been tapped to dismiss the view controller.
  *	@param doneTapped TRUE if Done button has been tapped to dismiss the view controller.
  */
@@ -213,17 +229,17 @@
 // Internal
 
 /** Notifies the delegate that the view controller will gain focus from master model.
- *	@param viewController The view controller informing the delegate of the event.
+ *	@param tableViewController The view controller informing the delegate of the event.
  */
 - (void)tableViewControllerWillGainFocus:(SCTableViewController *)tableViewController;
 
 /** Notifies the delegate that the view controller did gain focus from master model.
- *	@param viewController The view controller informing the delegate of the event.
+ *	@param tableViewController The view controller informing the delegate of the event.
  */
 - (void)tableViewControllerDidGainFocus:(SCTableViewController *)tableViewController;
 
 /** Notifies the delegate that the view controller will lose focus to its master model.
- *	@param viewController The view controller informing the delegate of the event.
+ *	@param tableViewController The view controller informing the delegate of the event.
  *	@param cancelTapped TRUE if Cancel button has been tapped to dismiss the view controller.
  *	@param doneTapped TRUE if Done button has been tapped to dismiss the view controller.
  */
@@ -231,11 +247,22 @@
                       cancelButtonTapped:(BOOL)cancelTapped doneButtonTapped:(BOOL)doneTapped;
 
 /** Notifies the delegate that the view controller did lose focus to its master model.
- *	@param viewController The view controller informing the delegate of the event.
+ *	@param tableViewController The view controller informing the delegate of the event.
  *	@param cancelTapped TRUE if Cancel button has been tapped to dismiss the view controller.
  *	@param doneTapped TRUE if Done button has been tapped to dismiss the view controller.
  */
 - (void)tableViewControllerDidLoseFocus:(SCTableViewController *)tableViewController
                      cancelButtonTapped:(BOOL)cancelTapped doneButtonTapped:(BOOL)doneTapped;
+
+/** Notifies the delegate that the view controller did enter editing mode. */
+- (void)tableViewControllerDidEnterEditingMode:(SCTableViewController *)viewController;
+
+/** Notifies the delegate that the view controller did exit editing mode.
+ *	@param tableViewController The view controller informing the delegate of the event.
+ *	@param cancelTapped TRUE if Cancel button has been tapped to exit editing mode.
+ *	@param doneTapped TRUE if Done button has been tapped to exit editing mode.
+ */
+- (void)tableViewControllerDidExitEditingMode:(SCTableViewController *)tableViewController
+                           cancelButtonTapped:(BOOL)cancelTapped doneButtonTapped:(BOOL)doneTapped;
 
 @end

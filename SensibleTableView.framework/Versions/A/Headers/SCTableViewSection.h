@@ -1,7 +1,7 @@
 /*
  *  SCTableViewSection.h
  *  Sensible TableView
- *  Version: 3.0.5
+ *  Version: 3.3.0
  *
  *
  *	THIS SOURCE CODE AND ANY ACCOMPANYING DOCUMENTATION ARE PROTECTED BY UNITED STATES 
@@ -13,7 +13,7 @@
  *	USAGE OF THIS SOURCE CODE IS BOUND BY THE LICENSE AGREEMENT PROVIDED WITH THE 
  *	DOWNLOADED PRODUCT.
  *
- *  Copyright 2012 Sensible Cocoa. All rights reserved.
+ *  Copyright 2012-2013 Sensible Cocoa. All rights reserved.
  *
  *
  *	This notice may not be removed from this file.
@@ -40,7 +40,7 @@
  */
 @interface SCTableViewSection : NSObject
 {	
-    __unsafe_unretained SCTableViewModel *ownerTableViewModel;
+    __weak SCTableViewModel *_ownerTableViewModel;
 	NSObject *boundObject;
     SCDataStore *boundObjectStore;
 	NSString *boundPropertyName;
@@ -76,29 +76,29 @@
 /// @name Creation and Initialization
 //////////////////////////////////////////////////////////////////////////////////////////
 
-/** Allocates and returns an initialized 'SCTableViewSection'. */
+/** Allocates and returns an initialized SCTableViewSection. */
 + (id)section;
 
-/** Allocates and returns an initialized 'SCTableViewSection' given a header title.
+/** Allocates and returns an initialized SCTableViewSection given a header title.
  *
  *	@param sectionHeaderTitle A header title for the section.
  */
 + (id)sectionWithHeaderTitle:(NSString *)sectionHeaderTitle;
 
-/** Allocates and returns an initialized 'SCTableViewSection' given a header and a footer title.
+/** Allocates and returns an initialized SCTableViewSection given a header and a footer title.
  *
  *	@param sectionHeaderTitle A header title for the section.
  *	@param sectionFooterTitle A footer title for the section.
  */
 + (id)sectionWithHeaderTitle:(NSString *)sectionHeaderTitle footerTitle:(NSString *)sectionFooterTitle;
 
-/** Returns an initialized 'SCTableViewSection' given a header title.
+/** Returns an initialized SCTableViewSection given a header title.
  *
  *	@param sectionHeaderTitle A header title for the section.
  */
 - (id)initWithHeaderTitle:(NSString *)sectionHeaderTitle;
 
-/** Returns an initialized 'SCTableViewSection' given a header and a footer title.
+/** Returns an initialized SCTableViewSection given a header and a footer title.
  *
  *	@param sectionHeaderTitle A header title for the section.
  *	@param sectionFooterTitle A footer title for the section.
@@ -111,8 +111,8 @@
 
 /** The owner table view model of the section. 
  *
- * @warning Important: This property gets set automatically by the section's owner, you should never set this property manually */
-@property (nonatomic, unsafe_unretained) SCTableViewModel *ownerTableViewModel;
+ * @warning This property gets set automatically by the section's owner, you should never set this property manually */
+@property (nonatomic, weak) SCTableViewModel *ownerTableViewModel;
 
 /** The section header title. */
 @property (nonatomic, copy) NSString *headerTitle;
@@ -135,7 +135,9 @@
 /** The set of section action blocks. */
 @property (nonatomic, readonly) SCSectionActions *sectionActions;
 
-/** The set of cell action blocks. */
+/** The set of cell action blocks that get applied to all the section's cells.
+ @note Cell actions defined in the section's individual cells will override any actions set here.
+ */
 @property (nonatomic, readonly) SCCellActions *cellActions;
 
 /** Set this property to an array of UIImageView objects to be set to each of the section's cells. */
@@ -153,7 +155,7 @@
 
 /** When set to a valid SCExpandCollapseCell, the cell will control if the section's content is expanded or collapsed. 
  *
- *  @warning: Note: Setting this property automatically adds expandCollapseCell to the section at index 0, making it the first cell.
+ *  @note Setting this property automatically adds expandCollapseCell to the section at index 0, making it the first cell.
  */
 @property (nonatomic, strong) SCExpandCollapseCell *expandCollapseCell;
 
@@ -161,10 +163,19 @@
 /// @name Configuring Theme Styles
 //////////////////////////////////////////////////////////////////////////////////////////
 
+/** The theme style of the section. */
 @property (nonatomic, copy) NSString *themeStyle;
+
+/** The theme style of the first cell in the section. */
 @property (nonatomic, copy) NSString *firstCellThemeStyle;
+
+/** The theme style of the even cells in the section. */
 @property (nonatomic, copy) NSString *evenCellsThemeStyle;
+
+/** The theme style of the odd cells in the section. */
 @property (nonatomic, copy) NSString *oddCellsThemeStyle;
+
+/** The theme style of the last cell in the section. */
 @property (nonatomic, copy) NSString *lastCellThemeStyle;
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -206,6 +217,9 @@
 /**	This property is TRUE if all the section cells' values are valid, otherwise it's FALSE. */
 @property (nonatomic, readonly) BOOL valuesAreValid;
 
+/**	This property is TRUE if any of the section's cells need to be commited, otherwise it's FALSE. */
+@property (nonatomic, readonly) BOOL needsCommit;
+
 /** 
  Set this property to TRUE for the section cells to commit their values as soon as they
  are changed. If this value is FALSE, the user must explicitly call commitCellChanges
@@ -216,6 +230,9 @@
 /** Commits value changes for all cells in section. This method needs to be called only if the commitCellChangesLive property is FALSE. */
 - (void)commitCellChanges;
 
+/** Overrides optimization and sets all cells as needing to be committed. */
+- (void)invalidateCellCommits;
+
 /** Reload's the section's bound values in case the associated bound objects or keys valuea has changed by means other than the cells themselves (e.g. external custom code). */
 - (void)reloadBoundValues;
 
@@ -224,7 +241,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 
 /** Provides subclasses with the framework to bind an SCTableViewSection to an NSObject */
-@property (nonatomic, readonly) NSObject *boundObject;
+@property (nonatomic, strong) NSObject *boundObject;
 
 /** The data store of the cell's bound object. */
 @property (nonatomic, strong) SCDataStore *boundObjectStore;
@@ -235,10 +252,13 @@
 /** Provides subclasses with the framework to bind an SCTableViewSection to a value */
 @property (nonatomic, strong) NSObject *boundValue;
 
-/** Method called internally whenever the modeledTableView's editing mode is about to change. */
+/** Called internally by the framework to determine the cell height at the specified indexPath. */
+- (CGFloat)heightForCellAtIndexPath:(NSIndexPath *)indexPath;
+
+/** Method called internally whenever the owner table view's editing mode is about to change. */
 - (void)editingModeWillChange;
 
-/** Method called internally whenever the modeledTableView's editing mode has changed. */
+/** Method called internally whenever the owner table view's editing mode has changed. */
 - (void)editingModeDidChange;
 
 /** 
@@ -275,7 +295,7 @@
  respectively. If an SCClassDefinition is provided for the bound object, a full fledged
  section of cells will be generated.
  
- @warning Note: For your convenience, the tag property of each generated cell will have a number corresponding
+ @note: For your convenience, the tag property of each generated cell will have a number corresponding
  to the index of it's corresponding property in bound object.
  
  @see SCArrayOfObjectsSection, SCObjectCell.
@@ -422,16 +442,18 @@
  This class is an abstract base class. Subclasses of this class must override the
  buildDetailTableModel method. This method should return a model for the detail view to display.
  
- @warning Important: This is an abstract base class,  you should never make any direct instances of it.
+ @warning This is an abstract base class,  you should never make any direct instances of it.
  
  @see SCArrayOfStringsSection, SCArrayOfObjectsSection.
  */
 @interface SCArrayOfItemsSection : SCTableViewSection <SCViewControllerDelegate, SCTableViewControllerDelegate>
 {
 	//internal
+    BOOL _isFetchingItems;
     BOOL itemsInSync;
-	SCTableViewModel *activeDetailModel;  // the current active detail model
+	__weak SCTableViewModel *activeDetailModel;  // the current active detail model
 	NSMutableArray *cellReuseIdentifiers;
+    CGFloat _cachedCellHeight;
     NSObject *tempItem;		//used for temporarily storing newly added items
 	
     SCDataStore *dataStore;
@@ -456,7 +478,7 @@
     BOOL addNewItemCellExistsInNormalMode;
     BOOL addNewItemCellExistsInEditingMode;
     
-    BOOL enableCellAutoResizing;
+    BOOL enableIdenticalCellHeight;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -494,13 +516,16 @@
 /** The items fetched from dataStore. */
 @property (nonatomic, readonly) NSArray *items;
 
-
+/** Set to FALSE to disable the section from automatically fetching its items from dataStore. Default: TRUE. */
 @property (nonatomic, readwrite) BOOL autoFetchItems;
+
+/** This property is TRUE when the section is in a state of fetching its items from their dataStore. */
+@property (nonatomic, readonly) BOOL isFetchingItems;
 
 /** The accessory type of the generated cells. */
 @property (nonatomic, readwrite) UITableViewCellAccessoryType itemsAccessoryType;
 
-/**	Allows/disables adding new cells/items to the items array. Default: TRUE. */
+/** Allows/disables adding new cells/items to the items array. Default: TRUE. */
 @property (nonatomic, readwrite) BOOL allowAddingItems;
 
 /** Allows/disables deleting new cells/items from the items array. Default: TRUE. */
@@ -541,17 +566,20 @@
 @property (nonatomic, strong) UIBarButtonItem *addButtonItem;
 
 /**	
- If TRUE, the 'SCArrayOfItemsSection' will set the 'autoResize' property of its cells to TRUE, enabling its cells to auto-resize to fit their contents. Default: TRUE.
+ When the cell count of 'SCArrayOfItemsSection' reaches this limit, it will automatically calculate the first cell height and use it for all remaining cells, instead of calculating the height for each cell separately. This dratically improves performance for sections with a huge number of cells. Default: 100.
  
- @warning Note: For sections with a huge number of cells, setting this property to FALSE improves performance.
+ @note In case the section has a huge number of cells, but their heights are not identical, consider implementing the sectionAction called customHeightForRowAtIndexPath.
+ 
+ @see SCSectionActions.customHeightForRowAtIndexPath
  */
-@property (nonatomic, readwrite) BOOL enableCellAutoResizing;
+@property (nonatomic, readwrite) NSUInteger cellCountLimitForAutoHeight;
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// @name Configuring Special Cells
 //////////////////////////////////////////////////////////////////////////////////////////
 
+/** This cell is automatically displayed when more section items need to be fetched. This is typically the case when the section's dataFetchOptions has specified a batchSize. */
 @property (nonatomic, strong) SCFetchItemsCell *fetchItemsCell;
 
 /** When set to a valid cell object, 'placeholderCell' will be displayed when no items exist in the section. As soon as any items are added, this cell automatically disappears. Default: nil. */
@@ -590,7 +618,7 @@
 /** Called internally by framework to store the currently selected cell index path. */
 @property (nonatomic, strong) NSIndexPath *selectedCellIndexPath;
 
-/**	Subclasses should use this property when creating new dequeable cells */
+/** Subclasses should use this property when creating new dequeable cells */
 @property (nonatomic, readonly) NSString *cellIdentifier;
 
 /** Used internally by the framework. */
@@ -599,16 +627,17 @@
 /** Used internally by the framework. */
 - (void)setMutableItems:(NSMutableArray *)mutableItems;
 
+/** Used internally by the framework. */
 - (void)fetchItems:(id)sender;
 
+/** Used internally by the framework. */
 - (void)didFetchItems:(NSArray *)fetchedItems sender:(id)sender;
 
+/** Used internally by the framework. */
 - (void)addSpecialCellsToItems;
 
+/** Used internally by the framework. */
 - (void)removeSpecialCellsFromItems;
-
-/** Called internally by the framework to determine the cell height at the specified indexPath. */ 
-- (CGFloat)heightForCellAtIndexPath:(NSIndexPath *)indexPath;
 
 /**	Subclasses should override this method to handle the creation of section cells */
 - (SCTableViewCell *)createCellAtIndex:(NSUInteger)index;
@@ -651,7 +680,7 @@
 - (void)buildDetailTableModel:(SCTableViewModel *)detailTableModel forItem:(NSObject *)item;
 
 /** Subclasses must override this method to determine the navigation bar type of the detail view for the given item. */
-- (SCNavigationBarType)getDetailViewNavigationBarTypeForItem:(NSObject *)item;
+- (SCNavigationBarType)getDetailViewNavigationBarTypeForItem:(NSObject *)item newItem:(BOOL)newItem;
 
 /** Commits the newly created item. */
 - (void)commitNewItem:(NSObject *)newItem detailModel:(SCTableViewModel *)detailModel;
@@ -663,7 +692,7 @@
 - (void)itemModified:(NSObject *)item;
 
 /** Method gets called internally by framework. */
-- (void)commitDetailModelChanges:(SCTableViewModel *)detailModel;
+- (void)commitAndProcessChangesForDetailModel:(SCTableViewModel *)detailModel;
 
 @end
 
@@ -736,9 +765,7 @@
  Allocates and returns an initialized 'SCArrayOfItemsSection' given a header title and an array of NSString items.
  
  @param sectionHeaderTitle A header title for the section.
- @param sectionItems An array of items that the section will use to generate its cells.
- This array must be of type NSMutableArray, as it must support the section's add, delete, and
- move operations. All array objects must be of type NSString.
+ @param sectionItems An array of items that the section will use to generate its cells. This array must be of type NSMutableArray, as it must support the section's add, delete, and move operations. All array objects must be of type NSString.
  */
 + (id)sectionWithHeaderTitle:(NSString *)sectionHeaderTitle items:(NSMutableArray *)sectionItems;
 
@@ -746,9 +773,7 @@
  Returns an initialized 'SCArrayOfItemsSection' given a header title and an array of NSString items.
  
  @param sectionHeaderTitle A header title for the section.
- @param sectionItems An array of items that the section will use to generate its cells.
- This array must be of type NSMutableArray, as it must support the section's add, delete, and
- move operations. All array objects must be of type NSString.
+ @param sectionItems An array of items that the section will use to generate its cells. This array must be of type NSMutableArray, as it must support the section's add, delete, and move operations. All array objects must be of type NSString.
  */
 - (id)initWithHeaderTitle:(NSString *)sectionHeaderTitle items:(NSMutableArray *)sectionItems;
 
@@ -916,10 +941,9 @@
  This property reflects the current section's selection. You can set this property
  to define the section's selection.
  
- @warning Note: If you have bound this section to an object or a key, you can define the section's selection
+ @note If you have bound this section to an object or a key, you can define the section's selection
  using either the bound property value or the key value, respectively. 
- @warning Note: In case of no selection,
- this property will be set to an NSNumber of value -1. 
+ @note In case of no selection, this property will be set to an NSNumber of value -1. 
  */
 @property (nonatomic, copy) NSNumber *selectedItemIndex;
 
@@ -927,7 +951,7 @@
  This property reflects the current section's selection(s). You can add index(es) to the set
  to define the section's selection.
  
- @warning Note: If you have bound this section to an object or a key, you can define the section's selection
+ @note If you have bound this section to an object or a key, you can define the section's selection
  using either the bound property value or the key value, respectively.
  */
 @property (nonatomic, readonly) NSMutableSet *selectedItemsIndexes;
@@ -938,8 +962,8 @@
 /** If TRUE, the section allows no selection at all. Default: FALSE. */
 @property (nonatomic, readwrite) BOOL allowNoSelection;
 
-/** The maximum number of items that can be selected. Set to zero to allow an infinite number of selections.
- *	@warning Note: Only applicable when allowMultipleSelection is TRUE. Default: 0. */
+/** The maximum number of items that can be selected. Set to zero to allow an infinite number of selections. Default: 0.
+ *	@note Only applicable when allowMultipleSelection is TRUE. */
 @property (nonatomic, readwrite) NSUInteger maximumSelections;
 
 /** If TRUE, the section automatically dismisses the current view controller when a value is selected. Default: FALSE. */
@@ -961,7 +985,7 @@
 /****************************************************************************************/ 
 /**	
  This class functions as a section that provides the end-user with an automatically generated
- detail view of objects to choose from. 
+ list objects to choose from. 
  
  The selection items are provided in the form of an array of
  NSObjects, called the items array. 'SCObjectSelectionSection' can be configured to allow multiple
@@ -1039,8 +1063,7 @@
  This property reflects the current section's selection. You can set this property
  to define the section's selection.
  
- @warning Note: In case of no selection,
- this property will be set to an NSNumber of value -1. 
+ @note In case of no selection, this property will be set to an NSNumber of value -1. 
  */
 @property (nonatomic, copy) NSNumber *selectedItemIndex;
 
@@ -1056,11 +1079,11 @@
 /** If TRUE, the section allows no selection at all. Default: FALSE. */
 @property (nonatomic, readwrite) BOOL allowNoSelection;
 
-/** The maximum number of items that can be selected. Set to zero to allow an infinite number of selections.
- *	@warning Note: Only applicable when allowMultipleSelection is TRUE. Default: 0. */
+/** The maximum number of items that can be selected. Set to zero to allow an infinite number of selections. Default: 0.
+ *	@note Only applicable when allowMultipleSelection is TRUE. */
 @property (nonatomic, readwrite) NSUInteger maximumSelections;
 
-/** If TRUE, the section allows automatically dismisses the current view controller when a value is selected. Default: FALSE. */
+/** If TRUE, the section automatically dismisses the current view controller when a value is selected. Default: FALSE. */
 @property (nonatomic, readwrite) BOOL autoDismissViewController;
 
 

@@ -1,7 +1,7 @@
 /*
  *  SCBadgeView.h
  *  Sensible TableView
- *  Version: 3.0.5
+ *  Version: 3.3.0
  *
  *
  *	THIS SOURCE CODE AND ANY ACCOMPANYING DOCUMENTATION ARE PROTECTED BY UNITED STATES 
@@ -13,7 +13,7 @@
  *	USAGE OF THIS SOURCE CODE IS BOUND BY THE LICENSE AGREEMENT PROVIDED WITH THE 
  *	DOWNLOADED PRODUCT.
  *
- *  Copyright 2012 Sensible Cocoa. All rights reserved.
+ *  Copyright 2012-2013 Sensible Cocoa. All rights reserved.
  *
  *
  *	This notice may not be removed from this file.
@@ -27,8 +27,14 @@
 /*	class SCBadgeView	*/
 /****************************************************************************************/ 
 /**	
- This class functions as a badge similar to the one used by iPhone's mail application to
- display the number of messages in an inbox. 'SCBadgeView' is most commonly used by SCTableViewCell.
+ This class provides as a badge view similar to the one used by iPhone's mail application to
+ display the number of messages in an inbox. SCBadgeView is typically used by SCTableViewCell to display these kind of badges.
+ 
+ Sample use:
+    SCTableViewCell *cell = [SCTableViewCell cellWithText:@"Number of pending tasks"];
+    cell.badgeView.text = @"50";
+ 
+ See also: SCTableViewCell
  */
 @interface SCBadgeView : UIView
 {

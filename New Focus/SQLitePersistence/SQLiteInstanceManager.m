@@ -39,7 +39,7 @@ static SQLiteInstanceManager *sharedSQLiteManager = nil;
 	@synchronized(self) 
 	{
 		if (sharedSQLiteManager == nil) 
-			[[self alloc] init]; 
+			sharedSQLiteManager = [[self alloc] init];
 	}
 	return sharedSQLiteManager;
 }
@@ -66,10 +66,10 @@ static SQLiteInstanceManager *sharedSQLiteManager = nil;
 {
 	return UINT_MAX;  //denotes an object that cannot be released
 }
-- (void)release
+/*- (void)release
 {
 	// never release
-}
+}*/
 - (id)autorelease
 {
 	return self;
@@ -150,7 +150,7 @@ static SQLiteInstanceManager *sharedSQLiteManager = nil;
 {
 	char *errorMsg;
 	if (sqlite3_exec([self database],[updateSQL UTF8String] , NULL, NULL, &errorMsg) != SQLITE_OK) {
-		NSString *errorMessage = [NSString stringWithFormat:@"Failed to execute SQL '%@' with message '%s'.", updateSQL, errorMsg];
+		__unused NSString *errorMessage = [NSString stringWithFormat:@"Failed to execute SQL '%@' with message '%s'.", updateSQL, errorMsg];
 		NSAssert(0, errorMessage);
 		sqlite3_free(errorMsg);
 	}
@@ -164,12 +164,18 @@ static SQLiteInstanceManager *sharedSQLiteManager = nil;
 #pragma mark -
 #pragma mark Private Methods
 
+-(void) setDatabaseFilepath:(NSString *)newDatabaseFilepath
+{
+    databaseFilepath = newDatabaseFilepath;
+}
+
 - (NSString *)databaseFilepath
 {
 	if (databaseFilepath == nil)
 	{
 		NSMutableString *ret = [NSMutableString string];
-		NSString *appName = [[NSProcessInfo processInfo] processName];
+		NSMutableString *appName = [[[NSProcessInfo processInfo] processName] mutableCopy];
+        [appName appendString:@"v2"];
 		for (int i = 0; i < [appName length]; i++)
 		{
 			NSRange range = NSMakeRange(i, 1);
@@ -183,6 +189,7 @@ static SQLiteInstanceManager *sharedSQLiteManager = nil;
 		NSArray *paths = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
 		NSString *basePath = ([paths count] > 0) ? [paths objectAtIndex:0] : NSTemporaryDirectory();
 		NSString *saveDirectory = [basePath stringByAppendingPathComponent:appName];
+        
 #else
 		NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
 		NSString *saveDirectory = [paths objectAtIndex:0];
@@ -191,7 +198,7 @@ static SQLiteInstanceManager *sharedSQLiteManager = nil;
 		NSString *filepath = [saveDirectory stringByAppendingPathComponent:saveFileName];
 		
 		databaseFilepath = [filepath retain];
-		
+		[appName release];
 		if (![[NSFileManager defaultManager] fileExistsAtPath:saveDirectory]) 
 			[[NSFileManager defaultManager] createDirectoryAtPath:saveDirectory withIntermediateDirectories:YES attributes:nil error:nil];
 	}

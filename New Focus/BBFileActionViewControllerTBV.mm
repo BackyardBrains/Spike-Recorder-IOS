@@ -7,6 +7,14 @@
 //
 
 #import "BBFileActionViewControllerTBV.h"
+#import "MyAppDelegate.h"
+#import "BBAnalysisManager.h"
+#import "MBProgressHUD.h"
+#import "CrossCorrViewController.h"
+#import "GraphMatrixViewController.h"
+#import "ISIGraphViewController.h"
+#import "AutoGraphViewController.h"
+#import "AverageSpikeGraphViewController.h"
 
 @implementation BBFileActionViewControllerTBV
 
@@ -62,19 +70,54 @@
 {
     [super viewWillAppear:animated];
     
+    [[self navigationController] setNavigationBarHidden:NO animated:NO];
+    
     self.files = self.delegate.filesSelectedForAction;
     
     if ([self.files count] == 1) //single file
     {
-        self.navigationItem.title = [[self.files objectAtIndex:0] shortname];
-        
-        self.actionOptions = [NSArray arrayWithObjects:
+        BBFile * tempFile = [self.files objectAtIndex:0];
+        self.navigationItem.title = [tempFile shortname];
+        if([tempFile.spikesFiltered isEqualToString:FILE_SPIKE_SORTED] )
+        {
+            if([tempFile numberOfSpikeTrains]>1)
+            {
+                self.actionOptions = [NSArray arrayWithObjects:
                               @"File Details",
                               @"Play",
-                              //@"Analyze",
-                              @"Email",
-                              @"Download",
+                              @"Find Spikes",
+                              @"Autocorrelation",
+                              @"ISI",
+                              @"Cross-correlation",
+                              @"Average Spike",
+                              //@"Email",
+                              @"Share",
                               @"Delete", nil];
+            }
+            else
+            {
+            
+                self.actionOptions = [NSArray arrayWithObjects:
+                                      @"File Details",
+                                      @"Play",
+                                      @"Find Spikes",
+                                      @"Autocorrelation",
+                                      @"ISI",
+                                      @"Average Spike",
+                                      //@"Email",
+                                      @"Share",
+                                      @"Delete", nil];
+            }
+        }
+        else
+        {
+            self.actionOptions = [NSArray arrayWithObjects:
+                                  @"File Details",
+                                  @"Play",
+                                  @"Find Spikes",
+                                  @"Share",
+                                  @"Delete", nil];
+        }
     }
     else //multiple files
     {
@@ -83,7 +126,7 @@
         self.actionOptions = [NSArray arrayWithObjects:
                               @"File Details",
                               @"Email",
-                              @"Download",
+                              @"Share",
                               @"Delete", nil];
     }
     
@@ -91,8 +134,30 @@
     self.contentSizeForViewInPopover =
         CGSizeMake(310.0, (self.tableView.rowHeight * ([self.actionOptions count] +1)));
     
+    //react on new file, we have to refresh table and display file
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(newFileAddedViaShare)
+                                                 name:@"FileReceivedViaShare"
+                                               object:nil];
+    [self.tableView reloadData];
+}
+
+//If file is opened reset flag
+-(void) newFileAddedViaShare
+{
+    MyAppDelegate * appDelegate = (MyAppDelegate*)[[UIApplication sharedApplication] delegate];
+    if([appDelegate sharedFileShouldBeOpened])
+    {
+        [appDelegate sharedFileIsOpened];
+    }
+
+}
+
+-(void) viewWillDisappear:(BOOL)animated
+{
     
-    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"FileReceivedViaShare" object:nil];
+    [super viewWillDisappear:animated];
 }
 
 #pragma mark - TableViewDelegate methods
@@ -145,10 +210,15 @@
     
     if ([cell.textLabel.text isEqualToString:@"Play"])
 	{
-        PlaybackViewController *pvc = [[PlaybackViewController alloc] initWithNibName:@"PlaybackViewController" bundle:nil];
-        pvc.bbfile = [self.files objectAtIndex:0];
-        [self.navigationController pushViewController:pvc animated:YES];
-        [pvc release];
+    
+        if(playbackController==nil)
+        {
+            playbackController = [[[PlaybackViewController alloc] initWithNibName:@"PlaybackViewController" bundle:nil] autorelease];
+        }
+        playbackController.showNavigationBar = NO;
+        playbackController.bbfile = [self.files objectAtIndex:0];
+        [self.navigationController pushViewController:playbackController animated:YES];
+        //[playbackController release];
 
 	}
      
@@ -162,27 +232,103 @@
         
 	}
      
-	else if ([cell.textLabel.text isEqualToString:@"Email"])
+    else if ([cell.textLabel.text isEqualToString:@"Find Spikes"])
 	{
+        BBFile * fileToAnalyze = (BBFile *)[self.files objectAtIndex:0];
+       
+        MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+        hud.labelText = @"Analyzing Spikes";
+        dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+            
+            if([[BBAnalysisManager bbAnalysisManager] findSpikes:fileToAnalyze] != -1)
+            {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    
+                    [MBProgressHUD hideHUDForView:self.view animated:YES];
+                    SpikesAnalysisViewController *avc = [[SpikesAnalysisViewController alloc] initWithNibName:@"SpikesViewController" bundle:nil];
+                    avc.bbfile = [self.files objectAtIndex:0];
+                    [self.navigationController pushViewController:avc animated:YES];
+                    [avc release];
+                    
+                });
+            }
+            else
+            {
+                //we have error on spike searching
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [MBProgressHUD hideHUDForView:self.view animated:YES];
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Can't find spikes" message:@"File is too short or it has low sampling rate."
+                                                                   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+                    [alert show];    
+                    [alert release];
+                });
+                
+            }
+            
+        });
         
-		[self emailFiles];
+    }
+    else if ([cell.textLabel.text isEqualToString: @"Autocorrelation"])
+	{
+        AutoGraphViewController *autovc = [[AutoGraphViewController alloc] initWithNibName:@"AutoGraphViewController" bundle:nil];
+        [autovc setFileForGraph:(BBFile *)[self.files objectAtIndex:0]];
+        [self.navigationController pushViewController:autovc animated:YES];
+        [autovc release];
+    }
+    else if ([cell.textLabel.text isEqualToString: @"ISI"])
+	{
 
-	}
-	else if ([cell.textLabel.text isEqualToString:@"Download"])
+        ISIGraphViewController *isivc = [[ISIGraphViewController alloc] initWithNibName:@"ISIGraphViewController" bundle:nil];
+        [isivc setFileForGraph:(BBFile *)[self.files objectAtIndex:0]];
+        [self.navigationController pushViewController:isivc animated:YES];
+        [isivc release];
+    
+    }
+    else if ([cell.textLabel.text isEqualToString: @"Cross-correlation"])
+    {
+        //GraphMatrixViewController
+        GraphMatrixViewController *gmvc = [[GraphMatrixViewController alloc] initWithNibName:@"GraphMatrixViewController" bundle:nil];
+        gmvc.bbfile = (BBFile *)[self.files objectAtIndex:0];
+        [self.navigationController pushViewController:gmvc animated:YES];
+        [gmvc release];
+    }
+    else if ([cell.textLabel.text isEqualToString:@"Average Spike"])
+    {
+        //GraphMatrixViewController
+        AverageSpikeGraphViewController *asvc = [[AverageSpikeGraphViewController alloc] initWithNibName:@"AverageSpikeGraphViewController" bundle:nil];
+        [asvc calculateGraphForFile:(BBFile *)[self.files objectAtIndex:0] andChannelIndex:0];
+        [self.navigationController pushViewController:asvc animated:YES];
+        [asvc release];
+        
+    }
+	else if ([cell.textLabel.text isEqualToString:@"Share"])
 	{
         //grab just the filenames
         NSMutableArray *theFilenames = [[NSMutableArray alloc] initWithObjects:nil];
 		for (BBFile *thisFile in self.files)
         {
-            [theFilenames addObject:thisFile.filename];
+            [thisFile saveWithoutArrays];
+            [theFilenames addObject:[NSURL fileURLWithPath:[[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingPathComponent:thisFile.filename]]];
         }
         self.fileNamesToShare = (NSArray *)theFilenames;
         [theFilenames release];
         
-        BBFileDownloadViewController *downloadViewController = [[BBFileDownloadViewController alloc] initWithNibName:@"BBFileDownloadView" bundle:nil];
-        downloadViewController.delegate = self;
-        [[self navigationController] pushViewController:downloadViewController animated:YES];
-        [downloadViewController release];
+
+        UIActivityViewController * activities = [[[UIActivityViewController alloc]
+                                                 initWithActivityItems:theFilenames
+                                                 applicationActivities:nil] autorelease];
+        
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            [[[self parentViewController] parentViewController] presentViewController:activities animated:YES completion:nil];
+
+        }
+        else
+        {
+            [self presentViewController:activities
+                               animated:YES
+                             completion:nil];
+            
+        }
 
 	}
 	else if ([cell.textLabel.text isEqualToString:@"Delete"])
@@ -250,7 +396,7 @@
     NSMutableString *bodyText = [NSMutableString stringWithFormat:@"<p>I recorded these files:"];
     for (BBFile *thisFile in self.files)
     {
-        [bodyText appendFormat:[NSMutableString stringWithFormat:@"<p>\"%@,\" ", thisFile.shortname]];
+        [bodyText appendFormat:@"<p>\"%@,\" ", thisFile.shortname];
         
         int minutes = (int)floor(thisFile.filelength / 60.0);
         int seconds = (int)(thisFile.filelength - minutes*60.0);
@@ -270,7 +416,7 @@
     
 	[message setMessageBody:bodyText isHTML:YES];
 	
-	[self presentModalViewController:message animated:YES];
+    [self presentViewController:message animated:YES completion:nil];
 	[message release];
     
 }
@@ -282,7 +428,7 @@
 
 - (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error
 {
-	[self dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)downloadFiles

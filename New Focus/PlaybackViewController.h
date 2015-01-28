@@ -7,25 +7,36 @@
 //
 
 #import "CCGLTouchViewController.h"
-#import "MyCinderGLView.h"
 #import "BBAudioManager.h"
 #import "BBFile.h"
+#import "MultichannelCindeGLView.h"
 
-
-@interface PlaybackViewController : CCGLTouchViewController
+@interface PlaybackViewController : CCGLTouchViewController <MultichannelGLViewDelegate>
 {
-    MyCinderGLView *glView;
+    MultichannelCindeGLView *glView;
 }
 
 - (void)setGLView:(CCGLTouchView *)view;
 
+@property (nonatomic) BOOL showNavigationBar;
 @property (retain, nonatomic) BBFile *bbfile;
 
 @property (retain, nonatomic) IBOutlet UIButton *playPauseButton;
 @property (retain, nonatomic) IBOutlet UISlider *timeSlider;
 
+- (IBAction)backBtnClick:(id)sender;
 
 - (IBAction)sliderValueChanged:(id)sender;
 - (IBAction)playPauseButtonPressed:(id)sender;
 
+//MultichannelGLViewDelegate protocol functions
+- (float) fetchDataToDisplay:(float *)data numFrames:(UInt32)numFrames whichChannel:(UInt32)whichChannel;
+- (void) selectChannel:(int) selectedChannel;
+-(BOOL) shouldEnableSelection;
+-(void) updateSelection:(float) newSelectionTime timeSpan:(float) timeSpan;
+-(float) selectionStartTime;
+-(float) selectionEndTime;
+-(void) endSelection;
+-(BOOL) selecting;
+-(float) rmsOfSelection;
 @end

@@ -8,7 +8,6 @@
 
 #import <SensibleTableView/SensibleTableView.h>
 #import "BBAudioManager.h"
-#import "DigitalSignalParameterViewController.h"
 
 @interface StimulationParameterViewController : SCTableViewController
 {

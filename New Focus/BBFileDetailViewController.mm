@@ -27,7 +27,7 @@
     
     SCClassDefinition *fileDef = [SCClassDefinition
                                      definitionWithClass:[BBFile class]
-                                     propertyNamesString:@"shortname;comment;subname;samplingrate;gain;filelength"];
+                                     propertyNamesString:@"shortname;comment;subname;samplingrate;numberOfChannels;gain;filelength"];
     
     
     SCPropertyDefinition *titlePropertyDef = [fileDef propertyDefinitionWithName:@"shortname"];
@@ -43,7 +43,10 @@
     samplingRateDef.type = SCPropertyTypeLabel;
     samplingRateDef.title = @"Sampling Rate:";
     
-
+    SCPropertyDefinition *numberOfChannelsDef = [fileDef propertyDefinitionWithName:@"numberOfChannels"];
+    numberOfChannelsDef.type = SCPropertyTypeLabel;
+    numberOfChannelsDef.title = @"Number of channels:";
+    
     SCPropertyDefinition *gainDef = [fileDef propertyDefinitionWithName:@"gain"];
     gainDef.type = SCPropertyTypeLabel;
     gainDef.title = @"Gain:";
@@ -67,6 +70,14 @@
 
 }
 
+
+- (void) viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    [[self navigationController] setNavigationBarHidden:NO animated:NO];
+}
+
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
 {
     return YES;
@@ -75,7 +86,7 @@
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    [bbfile save];
+    [bbfile saveWithoutArrays];
 }
 
 - (void)dealloc

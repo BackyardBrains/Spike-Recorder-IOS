@@ -10,17 +10,20 @@
 //
 
 #import <UIKit/UIKit.h>
-
 #import "CCGLTouchAppDelegate.h"
-
 #import "ViewAndRecordViewController.h"
-#import "MyCinderGLView.h"
 #import "BBAudioManager.h"
+#import <HealthKit/HealthKit.h>
 
-@interface MyAppDelegate : CCGLTouchAppDelegate {
+@interface MyAppDelegate : CCGLTouchAppDelegate <UITabBarControllerDelegate>{
     UIWindow *window;
     UITabBarController *tabBarController;
+    BOOL sharedFileIsWaiting;
 }
 @property (retain, nonatomic) IBOutlet UITabBarController *tabBarController;
 @property (retain, nonatomic) IBOutlet UIWindow *window;
+@property (retain, nonatomic) HKHealthStore *healthStore;
+
+-(BOOL) sharedFileShouldBeOpened;
+-(void) sharedFileIsOpened;
 @end

@@ -1,7 +1,7 @@
 /*
  *  SCTableViewCell.h
  *  Sensible TableView
- *  Version: 3.0.5
+ *  Version: 3.3.0
  *
  *
  *	THIS SOURCE CODE AND ANY ACCOMPANYING DOCUMENTATION ARE PROTECTED BY UNITED STATES 
@@ -13,7 +13,7 @@
  *	USAGE OF THIS SOURCE CODE IS BOUND BY THE LICENSE AGREEMENT PROVIDED WITH THE 
  *	DOWNLOADED PRODUCT.
  *
- *  Copyright 2012 Sensible Cocoa. All rights reserved.
+ *  Copyright 2012-2013 Sensible Cocoa. All rights reserved.
  *
  *
  *	This notice may not be removed from this file.
@@ -38,31 +38,33 @@
 /*	class SCTableViewCell	*/
 /****************************************************************************************/ 
 /**	
- This class functions as a cell for SCTableViewSection. 'SCTableViewCell' is extensively subclassed to create cells with special controls such as UITextField and UISlider.
+ This class functions as a cell for SCTableViewSection. SCTableViewCell is extensively subclassed to create cells with special controls such as UITextField and UISlider.
  
- 'SCTableViewCell' provides the user with the infrastructure to access the cell's value using the Bound Object method. This works by binding the cell to an object, called the bound object, and to a property of this object, called the bound property. The cell initializes its value from the value of the bound property, and when its values changes, it sets the property back automatically.
+ SCTableViewCell provides the user with the infrastructure to access the cell's value using the Bound Object method. This works by binding the cell to an object, called the bound object, and to a property of this object, called the bound property. The cell initializes its value from the value of the bound property, and when its values changes, it sets the property back automatically.
   
- Please note that even though a cell value is not applicable to 'SCTableViewCell' itself, 'SCTableViewCell' still provides the bound object functionality as a framework to all its subclasses to use.
+ Please note that even though a cell value is not applicable to SCTableViewCell itself, SCTableViewCell still provides the bound object functionality as a framework to all its subclasses to use.
  */
 @interface SCTableViewCell : UITableViewCell <SCViewControllerDelegate, SCTableViewControllerDelegate>
 {
 	NSString *reuseId; //used internally
     BOOL configured; //used internally
-	SCTableViewModel *activeDetailModel;  // the current active detail model
+	__weak SCTableViewModel *activeDetailModel;  // the current active detail model
 	
-	__unsafe_unretained SCTableViewModel *ownerTableViewModel;
-    __unsafe_unretained SCTableViewSection *ownerSection;
-	__unsafe_unretained id ownerViewControllerDelegate; 
+	__weak SCTableViewModel *ownerTableViewModel;
+    __weak SCTableViewSection *ownerSection;
+	__weak id ownerViewControllerDelegate; 
 	NSObject *boundObject;
     SCDataStore *boundObjectStore;
 	NSString *boundPropertyName;
     SCDataType boundPropertyDataType;
+    BOOL _isCustomBoundProperty;
 	
 	CGFloat height;
 	BOOL editable;
 	BOOL movable;
 	BOOL selectable;
     BOOL enabled;
+    BOOL autoDeselect;
 	BOOL autoResignFirstResponder;
 	UITableViewCellEditingStyle cellEditingStyle;
 	SCBadgeView *badgeView;
@@ -87,24 +89,24 @@
 /// @name Creation and Initialization
 //////////////////////////////////////////////////////////////////////////////////////////
 
-/** Allocates and returns an initialized 'SCTableViewCell'. */
+/** Allocates and returns an initialized SCTableViewCell. */
 + (id)cell;
 
-/** Allocates and returns an initialized 'SCTableViewCell' given the cell's style. */
+/** Allocates and returns an initialized SCTableViewCell given the cell's style. */
 + (id)cellWithStyle:(UITableViewCellStyle)style;
 
-/** Allocates and returns an initialized 'SCTableViewCell' given cell text.
+/** Allocates and returns an initialized SCTableViewCell given cell text.
  *	@param cellText The text that will appear in the cell's textLabel.
  */
 + (id)cellWithText:(NSString *)cellText;
 
-/** Allocates and returns an initialized 'SCTableViewCell' given cell text and its alignment.
+/** Allocates and returns an initialized SCTableViewCell given cell text and its alignment.
  *	@param cellText The text that will appear in the cell's textLabel.
  *  @param textAlignment The alignment setting for the cell's text.
  */
 + (id)cellWithText:(NSString *)cellText textAlignment:(UITextAlignment)textAlignment;
 
-/** Allocates and returns an initialized 'SCTableViewCell' given cell text, bound object, and a bound property name. 
+/** Allocates and returns an initialized SCTableViewCell given cell text, bound object, and a bound property name. 
  *	@param cellText The text that will appear in the cell's textLabel.
  *	@param object	The cell's bound object (see class overview).
  *	@param propertyName The cell's bound property name (see class overview).
@@ -112,18 +114,18 @@
 + (id)cellWithText:(NSString *)cellText boundObject:(NSObject *)object boundPropertyName:(NSString *)propertyName;
 
 
-/** Returns an initialized 'SCTableViewCell' given cell text.
+/** Returns an initialized SCTableViewCell given cell text.
  *	@param cellText The text that will appear in the cell's textLabel.
  */
 - (id)initWithText:(NSString *)cellText;
 
-/** Returns an initialized 'SCTableViewCell' given cell text and its alignment.
+/** Returns an initialized SCTableViewCell given cell text and its alignment.
  *	@param cellText The text that will appear in the cell's textLabel.
  *  @param textAlignment The alignment setting for the cell's text.
  */
 - (id)initWithText:(NSString *)cellText textAlignment:(UITextAlignment)textAlignment;
 
-/** Returns an initialized 'SCTableViewCell' given cell text, bound object, and a bound property name. 
+/** Returns an initialized SCTableViewCell given cell text, bound object, and a bound property name. 
  *	@param cellText The text that will appear in the cell's textLabel.
  *	@param object	The cell's bound object (see class overview).
  *	@param propertyName The cell's bound property name (see class overview).
@@ -137,13 +139,13 @@
 
 /** The owner table view model of the cell. 
  *
- * @warning Important: This property gets set automatically by the framework, you should never set this property manually */
-@property (nonatomic, unsafe_unretained) SCTableViewModel *ownerTableViewModel;
+ * @warning This property gets set automatically by the framework, you should never set this property manually */
+@property (nonatomic, weak) SCTableViewModel *ownerTableViewModel;
 
 /** The owner section of the cell. 
  *
- * @warning Important: This property gets set automatically by the framework, you should never set this property manually */
-@property (nonatomic, unsafe_unretained) SCTableViewSection *ownerSection;
+ * @warning This property gets set automatically by the framework, you should never set this property manually */
+@property (nonatomic, weak) SCTableViewSection *ownerSection;
 
 /** The set of cell action blocks. */
 @property (nonatomic, readonly) SCCellActions *cellActions;
@@ -177,11 +179,15 @@
 @property (nonatomic, readonly) SCBadgeView *badgeView;
 
 /** Set this property to an array of UIImageView objects to be set to each of the cell's detail cells. 
- *	@warning Note: Only applicable to cells with detail views. 
+ *	@note Only applicable to cells with detail views. 
  */
 @property (nonatomic, strong) NSArray *detailCellsImageViews;
 
-/** If property is TRUE, the cell automatically dismisses the keyboard (if applicable) when another cell is selected or when the value of another cell is changed. Default: TRUE. 
+/** If property is TRUE, the cell gets automatically deselected whenever the user selects it. Default: FALSE.
+ */
+@property (nonatomic, readwrite) BOOL autoDeselect;
+
+/** If property is TRUE, the cell automatically dismisses the keyboard (if applicable) when another cell is selected or when the value of another cell is changed. Default: TRUE.
  */
 @property (nonatomic, readwrite) BOOL autoResignFirstResponder;
 
@@ -276,8 +282,16 @@
 /** Property used internally by framework to determine if cell is a custom cell. */
 @property (nonatomic, readwrite) BOOL customCell;
 
-/** Method should be overridden by subclasses to perform any required initialization. */
+/** Method should be overridden by subclasses to perform any required initialization.
+ @warning Subclasses must call [super performInitialization] from within the method's implementation.
+ */
 - (void)performInitialization;
+
+/** Method called internally. */
+- (void)setIsCustomBoundProperty:(BOOL)custom;
+
+/** Method called internally. */
+- (void)setNeedsCommit:(BOOL)needsCommit;
 
 /**	
  Method gets called internally whenever the cell value changes. 
@@ -403,7 +417,6 @@
     BOOL _pauseControlEvents;
     
     NSMutableDictionary *_objectBindings;
-	NSMutableDictionary *_keyBindings;
     
     BOOL _autoResize;
     BOOL _showClearButtonInInputAccessoryView;
@@ -416,45 +429,46 @@
 
 /** 
  Allocates and returns an initialized 'SCCustomCell' given cell text, custom object bindings, and a nib file name. Use this type of constructor in cases where the bound object is not yet known and will be provided later by the framework. A common case is when implementing the SCTableViewModelDataSource method called 'tableViewModel:cellForRowAtIndexPath:'.
- @warning Note: This constructor is usually used to construct custom cells that are either created in Interface Builder, or created by subclassing 'SCCustomCell'.
+ @note This constructor is usually used to construct custom cells that are either created in Interface Builder, or created by subclassing 'SCCustomCell'.
  @param cellText The text that will appear in the cell's textLabel.
  @param bindings The cell's object bindings. This dictionary specifies how each
  of the cell's custom controls binds itself to its boundObject's properties. Each dictionary key
  should be the tag string value of one of the cell's custom controls, and the value should be the 
  name of the boundObject's property that is bound to that control. 
- @warning IMPORTANT: All control tags must be greater than zero.
+ @warning All control tags must be greater than zero.
  @param nibName	The name of the nib file to load the cell from. The nib file should only contain
  one cell, and it should be a subclass of 'SCControlCell'. 
- @warning Note: it's ok for this parameter to be nil if the cell has no corresponding nib file.
+ @note it's ok for this parameter to be nil if the cell has no corresponding nib file.
  */
 + (id)cellWithText:(NSString *)cellText objectBindings:(NSDictionary *)bindings nibName:(NSString *)nibName;
 
 /** 
  Allocates and returns an initialized 'SCCustomCell' given cell text, custom object bindings string, and a nib file name. Use this type of constructor in cases where the bound object is not yet known and will be provided later by the framework. A common case is when implementing the SCTableViewModelDataSource method called 'tableViewModel:cellForRowAtIndexPath:'.
- @warning Note: This constructor is usually used to construct custom cells that are either created in Interface Builder, or created by subclassing 'SCCustomCell'.
+ @note This constructor is usually used to construct custom cells that are either created in Interface Builder, or created by subclassing 'SCCustomCell'.
  @param cellText The text that will appear in the cell's textLabel.
  @param bindingsString The cell's object bindings string. This string specifies how each
  of the cell's custom controls binds itself to its boundObject's properties. The string's format should be as follows: @"tag1:propertyName1;tag2:propertyName2;tag3:propertyName3" 
- @warning IMPORTANT: All control tags must be greater than zero.
+ @warning All control tags must be greater than zero.
  @param nibName	The name of the nib file to load the cell from. The nib file should only contain
  one cell, and it should be a subclass of 'SCControlCell'. 
- @warning Note: it's ok for this parameter to be nil if the cell has no corresponding nib file.
+ @note it's ok for this parameter to be nil if the cell has no corresponding nib file.
  */
 + (id)cellWithText:(NSString *)cellText objectBindingsString:(NSString *)bindingsString nibName:(NSString *)nibName;
 
 /** 
  Allocates and returns an initialized 'SCControlCell' given cell text, bound object, custom object bindings,
  and a nib file name. 
- @warning Note: This constructor is usually used to construct custom cells that are either created in Interface Builder, or created by subclassing 'SCControlCell'.
+ @note This constructor is usually used to construct custom cells that are either created in Interface Builder, or created by subclassing 'SCControlCell'.
  @param cellText The text that will appear in the cell's textLabel.
  @param object	The cell's bound object (see SCTableViewCell class overview).
  @param bindings The cell's object bindings. This dictionary specifies how each
  of the cell's custom controls binds itself to the boundObject's properties. Each dictionary key
  should be the tag string value of one of the cell's custom controls, and the value should be the 
- name of the boundObject's property that is bound to that control. @warning IMPORTANT: All control tags must be greater than zero.
+ name of the boundObject's property that is bound to that control. 
+ @warning All control tags must be greater than zero.
  @param nibName	The name of the nib file to load the cell from. The nib file should only contain
- one cell, and it should be a subclass of 'SCControlCell'. @warning Note: it's ok
- for this parameter to be nil if the cell has no corresponding nib file.
+ one cell, and it should be a subclass of 'SCControlCell'. 
+ @note It's ok for this parameter to be nil if the cell has no corresponding nib file.
  */
 + (id)cellWithText:(NSString *)cellText boundObject:(NSObject *)object objectBindings:(NSDictionary *)bindings nibName:(NSString *)nibName;
 
@@ -469,17 +483,27 @@
  Each dictionary key
  should be the tag string value of one of the cell's custom controls, and the value should be the 
  name of the boundObject's property that is bound to that control. 
- @warning IMPORTANT: All control tags must be greater than zero.
+ 
+ @warning All control tags must be greater than zero.
+ @note This property can be used interchangibly with objectBindingsString
  */
 @property (nonatomic, readonly) NSMutableDictionary *objectBindings;
+
+/**
+ This string specifies how each of the cell's custom controls binds itself to the boundObject's properties. The string should consist of a colon separated pair of control's tag and the property name, while each pair should be separated by a semi-colon.
+ 
+ Example bindings string:
+    NSString *bindingsString = @"1:firstName;2:lastName";
+ @warning IMPORTANT: All control tags must be greater than zero.
+ @note This property can be used interchangibly with objectBindings
+ */
+@property (nonatomic, copy) NSString *objectBindingsString;
 
 /**	Determines if cell should automatically resize to fit its contents. Default: TRUE. */
 @property (nonatomic, readwrite) BOOL autoResize;
 
 /** Show the 'Clear' button in the model's inputAccessoryView. */
 @property (nonatomic, readwrite) BOOL showClearButtonInInputAccessoryView;
-
-@property (nonatomic, readonly) NSArray *inputControlsSortedByTag;
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -499,6 +523,9 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 /// @name Internal Methods (should only be used by the framework or when subclassing)
 //////////////////////////////////////////////////////////////////////////////////////////
+
+/** An array of all the cell's input controls sorted by their tag value. Property is used internally by the framework. */
+@property (nonatomic, readonly) NSArray *inputControlsSortedByTag;
 
 /**	Method must be called by subclasses to configure any added custom controls for automatic binding. */
 - (void)configureCustomControls;
@@ -555,23 +582,24 @@
 
 /** The control associated with the cell. Even though this property is readonly, feel free to customize any of the control's properties.
  *
- *	@warning Note: The type of the control has been choosen to be of type UIView instead of UIControl as not all user controls decend from UIControl (e.g. UITextView). 
+ *	@note The type of the control has been choosen to be of type UIView instead of UIControl because not all user controls decend from UIControl (e.g. UITextView). 
  */
 @property (nonatomic, readonly) UIView *control;
 
-/**	The maximum width of the cell's textLabel */
+/** The value of contained in the cell's control. */
+@property (nonatomic, readonly) NSObject *controlValue;
+
+/** The maximum width of the cell's textLabel. Default: 200. */
 @property (nonatomic, readwrite) CGFloat maxTextLabelWidth;
 
 /**	
- The indentation of the control from the cell's left border. 
+ The indentation of the control from the cell's left border. Default: 120. 
  
- This indentation keeps the 
- control at a specific distance from the cell's border unless the textLabel's text 
- exceeds this distance, in which case the control is moved accordingly to the right. 
+ This indentation keeps the control at a specific distance from the cell's border unless the textLabel's text exceeds this distance, in which case the control is moved accordingly to the right. 
  */
 @property (nonatomic, readwrite) CGFloat controlIndentation;
 
-/** The margin between the control and the cell's textLabel. */
+/** The margin between the control and the cell's textLabel. Default: 10. */
 @property (nonatomic, readwrite) CGFloat controlMargin;
 
 /** Clears the control associated with the cell. */
@@ -598,7 +626,7 @@
 /*	class SCLabelCell	*/
 /****************************************************************************************/ 
 /**	
- This class functions as a cell with a UILabel control. The bound property name or bound key value of this cell can be of any type the decends from NSObject.
+ This class functions as a cell with a UILabel control. The bound property of this cell can be of any type the decends from NSObject.
  */
 
 @interface SCLabelCell : SCControlCell
@@ -640,7 +668,8 @@
 /****************************************************************************************/
 /*	class SCTextViewCell	*/
 /****************************************************************************************/ 
-/**	This class functions as a cell with a UITextView control. The bound property name or bound key value of this cell must be of type NSString.
+/**	
+ This class functions as a cell with a UITextView control. The bound property of this cell must be of type NSString.
  */
 
 @interface SCTextViewCell : SCControlCell
@@ -650,6 +679,7 @@
 	
 	@private
 	BOOL initializing;
+    float prevContentHeight;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -694,7 +724,8 @@
 /****************************************************************************************/
 /*	class SCTextFieldCell	*/
 /****************************************************************************************/ 
-/**	This class functions as a cell with a UITextField control. The bound property name or bound key value of this cell must be of type NSString.
+/**	
+ This class functions as a cell with a UITextField control. The bound property of this cell must be of type NSString.
  */
 
 @interface SCTextFieldCell : SCControlCell 
@@ -741,9 +772,7 @@
 /*	class SCNumericTextFieldCell	*/
 /****************************************************************************************/ 
 /**	
- This class functions as a cell with a UITextField control with numeric values. The bound property name or bound
- key value of this cell must be of type NSNumber.
- 'SCNumericTextFieldCell' defines its own validation rules according to the following criteria:
+ This class functions as a cell with a UITextField control with numeric values. The bound property of this cell must be of type NSNumber, int, float, or double. SCNumericTextFieldCell defines its own validation rules according to the following criteria:
  - Value is valid only if it's a numeric value.
  - If minimumValue is not nil, then value is only valid if it's greater than or equal to this value.
  - If maximumValue is not nil, then value is only valid if it's less than or equal to this value.
@@ -775,7 +804,7 @@
 /** If TRUE, an empty space is displayed if the bound value equals zero. Default: FALSE. */
 @property (nonatomic, readwrite) BOOL displayZeroAsBlank;
 
-/** The number formatter responsible for converting the cell's numeric value to a string and vice versa. **/
+/** The number formatter responsible for converting the cell's numeric value to a string and vice versa. */
 @property (nonatomic, readonly) NSNumberFormatter *numberFormatter;
 
 
@@ -788,7 +817,8 @@
 /****************************************************************************************/
 /*	class SCSliderCell	*/
 /****************************************************************************************/ 
-/**	This class functions as a cell with a UISlider control. The bound property name or bound key value of this cell must be of type NSNumber.
+/**	
+ This class functions as a cell with a UISlider control. The bound property of this cell must be of type NSNumber, int, float, or double.
  */
 
 @interface SCSliderCell : SCControlCell
@@ -799,7 +829,7 @@
 /// @name Creation and Initialization
 //////////////////////////////////////////////////////////////////////////////////////////
 
-/** Allocates and returns an initialized 'SCSliderCell' given cell text, bound object, and a bound property name. 
+/** Allocates and returns an initialized SCSliderCell given cell text, bound object, and a bound property name. 
  *	@param cellText The text that will appear in the cell's textLabel.
  *	@param object	The cell's bound object (see SCTableViewCell class overview).
  *	@param propertyName The cell's bound property name corresponding to the UISlider's value. Property must be a readwrite property of type NSNumber.
@@ -807,7 +837,7 @@
 + (id)cellWithText:(NSString *)cellText boundObject:(NSObject *)object sliderValuePropertyName:(NSString *)propertyName;
 
 
-/** Returns an initialized 'SCSliderCell' given cell text, bound object, and a bound property name. 
+/** Returns an initialized SCSliderCell given cell text, bound object, and a bound property name. 
  *	@param cellText The text that will appear in the cell's textLabel.
  *	@param object	The cell's bound object (see SCTableViewCell class overview).
  *	@param propertyName The cell's bound property name corresponding to the UISlider's value. Property must be a readwrite property of type NSNumber.
@@ -832,7 +862,8 @@
 /****************************************************************************************/
 /*	class SCSegmentedCell	*/
 /****************************************************************************************/ 
-/**	This class functions as a cell with a UISegmentedControl. The bound property name or bound key value of this cell must be of type NSNumber.
+/**	
+ This class functions as a cell with a UISegmentedControl. The bound property of this cell must be of type NSNumber or int.
  */
 @interface SCSegmentedCell : SCControlCell
 {
@@ -842,7 +873,7 @@
 /// @name Creation and Initialization
 //////////////////////////////////////////////////////////////////////////////////////////
 
-/** Allocates and returns an initialized 'SCSegmentedCell' given cell text, bound object, and a bound property name. 
+/** Allocates and returns an initialized SCSegmentedCell given cell text, bound object, and a bound property name. 
  *	@param cellText The text that will appear in the cell's textLabel.
  *	@param object	The cell's bound object (see SCTableViewCell class overview).
  *	@param propertyName The cell's bound property name corresponding to the UISegmentedControl's selectedSegmentIndex value. Property must be a readwrite property of type NSNumber.
@@ -851,7 +882,7 @@
 + (id)cellWithText:(NSString *)cellText boundObject:(NSObject *)object selectedSegmentIndexPropertyName:(NSString *)propertyName segmentTitlesArray:(NSArray *)cellSegmentTitlesArray;
 
 
-/** Returns an initialized 'SCSegmentedCell' given cell text, bound object, and a bound property name. 
+/** Returns an initialized SCSegmentedCell given cell text, bound object, and a bound property name. 
  *	@param cellText The text that will appear in the cell's textLabel.
  *	@param object	The cell's bound object (see SCTableViewCell class overview).
  *	@param propertyName The cell's bound property name corresponding to the UISegmentedControl's selectedSegmentIndex value. Property must be a readwrite property of type NSNumber.
@@ -880,7 +911,8 @@
 /****************************************************************************************/
 /*	class SCSwitchCell	*/
 /****************************************************************************************/ 
-/**	This class functions as a cell with a UISwitch control. The bound property name or bound key value of this cell must be of type NSNumber.
+/**	
+ This class functions as a cell with a UISwitch control. The bound property of this cell must be of type NSNumber or BOOL.
  */
 @interface SCSwitchCell : SCControlCell
 {
@@ -890,7 +922,7 @@
 /// @name Creation and Initialization
 //////////////////////////////////////////////////////////////////////////////////////////
 
-/** Allocates and returns an initialized 'SCSwitchCell' given cell text, bound object, and a bound property name. 
+/** Allocates and returns an initialized SCSwitchCell given cell text, bound object, and a bound property name. 
  *	@param cellText The text that will appear in the cell's textLabel.
  *	@param object	The cell's bound object (see SCTableViewCell class overview).
  *	@param propertyName The cell's bound property name corresponding to the UISwitch's on value. Property must be a readwrite property of type NSNumber.
@@ -898,7 +930,7 @@
 + (id)cellWithText:(NSString *)cellText boundObject:(NSObject *)object switchOnPropertyName:(NSString *)propertyName;
 
 
-/** Returns an initialized 'SCSwitchCell' given cell text, bound object, and a bound property name. 
+/** Returns an initialized SCSwitchCell given cell text, bound object, and a bound property name. 
  *	@param cellText The text that will appear in the cell's textLabel.
  *	@param object	The cell's bound object (see SCTableViewCell class overview).
  *	@param propertyName The cell's bound property name corresponding to the UISwitch's on value. Property must be a readwrite property of type NSNumber.
@@ -924,14 +956,13 @@
 /*	class SCDateCell	*/
 /****************************************************************************************/ 
 /**	
- This class functions as a cell that provides the end-user with an automatically generated
- detail view of a UIDatePicker to choose a date from. The bound property name or bound
- key value of this cell must be of type NSDate.
+ This class functions as a cell that provides the end-user with a UIDatePicker to choose a date with. The bound property of this cell must be of type NSDate.
  */
 @interface SCDateCell : SCLabelCell <SCViewControllerDelegate>
 {
 	//internal
 	UITextField *pickerField;
+    UIViewController *_activePickerDetailViewController;
 	
 	UIDatePicker *datePicker;
 	NSDateFormatter *dateFormatter;
@@ -943,7 +974,7 @@
 /// @name Creation and Initialization
 //////////////////////////////////////////////////////////////////////////////////////////
 
-/** Allocates and returns an initialized 'SCDateCell' given cell text, bound object, and a bound property name. 
+/** Allocates and returns an initialized SCDateCell given cell text, bound object, and a bound property name. 
  *	@param cellText The text that will appear in the cell's textLabel.
  *	@param object	The cell's bound object (see SCTableViewCell class overview).
  *	@param propertyName The cell's bound property name corresponding to the cell's date selection. Property must be a readwrite property of type NSDate.
@@ -951,7 +982,7 @@
 + (id)cellWithText:(NSString *)cellText boundObject:(NSObject *)object datePropertyName:(NSString *)propertyName;
 
 
-/** Returns an initialized 'SCDateCell' given cell text, bound object, and a bound property name. 
+/** Returns an initialized SCDateCell given cell text, bound object, and a bound property name. 
  *	@param cellText The text that will appear in the cell's textLabel.
  *	@param object	The cell's bound object (see SCTableViewCell class overview).
  *	@param propertyName The cell's bound property name corresponding to the cell's date selection. Property must be a readwrite property of type NSDate.
@@ -975,9 +1006,6 @@
 /** 
  Set to TRUE to display the date picker in its own detail view, instead of displaying it in
  the current view. Default: FALSE. 
- 
- @warning Note: The value of this setting is ignored on devices running iOS versions
- prior to 3.2, where the date picker will always be displayed in its own detail view. 
  */
 @property (nonatomic, readwrite) BOOL displayDatePickerInDetailView;
 
@@ -995,7 +1023,7 @@
  detail view of type UIImagePickerController to pick an image with. As soon as the image is picked,
  it will be saved to the Documents folder using either an auto generated name from the current time stamp,
  or a name provided through SCTableViewModelDelegate or the cell's actions. 
- The bound property name or bound key value of this cell must be of type NSString, and will be 
+ The bound property of this cell must be of type NSString, and will be 
  bound to the name of the selected image. Once an image is selected, tapping an SCImagePickerCell
  will display the image in a detail view. To select a different image, the table view must be put in edit
  mode (make sure UITableView's allowsSelectionDuringEditing property is TRUE). Alternatively, make
@@ -1034,7 +1062,7 @@
 /// @name Creation and Initialization
 //////////////////////////////////////////////////////////////////////////////////////////
 
-/** Allocates and returns an initialized 'SCImagePickerCell' given cell text, bound object, and a bound property name. 
+/** Allocates and returns an initialized SCImagePickerCell given cell text, bound object, and a bound property name. 
  *	@param cellText The text that will appear in the cell's textLabel.
  *	@param object	The cell's bound object (see SCTableViewCell class overview).
  *	@param propertyName The cell's bound property name corresponding to the cell's selected image name. Property must be a readwrite property of type NSString.
@@ -1042,7 +1070,7 @@
 + (id)cellWithText:(NSString *)cellText boundObject:(NSObject *)object imageNamePropertyName:(NSString *)propertyName;
 
 
-/** Returns an initialized 'SCImagePickerCell' given cell text, bound object, and a bound property name. 
+/** Returns an initialized SCImagePickerCell given cell text, bound object, and a bound property name. 
  *	@param cellText The text that will appear in the cell's textLabel.
  *	@param object	The cell's bound object (see SCTableViewCell class overview).
  *	@param propertyName The cell's bound property name corresponding to the cell's selected image name. Property must be a readwrite property of type NSString.
@@ -1059,7 +1087,7 @@
 @property (nonatomic, readonly) UIImagePickerController *imagePickerController;
 
 /** The selected image. Returns nil if no image is selected. */
-@property (nonatomic, readonly) UIImage *selectedImage;
+@property (nonatomic, readonly) UIImage *selectedImageObject;
 
 /** The name for an image in the documents folder that will be used as a placeholder if no image is selected. 
  */
@@ -1074,7 +1102,7 @@
 /** 
  If TRUE, the user will be asked for the source type, otherwise, the source type will be
  determined from imagePickerController's sourceType property. Default: TRUE.
- @warning Note: If the device has no camera, setting this to TRUE automatically sets the sourceType 
+ @note If the device has no camera, setting this to TRUE automatically sets the sourceType 
  to UIImagePickerControllerSourceTypePhotoLibrary. 
  */
 @property (nonatomic) BOOL askForSourceType;
@@ -1114,13 +1142,7 @@
 /*	class SCSelectionCell	*/
 /****************************************************************************************/ 
 /**	
- This class functions as a cell that provides the end-user with an automatically generated
- detail view of options to choose from, much like the Ringtone selection cell in the 
- iPhone's sound settings. The selection items are provided in the form of an array of
- NSStrings, called the items array. 'SCSelectionCell' can be configured to allow multiple
- selection and to allow no selection at all. If allow multiple selection is disabled, then
- the bound property name or bound key value of this cell must be of type NSNumber, otherwise
- it must be of type NSMutableSet.
+ This class functions as a cell that provides the end-user with an automatically generated detail view of options to choose from, much like the Ringtone selection cell in the iPhone's sound settings. The selection items are provided in the form of an array of NSStrings, called the items array. 'SCSelectionCell' can be configured to allow multiple selection and to allow no selection at all. the bound property of this cell must be of type NSNumber, NSString, or NSMutableSet. If allowMultipleSelection is TRUE, then only NSString and NSMutableSet property types are allowed.
  
  @see SCSelectionSection.
  */
@@ -1153,7 +1175,7 @@
 /// @name Creation and Initialization
 //////////////////////////////////////////////////////////////////////////////////////////
 
-/** Allocates and returns an initialized 'SCSelectionCell' given cell text, bound object, an NSNumber bound property name, and an array of selection items.
+/** Allocates and returns an initialized SCSelectionCell given cell text, bound object, an NSNumber bound property name, and an array of selection items.
  *	@param cellText The text that will appear in the cell's textLabel.
  *	@param object	The cell's bound object (see SCTableViewCell class overview).
  *	@param propertyName The cell's bound property name corresponding to the selected item index. Property must be of an NSNumber type and cannot be a readonly property.
@@ -1161,7 +1183,7 @@
  */
 + (id)cellWithText:(NSString *)cellText boundObject:(NSObject *)object selectedIndexPropertyName:(NSString *)propertyName items:(NSArray *)cellItems;
 
-/** Allocates and returns an initialized 'SCSelectionCell' given cell text, bound object, a bound property name, an array of selection items, and whether to allow multiple selection. 
+/** Allocates and returns an initialized SCSelectionCell given cell text, bound object, a bound property name, an array of selection items, and whether to allow multiple selection. 
  *	@param cellText The text that will appear in the cell's textLabel.
  *	@param object	The cell's bound object (see SCTableViewCell class overview).
  *	@param propertyName The cell's bound property name corresponding to the selected items indexes set. Property must be of an NSMutableSet type and can be a readonly property.
@@ -1170,7 +1192,7 @@
  */
 + (id)cellWithText:(NSString *)cellText boundObject:(NSObject *)object selectedIndexesPropertyName:(NSString *)propertyName items:(NSArray *)cellItems allowMultipleSelection:(BOOL)multipleSelection;
 
-/** Allocates and returns an initialized 'SCSelectionCell' given cell text, bound object, an NSString bound property name, and an array of selection items.
+/** Allocates and returns an initialized SCSelectionCell given cell text, bound object, an NSString bound property name, and an array of selection items.
  *	@param cellText The text that will appear in the cell's textLabel.
  *	@param object	The cell's bound object (see SCTableViewCell class overview).
  *	@param propertyName The cell's bound property name corresponding to the selected item string. Property must be of an NSString type and cannot be a readonly property.
@@ -1179,7 +1201,7 @@
 + (id)cellWithText:(NSString *)cellText boundObject:(NSObject *)object selectionStringPropertyName:(NSString *)propertyName items:(NSArray *)cellItems;
 
 
-/** Returns an initialized 'SCSelectionCell' given cell text, bound object, an NSNumber bound property name, and an array of selection items.
+/** Returns an initialized SCSelectionCell given cell text, bound object, an NSNumber bound property name, and an array of selection items.
  *	@param cellText The text that will appear in the cell's textLabel.
  *	@param object	The cell's bound object (see SCTableViewCell class overview).
  *	@param propertyName The cell's bound property name corresponding to the selected item index. Property must be of an NSNumber type and cannot be a readonly property.
@@ -1187,7 +1209,7 @@
  */
 - (id)initWithText:(NSString *)cellText boundObject:(NSObject *)object selectedIndexPropertyName:(NSString *)propertyName items:(NSArray *)cellItems;
 
-/** Returns an initialized 'SCSelectionCell' given cell text, bound object, a bound property name, an array of selection items, and whether to allow multiple selection. 
+/** Returns an initialized SCSelectionCell given cell text, bound object, a bound property name, an array of selection items, and whether to allow multiple selection. 
  *	@param cellText The text that will appear in the cell's textLabel.
  *	@param object	The cell's bound object (see SCTableViewCell class overview).
  *	@param propertyName The cell's bound property name corresponding to the selected items indexes set. Property must be of an NSMutableSet type and can be a readonly property.
@@ -1196,7 +1218,7 @@
  */
 - (id)initWithText:(NSString *)cellText boundObject:(NSObject *)object selectedIndexesPropertyName:(NSString *)propertyName items:(NSArray *)cellItems allowMultipleSelection:(BOOL)multipleSelection;
 
-/** Returns an initialized 'SCSelectionCell' given cell text, bound object, an NSString bound property name, and an array of selection items.
+/** Returns an initialized SCSelectionCell given cell text, bound object, an NSString bound property name, and an array of selection items.
  *	@param cellText The text that will appear in the cell's textLabel.
  *	@param object	The cell's bound object (see SCTableViewCell class overview).
  *	@param propertyName The cell's bound property name corresponding to the selected item string. Property must be of an NSString type and cannot be a readonly property.
@@ -1216,17 +1238,17 @@
 @property (nonatomic, strong) SCDataFetchOptions *selectionItemsFetchOptions;
 
 /** The items stored in selectionItemsStore. */
-@property (nonatomic, readonly) NSArray *items;
+@property (nonatomic, strong) NSArray *items;
 
 /** This property reflects the current cell's selection. You can set this property to define the cell's selection.
  
- @warning Note: If you have bound this cell to an object or a key, you can define the cell's selection using either the bound property value or the key value, respectively.
+ @note If you have bound this cell to an object or a key, you can define the cell's selection using either the bound property value or the key value, respectively.
  */
 @property (nonatomic, copy) NSNumber *selectedItemIndex;
 
 /** This property reflects the current cell's selection(s). You can add index(es) to the set to define the cell's selection.
  
- @warning Note: If you have bound this cell to an object or a key, you can define the cell's selection using either the bound property value or the key value, respectively. 
+ @note If you have bound this cell to an object or a key, you can define the cell's selection using either the bound property value or the key value, respectively. 
  */
 @property (nonatomic, readonly) NSMutableSet *selectedItemsIndexes;
 
@@ -1237,7 +1259,7 @@
 @property (nonatomic, readwrite) BOOL allowNoSelection;
 
 /** The maximum number of items that can be selected. Set to zero to allow an infinite number of selections. Default: 0.
- *	@warning Note: Only applicable when allowMultipleSelection is TRUE.  
+ *	@note Only applicable when allowMultipleSelection is TRUE.  
  */
 @property (nonatomic, readwrite) NSUInteger maximumSelections;
 
@@ -1245,7 +1267,7 @@
 @property (nonatomic, readwrite) BOOL autoDismissDetailView;
 
 /** If TRUE, the detail view's navigation bar is hidder. Default: FALSE. 
- *	@warning Note: Only applicable when autoDismissDetailView is TRUE. 
+ *	@note Only applicable when autoDismissDetailView is TRUE. 
  */
 @property (nonatomic, readwrite) BOOL hideDetailViewNavigationBar;
 
@@ -1266,7 +1288,7 @@
 
 /** The delimeter that separates the titles of the selected items. Default: @" ,".
  *	
- *	@warning Note: This property is applicable only if displaySelection is TRUE. 
+ *	@note This property is applicable only if displaySelection is TRUE. 
  */
 @property (nonatomic, copy) NSString *delimeter;
 
@@ -1314,7 +1336,7 @@
 /// @name Creation and Initialization
 //////////////////////////////////////////////////////////////////////////////////////////
 
-/** Allocates and returns an initialized 'SCObjectSelectionCell' given cell text, bound object, a bound property name, and a selection items store.
+/** Allocates and returns an initialized SCObjectSelectionCell given cell text, bound object, a bound property name, and a selection items store.
  *	@param cellText The text that will appear in the cell's textLabel.
  *	@param object	The cell's bound object (see SCTableViewCell class overview).
  *	@param propertyName The cell's bound property name corresponding to the object selection. If multiple selection is allowed, then property must be of an NSMutableSet type, otherwise, property must be of type NSObject and cannot be a readonly property.
@@ -1322,7 +1344,7 @@
  */
 + (id)cellWithText:(NSString *)cellText boundObject:(NSObject *)object selectedObjectPropertyName:(NSString *)propertyName selectionItemsStore:(SCDataStore *)store;
 
-/** Allocates and returns an initialized 'SCObjectSelectionCell' given cell text, bound object, a bound property name, and an array of selection objects.
+/** Allocates and returns an initialized SCObjectSelectionCell given cell text, bound object, a bound property name, and an array of selection objects.
  *	@param cellText The text that will appear in the cell's textLabel.
  *	@param object	The cell's bound object (see SCTableViewCell class overview).
  *	@param propertyName The cell's bound property name corresponding to the object selection. If multiple selection is allowed, then property must be of an NSMutableSet type, otherwise, property must be of type NSObject and cannot be a readonly property.
@@ -1332,7 +1354,7 @@
 + (id)cellWithText:(NSString *)cellText boundObject:(NSObject *)object selectedObjectPropertyName:(NSString *)propertyName selectionItems:(NSArray *)items itemsDefintion:(SCDataDefinition *)definition;
 
 
-/** Returns an initialized 'SCObjectSelectionCell' given cell text, bound object, a bound property name, and a selection items store.
+/** Returns an initialized SCObjectSelectionCell given cell text, bound object, a bound property name, and a selection items store.
  *	@param cellText The text that will appear in the cell's textLabel.
  *	@param object	The cell's bound object (see SCTableViewCell class overview).
  *	@param propertyName The cell's bound property name corresponding to the object selection. If multiple selection is allowed, then property must be of an NSMutableSet type, otherwise, property must be of type NSObject and cannot be a readonly property.
@@ -1340,7 +1362,7 @@
  */
 - (id)initWithText:(NSString *)cellText boundObject:(NSObject *)object selectedObjectPropertyName:(NSString *)propertyName selectionItemsStore:(SCDataStore *)store;
 
-/** Returns an initialized 'SCObjectSelectionCell' given cell text, bound object, a bound property name, and an array of selection objects.
+/** Returns an initialized SCObjectSelectionCell given cell text, bound object, a bound property name, and an array of selection objects.
  *	@param cellText The text that will appear in the cell's textLabel.
  *	@param object	The cell's bound object (see SCTableViewCell class overview).
  *	@param propertyName The cell's bound property name corresponding to the object selection. If multiple selection is allowed, then property must be of an NSMutableSet type, otherwise, property must be of type NSObject and cannot be a readonly property.
@@ -1376,7 +1398,7 @@
  respectively. If an SCClassDefinition is provided for the bound object, a full fledged
  detail view of cells will be generated.
  
- When 'SCObjectCell' is selected by the end-user, a detail view optionally fires up to to give
+ When SCObjectCell is selected by the end-user, a detail view optionally fires up to to give
  the user the ability to edit the object's properties.
  
  @see SCObjectSection, SCArrayOfObjectsSection.
@@ -1390,19 +1412,24 @@
 /// @name Creation and Initialization
 //////////////////////////////////////////////////////////////////////////////////////////
 
-/** Allocates and returns an initialized 'SCObjectCell' given a bound object.
+/** Allocates and returns an initialized SCObjectCell given a bound object.
  *
- *	@param object The object that 'SCObjectCell' will use to generate its detail view cells.
+ *	@param object The object that SCObjectCell will use to generate its detail view cells.
  */
 + (id)cellWithBoundObject:(NSObject *)object;
 
-/** Allocates and returns an initialized 'SCObjectCell' given a bound object and a class definition.
+/** Allocates and returns an initialized SCObjectCell given a bound object and a class definition.
  *
- *	@param object The object that 'SCObjectCell' will use to generate its detail view cells.
+ *	@param object The object that SCObjectCell will use to generate its detail view cells.
  *	@param classDefinition The class definition for the object.
  */
 + (id)cellWithBoundObject:(NSObject *)object boundObjectDefinition:(SCDataDefinition *)definition;
 
+/** Allocates and returns an initialized SCObjectCell given a bound object and a data store.
+ *
+ *	@param object The object that SCObjectCell will use to generate its detail view cells.
+ *	@param store The data store containing the object.
+ */
 + (id)cellWithBoundObject:(NSObject *)object boundObjectStore:(SCDataStore *)store;
 
 /** Returns an initialized 'SCObjectCell' given a bound object.
@@ -1418,7 +1445,13 @@
  */
 - (id)initWithBoundObject:(NSObject *)object boundObjectDefinition:(SCDataDefinition *)definition;
 
+/** Returns an initialized SCObjectCell given a bound object and a data store.
+ *
+ *	@param object The object that SCObjectCell will use to generate its detail view cells.
+ *	@param store The data store containing the object.
+ */
 - (id)initWithBoundObject:(NSObject *)object boundObjectStore:(SCDataStore *)store;
+
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// @name Configuration
@@ -1478,13 +1511,13 @@
 /// @name Creation and Initialization
 //////////////////////////////////////////////////////////////////////////////////////////
 
-/** Allocates and returns an initialized 'SCArrayOfObjectsCell' given a data store.
+/** Allocates and returns an initialized SCArrayOfObjectsCell given a data store.
  *
  *	@param store The data store containing the cell's objects.
  */
 + (id)cellWithDataStore:(SCDataStore *)store;
 
-/** Allocates and returns an initialized 'SCArrayOfObjectsCell' given an array of objects and their class definition.
+/** Allocates and returns an initialized SCArrayOfObjectsCell given an array of objects and their class definition.
  *
  *	@param cellItems An array of objects that the cell will use to generate its detail cells.
  *	@param definition The definition of the objects in the objects array. If the array contains more than one type of object, then their respective definitions must be added to the itemsClassDefinitions dictionary after initialization.
@@ -1492,13 +1525,13 @@
 + (id)cellWithItems:(NSMutableArray *)cellItems itemsDefinition:(SCDataDefinition *)definition;
 
 
-/** Returns an initialized 'SCArrayOfObjectsCell' given a data store.
+/** Returns an initialized SCArrayOfObjectsCell given a data store.
  *
  *	@param store The data store containing the cell's objects.
  */
 - (id)initWithDataStore:(SCDataStore *)store;
 
-/** Returns an initialized 'SCArrayOfObjectsCell' given an array of objects and their class definition.
+/** Returns an initialized SCArrayOfObjectsCell given an array of objects and their class definition.
  *
  *	@param cellItems An array of objects that the cell will use to generate its detail cells.
  *	@param classDefinition The class definition of the class or entity of the objects in the objects array. If the array contains more than one type of object, then their respective class definitions must be added to the itemsClassDefinitions dictionary after initialization.
@@ -1540,6 +1573,7 @@
 /** Allows/disables displaying the number of objects in the cell's badgeView. Default: TRUE. */
 @property (nonatomic, readwrite) BOOL displayItemsCountInBadgeView;
 
+/** The set of actions for the cell's automatically generated detail section. */
 @property (nonatomic, readonly) SCSectionActions *detailSectionActions;
 
 

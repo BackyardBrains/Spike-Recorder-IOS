@@ -1,7 +1,7 @@
 /*
  *  SCViewController.h
  *  Sensible TableView
- *  Version: 3.0.5
+ *  Version: 3.3.0
  *
  *
  *	THIS SOURCE CODE AND ANY ACCOMPANYING DOCUMENTATION ARE PROTECTED BY UNITED STATES 
@@ -13,7 +13,7 @@
  *	USAGE OF THIS SOURCE CODE IS BOUND BY THE LICENSE AGREEMENT PROVIDED WITH THE 
  *	DOWNLOADED PRODUCT.
  *
- *  Copyright 2012 Sensible Cocoa. All rights reserved.
+ *  Copyright 2012-2013 Sensible Cocoa. All rights reserved.
  *
  *
  *	This notice may not be removed from this file.
@@ -34,20 +34,23 @@
 /**
  This class functions as a means to simplify development with SCTableViewModel.
  
- 'SCViewController' conveniently provides several ready made navigation
+ SCViewController conveniently provides several ready made navigation
  bar types based on SCNavigationBarType, provided that it is a subview of a navigation controller. 
  'SCViewController' also defines placeholders for a tableView and a tableViewModel that
- the user can allocate and assign. If a tableViewModel is defined, 'SCViewController' also
+ the user can allocate and assign. If a tableViewModel is defined, SCViewController also
  connects its doneButton (if present) to tableViewModel's commitButton automatically.
- In addition, 'SCViewController' provides several delegate methods as part of SCViewControllerDelegate
- that notifies the delegate object of events like the view appearing or disappearing.
  
- @warning Note: You do NOT have to use 'SCViewController' in order to be able to use SCTableViewModel,
- but it's highly recommended that you do so whenever you need a UIViewController.
+ In addition, SCViewController fully manages memory warnings and makes sure the assigned table view is released once a memory warning occurs and reloaded once the view controller is loaded once more.
+ 
+ Finally, SCViewController provides several useful actions (SCViewControllerActions) and delegate methods (SCViewControllerDelegate) that notify the delegate object of events like the view appearing or disappearing.
+ 
+ @note You do NOT have to use 'SCViewController' in order to be able to use SCTableViewModel, but it's highly recommended that you do so whenever you need a UIViewController.
  
  */
 @interface SCViewController : UIViewController <UIPopoverControllerDelegate>
 {
+    @protected
+    UITableView *_tableView;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -56,8 +59,7 @@
 
 /** 
  Set this outlet to the table view that will be associated with tableViewModel. Once a valid table view is set, it will automatically be associated with tableViewModel.
- @warning Note: If the table view is added programmatically, then the user also needs to add it to
- the view controller's view. */
+ @note If the table view is added programmatically, then the user must also add it to the view controller's view. */
 @property (nonatomic, strong) IBOutlet UITableView *tableView;
 
 /** Contains a valid SCTableViewModel that is associated with tableView and ready to use. If this model is replaced by a custom one, the class will automatically take care of associating it with tableView. */
@@ -69,17 +71,18 @@
 /** The navigation bar's Add button. Only contains a value if the button exists on the bar. */
 @property (nonatomic, readonly) UIBarButtonItem *addButton;
 
-/** The editButtonItem of 'SCViewController''s superclass. */
+/** The editButtonItem of SCViewController's superclass. */
 @property (nonatomic, readonly) UIBarButtonItem *editButton;
 
 /** The navigation bar's Cancel button. Only contains a value if the button exists on the bar. */
 @property (nonatomic, readonly) UIBarButtonItem *cancelButton;
 
+/** Set to TRUE to allow the cancel button to appear when entering editing mode. Default: TRUE.
+ @note: Only applicable if navigationBarType == SCNavigationBarTypeEditRight. */
+@property (nonatomic, readwrite) BOOL allowEditingModeCancelButton;
+
 /** The navigation bar's Done button. Only contains a value if the button exists on the bar. */
 @property (nonatomic, readonly) UIBarButtonItem	*doneButton;
-
-/** The toolbar that holds more than one button when needed (e.g. when navigationBarType==SCNavigationBarTypeAddEditRight). */
-@property (nonatomic, readonly) UIToolbar *buttonsToolbar;
 
 /** If the view controller is presented from within a popover controller, this property must be set to it. When set, the view controller takes over the delegate of the popover controller. */
 @property (nonatomic, strong) UIPopoverController *popoverController;
@@ -113,12 +116,18 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 
 /** The object that acts as the delegate of 'SCViewController'. The object must adopt the SCViewControllerDelegate protocol. */
-@property (nonatomic, unsafe_unretained) id delegate;
+@property (nonatomic, weak) id delegate;
 
 //////////////////////////////////////////////////////////////////////////////////////////
 /// @name Internal Properties & Methods (should only be used by the framework or when subclassing)
 //////////////////////////////////////////////////////////////////////////////////////////
 
+/** Returns TRUE if the view controller currently has been given focus by its master model. */
+@property (nonatomic, readonly) BOOL hasFocus;
+
+/** Method should be overridden by subclasses to perform any required initialization.
+ @warning Subclasses must call [super performInitialization] from within the method's implementation.
+ */
 - (void)performInitialization;
 
 /** 
@@ -134,6 +143,12 @@
  using SCViewControllerDelegate.
  */
 - (void)doneButtonAction;
+
+/** Method gets called when the Edit button is tapped. */
+- (void)editButtonAction;
+
+/** Method gets called when the Cancel button is tapped while the table view is in editing mode. */
+- (void)editingModeCancelButtonAction;
 
 /** Dismisses the view controller with the specified values for cancel and done. */
 - (void)dismissWithCancelValue:(BOOL)cancelValue doneValue:(BOOL)doneValue;
@@ -243,5 +258,16 @@
  */
 - (void)viewControllerDidLoseFocus:(SCViewController *)viewController
                  cancelButtonTapped:(BOOL)cancelTapped doneButtonTapped:(BOOL)doneTapped;
+
+/** Notifies the delegate that the view controller did enter editing mode. */
+- (void)viewControllerDidEnterEditingMode:(SCViewController *)viewController;
+
+/** Notifies the delegate that the view controller did exit editing mode.
+ *	@param viewController The view controller informing the delegate of the event.
+ *	@param cancelTapped TRUE if Cancel button has been tapped to exit editing mode.
+ *	@param doneTapped TRUE if Done button has been tapped to exit editing mode.
+ */
+- (void)viewControllerDidExitEditingMode:(SCViewController *)viewController
+                      cancelButtonTapped:(BOOL)cancelTapped doneButtonTapped:(BOOL)doneTapped;
 
 @end

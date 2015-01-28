@@ -8,6 +8,9 @@
 //  More info on the CCGLTouch project >> http://cocoacid.org/ios/
 //  License & disclaimer >> see license.txt file included in the distribution package
 //
+//
+//  Latest update for Cinder v0.8.5: 06/02/2013
+//
 //  
 //  The Cinder source code is used under the following terms:
 //
@@ -65,7 +68,6 @@
 -(void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [self becomeFirstResponder];
-    
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -76,7 +78,7 @@
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     // Return YES for supported orientations
-    return YES;
+    return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
 

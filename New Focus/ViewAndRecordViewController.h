@@ -10,17 +10,21 @@
 //
 
 #import "CCGLTouchViewController.h"
-#import "MyCinderGLView.h"
 #import "BBAudioManager.h"
 #import "BBFile.h"
-#import "RecordingOverlayController.h"
 
-@interface ViewAndRecordViewController : CCGLTouchViewController {
-    MyCinderGLView *glView;
-    
+#import "MultichannelCindeGLView.h"
+#import "FPPopoverController.h"
+#import "BBChannelSelectionTableViewController.h"
+//#import <CoreBluetooth/CoreBluetooth.h>
+
+@interface ViewAndRecordViewController : CCGLTouchViewController <MultichannelGLViewDelegate, FPPopoverControllerDelegate, BBSelectionTableDelegateProtocol>{
+    MultichannelCindeGLView *glView;
+    FPPopoverController * channelPopover;
+    FPPopoverController * devicesPopover;
 }
 
-- (void)setGLView:(CCGLTouchView *)view;
+- (void)setGLView:(MultichannelCindeGLView *)view;
 
 
 @property (retain, nonatomic) IBOutlet UISlider *slider;
@@ -28,12 +32,16 @@
 @property (retain, nonatomic) IBOutlet UIButton *stimulateButton;
 @property (retain, nonatomic) IBOutlet UIButton *stimulatePreferenceButton;
 @property (retain, nonatomic) IBOutlet UIButton *stopButton;
+@property (retain, nonatomic) IBOutlet UIButton *btButton;
 
-- (IBAction)recordButtonPressed:(id)sender;
 - (IBAction)stimulateButtonPressed:(id)sender;
 - (IBAction)stimulatePrefButtonPressed:(id)sender;
 - (IBAction)stopRecording:(id)sender;
 - (IBAction)startRecording:(id)sender;
+- (IBAction)btButtonPressed:(id)sender;
 
+//BT popover delegate function
+- (void)rowSelected:(NSInteger) rowIndex;
+-(NSMutableArray *) getAllRows;
 
 @end

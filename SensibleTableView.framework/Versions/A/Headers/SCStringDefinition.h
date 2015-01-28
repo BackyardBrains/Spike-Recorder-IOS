@@ -1,7 +1,7 @@
 /*
  *  SCStringDefinition.h
  *  Sensible TableView
- *  Version: 3.0.5
+ *  Version: 3.3.0
  *
  *
  *	THIS SOURCE CODE AND ANY ACCOMPANYING DOCUMENTATION ARE PROTECTED BY UNITED STATES 
@@ -13,7 +13,7 @@
  *	USAGE OF THIS SOURCE CODE IS BOUND BY THE LICENSE AGREEMENT PROVIDED WITH THE 
  *	DOWNLOADED PRODUCT.
  *
- *  Copyright 2012 Sensible Cocoa. All rights reserved.
+ *  Copyright 2012-2013 Sensible Cocoa. All rights reserved.
  *
  *
  *	This notice may not be removed from this file.
@@ -29,7 +29,7 @@
 /**	
  This class functions as a means to represent the definition of an NSString class.
  
- This class is typically used when you need to work with a collection of NSString objects in classes like SCArrayOfObjectsSection and SCArrayOfObjectsModel. The class automatically generates only one property definition representing how the string automatically generated UI should be defined.
+ This class is typically used when you need to work with a collection of NSString objects in classes like SCArrayOfObjectsSection and SCArrayOfObjectsModel. The class automatically generates only one property definition representing how the NSString automatically generated UI should be defined.
  */
 
 @interface SCStringDefinition : SCDataDefinition
@@ -38,7 +38,7 @@
 /// @name Creation and Initialization
 //////////////////////////////////////////////////////////////////////////////////////////
 
-/** Allocates and returns an initialized 'SCStringDefinition'. */
+/** Allocates and returns an initialized SCStringDefinition. */
 + (id)definition;
 
 //////////////////////////////////////////////////////////////////////////////////////////

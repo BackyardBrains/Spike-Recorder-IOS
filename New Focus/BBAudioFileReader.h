@@ -35,10 +35,9 @@
     UInt32 numChannels;
     NSURL *audioFileURL;
     
-    InputBlock readerBlock;
+    NovocaineInputBlock readerBlock;
     
     BOOL fileIsDone;
-    BOOL fileIsReady;
 }
 
 @property (getter=getCurrentTime, setter=setCurrentTime:) float currentTime;
@@ -47,14 +46,14 @@
 @property UInt32 numChannels;
 @property (nonatomic, copy) NSURL *audioFileURL;
 @property BOOL fileIsDone;
-@property BOOL fileIsReady;
+
 
 
 - (id)initWithAudioFileURL:(NSURL *)urlToAudioFile samplingRate:(float)thisSamplingRate numChannels:(UInt32)thisNumChannels;
 
 // You use this method to grab audio if you have your own callback.
 // The buffer'll fill at the speed the audio is normally being played.
-- (void)retrieveFreshAudio:(float *)buffer numFrames:(UInt32)thisNumFrames numChannels:(UInt32)thisNumChannels;
-
+- (float)retrieveFreshAudio:(float *)buffer numFrames:(UInt32)thisNumFrames numChannels:(UInt32)thisNumChannels;
+- (void)retrieveFreshAudio:(float *)buffer numFrames:(UInt32)thisNumFrames numChannels:(UInt32)thisNumChannels seek:(UInt32) position;
 
 @end

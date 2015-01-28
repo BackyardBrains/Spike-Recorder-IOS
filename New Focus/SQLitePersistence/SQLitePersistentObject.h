@@ -160,6 +160,9 @@
  */
 -(void)save;
 
+//Bad bad hack
+-(void)saveWithoutArrays;
+
 /*
  * Reverts the object back to database state. Any changes that have been
  * made since the object was loaded are undone.

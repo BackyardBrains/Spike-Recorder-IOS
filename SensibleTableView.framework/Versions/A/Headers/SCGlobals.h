@@ -1,7 +1,7 @@
 /*
  *  SCGlobals.h
  *  Sensible TableView
- *  Version: 3.0.5
+ *  Version: 3.3.0
  *
  *
  *	THIS SOURCE CODE AND ANY ACCOMPANYING DOCUMENTATION ARE PROTECTED BY UNITED STATES 
@@ -13,7 +13,7 @@
  *	USAGE OF THIS SOURCE CODE IS BOUND BY THE LICENSE AGREEMENT PROVIDED WITH THE 
  *	DOWNLOADED PRODUCT.
  *
- *  Copyright 2012 Sensible Cocoa. All rights reserved.
+ *  Copyright 2012-2013 Sensible Cocoa. All rights reserved.
  *
  *
  *	This notice may not be removed from this file.
@@ -52,7 +52,6 @@
 
 
 
-
 /***************************************/
 /* ARC supporting functions and macros */
 /***************************************/
@@ -79,6 +78,15 @@
 /***************************************/
 
 
+/***************************************/
+/* License                             */
+/***************************************/
+
+#define SC_STVLITE
+
+/***************************************/
+
+
 
 
 
@@ -101,6 +109,25 @@ typedef enum
 } SCDataType;
 
 
+
+
+
+@interface NSObject (SensibleCocoa)
+
+/* 
+ This method allows accessing array values in a regular key-path string by placing the array item index between brakets.
+ 
+ Examples: 
+    firstSaleAmount = [customer valueForSensibleKeyPath:@"salesData.invoices[0].amount"];
+    lastSaleAmount = [customer valueForSensibleKeyPath:@"salesData.invoices[n].amount"];
+    saleBeforeLastAmount = [customer valueForSensibleKeyPath:@"salesData.invoices[n-1].amount"];
+ */
+- (id)valueForSensibleKeyPath:(NSString *)keyPath;
+
+/* Similar to valueForSensibleKeyPath, this method uses a Sensible keyPath to set a value. */
+- (void)setValue:(id)value forSensibleKeyPath:(NSString *)keyPath;
+
+@end
 
 
 
@@ -138,7 +165,13 @@ typedef enum
 
 + (BOOL)isStringClass:(Class)aClass;
 
++ (BOOL)isNumberClass:(Class)aClass;
+
++ (BOOL)isDateClass:(Class)aClass;
+
 + (BOOL)isDictionaryClass:(Class)aClass;
+
++ (BOOL)isBasicDataTypeClass:(Class)aClass;
 
 + (NSString *)dataStructureNameForClass:(Class)aClass;
 
@@ -163,6 +196,11 @@ typedef enum
 
 + (NSDictionary *)bindingsDictionaryForBindingsString:(NSString *)bindingsString;
 
++ (NSString *)bindingsStringForBindingsDictionary:(NSDictionary *)bindingsDictionary;
+
+
++ (NSString *)base64EncodedStringFromString:(NSString *)string;
+
 @end
 
 
@@ -177,7 +215,7 @@ typedef enum
 	CFMutableSetRef modelsSet;
 }
 
-@property (nonatomic, unsafe_unretained) UIViewController *keyboardIssuer;
+@property (nonatomic, weak) UIViewController *keyboardIssuer;
 
 + (SCModelCenter *)sharedModelCenter;
 
@@ -192,8 +230,23 @@ typedef enum
 
 
 
-/* This class implements a transparent toolbar */
-@interface SCTransparentToolbar : UIToolbar
+
+@interface SCLicenseManager : NSObject
+
++ (UIView *)licenseViewForWidth:(CGFloat)width;
+
++ (NSObject *)unlicensedObjectWithName:(NSString *)name;
++ (NSObject *)unlicensedCoreDataObject;
++ (NSObject *)unlicensedWebServiceObject;
++ (NSObject *)unlicensediCloudObject;
+
++ (BOOL)isUnlicensedObject:(NSObject *)object;
++ (NSString *)nameForUnlicensedObject:(NSObject *)object;
+
 @end
+
+
+
+
 
 

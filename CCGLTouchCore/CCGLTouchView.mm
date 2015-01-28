@@ -9,6 +9,9 @@
 //  License & disclaimer >> see license.txt file included in the distribution package
 //
 //
+//  Latest update for Cinder v0.8.5: 06/02/2013
+//
+//
 //  The Cinder source code is used under the following terms:
 //
 //
@@ -63,21 +66,37 @@
 //The GL view is stored in the nib file. When it's unarchived it's sent -initWithCoder:
 - (id)initWithFrame:(CGRect)frame
 {
-    return [self initWithFrame:frame andSharegroup:[[EAGLSharegroup alloc] init]];
+    return [self initWithFrame:frame andSharegroup:[[[EAGLSharegroup alloc] init] autorelease]];
 }
 
 - (id)initWithFrame:(CGRect)frame andSharegroup:(EAGLSharegroup *)_sharegroup
 {
 	if ( (self = [super initWithFrame:frame]) ) {
+        
+        // Retina or not
+        if ([[UIScreen mainScreen] respondsToSelector:@selector(displayLinkWithTarget:selector:)] &&
+            ([UIScreen mainScreen].scale == 2.0)) {
+            // Retina display
+            retinaScaling = 2;
+        } else {
+            // non-Retina display
+            retinaScaling = 1;
+        }
+        
+        // Apply scaling
+		if( [[UIScreen mainScreen] respondsToSelector:@selector(scale)] &&
+           [self respondsToSelector:@selector(setContentScaleFactor:)] )
+			[self setContentScaleFactor:[[UIScreen mainScreen] scale]];
+        
+        // Bounds of the current screen
+		[self setCurrentBounds:frame];
+
         // Animation
         animating = NO;
         frameRate = 30;
         frameCount = 0;
 		displayLink = nil;
         startTime = ::CFAbsoluteTimeGetCurrent();
-        
-        // Bounds of the current screen
-		[self setCurrentBounds:frame];
         
         // Init flags
 		appSetupCalled = NO;
@@ -87,11 +106,6 @@
         
         // OpenGL threading option
         sharegroup = _sharegroup;
-        
-        // View scaling between devices
-		if( [[UIScreen mainScreen] respondsToSelector:@selector(scale:)] &&
-           [self respondsToSelector:@selector(setContentScaleFactor:)] )
-			[self setContentScaleFactor:[[UIScreen mainScreen] scale]];
         
         // Get the layer
         CAEAGLLayer *eaglLayer = (CAEAGLLayer *)self.layer;
@@ -118,8 +132,8 @@
 {
     // Bounds of the current screen
     bounds = frame;
-    backingWidth = bounds.size.width;
-    backingHeight = bounds.size.height;
+    backingWidth = bounds.size.width * retinaScaling;
+    backingHeight = bounds.size.height * retinaScaling;
 }
 
 - (void) allocateGraphics
@@ -271,6 +285,7 @@
 	[self makeCurrentContext];
     [self draw];
 	[self flushBuffer];
+    [self presentCurrentContext];
 }
 
 - (void)makeCurrentContext
@@ -315,7 +330,7 @@
         glResolveMultisampleFramebufferAPPLE();
     }
     
-    // Capture skecth
+    // Capture sketch
     // This has to happen here, after buffers are combined
     if (ccglCaptureFlag) {
         glBindFramebufferOES(GL_FRAMEBUFFER_OES, defaultFramebuffer);
@@ -323,7 +338,10 @@
         [self sendCaptureToPhotoAlbum];
         ccglCaptureFlag = NO;
     }
+}
     
+- (void)presentCurrentContext
+{
     // Present final image to screen
     glBindRenderbufferOES(GL_RENDERBUFFER_OES, colorRenderbuffer);
     [context presentRenderbuffer:GL_RENDERBUFFER_OES];
@@ -356,8 +374,6 @@
 
 - (void)dealloc
 {
-    [self stopAnimation];
-    
     if ([EAGLContext currentContext] == context)
         [EAGLContext setCurrentContext:nil];
     [context release];
@@ -394,12 +410,14 @@
     glReadPixels(0, 0, [self getWindowWidth], [self getWindowHeight], GL_RGBA, GL_UNSIGNED_BYTE, buffer);
     
     // gl renders "upside down" so swap top to bottom into new array.
+    // Huh, no, not really it seems on iPhone 5 ???
     GLubyte *buffer2 = (GLubyte *) malloc(myDataLength);
     for(int y = 0; y < [self getWindowHeight]; y++)
     {
         for(int x = 0; x < [self getWindowWidth] * 4; x++)
         {
-            buffer2[([self getWindowHeight]-1 - y) * [self getWindowWidth] * 4 + x] = buffer[y * 4 * [self getWindowWidth] + x];
+//            buffer2[([self getWindowHeight]-1 - y) * [self getWindowWidth] * 4 + x] = buffer[y * 4 * [self getWindowWidth] + x];
+            buffer2[y * [self getWindowWidth] * 4 + x] = buffer[y * 4 * [self getWindowWidth] + x];
         }
     }
     
@@ -419,6 +437,11 @@
     
     // then make the uiimage from that
     UIImage *myImage = [UIImage imageWithCGImage:imageRef];
+    
+    CGDataProviderRelease(provider);
+    CGImageRelease(imageRef);
+    CGColorSpaceRelease(colorSpaceRef);
+    free((GLubyte*)buffer);
     return myImage;
 }
 
@@ -506,7 +529,7 @@
 	glMatrixMode( GL_MODELVIEW );
 	glLoadMatrixf( cam.getModelViewMatrix().m );
 	glScalef( 1.0f, -1.0f, 1.0f );           // invert Y axis so increasing Y goes down.
-	glTranslatef( 0.0f, (float)-[self frame].size.height, 0.0f );       // shift origin up to upper-left corner.
+	glTranslatef( 0.0f, (float)-backingHeight, 0.0f );       // shift origin up to upper-left corner.
 }
 
 /**
@@ -547,12 +570,12 @@
 
 - (int) getWindowWidth
 {
-	return bounds.size.width;
+	return bounds.size.width * retinaScaling;
 }
 
 - (int) getWindowHeight
 {
-	return bounds.size.height;
+	return bounds.size.height * retinaScaling;
 }
 
 - (Area) getWindowBounds
@@ -693,18 +716,21 @@
 		}
 		[self updateActiveTouches];
 		if( ! touchList.empty() )
-			[self touchesBegan:(ci::app::TouchEvent)touchList];
+			[self touchesBegan:touchList];
 	}
 	else {
 		for( UITouch *touch in touches ) {
+			id<WindowImplCocoa>		mImpl = nil;
+            App *app = nil;
+            WindowRef win = cinder::app::Window::privateCreate__( mImpl, app );
 			CGPoint pt = [touch locationInView:self];
 			int mods = 0;
 			mods |= cinder::app::MouseEvent::LEFT_DOWN;
-			[self mouseDown:cinder::app::MouseEvent( cinder::app::MouseEvent::LEFT_DOWN, pt.x * contentScale, pt.y * contentScale, mods, 0.0f, 0 )];
+            [self mouseDown:cinder::app::MouseEvent( win, cinder::app::MouseEvent::LEFT_DOWN, pt.x * contentScale, pt.y * contentScale, mods, 0.0f, 0 )];
 		}
 	}
 }
-- (void)touchesBegan:(ci::app::TouchEvent)event {}
+- (void)touchesBegan:(std::vector<ci::app::TouchEvent::Touch>&)touchList {}
 - (void)mouseDown:(ci::app::MouseEvent)event {}
 
 - (void)touchesMoved:(NSSet*)touches withEvent:(UIEvent*)event
@@ -720,18 +746,21 @@
 		}
 		[self updateActiveTouches];
 		if( ! touchList.empty() )
-			[self touchesMoved:(ci::app::TouchEvent)touchList];
+			[self touchesMoved:touchList];
 	}
 	else {
 		for( UITouch *touch in touches ) {
+			id<WindowImplCocoa>		mImpl = nil;
+            App *app = nil;
+            WindowRef win = cinder::app::Window::privateCreate__( mImpl, app );
 			CGPoint pt = [touch locationInView:self];
 			int mods = 0;
 			mods |= cinder::app::MouseEvent::LEFT_DOWN;
-			[self mouseDrag:cinder::app::MouseEvent( cinder::app::MouseEvent::LEFT_DOWN, pt.x * contentScale, pt.y * contentScale, mods, 0.0f, 0 )];
+			[self mouseDrag:cinder::app::MouseEvent( win, cinder::app::MouseEvent::LEFT_DOWN, pt.x * contentScale, pt.y * contentScale, mods, 0.0f, 0 )];
 		}
 	}
 }
-- (void)touchesMoved:(ci::app::TouchEvent)event {}
+- (void)touchesMoved:(std::vector<ci::app::TouchEvent::Touch>&)touchList {}
 - (void)mouseDrag:(ci::app::MouseEvent)event {}
 
 - (void)touchesEnded:(NSSet*)touches withEvent:(UIEvent*)event
@@ -748,18 +777,21 @@
 		}
 		[self updateActiveTouches];
 		if( ! touchList.empty() )
-			[self touchesEnded:(ci::app::TouchEvent)touchList];
+			[self touchesEnded:touchList];
 	}
 	else {
 		for( UITouch *touch in touches ) {
+			id<WindowImplCocoa>		mImpl = nil;
+            App *app = nil;
+            WindowRef win = cinder::app::Window::privateCreate__( mImpl, app );
 			CGPoint pt = [touch locationInView:self];
 			int mods = 0;
 			mods |= cinder::app::MouseEvent::LEFT_DOWN;
-			[self mouseUp:cinder::app::MouseEvent( cinder::app::MouseEvent::LEFT_DOWN, pt.x * contentScale, pt.y * contentScale, mods, 0.0f, 0 )];
+			[self mouseUp:cinder::app::MouseEvent( win, cinder::app::MouseEvent::LEFT_DOWN, pt.x * contentScale, pt.y * contentScale, mods, 0.0f, 0 )];
 		}
 	}
 }
-- (void)touchesEnded:(ci::app::TouchEvent)event {}
+- (void)touchesEnded:(std::vector<ci::app::TouchEvent::Touch>&)touchList {}
 - (void)mouseUp:(ci::app::MouseEvent)event {}
 
 - (void) touchesCancelled:(NSSet*)touches withEvent:(UIEvent*)event
@@ -782,7 +814,7 @@
 {
 	string resourcePath = [self getResourcePath:macPath];
 	if( resourcePath.empty() )
-		;//throw ResourceLoadExc( macPath );
+		throw ResourceLoadExc( macPath );
 	else
 		return DataSourcePath::create( resourcePath );
 }
