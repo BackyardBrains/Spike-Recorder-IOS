@@ -5,6 +5,8 @@
 //  Created by Stanislav Mircic on 7/4/14.
 //  Copyright (c) 2014 Datta Lab, Harvard University. All rights reserved.
 //
+// Used to choose ISI graph
+//
 
 #import "GraphMatrixViewController.h"
 #import "GraphCollectionViewCell.h"
