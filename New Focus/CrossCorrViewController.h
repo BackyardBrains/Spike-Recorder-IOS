@@ -3,7 +3,7 @@
 //  Backyard Brains
 //
 //  Created by Stanislav Mircic on 4/28/14.
-//  Copyright (c) 2014 Datta Lab, Harvard University. All rights reserved.
+//  Copyright (c) 2014 Datta Lab, Backyard Brains. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
