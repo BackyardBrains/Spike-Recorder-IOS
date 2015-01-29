@@ -18,6 +18,7 @@
     CPTGraphHostingView *_hostingView;
     
     UILabel * labelForTitle;
+    UIColor* graphColor;
 }
 @end
 
@@ -31,6 +32,7 @@
     if (self) {
         [self.layer setBorderWidth:1.0f];
         [self.layer setBorderColor:[UIColor darkGrayColor].CGColor];
+        self.backgroundColor = [UIColor blackColor];
     }
     return self;
 }
@@ -43,6 +45,13 @@
     [self drawGraph];
 
 }
+
+-(void) colorOfTheGraph:(UIColor *) theColor
+{
+    graphColor = [theColor copy];
+    
+}
+
 
 #pragma mark - Label title
 
@@ -57,9 +66,10 @@
     }
     
     labelForTitle = [[UILabel alloc] initWithFrame:CGRectMake(self.frame.size.width-30, 2, 28, 12)];
-    labelForTitle.backgroundColor = [UIColor whiteColor];
+    labelForTitle.backgroundColor = [UIColor blackColor];
     labelForTitle.text = intitleOfGraph;
     labelForTitle.textAlignment = NSTextAlignmentCenter;
+    labelForTitle.textColor = [UIColor whiteColor];
     labelForTitle.font = [UIFont fontWithName:@"Georgia" size:(11)];
     [self addSubview:labelForTitle];
     
@@ -168,7 +178,8 @@
     plotSpace.yScaleType = CPTScaleTypeLinear;
     
     CPTBarPlot *barPlot = [[[CPTBarPlot alloc] init] autorelease];
-    barPlot.fill = [CPTFill fillWithColor:[CPTColor blueColor]];
+    barPlot.fill = [CPTFill fillWithColor:[CPTColor colorWithCGColor:graphColor.CGColor]];
+    //barPlot.fill = [CPTFill fillWithColor:[CPTColor blueColor]];
     barPlot.lineStyle = nil;
     
     float widthOfBar = self.frame.size.width/[_values count];

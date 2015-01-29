@@ -24,7 +24,7 @@
     self = [super initWithFrame:frame];
     if (self) {
         _titleOfColumn = @"";
-        self.backgroundColor = [UIColor whiteColor];
+        self.backgroundColor = [UIColor blackColor];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(endChangingSize:) name:@"kEndChangeCellSizeInMatrixView" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(startChangingSize:) name:@"kStartChangeCellSizeInMatrixView" object:nil];
     }
@@ -110,8 +110,8 @@
     if(labelForTitle==nil)
     {
         labelForTitle = [[UILabel alloc] initWithFrame:CGRectMake(1, 2, self.frame.size.width-1, self.frame.size.height-1)];
-        labelForTitle.backgroundColor = [UIColor whiteColor];
-        
+        labelForTitle.backgroundColor = [UIColor blackColor];
+        labelForTitle.textColor = [UIColor whiteColor];
         labelForTitle.textAlignment = NSTextAlignmentCenter;
         labelForTitle.font = [UIFont fontWithName:@"Georgia" size:(11)];
         [self addSubview:labelForTitle];

@@ -11,6 +11,7 @@
 #import "BBAnalysisManager.h"
 #import "ISIGraphCollectionViewCell.h"
 #import <CoreGraphics/CoreGraphics.h>
+#import "BYBGLView.h"
 
 #define ISI_GRAPH_CELL_NAME @"isiGraphCell"
 
@@ -28,6 +29,7 @@
     CPTXYGraph *barChart;
     
     int selectedSpikeTrain;
+    UIColor* graphColor;
 }
 
 @end
@@ -59,8 +61,34 @@
     self.edgesForExtendedLayout = UIRectEdgeNone;
     self.extendedLayoutIncludesOpaqueBars = NO;
     self.automaticallyAdjustsScrollViewInsets = NO;
-
+    [self colorOfTheGraph:[BYBGLView getSpikeTrainColorWithIndex:0 transparency:1.0f]];
     [self handleOrientationOnEnd:[[UIApplication sharedApplication] statusBarOrientation]];
+    
+}
+
+
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [self.navigationController.navigationBar setBarTintColor:[UIColor blackColor]];
+    self.navigationController.navigationBar.translucent = NO;
+    [self.navigationController.navigationBar setTintColor:[UIColor whiteColor]];
+    [super viewWillAppear:animated];
+    
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    NSLog(@"Stopping regular view");
+    [self.navigationController.navigationBar setBarTintColor:nil];
+    self.navigationController.navigationBar.translucent = YES;
+    [self.navigationController.navigationBar setTintColor:nil];
+}
+
+-(void) colorOfTheGraph:(UIColor *) theColor
+{
+    graphColor = [theColor copy];
     
 }
 
@@ -151,6 +179,7 @@
     if(collectionView == _collectionView)
     {
         indexForItem = indexPath.row;
+      
         cell = [_collectionView  dequeueReusableCellWithReuseIdentifier:ISI_GRAPH_CELL_NAME forIndexPath:indexPath];
     }
     else
@@ -159,9 +188,9 @@
         cell = [_collectionViewR  dequeueReusableCellWithReuseIdentifier:ISI_GRAPH_CELL_NAME forIndexPath:indexPath];
     }
     
-
+    [cell colorOfTheGraph:[BYBGLView getSpikeTrainColorWithIndex:indexForItem transparency:1.0f]];
     [cell setValues:((NSMutableArray *) [allValues objectAtIndex:indexForItem]) andLimits:((NSMutableArray *) [allLimits objectAtIndex:indexForItem])];
-    cell.backgroundColor=[UIColor whiteColor];
+    //cell.backgroundColor=[UIColor whiteColor];
     [cell setTitleOfGraph:[NSString stringWithFormat:@"ST%d",indexForItem+1]];
     return cell;
     
@@ -188,6 +217,7 @@
     selectedSpikeTrain = indexForItem;
     _values = [allValues objectAtIndex:indexForItem];
     _limits = [allLimits objectAtIndex:indexForItem];
+    [self colorOfTheGraph:[BYBGLView getSpikeTrainColorWithIndex:indexForItem transparency:1.0f]];
     [self drawGraph];
 }
 
@@ -369,16 +399,29 @@
     barChart.title = [NSString stringWithFormat:@"ISI Spike Train %d",selectedSpikeTrain+1] ;
     
     CPTMutableTextStyle *textStyle = [CPTTextStyle textStyle];
-    textStyle.color = [CPTColor grayColor];
+    textStyle.color = [CPTColor whiteColor];
     textStyle.fontSize = 16.0f;
     textStyle.textAlignment = CPTTextAlignmentCenter;
     barChart.titleTextStyle = textStyle;  // Error found here
     barChart.titleDisplacement = CGPointMake(0.0f, -10.0f);
     barChart.titlePlotAreaFrameAnchor = CPTRectAnchorTop;
     
+    
+    //set text style to white for axis
+    CPTMutableTextStyle *labelTextStyle = [CPTMutableTextStyle textStyle];
+    labelTextStyle.color = [CPTColor whiteColor];
+    
+    //set stile for line for axis
+    CPTMutableLineStyle *axisLineStyle = [CPTMutableLineStyle lineStyle];
+    [axisLineStyle setLineWidth:1];
+    [axisLineStyle setLineColor:[CPTColor colorWithCGColor:[[UIColor whiteColor] CGColor]]];
+    
     //make exp. labels
     CPTXYAxisSet *axisSet = (CPTXYAxisSet *)barChart.axisSet;
     CPTXYAxis *x = axisSet.xAxis;
+    x.labelTextStyle = labelTextStyle;
+    [x setAxisLineStyle:axisLineStyle];
+    [x setMajorTickLineStyle:axisLineStyle];
     NSNumberFormatter *ns = [[NSNumberFormatter alloc] init];
     [ns setNumberStyle: NSNumberFormatterScientificStyle];
     x.labelFormatter = ns;
@@ -388,7 +431,10 @@
     
     CPTXYAxis *y = axisSet.yAxis;
     y.labelingPolicy = CPTAxisLabelingPolicyAutomatic;
+    y.labelTextStyle = labelTextStyle;
     
+    [y setAxisLineStyle:axisLineStyle];
+    [y setMajorTickLineStyle:axisLineStyle];
     
     _hostView.hostedGraph = barChart;
     
@@ -401,7 +447,8 @@
     plotSpace.yScaleType = CPTScaleTypeLinear;
     
     CPTBarPlot *barPlot = [[[CPTBarPlot alloc] init] autorelease];
-    barPlot.fill = [CPTFill fillWithColor:[CPTColor blueColor]];
+    //barPlot.fill = [CPTFill fillWithColor:[CPTColor blueColor]];
+    barPlot.fill = [CPTFill fillWithColor:[CPTColor colorWithCGColor:graphColor.CGColor]];
     barPlot.lineStyle = nil;
     
     float widthOfBar = _hostView.frame.size.width/[_values count];

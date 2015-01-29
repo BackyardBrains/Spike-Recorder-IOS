@@ -11,6 +11,7 @@
 @interface CrossCorrViewController ()
 {
     CPTXYGraph *barChart;
+    UIColor* graphColor;
 }
 @end
 
@@ -21,6 +22,7 @@
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
+    //self.view.backgroundColor = [UIColor blackColor];
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         graphTitle = @"Cross-correlation";
@@ -51,7 +53,32 @@
     }
 }
 
+-(void) colorOfTheGraph:(UIColor *) theColor
+{
+    graphColor = [theColor copy];
+
+}
+
 #pragma mark - view creation
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [self.navigationController.navigationBar setBarTintColor:[UIColor blackColor]];
+    self.navigationController.navigationBar.translucent = NO;
+    [self.navigationController.navigationBar setTintColor:[UIColor whiteColor]];
+    [super viewWillAppear:animated];
+
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    NSLog(@"Stopping regular view");
+    [self.navigationController.navigationBar setBarTintColor:nil];
+    self.navigationController.navigationBar.translucent = YES;
+    [self.navigationController.navigationBar setTintColor:nil];
+}
+
 
 - (void)viewDidLoad
 {
@@ -59,7 +86,7 @@
     
     CGRect frameOfView = CGRectMake(self.view.bounds.origin.x, self.view.bounds.origin.y, self.view.bounds.size.width, self.view.bounds.size.height);
     barChart = [[CPTXYGraph alloc] initWithFrame:frameOfView];
-    
+    barChart.backgroundColor = [UIColor blackColor].CGColor;
     barChart.plotAreaFrame.borderLineStyle = nil;
     barChart.plotAreaFrame.cornerRadius = 0.0f;
     
@@ -76,16 +103,30 @@
     barChart.title = graphTitle;
     
     CPTMutableTextStyle *textStyle = [CPTTextStyle textStyle];
-    textStyle.color = [CPTColor grayColor];
+    textStyle.color = [CPTColor whiteColor];
     textStyle.fontSize = 16.0f;
     textStyle.textAlignment = CPTTextAlignmentCenter;
     barChart.titleTextStyle = textStyle;  // Error found here
-    barChart.titleDisplacement = CGPointMake(0.0f, -10.0f);
+    barChart.titleDisplacement = CGPointMake(0.0f, 20.0f);
     barChart.titlePlotAreaFrameAnchor = CPTRectAnchorTop;
     
     CPTXYAxisSet *axisSet = (CPTXYAxisSet *)barChart.axisSet;
+
+    //set text style to white for axis
+    CPTMutableTextStyle *labelTextStyle = [CPTMutableTextStyle textStyle];
+    labelTextStyle.color = [CPTColor whiteColor];
+    
+    //set stile for line for axis
+    CPTMutableLineStyle *axisLineStyle = [CPTMutableLineStyle lineStyle];
+    [axisLineStyle setLineWidth:1];
+    [axisLineStyle setLineColor:[CPTColor colorWithCGColor:[[UIColor whiteColor] CGColor]]];
+    
+    
     CPTXYAxis *x = axisSet.xAxis;
     x.labelingPolicy = CPTAxisLabelingPolicyAutomatic;
+    x.labelTextStyle = labelTextStyle;
+    [x setAxisLineStyle:axisLineStyle];
+    [x setMajorTickLineStyle:axisLineStyle];
     
     //make x axis with two decimal places
     NSNumberFormatter *Xformatter = [[NSNumberFormatter alloc] init];
@@ -105,6 +146,11 @@
     
     CPTXYAxis *y = axisSet.yAxis;
     y.labelingPolicy = CPTAxisLabelingPolicyAutomatic;
+    y.labelTextStyle = labelTextStyle;
+    
+    [y setAxisLineStyle:axisLineStyle];
+    [y setMajorTickLineStyle:axisLineStyle];
+    
     //put y axis at the left side of graph
     y.orthogonalCoordinateDecimal = CPTDecimalFromDouble(-0.1);
     self.hostingView.hostedGraph = barChart;
@@ -113,12 +159,12 @@
     plotSpace.xRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(-0.1) length:CPTDecimalFromDouble(0.1)];
     
     CPTBarPlot *barPlot = [[[CPTBarPlot alloc] init] autorelease];
-    barPlot.fill = [CPTFill fillWithColor:[CPTColor blueColor]];
+    barPlot.fill = [CPTFill fillWithColor:[CPTColor colorWithCGColor:graphColor.CGColor]];
     barPlot.lineStyle = nil;
     //make bars width greater if it is iPad
     float widthOfBar = 1.8*hostingView.frame.size.width/[_values count];
     barPlot.barWidth = CPTDecimalFromFloat(widthOfBar);
-    
+    barPlot.backgroundColor = [UIColor blackColor].CGColor;
     barPlot.cornerRadius = 0.0f;
     barPlot.barWidthsAreInViewCoordinates = YES; //bar width are defined in pixels of screen
     barPlot.dataSource = self;

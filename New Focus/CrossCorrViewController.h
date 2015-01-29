@@ -18,5 +18,6 @@
 @property (retain, nonatomic) NSString * graphTitle;
 
 @property (retain, nonatomic) IBOutlet CPTGraphHostingView *hostingView;
+-(void) colorOfTheGraph:(UIColor *) theColor;
 
 @end
