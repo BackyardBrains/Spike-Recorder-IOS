@@ -14,9 +14,9 @@
 #include "BBFile.h"
 #include "BBAnalysisManager.h"
 #include "BBChannel.h"
+#import "BYBGLView.h"
 
-
-@interface AverageSpikeGraphView : CCGLTouchView
+@interface AverageSpikeGraphView : BYBGLView
 {
     CameraOrtho mCam;
     gl::Texture mColorScale;

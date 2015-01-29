@@ -5,6 +5,8 @@
 //  Created by Stanislav Mircic on 7/4/14.
 //  Copyright (c) 2014 Datta Lab, Harvard University. All rights reserved.
 //
+// Used to choose ISI graph
+//
 
 #import "GraphMatrixViewController.h"
 #import "GraphCollectionViewCell.h"
@@ -16,7 +18,7 @@
 #define GRAPH_CELL_NAME @"graphCell"
 #define COLUMN_HEADER_GRAPH_CELL_NAME @"columngGraphCell"
 #define ROW_HEADER_GRAPH_CELL_NAME @"rowGraphCell"
-
+#import "BYBGLView.h"
 @interface GraphMatrixViewController ()
 {
 
@@ -49,12 +51,30 @@
     [_collectionView registerClass:[RowHeaderColectionViewCell class] forCellWithReuseIdentifier:ROW_HEADER_GRAPH_CELL_NAME];
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self.navigationController.navigationBar setBarTintColor:[UIColor blackColor]];
+    self.navigationController.navigationBar.translucent = NO;
+    [self.navigationController.navigationBar setTintColor:[UIColor whiteColor]];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    NSLog(@"Stopping regular view");
+    [self.navigationController.navigationBar setBarTintColor:nil];
+    self.navigationController.navigationBar.translucent = YES;
+    [self.navigationController.navigationBar setTintColor:nil];
+}
+
 -(void) viewDidAppear:(BOOL)animated
 {
     if(refreshLayout)
     {
         [self refreshAllGraphs];
     }
+    [super viewDidAppear:animated];
 }
 
 - (void)didReceiveMemoryWarning
@@ -96,6 +116,7 @@
         
         ColumnHeaderCollectionViewCell* cell = [_collectionView  dequeueReusableCellWithReuseIdentifier:COLUMN_HEADER_GRAPH_CELL_NAME forIndexPath:indexPath];
         if(indexPath.row==0)
+
         {//this should be empty since it is header for column of row header
             [cell setNumberForTitleOfColumn:0];
         }
@@ -103,7 +124,8 @@
         {
             [cell setNumberForTitleOfColumn:indexPath.row];
         }
-        cell.backgroundColor=[UIColor whiteColor];
+        cell.backgroundColor=[UIColor blackColor];
+
         return cell;
     }
     if((indexPath.row%(numberOfSpikeTrains+1))==0)
@@ -111,13 +133,14 @@
         RowHeaderColectionViewCell* cell = [_collectionView  dequeueReusableCellWithReuseIdentifier:ROW_HEADER_GRAPH_CELL_NAME forIndexPath:indexPath];
         int tempRowIndex =(int)(((float)indexPath.row)/((float)_bbfile.numberOfSpikeTrains +1));
         [cell setNumberForTitleOfRow:tempRowIndex];
-        cell.backgroundColor=[UIColor whiteColor];
+        cell.backgroundColor=[UIColor blackColor];
         return cell;
     }
     
     GraphCollectionViewCell* cell = [_collectionView  dequeueReusableCellWithReuseIdentifier:GRAPH_CELL_NAME forIndexPath:indexPath];
     [cell setFile:_bbfile andFirstIndex:((int)((float)indexPath.row/(float)(_bbfile.numberOfSpikeTrains+1)))-1 andSecondIndex:(indexPath.row % (_bbfile.numberOfSpikeTrains+1))-1];
-    cell.backgroundColor=[UIColor whiteColor];
+    cell.backgroundColor=[UIColor blackColor];
+    [cell colorOfTheGraph:[BYBGLView getSpikeTrainColorWithIndex:((int)((float)indexPath.row/(float)(_bbfile.numberOfSpikeTrains+1)))-1 transparency:1.0f]];
     return cell;
 
 }
@@ -205,6 +228,9 @@
             CrossCorrViewController *avc = [[CrossCorrViewController alloc] initWithNibName:@"CrossCorrViewController" bundle:nil];
             avc.graphTitle =[ NSString stringWithFormat:@"Cross-correlation Spike %d - Spike %d",(int)((float)indexPath.row/((float)_bbfile.numberOfSpikeTrains+1)),(indexPath.row % (_bbfile.numberOfSpikeTrains+1)) ];
             avc.values = values;
+            
+            [avc colorOfTheGraph:[BYBGLView getSpikeTrainColorWithIndex:((int)((float)indexPath.row/((float)_bbfile.numberOfSpikeTrains+1)) -1) transparency:1.0f]];
+            
             [self.navigationController pushViewController:avc animated:YES];
             [avc release];
         });

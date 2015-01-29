@@ -294,7 +294,7 @@
     }
     else if ([cell.textLabel.text isEqualToString:@"Average Spike"])
     {
-        //GraphMatrixViewController
+  
         AverageSpikeGraphViewController *asvc = [[AverageSpikeGraphViewController alloc] initWithNibName:@"AverageSpikeGraphViewController" bundle:nil];
         [asvc calculateGraphForFile:(BBFile *)[self.files objectAtIndex:0] andChannelIndex:0];
         [self.navigationController pushViewController:asvc animated:YES];

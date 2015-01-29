@@ -13,4 +13,5 @@
 
 -(void) setValues:(NSMutableArray *) values andLimits:(NSMutableArray *) limits;
 @property (nonatomic, retain) NSString * titleOfGraph;
+-(void) colorOfTheGraph:(UIColor *) theColor;
 @end

@@ -17,5 +17,5 @@
 @property (retain, nonatomic) IBOutlet UICollectionView *collectionViewR;
 
 -(void) setFileForGraph:(BBFile *) file;
-
+-(void) colorOfTheGraph:(UIColor *) theColor;
 @end

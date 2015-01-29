@@ -23,13 +23,15 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    
+    [self.navigationController.navigationBar setBarTintColor:[UIColor blackColor]];
+    self.navigationController.navigationBar.translucent = NO;
+    [self.navigationController.navigationBar setTintColor:[UIColor whiteColor]];
     if([[currentFile allChannels] count] >1)
     {
         if (self.navigationItem.rightBarButtonItem==nil) {
             
             UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithTitle:@"Channel" style:UIBarButtonItemStylePlain target:self action:@selector(changeChannel:)];
-        
+            
             self.navigationItem.rightBarButtonItem = rightButton;
         }
     }
@@ -131,6 +133,9 @@
 {
     [super viewWillDisappear:animated];
     NSLog(@"Stopping regular view");
+    [self.navigationController.navigationBar setBarTintColor:nil];
+    self.navigationController.navigationBar.translucent = YES;
+    [self.navigationController.navigationBar setTintColor:nil];
     [glView stopAnimation];
     [glView removeFromSuperview];
     [glView release];
