@@ -14,6 +14,7 @@
     CPTXYGraph *barChart;
     NSArray * _values;
     CPTGraphHostingView *_hostingView;
+    UIColor* graphColor;
 }
 @end
 
@@ -34,6 +35,12 @@
         [self drawGraph];
     }
     return self;
+}
+
+-(void) colorOfTheGraph:(UIColor *) theColor
+{
+    graphColor = [theColor copy];
+    
 }
 
 -(void)dealloc {
@@ -164,7 +171,8 @@
     plotSpace.xRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(-0.1) length:CPTDecimalFromDouble(0.1)];
     
     CPTBarPlot *barPlot = [[[CPTBarPlot alloc] init] autorelease];
-    barPlot.fill = [CPTFill fillWithColor:[CPTColor colorWithComponentRed:0.0f green:0.27843137254901963 blue:1.0f alpha:1.0f]];
+    barPlot.fill = [CPTFill fillWithColor:[CPTColor colorWithCGColor:graphColor.CGColor]];
+    //barPlot.fill = [CPTFill fillWithColor:[CPTColor colorWithComponentRed:0.0f green:0.27843137254901963 blue:1.0f alpha:1.0f]];
     barPlot.lineStyle = nil;
     
     float widthOfBar = _hostingView.frame.size.width/[_values count];

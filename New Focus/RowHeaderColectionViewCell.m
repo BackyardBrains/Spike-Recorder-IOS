@@ -26,7 +26,7 @@
     if (self) {
         _titleOfRow = @"";
 
-        self.backgroundColor = [UIColor whiteColor];
+        self.backgroundColor = [UIColor blackColor];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(endChangingSize:) name:@"kEndChangeCellSizeInMatrixView" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(startChangingSize:) name:@"kStartChangeCellSizeInMatrixView" object:nil];
     }
@@ -102,7 +102,8 @@
     {
         labelForTitle = [[UILabel alloc] initWithFrame:CGRectMake(-self.frame.size.height*0.5+10, self.frame.size.height*0.5, self.frame.size.height, 13)];
 
-        labelForTitle.backgroundColor = [UIColor whiteColor];
+        labelForTitle.backgroundColor = [UIColor blackColor];
+        labelForTitle.textColor = [UIColor whiteColor];
         labelForTitle.numberOfLines = 1;
         labelForTitle.lineBreakMode = NSLineBreakByCharWrapping;
         labelForTitle.textAlignment = NSTextAlignmentCenter;

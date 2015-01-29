@@ -14,5 +14,5 @@
 
 
 -(void) setFile:(BBFile *) file andFirstIndex:(int) firstIndex andSecondIndex:(int) secondIndex;
-
+-(void) colorOfTheGraph:(UIColor *) theColor;
 @end

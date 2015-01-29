@@ -18,5 +18,6 @@
 
 
 -(void) setFileForGraph:(BBFile *) file;
+-(void) colorOfTheGraph:(UIColor *) theColor;
 
 @end

@@ -113,7 +113,7 @@
     }
     
     // this pair of lines is the standard way to clear the screen in OpenGL
-    gl::clear( Color( 1.0f, 1.0f, 1.0f ), true );
+    gl::clear( Color( 0.0f, 0.0f, 0.0f ), true );
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
     // Look at it right
     float xsize = maxXAxis-minXAxis;
@@ -150,13 +150,26 @@
                         2,
                         lengthOfGraphData
                         );
+            
+            //draw  STD
+            [self setGLColor:[BYBGLView getSpikeTrainColorWithIndex:i transparency:1.0f]];
+            glLineWidth(10.0f);
+            for(int j=0;j<lengthOfGraphData;j++)
+            {
+                gl::drawLine(Vec2f(tempGraph.getPoints()[j].x, spikes[i].bottomSTDLine[j]*zoom + actualOffSet), Vec2f(tempGraph.getPoints()[j].x, spikes[i].topSTDLine[j]*zoom + actualOffSet));
+                
+            }
+            
+            
             //Draw average
             glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
+            //[self setGLColor:[BYBGLView getSpikeTrainColorWithIndex:i transparency:1.0f]];
             glLineWidth(3.0f);
             gl::draw(tempGraph);
             
-            //draw bottom STD
-            glColor4f(0.9686274509803922f, 0.4980392156862745f, 0.011764705882352941f, 1.0f);
+           
+           
+           /* glColor4f(0.9686274509803922f, 0.4980392156862745f, 0.011764705882352941f, 1.0f);
             glLineWidth(1.0f);
             vDSP_vsmsa (spikes[i].bottomSTDLine,
                         1,
@@ -166,7 +179,7 @@
                         2,
                         lengthOfGraphData
                         );
-            //Draw average
+            //draw bottom line STD
             gl::draw(tempGraph);
             
             //draw top STD
@@ -178,11 +191,11 @@
                         2,
                         lengthOfGraphData
                         );
-            //Draw average
-            gl::draw(tempGraph);
+            //Draw top line STD
+            gl::draw(tempGraph);*/
             
             //Draw Y axis
-            glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
+            glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
             float bottomY = spikes[i].minAverageSpike*zoom+actualOffSet;
             float topY = spikes[i].maxAverageSpike*zoom+actualOffSet;
             gl::drawLine(Vec2f(xPositionOfScale, bottomY), Vec2f(xPositionOfScale, topY ));
@@ -199,7 +212,7 @@
 
         //--------------- Draw Time axis line --------------------------
         
-        glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
+        glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         float positionOfXAxis = 90.0*scaleXY.y;
         float sizeOfMark = 6.0f*scaleXY.y;
         gl::drawLine(Vec2f(minXAxis, positionOfXAxis), Vec2f(maxXAxis, positionOfXAxis));
@@ -213,7 +226,7 @@
         }
         
         
-        glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
+        glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         
         
         
