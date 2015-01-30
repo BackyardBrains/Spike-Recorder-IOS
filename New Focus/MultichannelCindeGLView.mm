@@ -417,14 +417,14 @@
     //{
         // See if we're asking for TOO MANY points
         int numPoints, offset;
-        if (numSamplesVisible > numSamplesMax) {
-            numPoints = numSamplesMax-1;
+        if (numSamplesVisible >= numSamplesMax) {
+            numPoints = numSamplesMax;
             offset = 0;
             
             if ([self getActiveTouches].size() != 2)
             {
                 float oldValue = numSamplesVisible;
-                numSamplesVisible += 0.6 * (numSamplesMax-1 - numSamplesVisible);
+                numSamplesVisible += 0.6 * (numSamplesMax - numSamplesVisible);
                 
                 float zero = 0.0f;
                 float zoom = oldValue/numSamplesVisible;

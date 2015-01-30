@@ -35,10 +35,6 @@
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <tabBarItem key="tabBarItem" title="Threshold" image="ThresholdImage.png" id="43"/>
                 </viewController>
-                <viewController title="ECG" nibName="ECGViewController" id="Eo0-d5-QzC" userLabel="ECG View Controller - Ecg" customClass="ECGViewController">
-                    <extendedEdge key="edgesForExtendedLayout"/>
-                    <tabBarItem key="tabBarItem" title="Ecg" image="ecg.png" id="9j2-bU-QAQ"/>
-                </viewController>
                 <navigationController definesPresentationContext="YES" id="27">
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <tabBarItem key="tabBarItem" title="Recordings" image="FileNeuron.png" id="31"/>
@@ -53,14 +49,6 @@
                         </viewController>
                     </viewControllers>
                 </navigationController>
-                <viewController title="EEG" nibName="FFTViewController" wantsFullScreenLayout="YES" id="eGz-23-pcw" userLabel="FFT View Controller - EEG" customClass="FFTViewController">
-                    <extendedEdge key="edgesForExtendedLayout"/>
-                    <tabBarItem key="tabBarItem" title="EEG" image="spectrum.png" id="lak-eG-6L3"/>
-                </viewController>
-                <viewController title="Settings" nibName="FilterSettingsViewController" wantsFullScreenLayout="YES" id="SPn-6n-giO" customClass="FilterSettingsViewController">
-                    <extendedEdge key="edgesForExtendedLayout"/>
-                    <tabBarItem key="tabBarItem" title="Settings" image="settings.png" id="jzw-hD-ep5"/>
-                </viewController>
             </viewControllers>
         </tabBarController>
         <window opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="12">
@@ -75,9 +63,6 @@
         <image name="FileNeuron.png" width="30" height="30"/>
         <image name="ThresholdImage.png" width="30" height="30"/>
         <image name="WaveImage.png" width="30" height="30"/>
-        <image name="ecg.png" width="30" height="30"/>
-        <image name="settings.png" width="30" height="30"/>
-        <image name="spectrum.png" width="30" height="30"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
