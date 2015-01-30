@@ -20,7 +20,7 @@
         case 1:
             return [UIColor colorWithRed:0.9882352941176471f green:0.9372549019607843f blue:0.011764705882352941f alpha:transp];
         case 2:
-            return [UIColor colorWithRed:0.0f green:0.0f blue:1.0f alpha:transp];
+            return [UIColor colorWithRed:0.0f green:1.0f blue:0.0f alpha:transp];
         case 3:
             return [UIColor colorWithRed:1.0f green:0.0f blue:1.0f alpha:transp];
         case 4:

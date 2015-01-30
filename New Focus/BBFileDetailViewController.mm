@@ -32,6 +32,7 @@
     
     SCPropertyDefinition *titlePropertyDef = [fileDef propertyDefinitionWithName:@"shortname"];
     titlePropertyDef.type = SCPropertyTypeTextField;
+
     titlePropertyDef.title = @"Filename";
     
     SCPropertyDefinition *dateDef = [fileDef propertyDefinitionWithName:@"subname"];
@@ -74,6 +75,14 @@
 - (void) viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    
+    
+    
+    
+    SCObjectSection *topSection = (SCObjectSection *)[self.tableViewModel sectionAtIndex:0];
+    SCTextFieldCell *nameCell = (SCTextFieldCell *)[topSection cellForPropertyName:@"shortname"];
+    nameCell.textField.clearButtonMode = UITextFieldViewModeWhileEditing;
+
     
     [[self navigationController] setNavigationBarHidden:NO animated:NO];
 }

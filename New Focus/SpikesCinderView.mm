@@ -111,7 +111,10 @@
     numVoltsMin = [[defaults valueForKey:@"numVoltsMin"] floatValue];
     numVoltsMax = [[defaults valueForKey:@"numVoltsMax"] floatValue];
     numVoltsVisible = [[defaults valueForKey:@"numVoltsVisible"] floatValue];
-
+    if(numVoltsVisible > numVoltsMax)
+    {
+        numVoltsVisible = numVoltsMax;
+    }
     
 }
 
@@ -127,6 +130,10 @@
     [defaults setValue:[NSNumber numberWithFloat:numSecondsVisible] forKey:@"numSecondsVisible"];
     [defaults setValue:[NSNumber numberWithFloat:numVoltsMin] forKey:@"numVoltsMin"];
     [defaults setValue:[NSNumber numberWithFloat:numVoltsMax] forKey:@"numVoltsMax"];
+    if(numVoltsVisible > numVoltsMax)
+    {
+        numVoltsVisible = numVoltsMax;
+    }
     [defaults setValue:[NSNumber numberWithFloat:numVoltsVisible] forKey:@"numVoltsVisible"];
 
     
@@ -461,6 +468,7 @@
         // Make sure that we don't go out of bounds
         if (numSecondsVisible < 0.001) { numSecondsVisible = oldNumSecondsVisible; }
         if (numVoltsVisible < 0.001)   { numVoltsVisible = oldNumVoltsVisible; }
+        if (numVoltsVisible>numVoltsMax) {numVoltsVisible = numVoltsMax;}
     }
     
     // Touching to change the threshold value

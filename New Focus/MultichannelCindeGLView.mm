@@ -331,9 +331,9 @@
             {
                 numVoltsVisible[i] = 0.002;
             }
-            if(numVoltsVisible[i]>1000)
+            if(numVoltsVisible[i]>numVoltsMax)
             {
-                numVoltsVisible[i] = 1.0;
+                numVoltsVisible[i] = numVoltsMax;
             }
         }
     }
@@ -348,9 +348,9 @@
         {
             numVoltsVisible[i] = [[defaults valueForKey:@"numVoltsVisible"] floatValue];
              NSLog(@"Max volts visible: %f", numVoltsVisible[i]);
-            if(numVoltsVisible[i]>1000)
+            if(numVoltsVisible[i]>numVoltsMax)
             {
-                numVoltsVisible[i] = 1.0;
+                numVoltsVisible[i] = numVoltsMax;
             }
             if(numVoltsVisible[i] < 0.001)
             {
@@ -375,7 +375,12 @@
         [defaults setValue:[NSNumber numberWithFloat:numSamplesMin] forKey:@"numSamplesMin"];
         [defaults setValue:[NSNumber numberWithFloat:numSamplesVisible] forKey:@"numSamplesVisibleThreshold"];
         [defaults setValue:[NSNumber numberWithFloat:numVoltsMin] forKey:@"numVoltsMinThreshold"];
+        
         [defaults setValue:[NSNumber numberWithFloat:numVoltsMax] forKey:@"numVoltsMaxThreshold"];
+        if(numVoltsVisible[0]>numVoltsMax)
+        {
+            numVoltsVisible[0] = numVoltsMax;
+        }
         [defaults setValue:[NSNumber numberWithFloat:numVoltsVisible[0]] forKey:@"numVoltsVisibleThreshold"];
     }
     else {
@@ -384,6 +389,10 @@
         [defaults setValue:[NSNumber numberWithFloat:numSamplesVisible] forKey:@"numSamplesVisible"];
         [defaults setValue:[NSNumber numberWithFloat:numVoltsMin] forKey:@"numVoltsMin"];
         [defaults setValue:[NSNumber numberWithFloat:numVoltsMax] forKey:@"numVoltsMax"];
+        if(numVoltsVisible[0]>numVoltsMax)
+        {
+            numVoltsVisible[0] = numVoltsMax;
+        }
         [defaults setValue:[NSNumber numberWithFloat:numVoltsVisible[0]] forKey:@"numVoltsVisible"];
     }
     
@@ -1255,6 +1264,12 @@
             numSamplesVisible = oldNumSamplesVisible;
         }
         if (numVoltsVisible[selectedChannel] < 0.001)
+        {
+            touchDistanceDelta.y = 1.0f;
+            numVoltsVisible[selectedChannel] = oldNumVoltsVisible;
+        }
+        
+        if(numVoltsVisible[selectedChannel]>numVoltsMax)
         {
             touchDistanceDelta.y = 1.0f;
             numVoltsVisible[selectedChannel] = oldNumVoltsVisible;
