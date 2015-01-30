@@ -59,7 +59,7 @@
 	<key>numVoltsMin</key>
 	<real>0.05</real>
 	<key>numVoltsMax</key>
-	<real>1.6</real>
+	<integer>4</integer>
 	<key>numVoltsVisible</key>
 	<real>1.6</real>
 	<key>numSecondsMaxThreshold</key>
