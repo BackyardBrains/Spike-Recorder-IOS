@@ -131,7 +131,7 @@ void RingBuffer::AddNewInterleavedFloatData(const float *newData, const SInt64 n
 	
 	for (int iChannel = 0; iChannel < numChannelsToCopy; ++iChannel) {
 		
-		if (numFrames + mLastWrittenIndex[iChannel] < mSizeOfBuffer) { // if our new set of samples won't overrun the edge of the buffer
+		if (numFrames + mLastWrittenIndex[iChannel] <= mSizeOfBuffer) { // if our new set of samples won't overrun the edge of the buffer
 			vDSP_vsadd((float *)&newData[iChannel], 
 					   numChannelsHere, 
 					   &zero, 
@@ -172,7 +172,9 @@ float RingBuffer::FetchFreshData2(float *outData, SInt64 numFrames, SInt64 which
     float tempTime = [[BBAudioManager bbAudioManager] getTimeForSpikes];
     if (mLastWrittenIndex[whichChannel] - numFrames >= 0) { // if we're requesting samples that won't go off the left end of the ring buffer, then go ahead and copy them all out.
         
-        UInt32 idx = mLastWrittenIndex[whichChannel] - numFrames;
+         NSLog(@"SIMPLE !!!!!");
+        
+        UInt32 idx = mLastWrittenIndex[whichChannel]-1 - numFrames;
         float zero = 0.0f;
         vDSP_vsadd(&mData[whichChannel][idx], 
                    1, 
@@ -186,13 +188,13 @@ float RingBuffer::FetchFreshData2(float *outData, SInt64 numFrames, SInt64 which
     else { // if we will overrun, then we need to do two separate copies.
         
         // The copy that bleeds off the left, and cycles back to the right of the ring buffer
-        int numSamplesInFirstCopy = numFrames - mLastWrittenIndex[whichChannel];
+        int numSamplesInFirstCopy = numFrames - (mLastWrittenIndex[whichChannel]);
         // The copy that starts at the beginning, and proceeds to the end.
         int numSamplesInSecondCopy = mLastWrittenIndex[whichChannel];
-        
+        NSLog(@"COMPLEX !!!!!");
         
         float zero = 0.0f;
-        UInt32 firstIndex = mSizeOfBuffer - numSamplesInFirstCopy;
+        UInt32 firstIndex = (int)mSizeOfBuffer - (int)numSamplesInFirstCopy;
         vDSP_vsadd(&mData[whichChannel][firstIndex],
                    1, 
                    &zero, 

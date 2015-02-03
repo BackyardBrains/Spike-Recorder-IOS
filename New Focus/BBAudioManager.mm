@@ -450,7 +450,7 @@ static BBAudioManager *bbAudioManager = nil;
 -(void) filterData:(float *)newData numFrames:(UInt32)thisNumFrames numChannels:(UInt32)thisNumChannels
 {
     int i;
-    if(thisNumChannels>2)
+ /*   if(thisNumChannels>2)
     {
         for(i=0;i<_sourceNumberOfChannels;i++)
         {
@@ -493,6 +493,7 @@ static BBAudioManager *bbAudioManager = nil;
             [NotchFilter filterData:newData numFrames:thisNumFrames numChannels:thisNumChannels];
         }
     }
+  */
 }
 
 

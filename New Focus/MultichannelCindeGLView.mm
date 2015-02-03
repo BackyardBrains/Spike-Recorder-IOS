@@ -185,13 +185,16 @@
     {
         
         float oneSampleTime = maxTimeSpan / numSamplesVisible;
-        for (int i=0; i <numSamplesMax-1; i++)
+        for (int i=0; i <numSamplesMax; i++)
         {
             float x = (i- (numSamplesMax-1))*oneSampleTime;
             displayVectors[channelIndex].push_back(Vec2f(x, 0.0f));
+            
         }
-        displayVectors[channelIndex].setClosed(false);
-        //make some vertical space between channels
+       // displayVectors[channelIndex].getPoints()[0].x = -10000;
+       // displayVectors[channelIndex].getPoints()[1].x = -10000;
+       // displayVectors[channelIndex].setClosed(false);
+        
         
         
     }
@@ -417,7 +420,7 @@
     //{
         // See if we're asking for TOO MANY points
         int numPoints, offset;
-        if (numSamplesVisible >= numSamplesMax) {
+        if (numSamplesVisible > numSamplesMax) {
             numPoints = numSamplesMax;
             offset = 0;
             
@@ -483,15 +486,16 @@
         // If we haven't set off any of the alarms above,
         // then we're asking for a normal range of points.
         else {
-            numPoints = numSamplesVisible+1;//visible part
-            offset = numSamplesMax - numPoints-1;//nonvisible part
+            numPoints = numSamplesVisible;//visible part
+           // NSLog(@"%f", numSamplesVisible);
+            offset = numSamplesMax - numPoints;//nonvisible part
             if(offset<0)
             {
                 offset = 0;
             }
         }
     
-        if(numPoints>numSamplesMax)
+        if(numPoints>=numSamplesMax)
         {
             numPoints = numSamplesMax;
             offset = 0;
@@ -505,7 +509,7 @@
     {
         if([self channelActive:channelIndex])
         {
-            timeForSincDrawing =  [dataSourceDelegate fetchDataToDisplay:tempDataBuffer numFrames:numPoints whichChannel:realIndexOfChannel];
+            timeForSincDrawing =  [dataSourceDelegate fetchDataToDisplay:tempDataBuffer numFrames:numSamplesMax whichChannel:realIndexOfChannel];
             
             float zero = yOffsets[channelIndex];
             float zoom = maxVoltsSpan/ numVoltsVisible[channelIndex];
@@ -514,10 +518,11 @@
                         1,
                         &zoom,
                         &zero,
-                        (float *)&(displayVectors[realIndexOfChannel].getPoints()[offset])+1,
+                        (float *)&(displayVectors[realIndexOfChannel].getPoints()[0])+1,
                         2,
-                        numPoints
+                        numSamplesMax
                         );
+            
             realIndexOfChannel++;
         }
         
@@ -554,6 +559,12 @@
         gl::setMatrices( mCam );
         
         scaleXY = [self screenToWorld:Vec2f(1.0f,1.0f)];
+        
+
+        //mCam.setOrtho(-maxTimeSpan*2, 1.0f, -maxVoltsSpan/2.0f, maxVoltsSpan/2.0f, 1, 100);
+        //gl::setMatrices( mCam );
+        
+        
         Vec2f scaleXYZero = [self screenToWorld:Vec2f(0.0f,0.0f)];
         scaleXY.x = fabsf(scaleXY.x - scaleXYZero.x);
         scaleXY.y = fabsf(scaleXY.y - scaleXYZero.y);
@@ -596,7 +607,7 @@
         }
         
         //Draw handlws for movement of axis
-        if(multichannel || self.mode == MultichannelGLViewModeView)
+        if(multichannel )//|| self.mode == MultichannelGLViewModeView)
         {
             //draw handle
             
@@ -1330,7 +1341,8 @@
         int grabbedHandleIndex;
         
         //if user grabbed the handle of channel
-        if((multichannel || self.mode == MultichannelGLViewModeView) && (grabbedHandleIndex = [self checkIntersectionWithHandles:glWorldTouchPos])!=-1)
+       // if((multichannel || self.mode == MultichannelGLViewModeView) && (grabbedHandleIndex = [self checkIntersectionWithHandles:glWorldTouchPos])!=-1)
+         if((multichannel) && (grabbedHandleIndex = [self checkIntersectionWithHandles:glWorldTouchPos])!=-1)
         {
             //TODO:add here adding of channels
             
