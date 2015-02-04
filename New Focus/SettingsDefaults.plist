@@ -71,7 +71,7 @@
 	<key>numVoltsMinThreshold</key>
 	<real>0.05</real>
 	<key>numVoltsMaxThreshold</key>
-	<real>1.6</real>
+	<integer>4</integer>
 	<key>numVoltsVisibleThreshold</key>
 	<real>1.6</real>
 </dict>

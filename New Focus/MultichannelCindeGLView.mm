@@ -509,7 +509,7 @@
     {
         if([self channelActive:channelIndex])
         {
-            timeForSincDrawing =  [dataSourceDelegate fetchDataToDisplay:tempDataBuffer numFrames:numSamplesMax whichChannel:realIndexOfChannel];
+            timeForSincDrawing =  [dataSourceDelegate fetchDataToDisplay:tempDataBuffer numFrames:numPoints whichChannel:realIndexOfChannel];
             
             float zero = yOffsets[channelIndex];
             float zoom = maxVoltsSpan/ numVoltsVisible[channelIndex];
@@ -518,9 +518,9 @@
                         1,
                         &zoom,
                         &zero,
-                        (float *)&(displayVectors[realIndexOfChannel].getPoints()[0])+1,
+                        (float *)&(displayVectors[realIndexOfChannel].getPoints()[offset])+1,
                         2,
-                        numSamplesMax
+                        numPoints
                         );
             
             realIndexOfChannel++;

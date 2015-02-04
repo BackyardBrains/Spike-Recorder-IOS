@@ -170,11 +170,11 @@ float RingBuffer::FetchFreshData2(float *outData, SInt64 numFrames, SInt64 which
     //display of spike marks and waveform are not sinchronized
     //TODO: make timestamp of data part of this class
     float tempTime = [[BBAudioManager bbAudioManager] getTimeForSpikes];
-    if (mLastWrittenIndex[whichChannel] - numFrames >= 0) { // if we're requesting samples that won't go off the left end of the ring buffer, then go ahead and copy them all out.
+    if (((int)mLastWrittenIndex[whichChannel] - (int)numFrames) >= 0) { // if we're requesting samples that won't go off the left end of the ring buffer, then go ahead and copy them all out.
         
-         NSLog(@"SIMPLE !!!!!");
+        // NSLog(@"SIMPLE !!!!!");
         
-        UInt32 idx = mLastWrittenIndex[whichChannel]-1 - numFrames;
+        UInt32 idx = mLastWrittenIndex[whichChannel] - numFrames;
         float zero = 0.0f;
         vDSP_vsadd(&mData[whichChannel][idx], 
                    1, 
@@ -191,7 +191,7 @@ float RingBuffer::FetchFreshData2(float *outData, SInt64 numFrames, SInt64 which
         int numSamplesInFirstCopy = numFrames - (mLastWrittenIndex[whichChannel]);
         // The copy that starts at the beginning, and proceeds to the end.
         int numSamplesInSecondCopy = mLastWrittenIndex[whichChannel];
-        NSLog(@"COMPLEX !!!!!");
+       // NSLog(@"COMPLEX !!!!!");
         
         float zero = 0.0f;
         UInt32 firstIndex = (int)mSizeOfBuffer - (int)numSamplesInFirstCopy;
