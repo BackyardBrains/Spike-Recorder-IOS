@@ -151,6 +151,50 @@
 		245B1842199135ED00943684 /* ExperimentsMenuTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 245B1840199135ED00943684 /* ExperimentsMenuTableViewCell.xib */; };
 		245B1847199172D200943684 /* ExperimentsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 245B1845199172D200943684 /* ExperimentsViewController.xib */; };
 		245E26FA19EAC01100EE298E /* BBBTChooserViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 245E26F819EAC01100EE298E /* BBBTChooserViewController.xib */; };
+		247087011A850FF6004C6B9B /* CCGLTouchAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FDA41A83F14700662547 /* CCGLTouchAppDelegate.mm */; };
+		247087031A850FF6004C6B9B /* CCGLTouchView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FDA61A83F14700662547 /* CCGLTouchView.mm */; };
+		247087051A850FF6004C6B9B /* CCGLTouchViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FDA81A83F14700662547 /* CCGLTouchViewController.mm */; };
+		247087551A851025004C6B9B /* AudioFileReader.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FDFC1A83F14700662547 /* AudioFileReader.mm */; };
+		247087571A851025004C6B9B /* AudioFileWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 2418FDFE1A83F14700662547 /* AudioFileWriter.m */; };
+		247087591A851026004C6B9B /* Novocaine.m in Sources */ = {isa = PBXBuildFile; fileRef = 2418FE001A83F14700662547 /* Novocaine.m */; };
+		2470875B1A851026004C6B9B /* RingBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FE021A83F14700662547 /* RingBuffer.mm */; };
+		2470875D1A85102F004C6B9B /* NVAllpassFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 2418FE061A83F14700662547 /* NVAllpassFilter.m */; };
+		2470875F1A85102F004C6B9B /* NVBandpassFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 2418FE081A83F14700662547 /* NVBandpassFilter.m */; };
+		247087611A85102F004C6B9B /* NVBandpassQPeakGainFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 2418FE0A1A83F14700662547 /* NVBandpassQPeakGainFilter.m */; };
+		247087631A85102F004C6B9B /* NVHighpassFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 2418FE0C1A83F14700662547 /* NVHighpassFilter.m */; };
+		247087651A85102F004C6B9B /* NVHighShelvingFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 2418FE0E1A83F14700662547 /* NVHighShelvingFilter.m */; };
+		247087671A85102F004C6B9B /* NVLowpassFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 2418FE101A83F14700662547 /* NVLowpassFilter.m */; };
+		247087691A85102F004C6B9B /* NVLowShelvingFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 2418FE121A83F14700662547 /* NVLowShelvingFilter.m */; };
+		2470876B1A85102F004C6B9B /* NVNotchFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 2418FE141A83F14700662547 /* NVNotchFilter.m */; };
+		2470876D1A85102F004C6B9B /* NVPeakingEQFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 2418FE161A83F14700662547 /* NVPeakingEQFilter.m */; };
+		2470876F1A851035004C6B9B /* NVDSP.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FE181A83F14700662547 /* NVDSP.mm */; };
+		247087721A85103D004C6B9B /* FPPopoverController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2418FE1C1A83F14700662547 /* FPPopoverController.m */; };
+		247087741A85103D004C6B9B /* FPPopoverView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2418FE1E1A83F14700662547 /* FPPopoverView.m */; };
+		247087761A85103D004C6B9B /* FPTouchView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2418FE201A83F14700662547 /* FPTouchView.m */; };
+		247087781A851044004C6B9B /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 2418FE231A83F14700662547 /* MBProgressHUD.m */; };
+		2470877A1A85104D004C6B9B /* NSData-SQLitePersistence.m in Sources */ = {isa = PBXBuildFile; fileRef = 2418FE261A83F14700662547 /* NSData-SQLitePersistence.m */; };
+		2470877C1A85104D004C6B9B /* NSDate-SQLitePersistence.m in Sources */ = {isa = PBXBuildFile; fileRef = 2418FE281A83F14700662547 /* NSDate-SQLitePersistence.m */; };
+		2470877E1A85104D004C6B9B /* NSMutableArray-MultipleSort.m in Sources */ = {isa = PBXBuildFile; fileRef = 2418FE2A1A83F14700662547 /* NSMutableArray-MultipleSort.m */; };
+		247087801A85104D004C6B9B /* NSMutableData-SQLitePersistence.m in Sources */ = {isa = PBXBuildFile; fileRef = 2418FE2C1A83F14700662547 /* NSMutableData-SQLitePersistence.m */; };
+		247087821A85104D004C6B9B /* NSNumber-SQLitePersistence.m in Sources */ = {isa = PBXBuildFile; fileRef = 2418FE2E1A83F14700662547 /* NSNumber-SQLitePersistence.m */; };
+		247087841A85104D004C6B9B /* NSObject-ClassName.m in Sources */ = {isa = PBXBuildFile; fileRef = 2418FE301A83F14700662547 /* NSObject-ClassName.m */; };
+		247087861A85104D004C6B9B /* NSObject-MissingKV.m in Sources */ = {isa = PBXBuildFile; fileRef = 2418FE321A83F14700662547 /* NSObject-MissingKV.m */; };
+		247087881A85104D004C6B9B /* NSObject-SQLitePersistence.m in Sources */ = {isa = PBXBuildFile; fileRef = 2418FE341A83F14700662547 /* NSObject-SQLitePersistence.m */; };
+		2470878A1A85104D004C6B9B /* NSString-NumberStuff.m in Sources */ = {isa = PBXBuildFile; fileRef = 2418FE361A83F14700662547 /* NSString-NumberStuff.m */; };
+		2470878C1A85104D004C6B9B /* NSString-SQLiteColumnName.m in Sources */ = {isa = PBXBuildFile; fileRef = 2418FE381A83F14700662547 /* NSString-SQLiteColumnName.m */; };
+		2470878E1A85104D004C6B9B /* NSString-SQLitePersistence.m in Sources */ = {isa = PBXBuildFile; fileRef = 2418FE3A1A83F14700662547 /* NSString-SQLitePersistence.m */; };
+		247087901A85104D004C6B9B /* NSString-UppercaseFirst.m in Sources */ = {isa = PBXBuildFile; fileRef = 2418FE3C1A83F14700662547 /* NSString-UppercaseFirst.m */; };
+		247087921A85104D004C6B9B /* SQLiteInstanceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2418FE3E1A83F14700662547 /* SQLiteInstanceManager.m */; };
+		247087941A85104D004C6B9B /* SQLitePersistentObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 2418FE401A83F14700662547 /* SQLitePersistentObject.m */; };
+		247087961A85104D004C6B9B /* UIColor-SQLitePersistentObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 2418FE421A83F14700662547 /* UIColor-SQLitePersistentObject.m */; };
+		247087981A85104D004C6B9B /* UIImage-SQLitePersistence.m in Sources */ = {isa = PBXBuildFile; fileRef = 2418FE441A83F14700662547 /* UIImage-SQLitePersistence.m */; };
+		2470879A1A85105A004C6B9B /* UIDeviceExt.m in Sources */ = {isa = PBXBuildFile; fileRef = 2418FE4E1A83F14700662547 /* UIDeviceExt.m */; };
+		2470879C1A851063004C6B9B /* ioapi.c in Sources */ = {isa = PBXBuildFile; fileRef = 2418FE521A83F14700662547 /* ioapi.c */; };
+		2470879E1A851063004C6B9B /* mztools.c in Sources */ = {isa = PBXBuildFile; fileRef = 2418FE541A83F14700662547 /* mztools.c */; };
+		247087A01A851063004C6B9B /* unzip.c in Sources */ = {isa = PBXBuildFile; fileRef = 2418FE561A83F14700662547 /* unzip.c */; };
+		247087A21A851063004C6B9B /* zip.c in Sources */ = {isa = PBXBuildFile; fileRef = 2418FE581A83F14700662547 /* zip.c */; };
+		247087A51A851079004C6B9B /* ZipArchive.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FE5B1A83F14700662547 /* ZipArchive.mm */; };
+		247087A71A85144F004C6B9B /* libCorePlot-CocoaTouch.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2418FDF91A83F14700662547 /* libCorePlot-CocoaTouch.a */; };
 		2474366B18F6DBFF0044E11D /* SpikesViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2474366A18F6DBFF0044E11D /* SpikesViewController.xib */; };
 		247ED9BE193DEC0800871BAC /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 247ED9BD193DEC0800871BAC /* libz.dylib */; };
 		2489D8201992284500C00A9C /* ExperimentSetupViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2489D81E1992284500C00A9C /* ExperimentSetupViewController.xib */; };
@@ -353,12 +397,6 @@
 		2418FE421A83F14700662547 /* UIColor-SQLitePersistentObject.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIColor-SQLitePersistentObject.m"; sourceTree = "<group>"; };
 		2418FE431A83F14700662547 /* UIImage-SQLitePersistence.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIImage-SQLitePersistence.h"; sourceTree = "<group>"; };
 		2418FE441A83F14700662547 /* UIImage-SQLitePersistence.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIImage-SQLitePersistence.m"; sourceTree = "<group>"; };
-		2418FE461A83F14700662547 /* libTestFlight.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libTestFlight.a; sourceTree = "<group>"; };
-		2418FE471A83F14700662547 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		2418FE481A83F14700662547 /* release_notes.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = release_notes.md; sourceTree = "<group>"; };
-		2418FE491A83F14700662547 /* TestFlight+AsyncLogging.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TestFlight+AsyncLogging.h"; sourceTree = "<group>"; };
-		2418FE4A1A83F14700662547 /* TestFlight+ManualSessions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TestFlight+ManualSessions.h"; sourceTree = "<group>"; };
-		2418FE4B1A83F14700662547 /* TestFlight.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestFlight.h; sourceTree = "<group>"; };
 		2418FE4D1A83F14700662547 /* UIDeviceExt.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UIDeviceExt.h; sourceTree = "<group>"; };
 		2418FE4E1A83F14700662547 /* UIDeviceExt.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UIDeviceExt.m; sourceTree = "<group>"; };
 		2418FE511A83F14700662547 /* crypt.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = crypt.h; sourceTree = "<group>"; };
@@ -631,6 +669,7 @@
 				2418FFD51A85047F00662547 /* DropboxSDK.framework in Frameworks */,
 				247ED9BE193DEC0800871BAC /* libz.dylib in Frameworks */,
 				24A13BD4192B8F3500BCE9D1 /* ExternalAccessory.framework in Frameworks */,
+				247087A71A85144F004C6B9B /* libCorePlot-CocoaTouch.a in Frameworks */,
 				248C8EC118E5D90500307C4C /* ImageIO.framework in Frameworks */,
 				248C8EBF18E5D8FC00307C4C /* MobileCoreServices.framework in Frameworks */,
 				FA905A7C15AA8F370013688B /* MessageUI.framework in Frameworks */,
@@ -665,7 +704,6 @@
 				2418FE191A83F14700662547 /* Popover */,
 				2418FE211A83F14700662547 /* ProgressHUD */,
 				2418FE241A83F14700662547 /* SQLitePersistence */,
-				2418FE451A83F14700662547 /* TestFlightSDK3.0.2 */,
 				2418FE4C1A83F14700662547 /* UIDeviceExt */,
 				2418FE4F1A83F14700662547 /* Zip */,
 			);
@@ -889,19 +927,6 @@
 				2418FE441A83F14700662547 /* UIImage-SQLitePersistence.m */,
 			);
 			path = SQLitePersistence;
-			sourceTree = "<group>";
-		};
-		2418FE451A83F14700662547 /* TestFlightSDK3.0.2 */ = {
-			isa = PBXGroup;
-			children = (
-				2418FE461A83F14700662547 /* libTestFlight.a */,
-				2418FE471A83F14700662547 /* README.md */,
-				2418FE481A83F14700662547 /* release_notes.md */,
-				2418FE491A83F14700662547 /* TestFlight+AsyncLogging.h */,
-				2418FE4A1A83F14700662547 /* TestFlight+ManualSessions.h */,
-				2418FE4B1A83F14700662547 /* TestFlight.h */,
-			);
-			path = TestFlightSDK3.0.2;
 			sourceTree = "<group>";
 		};
 		2418FE4C1A83F14700662547 /* UIDeviceExt */ = {
@@ -1527,6 +1552,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				247087011A850FF6004C6B9B /* CCGLTouchAppDelegate.mm in Sources */,
+				247087031A850FF6004C6B9B /* CCGLTouchView.mm in Sources */,
+				247087051A850FF6004C6B9B /* CCGLTouchViewController.mm in Sources */,
 				2418FEF71A83F6C800662547 /* BBFile.mm in Sources */,
 				2418FEF41A83F6C800662547 /* BBChannel.m in Sources */,
 				2418FF101A83F79200662547 /* BBAudioFileReader.mm in Sources */,
@@ -1569,6 +1597,45 @@
 				2418FF331A83FD3700662547 /* ECGViewController.mm in Sources */,
 				2418FF131A83F79200662547 /* BBBTManager.mm in Sources */,
 				2418FF9B1A83FE1200662547 /* ECGGraphView.mm in Sources */,
+				2470877A1A85104D004C6B9B /* NSData-SQLitePersistence.m in Sources */,
+				2470877C1A85104D004C6B9B /* NSDate-SQLitePersistence.m in Sources */,
+				2470877E1A85104D004C6B9B /* NSMutableArray-MultipleSort.m in Sources */,
+				247087801A85104D004C6B9B /* NSMutableData-SQLitePersistence.m in Sources */,
+				2470879C1A851063004C6B9B /* ioapi.c in Sources */,
+				2470879E1A851063004C6B9B /* mztools.c in Sources */,
+				247087A01A851063004C6B9B /* unzip.c in Sources */,
+				247087A21A851063004C6B9B /* zip.c in Sources */,
+				2470879A1A85105A004C6B9B /* UIDeviceExt.m in Sources */,
+				247087821A85104D004C6B9B /* NSNumber-SQLitePersistence.m in Sources */,
+				247087841A85104D004C6B9B /* NSObject-ClassName.m in Sources */,
+				247087861A85104D004C6B9B /* NSObject-MissingKV.m in Sources */,
+				247087881A85104D004C6B9B /* NSObject-SQLitePersistence.m in Sources */,
+				2470878A1A85104D004C6B9B /* NSString-NumberStuff.m in Sources */,
+				2470878C1A85104D004C6B9B /* NSString-SQLiteColumnName.m in Sources */,
+				2470878E1A85104D004C6B9B /* NSString-SQLitePersistence.m in Sources */,
+				247087901A85104D004C6B9B /* NSString-UppercaseFirst.m in Sources */,
+				247087921A85104D004C6B9B /* SQLiteInstanceManager.m in Sources */,
+				247087941A85104D004C6B9B /* SQLitePersistentObject.m in Sources */,
+				247087961A85104D004C6B9B /* UIColor-SQLitePersistentObject.m in Sources */,
+				247087981A85104D004C6B9B /* UIImage-SQLitePersistence.m in Sources */,
+				2470875D1A85102F004C6B9B /* NVAllpassFilter.m in Sources */,
+				2470875F1A85102F004C6B9B /* NVBandpassFilter.m in Sources */,
+				247087611A85102F004C6B9B /* NVBandpassQPeakGainFilter.m in Sources */,
+				247087781A851044004C6B9B /* MBProgressHUD.m in Sources */,
+				247087631A85102F004C6B9B /* NVHighpassFilter.m in Sources */,
+				247087721A85103D004C6B9B /* FPPopoverController.m in Sources */,
+				247087741A85103D004C6B9B /* FPPopoverView.m in Sources */,
+				247087761A85103D004C6B9B /* FPTouchView.m in Sources */,
+				247087651A85102F004C6B9B /* NVHighShelvingFilter.m in Sources */,
+				2470876F1A851035004C6B9B /* NVDSP.mm in Sources */,
+				247087671A85102F004C6B9B /* NVLowpassFilter.m in Sources */,
+				247087691A85102F004C6B9B /* NVLowShelvingFilter.m in Sources */,
+				2470876B1A85102F004C6B9B /* NVNotchFilter.m in Sources */,
+				2470876D1A85102F004C6B9B /* NVPeakingEQFilter.m in Sources */,
+				247087551A851025004C6B9B /* AudioFileReader.mm in Sources */,
+				247087571A851025004C6B9B /* AudioFileWriter.m in Sources */,
+				247087591A851026004C6B9B /* Novocaine.m in Sources */,
+				2470875B1A851026004C6B9B /* RingBuffer.mm in Sources */,
 				2418FF9A1A83FE1200662547 /* DynamicFFTCinderGLView.mm in Sources */,
 				2418FF171A83F79200662547 /* WavManager.mm in Sources */,
 				2418FF591A83FDA100662547 /* AutoGraphCollectionViewCell.m in Sources */,
@@ -1580,6 +1647,7 @@
 				2418FF5B1A83FDA100662547 /* AverageSpikeGraphViewController.mm in Sources */,
 				2418FF161A83F79200662547 /* DSPThreshold.mm in Sources */,
 				2418FF3B1A83FD3700662547 /* ViewAndRecordViewController.mm in Sources */,
+				247087A51A851079004C6B9B /* ZipArchive.mm in Sources */,
 				2418FF321A83FD3700662547 /* DCMDExperimentViewController.mm in Sources */,
 				2418FF371A83FD3700662547 /* PlaybackViewController.mm in Sources */,
 				2418FF151A83F79200662547 /* DSPAnalysis.mm in Sources */,
@@ -1663,7 +1731,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
-					"/Users/nik/Desktop/Projects/Backyard-Brains-iOS-App",
+					"/Users/nik/Desktop/Projects/Backyard-Brains-iOS-App/source",
 					"$(PROJECT_DIR)/libs",
 				);
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
@@ -1719,7 +1787,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)",
-					"/Users/nik/Desktop/Projects/Backyard-Brains-iOS-App",
+					"/Users/nik/Desktop/Projects/Backyard-Brains-iOS-App/source",
 					"$(PROJECT_DIR)/libs",
 				);
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
