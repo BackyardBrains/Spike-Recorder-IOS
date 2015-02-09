@@ -14,6 +14,7 @@
 #import "BBAudioFileReader.h"
 #import "BBBTManager.h"
 
+
 #define kViewRecordTabBarIndex 0
 #define kThresholdTabBarIndex 1
 #define kFFTTabBarIndex 2
@@ -64,8 +65,41 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(btSlowConnection) name:BT_SLOW_CONNECTION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(btBadConnection) name:BT_BAD_CONNECTION object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deviceChooserClosed) name:BT_WAIT_TO_CONNECT object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(accessoryDisconnectedDuringInquiry) name:BT_ACCESSORY_DISCONNECTED_DURING_INQUIRY object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(foundBTConnection) name:FOUND_BT_CONNECTION object:nil];
 }
 
+
+-(void) deviceChooserClosed
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+    
+        //[MBProgressHUD showHUDAddedTo:self.window.rootViewController.view animated:YES];
+        hud = [MBProgressHUD showHUDAddedTo:self.window.rootViewController.view animated:YES];
+        hud.labelText = @"Configuring...";
+        
+    });
+    
+    
+}
+
+-(void) accessoryDisconnectedDuringInquiry
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+       // [MBProgressHUD hideHUDForView:self.window.rootViewController.view animated:YES];
+        [hud hide:YES];
+    });
+}
+
+-(void) foundBTConnection
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        //[MBProgressHUD hideHUDForView:self.window.rootViewController.view animated:YES];
+        [hud hide:YES];
+    });
+}
 
 -(void) btSlowConnection
 {

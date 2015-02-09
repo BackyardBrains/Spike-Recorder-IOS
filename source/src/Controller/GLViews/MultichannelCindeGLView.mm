@@ -231,14 +231,20 @@
     }
     else
     {
-        if([[BBAudioManager bbAudioManager] sourceNumberOfChannels]==2)
+        int tempMask = 1;
+        channelsConfiguration = 0;
+        for(int k=0;k<[[BBAudioManager bbAudioManager] sourceNumberOfChannels];k++)
+        {
+            channelsConfiguration = channelsConfiguration | (tempMask<<k);
+        }
+        /*if([[BBAudioManager bbAudioManager] sourceNumberOfChannels]==2)
         {
             channelsConfiguration = 3;
         }
         else
         {
             channelsConfiguration = 1;
-        }
+        }*/
     }
     
     

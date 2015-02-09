@@ -422,7 +422,7 @@ static BBAudioManager *bbAudioManager = nil;
         [fileWriter writeNewAudio:data numFrames:numFrames numChannels:numChannels];
     }
     
-    [self filterData:data numFrames:numFrames numChannels:numChannels];
+    //[self filterData:data numFrames:numFrames numChannels:numChannels];
    
     if (thresholding)
     {
@@ -777,7 +777,7 @@ static BBAudioManager *bbAudioManager = nil;
                     
                     
                     //Filtering of recorded data while scrolling
-                    [self filterData:tempCalculationBuffer numFrames:(UInt32)(targetFrame-startFrame) numChannels:_sourceNumberOfChannels];
+                   // [self filterData:tempCalculationBuffer numFrames:(UInt32)(targetFrame-startFrame) numChannels:_sourceNumberOfChannels];
                     
                     
                     
@@ -816,7 +816,7 @@ static BBAudioManager *bbAudioManager = nil;
             
             
             //FIltering of playback data
-             [self filterData:tempCalculationBuffer numFrames:realNumberOfFrames numChannels:_sourceNumberOfChannels];
+          //   [self filterData:tempCalculationBuffer numFrames:realNumberOfFrames numChannels:_sourceNumberOfChannels];
             
             
             

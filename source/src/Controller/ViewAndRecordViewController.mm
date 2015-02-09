@@ -13,7 +13,6 @@
 #import "StimulationParameterViewController.h"
 #import "BBBTManager.h"
 #import "BBBTChooserViewController.h"
-#import "MBProgressHUD.h"
 
 
 @interface ViewAndRecordViewController() {
@@ -22,9 +21,6 @@
     dispatch_source_t _timer;
     float recordingTime;
     BOOL rawSelected;
-    //CBCentralManager * testBluetoothManager;
-    MBProgressHUD *hud;
-    BOOL showHud;
 }
 
 @end
@@ -39,7 +35,6 @@
 {
     
     [super viewWillAppear:animated];
-    showHud = NO;
     [[BBAudioManager bbAudioManager] startMonitoring];
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -90,9 +85,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(btDisconnected) name:BT_DISCONNECTED object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(btSlowConnection) name:BT_SLOW_CONNECTION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(foundBTConnection) name:FOUND_BT_CONNECTION object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deviceChooserClosed) name:BT_WAIT_TO_CONNECT object:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(accessoryDisconnectedDuringInquiry) name:BT_ACCESSORY_DISCONNECTED_DURING_INQUIRY object:nil];
+
      [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reSetupScreen) name:RESETUP_SCREEN_NOTIFICATION object:nil];
    // [self detectBluetooth];
     
@@ -372,15 +366,6 @@
 }
 
 
--(void) deviceChooserClosed
-{
-    hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    hud.labelText = @"Configuring...";
-    showHud = YES;
-
-}
-
-
 #pragma mark - Devices Popover
 
 
@@ -429,33 +414,10 @@
 
 #pragma mark - Channel Popover
 
-//
-// If connection break while whaiting 
-//
--(void) accessoryDisconnectedDuringInquiry
-{
-    [self killHud];
-}
-
--(void) killHud
-{
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [hud hide:YES];
-        
-        if(showHud)
-        {
-            showHud = NO;
-            [self performSelector:@selector(killHud) withObject:nil afterDelay:1.0];
-        }
-        
-    });
-}
-
 
 -(void) foundBTConnection
 {
     NSLog(@"foundConnection view function. Remove the Spinner");
-    [self killHud];
     SAFE_ARC_RELEASE(channelPopover); channelPopover=nil;
     
     int tempSampleRate = [[BBBTManager btManager] maxSampleRateForDevice]/[[BBBTManager btManager] maxNumberOfChannelsForDevice];
