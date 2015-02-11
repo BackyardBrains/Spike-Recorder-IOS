@@ -249,6 +249,7 @@ void DSPThreshold :: SetThreshold(float newThreshold)
 
 void DSPThreshold :: SetSelectedChannel(int newSelectedChannel)
 {
+    NSLog(@"Selected channel in THRESHOLD %d", newSelectedChannel);
     _selectedChannel = newSelectedChannel;
     ClearHistory();
 }

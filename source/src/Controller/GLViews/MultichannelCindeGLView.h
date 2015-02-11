@@ -30,6 +30,7 @@ typedef enum {
 {
     CameraOrtho mCam;
     gl::Texture mColorScale;
+    Font mFont;
     gl::TextureFontRef mScaleFont;
 
     id <MultichannelGLViewDelegate> dataSourceDelegate;

@@ -56,6 +56,7 @@
     //scrubbing on waveform
     BOOL playerWasPlayingWhenStoped;
     float lastXPosition;
+    int frameCount;
     
 }
 
@@ -75,7 +76,7 @@
 {
     //debugMultichannelOnSingleChannel = NO;
     weAreDrawingSelection = NO;
-    
+    frameCount = 0;
     dataSourceDelegate = nil;
     samplingRate = 0;
     numberOfChannels = 0;
@@ -94,7 +95,13 @@
     self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     
     // Set up our font, which we'll use to display the unit scales
-    mScaleFont = gl::TextureFont::create( Font("Helvetica", 18) );
+    
+  
+    
+   
+    mFont = Font("Helvetica", 18);
+    mScaleFont = gl::TextureFont::create( mFont );
+    
     lastUserInteraction = [[NSDate date] timeIntervalSince1970];
     handlesShouldBeVisible = NO;
     offsetPositionOfHandles = 0;
@@ -210,21 +217,6 @@
     
     dataSourceDelegate = newDataSource;
     
-    for(int i=0;i<maxNumberOfChannels;i++)
-    {
-        if([self channelActive:i])
-        {
-            selectedChannel = i;
-            break;
-        }
-    }
-
-    if ([dataSourceDelegate respondsToSelector:@selector(selectChannel:)]) {
-        [dataSourceDelegate selectChannel:selectedChannel];
-    }
-
-    
-    
     if([[BBAudioManager bbAudioManager] btOn])
     {
         channelsConfiguration = [[BBBTManager btManager] activeChannels];
@@ -237,17 +229,20 @@
         {
             channelsConfiguration = channelsConfiguration | (tempMask<<k);
         }
-        /*if([[BBAudioManager bbAudioManager] sourceNumberOfChannels]==2)
-        {
-            channelsConfiguration = 3;
-        }
-        else
-        {
-            channelsConfiguration = 1;
-        }*/
     }
     
+    for(int i=0;i<maxNumberOfChannels;i++)
+    {
+        if([self channelActive:i])
+        {
+            selectedChannel = i;
+            break;
+        }
+    }
     
+    if ([dataSourceDelegate respondsToSelector:@selector(selectChannel:)]) {
+        [dataSourceDelegate selectChannel:0];
+    }
     
     NSLog(@"End setup number of channels");
     [self startAnimation];
@@ -319,7 +314,7 @@
     // Initialize parameters
     if (useThresholdSettings) {
         NSLog(@"Setting threshold defaults");
-        numSamplesMax = [[defaults valueForKey:@"numSamplesMax"] floatValue];
+        numSamplesMax = [[defaults valueForKey:@"numSamplesMaxThreshold"] floatValue];
         numSamplesMin = [[defaults valueForKey:@"numSamplesMin"] floatValue];
         numSamplesVisible = [[defaults valueForKey:@"numSamplesVisibleThreshold"] floatValue];
         if(numSamplesVisible>MAX_THRESHOLD_VISIBLE_TIME*samplingRate)
@@ -377,7 +372,7 @@
     // Save parameters
     // Initialize parameters
     if (useThresholdSettings) {
-        [defaults setValue:[NSNumber numberWithFloat:numSamplesMax] forKey:@"numSamplesMax"];
+        [defaults setValue:[NSNumber numberWithFloat:numSamplesMax] forKey:@"numSamplesMaxThreshold"];
         [defaults setValue:[NSNumber numberWithFloat:numSamplesMin] forKey:@"numSamplesMin"];
         [defaults setValue:[NSNumber numberWithFloat:numSamplesVisible] forKey:@"numSamplesVisibleThreshold"];
         [defaults setValue:[NSNumber numberWithFloat:numVoltsMin] forKey:@"numVoltsMinThreshold"];
@@ -511,6 +506,12 @@
     {
         if([self channelActive:channelIndex])
         {
+            if (!(mode == MultichannelGLViewModeThresholding))
+            {
+                numPoints = numSamplesMax;
+                offset = 0;
+            }
+        
             timeForSincDrawing =  [dataSourceDelegate fetchDataToDisplay:tempDataBuffer numFrames:numPoints whichChannel:realIndexOfChannel];
             
             float zero = yOffsets[channelIndex];
@@ -537,14 +538,21 @@
     if(dataSourceDelegate)
     {
         
-        if(firstDrawAfterChannelChange)
+        if(firstDrawAfterChannelChange )
         {
+            frameCount++;
             //this is fix for bug. Draw text starts to paint background of text
             //to the same color as text if we don't make new instance here
             //TODO: find a reason for this
-            mScaleFont = nil;
-            firstDrawAfterChannelChange = NO;
-            mScaleFont = gl::TextureFont::create( Font("Helvetica", 18) );
+           // mScaleFont = nil;
+            if(frameCount>4)
+            {
+                firstDrawAfterChannelChange = NO;
+            }
+            //mFont = Font("Helvetica", 18);
+            mScaleFont = gl::TextureFont::create( mFont );
+           // mScaleFont = gl::TextureFont::create( mFont );
+          //  mScaleFont->create(mFont);
         }
         
         currentUserInteractionTime = [[NSDate date] timeIntervalSince1970];
@@ -564,7 +572,8 @@
         scaleXY.x = fabsf(scaleXY.x - scaleXYZero.x);
         scaleXY.y = fabsf(scaleXY.y - scaleXYZero.y);
 
-
+        //mCam.setOrtho(-maxTimeSpan*2, maxTimeSpan, -maxVoltsSpan/2.0f, maxVoltsSpan/2.0f, 1, 100);
+        //gl::setMatrices( mCam );
         
         if ([dataSourceDelegate respondsToSelector:@selector(selecting)])
         {
@@ -1383,6 +1392,7 @@
                             }
                         }
                         //Select channel on audio manager
+                        NSLog(@"%d - selected handle: %d", compressedSelectedChannel, grabbedHandleIndex);
                         [dataSourceDelegate selectChannel:compressedSelectedChannel];
                     }
                 

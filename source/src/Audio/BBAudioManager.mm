@@ -217,7 +217,33 @@ static BBAudioManager *bbAudioManager = nil;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
     float lowFilterValue = [[defaults valueForKey:@"lowFilterFreq"] floatValue];
+    //Check if cut-off freq is too high
+    if(lowFilterValue>(_sourceSamplingRate*0.3f))
+    {
+        lowFilterValue = (_sourceSamplingRate*0.3f);
+        //if cut-off freq is too high change it and save it
+        NSDictionary *defaultsDict = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"SettingsDefaults" ofType:@"plist"]];
+        [[NSUserDefaults standardUserDefaults] registerDefaults:defaultsDict];
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        
+        [defaults setValue:[NSNumber numberWithFloat:lowFilterValue] forKey:@"lowFilterFreq"];
+    }
+    
     float highFilterValue = [[defaults valueForKey:@"highFilterFreq"] floatValue];
+    
+    
+    //Check if cut-off freq is too high
+    if(highFilterValue>(_sourceSamplingRate*0.3f))
+    {
+        highFilterValue = (_sourceSamplingRate*0.3f);
+        //if cut-off freq is too high change it and save it
+        NSDictionary *defaultsDict = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"SettingsDefaults" ofType:@"plist"]];
+        [[NSUserDefaults standardUserDefaults] registerDefaults:defaultsDict];
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        
+        [defaults setValue:[NSNumber numberWithFloat:highFilterValue] forKey:@"highFilterFreq"];
+    }
+    
     notchIsOn = [[defaults valueForKey:@"notchFilterOn"] boolValue];
     
     NSLog(@" ************     MAKE FILTERS   ******************");
@@ -333,6 +359,7 @@ static BBAudioManager *bbAudioManager = nil;
     _sourceSamplingRate =  audioManager.samplingRate;
     _sourceNumberOfChannels = audioManager.numInputChannels;
     btOn = NO;
+    [self resetBuffers];
     [self makeInputOutput];
     [[NSNotificationCenter defaultCenter] postNotificationName:RESETUP_SCREEN_NOTIFICATION object:self];
 }
@@ -377,6 +404,7 @@ static BBAudioManager *bbAudioManager = nil;
     
     ringBuffer = new RingBuffer(maxNumberOfSamplesToDisplay, _sourceNumberOfChannels);
     tempCalculationBuffer = (float *)calloc(maxNumberOfSamplesToDisplay*_sourceNumberOfChannels, sizeof(float));
+    [self filterParametersChanged];
 }
 
 -(void) makeInputOutput
@@ -422,7 +450,7 @@ static BBAudioManager *bbAudioManager = nil;
         [fileWriter writeNewAudio:data numFrames:numFrames numChannels:numChannels];
     }
     
-    //[self filterData:data numFrames:numFrames numChannels:numChannels];
+    [self filterData:data numFrames:numFrames numChannels:numChannels];
    
     if (thresholding)
     {
@@ -547,16 +575,20 @@ static BBAudioManager *bbAudioManager = nil;
     numPointsToSavePerThreshold = newNumPointsToSavePerThreshold;
 
     if (dspThresholder) {
+        NSLog(@"DSP already made");
         dspThresholder->SetRingBuffer(ringBuffer);
         dspThresholder->SetNumberOfChannels(_sourceNumberOfChannels);
         
     }
     else
     {
+        NSLog(@"DSP not made");
         dspThresholder = new DSPThreshold(ringBuffer, numPointsToSavePerThreshold, 50,_sourceNumberOfChannels);
        
     }
     dspThresholder->SetThreshold(_threshold);
+    
+    NSLog(@"Select threshold channel from BB audio init");
     dspThresholder->SetSelectedChannel(_selectedChannel);
     
     thresholding = true;
@@ -777,7 +809,7 @@ static BBAudioManager *bbAudioManager = nil;
                     
                     
                     //Filtering of recorded data while scrolling
-                   // [self filterData:tempCalculationBuffer numFrames:(UInt32)(targetFrame-startFrame) numChannels:_sourceNumberOfChannels];
+                    [self filterData:tempCalculationBuffer numFrames:(UInt32)(targetFrame-startFrame) numChannels:_sourceNumberOfChannels];
                     
                     
                     
@@ -816,7 +848,7 @@ static BBAudioManager *bbAudioManager = nil;
             
             
             //FIltering of playback data
-          //   [self filterData:tempCalculationBuffer numFrames:realNumberOfFrames numChannels:_sourceNumberOfChannels];
+            [self filterData:tempCalculationBuffer numFrames:realNumberOfFrames numChannels:_sourceNumberOfChannels];
             
             
             
@@ -1430,6 +1462,7 @@ static BBAudioManager *bbAudioManager = nil;
 //
 -(void) selectChannel:(int) selectedChannel
 {
+    NSLog(@"IN Audio selected channel: %d", selectedChannel);
     _selectedChannel = selectedChannel;
     if(thresholding)
     {

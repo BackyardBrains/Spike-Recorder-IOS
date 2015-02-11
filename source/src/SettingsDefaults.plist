@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>numSamplesMaxThreshold</key>
+	<string>60000</string>
 	<key>notchFilterOn</key>
 	<false/>
 	<key>highFilterFreq</key>
@@ -59,7 +61,7 @@
 	<key>numVoltsMin</key>
 	<real>0.05</real>
 	<key>numVoltsMax</key>
-	<integer>12</integer>
+	<integer>6</integer>
 	<key>numVoltsVisible</key>
 	<real>1.6</real>
 	<key>numSecondsMaxThreshold</key>
@@ -71,7 +73,7 @@
 	<key>numVoltsMinThreshold</key>
 	<real>0.05</real>
 	<key>numVoltsMaxThreshold</key>
-	<integer>12</integer>
+	<integer>6</integer>
 	<key>numVoltsVisibleThreshold</key>
 	<real>1.6</real>
 </dict>

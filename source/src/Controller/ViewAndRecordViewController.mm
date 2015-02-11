@@ -66,14 +66,16 @@
     }
     else
     {
-        if([[BBAudioManager bbAudioManager] sourceNumberOfChannels]==2)
+        
+        //Set all channels to active
+        UInt8 configurationOfChannels = 0;
+        int tempMask = 1;
+        for(int i=0;i<[[BBAudioManager bbAudioManager] sourceNumberOfChannels];i++)
         {
-            glView.channelsConfiguration = 3;
+            configurationOfChannels = configurationOfChannels | (tempMask<<i);
         }
-        else
-        {
-            glView.channelsConfiguration = 1;
-        }
+        glView.channelsConfiguration = configurationOfChannels;
+        
         [self.btButton setImage:[UIImage imageNamed:@"bluetooth.png"] forState:UIControlStateNormal];
     }
 
@@ -351,14 +353,17 @@
     }
     else
     {
-        if([[BBAudioManager bbAudioManager] sourceNumberOfChannels]==2)
+        
+        //Set all channels to active
+        UInt8 configurationOfChannels = 0;
+        int tempMask = 1;
+        for(int i=0;i<[[BBAudioManager bbAudioManager] sourceNumberOfChannels];i++)
         {
-            glView.channelsConfiguration = 3;
+            configurationOfChannels = configurationOfChannels | (tempMask<<i);
         }
-        else
-        {
-            glView.channelsConfiguration = 1;
-        }
+        glView.channelsConfiguration = configurationOfChannels;
+
+        
         [self.btButton setImage:[UIImage imageNamed:@"bluetooth.png"] forState:UIControlStateNormal];
     }
     stimulateButton.selected = NO;
