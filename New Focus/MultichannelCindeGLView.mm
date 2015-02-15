@@ -11,7 +11,6 @@
 #import "BBSpike.h"
 #import "BBSpikeTrain.h"
 #import "BBChannel.h"
-#import "BBBTManager.h"
 #import "BBAudioManager.h"
 #define HANDLE_RADIUS 20
 
@@ -110,14 +109,9 @@
 - (void)setNumberOfChannels:(int) newNumberOfChannels samplingRate:(float) newSamplingRate andDataSource:(id <MultichannelGLViewDelegate>) newDataSource
 {
     
-    if([[BBAudioManager bbAudioManager] btOn])
-    {
-        maxNumberOfChannels = [[BBBTManager btManager] maxNumberOfChannelsForDevice];
-    }
-    else
-    {
-        maxNumberOfChannels = newNumberOfChannels;
-    }
+
+    maxNumberOfChannels = newNumberOfChannels;
+  
     
     firstDrawAfterChannelChange = YES;
     NSLog(@"!!!!!!!!!Setup num of channel");
@@ -228,21 +222,16 @@
 
     
     
-    if([[BBAudioManager bbAudioManager] btOn])
+
+    if([[BBAudioManager bbAudioManager] sourceNumberOfChannels]==2)
     {
-        channelsConfiguration = [[BBBTManager btManager] activeChannels];
+        channelsConfiguration = 3;
     }
     else
     {
-        if([[BBAudioManager bbAudioManager] sourceNumberOfChannels]==2)
-        {
-            channelsConfiguration = 3;
-        }
-        else
-        {
-            channelsConfiguration = 1;
-        }
+        channelsConfiguration = 1;
     }
+    
     
     
     
@@ -316,7 +305,7 @@
     // Initialize parameters
     if (useThresholdSettings) {
         NSLog(@"Setting threshold defaults");
-        numSamplesMax = [[defaults valueForKey:@"numSamplesMax"] floatValue];
+        numSamplesMax = [[defaults valueForKey:@"numSamplesMaxThreshold"] floatValue];
         numSamplesMin = [[defaults valueForKey:@"numSamplesMin"] floatValue];
         numSamplesVisible = [[defaults valueForKey:@"numSamplesVisibleThreshold"] floatValue];
         if(numSamplesVisible>MAX_THRESHOLD_VISIBLE_TIME*samplingRate)
@@ -325,7 +314,7 @@
         }
         numVoltsMin = [[defaults valueForKey:@"numVoltsMinThreshold"] floatValue];
         numVoltsMax = [[defaults valueForKey:@"numVoltsMaxThreshold"] floatValue];
-       
+        
         for(int i=0;i<maxNumberOfChannels;i++)
         {
             numVoltsVisible[i] = [[defaults valueForKey:@"numVoltsVisibleThreshold"] floatValue];
@@ -1124,27 +1113,6 @@
         xStringStream << fixed << xScale << " msec";
     }
     
-    //==================================================
-    //Debug code for BT sample rate
-    /* float br = [[BBBTManager btManager] currentBaudRate];
-     if (br >= 1000) {
-     br /= 1000.0;
-     xStringStream << fixed << br << " KBps";
-     }
-     else {
-     xStringStream << fixed << br << " Bps";
-     }*/
-    //==================================================
-    
-    
-    //==================================================
-    //Debug code for BT buffer size
-    if([[BBAudioManager bbAudioManager] btOn])
-    {
-        xStringStream.str("");
-        xStringStream << [[BBBTManager btManager] numberOfFramesBuffered] << " Samp.";
-    }
-    //==================================================
     
 	gl::color( ColorA( 1.0, 1.0f, 1.0f, 1.0f ) );
 

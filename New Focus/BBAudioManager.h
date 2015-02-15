@@ -136,12 +136,6 @@ typedef enum BBStimulationType
 - (void)saveSettingsToUserDefaults;
 -(void) clearWaveform;
 
-//Bluetooth
--(void) switchToBluetoothWithChannels:(int) channelConfiguration andSampleRate:(int) inSampleRate;
--(void) closeBluetooth;
--(void) selectChannel:(int) selectedChannel;
--(int) numberOfFramesBuffered;
-
 //FFT
 -(float **) getDynamicFFTResult;
 -(UInt32) lengthOfFFTData;

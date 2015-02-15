@@ -7,7 +7,6 @@
 
 #import "BBAudioManager.h"
 
-#import "BBBTManager.h"
 #import "BBFile.h"
 #import "BBSpike.h"
 #import "BBSpikeTrain.h"
@@ -307,64 +306,21 @@ static BBAudioManager *bbAudioManager = nil;
     [defaults synchronize];
 }
 
-#pragma mark - Bluetooth
-
--(void) testBluetoothConnection
-{
-    [[BBBTManager btManager] startBluetooth];
-}
-
--(void) switchToBluetoothWithChannels:(int) channelConfiguration andSampleRate:(int) inSampleRate
-{
-    btOn = YES;
-    [[BBBTManager btManager] configBluetoothWithChannelConfiguration:channelConfiguration andSampleRate:inSampleRate];
-    _sourceSamplingRate=inSampleRate;
-    _sourceNumberOfChannels=[[BBBTManager btManager] numberOfChannels];
-    
-    [self stopAllInputOutput];
-    [self resetBuffers];
-    [self makeInputOutput];
-}
-
--(void) closeBluetooth
-{
-    [self stopAllInputOutput];
-    [[BBBTManager btManager] stopCurrentBluetoothConnection];
-    _sourceSamplingRate =  audioManager.samplingRate;
-    _sourceNumberOfChannels = audioManager.numInputChannels;
-    btOn = NO;
-    [self makeInputOutput];
-    [[NSNotificationCenter defaultCenter] postNotificationName:RESETUP_SCREEN_NOTIFICATION object:self];
-}
-
--(int) numberOfFramesBuffered
-{
-    return [[BBBTManager btManager] numberOfFramesBuffered];
-}
-
 
 #pragma mark - Helper functions
 
 
 -(void) stopAllInputOutput
 {
-    [[BBBTManager btManager] setInputBlock:nil];
+   
     audioManager.inputBlock = nil;
     audioManager.outputBlock = nil;
 }
 
 -(void) getChannelsConfig
 {
-    if(btOn)
-    {
-        _sourceSamplingRate =  [[BBBTManager btManager] samplingRate];
-        _sourceNumberOfChannels = [[BBBTManager btManager] numberOfChannels];
-    }
-    else
-    {
-        _sourceSamplingRate =  audioManager.samplingRate;
-        _sourceNumberOfChannels = audioManager.numInputChannels;
-    }
+    _sourceSamplingRate =  audioManager.samplingRate;
+    _sourceNumberOfChannels = audioManager.numInputChannels;
 }
 
 
@@ -383,35 +339,15 @@ static BBAudioManager *bbAudioManager = nil;
 {
    // [self resetBuffers];
     
-    if(btOn)
-    {
-        //Get the data
-        [[BBBTManager btManager] setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
-        {
-             [self additionalProcessingOfInputData:data forNumOfFrames:numFrames andNumChannels:numChannels];
-            
-             ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
-        }];
+      // Replace the input block with the old input block, where we just save an in-memory copy of the audio.
+    [audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
+       
+        [self additionalProcessingOfInputData:data forNumOfFrames:numFrames andNumChannels:numChannels];
         
-        //Trigger data collection on precise timing
-        [audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
-            [[BBBTManager btManager] needData:((float)numFrames)/((float)audioManager.samplingRate) ];
-            memset(data, 0, numChannels*numFrames*sizeof(float));
-        }];
-        
-        
-    }
-    else
-    {
-        // Replace the input block with the old input block, where we just save an in-memory copy of the audio.
-        [audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
-           
-            [self additionalProcessingOfInputData:data forNumOfFrames:numFrames andNumChannels:numChannels];
-            
-            ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
-           
-        }];
-    }
+        ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
+       
+    }];
+    
 }
 
 -(void) additionalProcessingOfInputData:(float *) data forNumOfFrames:(UInt32) numFrames andNumChannels:(UInt32) numChannels
