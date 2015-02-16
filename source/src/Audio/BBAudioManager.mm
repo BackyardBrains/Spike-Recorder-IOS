@@ -269,9 +269,26 @@ static BBAudioManager *bbAudioManager = nil;
     }
     else
     {
+        //patch for instability interval
+        int tempFilterValue = (int)lowFilterValue;
+        lowFilterValue = (float) tempFilterValue;
+        if(tempFilterValue==2)
+        {
+            lowFilterValue = 2.2f;
+        }
+        if(tempFilterValue == 6)
+        {
+            lowFilterValue = 6.2;
+        }
+        if(tempFilterValue == 9)
+        {
+            lowFilterValue = 9.2;
+        }
+        //end of patch
+
         HPFilter = [[NVHighpassFilter alloc] initWithSamplingRate:_sourceSamplingRate];
         HPFilter.cornerFrequency = lowFilterValue;
-        HPFilter.Q = 0.5f;
+        HPFilter.Q = 0.51f;
     }
     //[HPFilter logCoefficients];
     
