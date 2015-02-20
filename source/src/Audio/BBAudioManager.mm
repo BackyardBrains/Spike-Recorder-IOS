@@ -6,7 +6,7 @@
 //
 
 #import "BBAudioManager.h"
-
+#import "BBAnalysisManager.h"
 #import "BBBTManager.h"
 #import "BBFile.h"
 #import "BBSpike.h"
@@ -108,6 +108,7 @@ static BBAudioManager *bbAudioManager = nil;
 @synthesize btOn;
 @synthesize FFTOn;
 @synthesize ECGOn;
+@synthesize rtSpikeSorting;
 
 
 #pragma mark - Singleton Methods
@@ -200,6 +201,7 @@ static BBAudioManager *bbAudioManager = nil;
         FFTOn = false;
         ECGOn = false;
         btOn = false;
+        rtSpikeSorting = false;
         
         [self filterParametersChanged];
         
@@ -490,6 +492,11 @@ static BBAudioManager *bbAudioManager = nil;
        // [ecgAnalysis calculateECGAnalysis:data numberOfFrames:numFrames selectedChannel:_selectedChannel];
     }
     
+    if(rtSpikeSorting)
+    {
+        [[BBAnalysisManager bbAnalysisManager] findSpikesInRTForData:data numberOfFrames:numFrames numberOfChannel:numChannels selectedChannel:_selectedChannel];
+    }
+    
 }
 
 -(void) filterData:(float *)newData numFrames:(UInt32)thisNumFrames numChannels:(UInt32)thisNumChannels
@@ -568,6 +575,11 @@ static BBAudioManager *bbAudioManager = nil;
     if(ECGOn)
     {
         [self stopECG];
+    }
+    
+    if(rtSpikeSorting)
+    {
+        [self stopRTSpikeSorting];
     }
     
 }
@@ -688,6 +700,39 @@ static BBAudioManager *bbAudioManager = nil;
     [fileWriter release];
     fileWriter = nil;
 
+}
+
+
+#pragma mark - RT Spike Sorting
+
+-(float *) rtSpikeValues
+{
+    return [[BBAnalysisManager bbAnalysisManager] rtPeaksValues];
+}
+-(float *) rtSpikeIndexes
+{
+    return [[BBAnalysisManager bbAnalysisManager] rtPeaksIndexs];
+}
+
+-(int) numberOfRTSpikes
+{
+    return [[BBAnalysisManager bbAnalysisManager] numberOfRTSpikes];
+}
+
+-(void) stopRTSpikeSorting
+{
+    if(rtSpikeSorting)
+    {
+        rtSpikeSorting = false;
+        [[BBAnalysisManager bbAnalysisManager] stopRTSpikeSorting];
+    }
+
+}
+
+-(void) startRTSpikeSorting
+{
+    [[BBAnalysisManager bbAnalysisManager] initRTSpikeSorting:_sourceSamplingRate];
+    rtSpikeSorting = true;
 }
 
 

@@ -103,6 +103,7 @@ typedef enum BBStimulationType
 @property (readonly) BOOL btOn;
 @property (readonly) BOOL FFTOn;
 @property (readonly) BOOL ECGOn;
+@property (readonly) BOOL rtSpikeSorting;
 @property BOOL seeking;
 
 
@@ -150,7 +151,14 @@ typedef enum BBStimulationType
 -(void) startDynanimcFFT;
 -(UInt32) indexOfFFTGraphBuffer;
 -(UInt32) lenghtOfFFTGraphBuffer;
--(float *) movingAverageFFT;
+
+
+//RT Spike Sorting
+-(void) startRTSpikeSorting;
+-(void) stopRTSpikeSorting;
+-(float *) rtSpikeValues;
+-(float *) rtSpikeIndexes;
+-(int) numberOfRTSpikes;
 
 //ECG
 -(void) startECG;

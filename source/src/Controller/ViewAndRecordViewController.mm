@@ -684,6 +684,18 @@
 #pragma mark - Actions
 
 
+- (IBAction)rtSpikeSortingPressed:(id)sender {
+    BBAudioManager *bbAudioManager = [BBAudioManager bbAudioManager];
+    if (bbAudioManager.rtSpikeSorting == false) {
+        NSLog(@"Start real time spike sorting");
+        [bbAudioManager startRTSpikeSorting];
+    }
+    else {
+        [bbAudioManager stopRTSpikeSorting];
+    }
+    
+}
+
 - (IBAction)stimulateButtonPressed:(id)sender {
 
     BBAudioManager *bbAudioManager = [BBAudioManager bbAudioManager];
@@ -723,6 +735,7 @@
     [stimulatePreferenceButton release];
     [_stopButton release];
     [_btButton release];
+    [_rtSpikeButton release];
     [super dealloc];
 }
 

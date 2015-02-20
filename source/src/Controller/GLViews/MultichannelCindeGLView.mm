@@ -610,6 +610,11 @@
             [self drawSpikes];
         }
         
+        if([[BBAudioManager bbAudioManager] rtSpikeSorting])
+        {
+            [self drawRTSpikes];
+        }
+        
         //Draw handlws for movement of axis
         if(multichannel || self.mode == MultichannelGLViewModeView)
         {
@@ -1096,6 +1101,44 @@
   
 }
 
+//
+//
+// Draw RT spikes on selected channel
+-(void) drawRTSpikes
+{
+    float * spikeIndexes = [[BBAudioManager bbAudioManager] rtSpikeIndexes];
+    float * spikeValues = [[BBAudioManager bbAudioManager] rtSpikeValues];
+    float zeroOffset = yOffsets[selectedChannel];
+    int numberOfSpikes = [[BBAudioManager bbAudioManager] numberOfRTSpikes];
+    
+    
+    float realNumberOfSamplesVisible = numSamplesVisible;
+    /*if (realNumberOfSamplesVisible > numSamplesMax) {
+     realNumberOfSamplesVisible = numSamplesMax;
+     }*/
+    if (realNumberOfSamplesVisible < numSamplesMin) {
+        realNumberOfSamplesVisible = numSamplesMin;
+    }
+    //calc. real size of time span that is displayed
+    float virtualVisibleTimeSpan = realNumberOfSamplesVisible * 1.0f/samplingRate;
+    
+    float sizeOfPointX = scaleXY.x * 5;
+    float sizeOfPointY = scaleXY.y * 5;
+    [self setGLColor:[BYBGLView getSpikeTrainColorWithIndex:selectedChannel transparency:1.0f]];
+    float zoom = maxVoltsSpan/ numVoltsVisible[selectedChannel];
+    for(int i=0;i<numberOfSpikes;i++)
+    {
+        if(spikeValues[i]!=0.0f)
+        {
+            float xValue = spikeIndexes[i] * (-(1.0f/samplingRate)) * (maxTimeSpan/virtualVisibleTimeSpan);
+;
+            //recalculate Y axis with zoom and offset
+            float yValue = spikeValues[i] * zoom +zeroOffset;
+            
+            gl::drawSolidEllipse( Vec2f(xValue, yValue), sizeOfPointX,sizeOfPointY, 40 );
+        }
+    }
+}
 
 
 //

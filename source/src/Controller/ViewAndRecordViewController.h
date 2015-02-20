@@ -33,7 +33,9 @@
 @property (retain, nonatomic) IBOutlet UIButton *stimulatePreferenceButton;
 @property (retain, nonatomic) IBOutlet UIButton *stopButton;
 @property (retain, nonatomic) IBOutlet UIButton *btButton;
+@property (retain, nonatomic) IBOutlet UIButton *rtSpikeButton;
 
+- (IBAction)rtSpikeSortingPressed:(id)sender;
 - (IBAction)stimulateButtonPressed:(id)sender;
 - (IBAction)stimulatePrefButtonPressed:(id)sender;
 - (IBAction)stopRecording:(id)sender;
