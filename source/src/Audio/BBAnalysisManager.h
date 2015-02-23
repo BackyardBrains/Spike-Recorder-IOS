@@ -87,5 +87,6 @@ typedef struct _averageSpikeData {
 -(float *) rtPeaksIndexs;
 -(float *) rtPeaksValues;
 -(int) numberOfRTSpikes;
+@property float rtThreshold;
 
 @end

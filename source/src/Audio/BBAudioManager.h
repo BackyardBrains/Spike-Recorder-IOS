@@ -159,6 +159,7 @@ typedef enum BBStimulationType
 -(float *) rtSpikeValues;
 -(float *) rtSpikeIndexes;
 -(int) numberOfRTSpikes;
+@property float rtThreshold;
 
 //ECG
 -(void) startECG;

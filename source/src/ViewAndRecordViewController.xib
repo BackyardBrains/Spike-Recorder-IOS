@@ -9,7 +9,7 @@
             <connections>
                 <outlet property="btButton" destination="q8i-Hd-N5S" id="Csb-8b-LQf"/>
                 <outlet property="recordButton" destination="15" id="16"/>
-                <outlet property="rtSpikeButton" destination="0pU-oz-tld" id="O3B-ix-tfQ"/>
+                <outlet property="rtSpikeViewButton" destination="FHw-PQ-7Yp" id="ncU-bS-D1e"/>
                 <outlet property="stimulateButton" destination="18" id="22"/>
                 <outlet property="stimulatePreferenceButton" destination="23" id="25"/>
                 <outlet property="stopButton" destination="29" id="31"/>
@@ -96,17 +96,11 @@
                         <action selector="stopRecording:" destination="-1" eventType="touchUpInside" id="32"/>
                     </connections>
                 </button>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="0pU-oz-tld">
-                    <rect key="frame" x="103" y="21" width="37" height="30"/>
+                <view contentMode="scaleToFill" id="FHw-PQ-7Yp" customClass="BYBHandleButton">
+                    <rect key="frame" x="99" y="15" width="39" height="39"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    <state key="normal" title="SS">
-                        <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                    </state>
-                    <connections>
-                        <action selector="rtSpikeSortingPressed:" destination="-1" eventType="touchUpInside" id="oYy-P5-OkX"/>
-                    </connections>
-                </button>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                </view>
             </subviews>
             <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
             <nil key="simulatedStatusBarMetrics"/>

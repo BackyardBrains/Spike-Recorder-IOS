@@ -417,6 +417,7 @@ static BBAudioManager *bbAudioManager = nil;
 
 -(void) resetBuffers
 {
+
     delete ringBuffer;
     free(tempCalculationBuffer);
     //create new buffers
@@ -424,6 +425,11 @@ static BBAudioManager *bbAudioManager = nil;
     ringBuffer = new RingBuffer(maxNumberOfSamplesToDisplay, _sourceNumberOfChannels);
     tempCalculationBuffer = (float *)calloc(maxNumberOfSamplesToDisplay*_sourceNumberOfChannels, sizeof(float));
     [self filterParametersChanged];
+    if(rtSpikeSorting)
+    {
+        [[BBAnalysisManager bbAnalysisManager] stopRTSpikeSorting];
+        [[BBAnalysisManager bbAnalysisManager] initRTSpikeSorting:_sourceSamplingRate];
+    }
 }
 
 -(void) makeInputOutput
@@ -733,6 +739,16 @@ static BBAudioManager *bbAudioManager = nil;
 {
     [[BBAnalysisManager bbAnalysisManager] initRTSpikeSorting:_sourceSamplingRate];
     rtSpikeSorting = true;
+}
+
+-(void) setRtThreshold:(float)rtThreshold
+{
+    [[BBAnalysisManager bbAnalysisManager] setRtThreshold:rtThreshold];
+}
+
+-(float) rtThreshold
+{
+    return [[BBAnalysisManager bbAnalysisManager] rtThreshold];
 }
 
 

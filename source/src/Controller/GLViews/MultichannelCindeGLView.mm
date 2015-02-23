@@ -590,7 +590,12 @@
         
         // Put the audio on the screen
         gl::disableDepthRead();
+        if([[BBAudioManager bbAudioManager] rtSpikeSorting])
+        {
+            [self drawRTSpikes];
+        }
         [self fillDisplayVector];
+
         int realIndexOfChannel = 0;
         for(int channelIndex=0;channelIndex<maxNumberOfChannels;channelIndex++)
         {
@@ -602,7 +607,7 @@
             }
 
         }
-        
+
         //Draw spikes
         glLineWidth(1.0f);
         if(self.mode == MultichannelGLViewModePlayback)
@@ -610,10 +615,7 @@
             [self drawSpikes];
         }
         
-        if([[BBAudioManager bbAudioManager] rtSpikeSorting])
-        {
-            [self drawRTSpikes];
-        }
+
         
         //Draw handlws for movement of axis
         if(multichannel || self.mode == MultichannelGLViewModeView)
@@ -952,17 +954,19 @@
     for(int indexOfChannel = 0;indexOfChannel<maxNumberOfChannels;indexOfChannel++)
     {
 
-            [self setColorWithIndex:indexOfChannel transparency:1.0f];
-            if(self.mode == MultichannelGLViewModeView || [self channelActive:indexOfChannel])
-            {
-                gl::drawSolidEllipse( Vec2f(centerOfCircleX, yOffsets[indexOfChannel]), radiusXAxis, radiusYAxis, 1000 );
-                gl::drawSolidTriangle(
-                                      Vec2f(centerOfCircleX+0.35*radiusXAxis, yOffsets[indexOfChannel]+radiusYAxis*0.97),
-                                      Vec2f(centerOfCircleX+1.6*radiusXAxis, yOffsets[indexOfChannel]),
-                                      Vec2f(centerOfCircleX+0.35*radiusXAxis, yOffsets[indexOfChannel]-radiusYAxis*0.97)
-                                      );
-            }
+         //draw handle for active channels
+        [self setColorWithIndex:indexOfChannel transparency:1.0f];
+        if(self.mode == MultichannelGLViewModeView || [self channelActive:indexOfChannel])
+        {
+            gl::drawSolidEllipse( Vec2f(centerOfCircleX, yOffsets[indexOfChannel]), radiusXAxis, radiusYAxis, 1000 );
+            gl::drawSolidTriangle(
+                                  Vec2f(centerOfCircleX+0.35*radiusXAxis, yOffsets[indexOfChannel]+radiusYAxis*0.97),
+                                  Vec2f(centerOfCircleX+1.6*radiusXAxis, yOffsets[indexOfChannel]),
+                                  Vec2f(centerOfCircleX+0.35*radiusXAxis, yOffsets[indexOfChannel]-radiusYAxis*0.97)
+                                  );
+        }
         
+        //draw line for active channel
         [self setColorWithIndex:indexOfChannel transparency:1.0f];
         glLineWidth(2.0f);
         if([self channelActive:indexOfChannel])
@@ -970,6 +974,8 @@
             gl::drawLine(Vec2f(centerOfCircleX, yOffsets[indexOfChannel]), Vec2f(0.0f, yOffsets[indexOfChannel]));
         }
         glLineWidth(1.0f);
+        
+        
         
         //draw holow unselected handle
         if(indexOfChannel!=selectedChannel)
@@ -982,6 +988,7 @@
             if(self.mode == MultichannelGLViewModeView && multichannel)
             {
                 //Draw X icon for channel removal
+                //Draw X icon for channel removal
                 xPositionOfRemove = - offsetPositionOfHandles -60*scaleXY.x;
                 yPositionOfRemove = yOffsets[indexOfChannel]+100*scaleXY.y;
                 gl::drawSolidEllipse( Vec2f(xPositionOfRemove, yPositionOfRemove), radiusXAxis+2*scaleXY.x, radiusYAxis+2*scaleXY.y, 1000 );
@@ -993,6 +1000,30 @@
                 glLineWidth(1.0f);
             }
         }
+        
+        //draw RT handle on selected channe;
+        if(indexOfChannel == selectedChannel)
+        {
+            if(self.mode == MultichannelGLViewModeView && [[BBAudioManager bbAudioManager] rtSpikeSorting])
+            {
+                float zoom = maxVoltsSpan/ numVoltsVisible[selectedChannel];
+                float xPositionOfThreshold = - offsetPositionOfHandles-radiusXAxis;
+                float yPositionOfThreshold = yOffsets[indexOfChannel]+[[BBAudioManager bbAudioManager] rtThreshold]*zoom;
+                
+                gl::drawSolidEllipse( Vec2f(xPositionOfThreshold, yPositionOfThreshold), radiusXAxis, radiusYAxis, 1000 );
+                gl::drawSolidTriangle(
+                                      Vec2f(xPositionOfThreshold-0.35*radiusXAxis, yPositionOfThreshold+radiusYAxis*0.97),
+                                      Vec2f(xPositionOfThreshold-1.6*radiusXAxis, yPositionOfThreshold),
+                                      Vec2f(xPositionOfThreshold-0.35*radiusXAxis, yPositionOfThreshold-radiusYAxis*0.97)
+                                      );
+                if(handlesShouldBeVisible)
+                {
+                    gl::drawLine(Vec2f(-maxTimeSpan, yPositionOfThreshold), Vec2f(0.0f, yPositionOfThreshold));
+                }
+            }
+        
+        }
+        
 
     }
     gl::enableDepthRead();
@@ -1126,12 +1157,17 @@
     float sizeOfPointY = scaleXY.y * 5;
     [self setGLColor:[BYBGLView getSpikeTrainColorWithIndex:selectedChannel transparency:1.0f]];
     float zoom = maxVoltsSpan/ numVoltsVisible[selectedChannel];
+    float thrValue = [[BBAudioManager bbAudioManager] rtThreshold];
+    
     for(int i=0;i<numberOfSpikes;i++)
     {
-        if(spikeValues[i]!=0.0f)
+        if(spikeValues[i]!=0.0f && spikeValues[i]>thrValue)
         {
             float xValue = spikeIndexes[i] * (-(1.0f/samplingRate)) * (maxTimeSpan/virtualVisibleTimeSpan);
-;
+            if(spikeIndexes[i]>numSamplesMax)
+            {
+                continue;
+            }
             //recalculate Y axis with zoom and offset
             float yValue = spikeValues[i] * zoom +zeroOffset;
             
@@ -1390,9 +1426,6 @@
         //if user grabbed the handle of channel
         if((multichannel || self.mode == MultichannelGLViewModeView) && (grabbedHandleIndex = [self checkIntersectionWithHandles:glWorldTouchPos])!=-1)
         {
-            //TODO:add here adding of channels
-            
-            
             
             weAreHoldingHandle = YES;
             //move channel
@@ -1451,6 +1484,25 @@
         
         }
         
+        //RT spike sorting line
+        if(self.mode == MultichannelGLViewModeView && [[BBAudioManager bbAudioManager] rtSpikeSorting])
+        {
+            float zoom = maxVoltsSpan/ numVoltsVisible[selectedChannel];
+            Vec2f screenThresholdPos1 = [self worldToScreen:Vec2f(0.0f, [[BBAudioManager bbAudioManager] rtThreshold]*zoom + yOffsets[selectedChannel])];
+            
+            float distance1 = (touchPos.y - screenThresholdPos1.y)*(touchPos.y - screenThresholdPos1.y)+(touchPos.x - screenThresholdPos1.x)*(touchPos.x - screenThresholdPos1.x);
+            
+            if (distance1 < 8500) // set via experimentation
+            {
+                [[BBAudioManager bbAudioManager] setRtThreshold:(glWorldTouchPos.y-yOffsets[selectedChannel])/zoom];
+                return;
+            }
+            
+            
+        
+        }
+        
+        //Remove channel X button
         if([self checkIntesectionWithRemoveButton:glWorldTouchPos])
         {
             if([dataSourceDelegate respondsToSelector:@selector(removeChannel:)])
@@ -1504,8 +1556,7 @@
                     else
                     {
                     // if selection is not enabled
-                        
-                        
+
                         if (touchTimer==nil)//if timer is not running start it
                         {
                             touchTimer = [NSTimer scheduledTimerWithTimeInterval:0.6 target:self selector:@selector(touchHasBeenHeld:) userInfo:nil repeats:NO];

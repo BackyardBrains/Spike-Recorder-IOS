@@ -135,6 +135,10 @@
     {
         [[BBAudioManager bbAudioManager] closeBluetooth];
     }
+    if([[BBAudioManager bbAudioManager] rtSpikeSorting])
+    {
+        [[BBAudioManager bbAudioManager] stopRTSpikeSorting];
+    }
     NSLog(@"Going into background.");
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setValue:[NSNumber numberWithInt:tabBarController.selectedIndex] forKey:@"tabIndex"];

@@ -16,6 +16,7 @@
 #import "MultichannelCindeGLView.h"
 #import "FPPopoverController.h"
 #import "BBChannelSelectionTableViewController.h"
+#import "BYBHandleButton.h"
 //#import <CoreBluetooth/CoreBluetooth.h>
 
 @interface ViewAndRecordViewController : CCGLTouchViewController <MultichannelGLViewDelegate, FPPopoverControllerDelegate, BBSelectionTableDelegateProtocol>{
@@ -33,9 +34,9 @@
 @property (retain, nonatomic) IBOutlet UIButton *stimulatePreferenceButton;
 @property (retain, nonatomic) IBOutlet UIButton *stopButton;
 @property (retain, nonatomic) IBOutlet UIButton *btButton;
-@property (retain, nonatomic) IBOutlet UIButton *rtSpikeButton;
 
-- (IBAction)rtSpikeSortingPressed:(id)sender;
+@property (retain, nonatomic) IBOutlet BYBHandleButton *rtSpikeViewButton;
+
 - (IBAction)stimulateButtonPressed:(id)sender;
 - (IBAction)stimulatePrefButtonPressed:(id)sender;
 - (IBAction)stopRecording:(id)sender;

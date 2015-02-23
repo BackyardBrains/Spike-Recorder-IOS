@@ -59,6 +59,7 @@ static BBAnalysisManager *bbAnalysisManager = nil;
 @implementation BBAnalysisManager
 
 @synthesize fileToAnalyze;
+@synthesize rtThreshold;
 
 
 #pragma mark - Singleton Methods
@@ -109,7 +110,7 @@ static BBAnalysisManager *bbAnalysisManager = nil;
         tempCalculationBuffer = (float *)calloc(BUFFER_SIZE, sizeof(float));
         dspAnalizer = new DSPAnalysis();
         alphabetArray = [[NSArray arrayWithObjects:  @"a", @"b", @"c", @"d", @"e", @"f", @"g", @"h", @"i", @"j", @"k", @"l", @"m", @"n", @"o", @"p", @"q", @"r", @"s", @"t", @"u", @"v", @"w", @"x", @"y", @"z", nil] retain];
-        
+        self.rtThreshold = 0.0f;
         
     }
     
@@ -226,12 +227,13 @@ static BBAnalysisManager *bbAnalysisManager = nil;
     free(peaksIndexCircBuffer);
 }
 
+
+
 //
 //Process batch of data for real time spike sorting
 //
 -(void) findSpikesInRTForData:(float *) data numberOfFrames:(int) numberOfFramesInData numberOfChannel:(int) numOfChannels selectedChannel:(int) whichChannel
 {
-
     //move old peaks in time (add numberOfFramesInData to their index)
     float indexOffset = (float)numberOfFramesInData;
     vDSP_vsadd(peaksIndexCircBuffer,
@@ -240,7 +242,6 @@ static BBAnalysisManager *bbAnalysisManager = nil;
                peaksIndexCircBuffer,
                1,
                LENGTH_OF_PEAKS_BUFFER);
-    
     
     //first calculate STD of current batch of data and put it in circular STD buffer
     float zero = 0.0f;

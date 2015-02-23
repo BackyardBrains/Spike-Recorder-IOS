@@ -15,6 +15,7 @@
 #import "BBBTChooserViewController.h"
 
 
+
 @interface ViewAndRecordViewController() {
     dispatch_source_t callbackTimer;
     BBFile *aFile;
@@ -91,6 +92,7 @@
 
      [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reSetupScreen) name:RESETUP_SCREEN_NOTIFICATION object:nil];
    // [self detectBluetooth];
+    [self.rtSpikeViewButton nextColor:[BYBGLView getSpikeTrainColorWithIndex:4 transparency:1.0f]];
     
 }
 
@@ -126,6 +128,12 @@
     stimulateButton.selected = NO;
     // Listen for going down
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate:) name:UIApplicationWillTerminateNotification object:nil];
+    
+    UITapGestureRecognizer *singleFingerTap =
+    [[UITapGestureRecognizer alloc] initWithTarget:self
+                                            action:@selector(tapOnRTButton)];
+    [self.rtSpikeViewButton addGestureRecognizer:singleFingerTap];
+    [singleFingerTap release];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
@@ -682,19 +690,20 @@
 
 
 #pragma mark - Actions
-
-
-- (IBAction)rtSpikeSortingPressed:(id)sender {
+-(void) tapOnRTButton
+{
     BBAudioManager *bbAudioManager = [BBAudioManager bbAudioManager];
     if (bbAudioManager.rtSpikeSorting == false) {
         NSLog(@"Start real time spike sorting");
         [bbAudioManager startRTSpikeSorting];
+        [self.rtSpikeViewButton nextColor:[BYBGLView getSpikeTrainColorWithIndex:0 transparency:1.0f]];
     }
     else {
         [bbAudioManager stopRTSpikeSorting];
+        [self.rtSpikeViewButton nextColor:[BYBGLView getSpikeTrainColorWithIndex:4 transparency:1.0f]];
     }
-    
 }
+
 
 - (IBAction)stimulateButtonPressed:(id)sender {
 
@@ -735,7 +744,7 @@
     [stimulatePreferenceButton release];
     [_stopButton release];
     [_btButton release];
-    [_rtSpikeButton release];
+    [_rtSpikeViewButton release];
     [super dealloc];
 }
 
