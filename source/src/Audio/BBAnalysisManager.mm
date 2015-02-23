@@ -227,7 +227,11 @@ static BBAnalysisManager *bbAnalysisManager = nil;
     free(peaksIndexCircBuffer);
 }
 
-
+-(void) clearRTSpikes
+{
+    memset(peaksValueCircBuffer, 0, sizeof(float)*LENGTH_OF_PEAKS_BUFFER);
+    memset(peaksIndexCircBuffer, 0, sizeof(float)*LENGTH_OF_PEAKS_BUFFER);
+}
 
 //
 //Process batch of data for real time spike sorting

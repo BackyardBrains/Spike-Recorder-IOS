@@ -46,5 +46,6 @@
 //BT popover delegate function
 - (void)rowSelected:(NSInteger) rowIndex;
 -(NSMutableArray *) getAllRows;
+-(void) selectChannel:(int) selectedChannel;
 
 @end

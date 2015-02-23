@@ -157,6 +157,12 @@
     return [[BBAudioManager bbAudioManager] fetchAudio:data numFrames:numFrames whichChannel:whichChannel stride:1];
 }
 
+-(void) selectChannel:(int) selectedChannel
+{
+    [[BBAudioManager bbAudioManager] selectChannel:selectedChannel];
+}
+
+
 //
 // It works with extended channel index
 //

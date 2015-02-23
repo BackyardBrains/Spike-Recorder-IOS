@@ -1546,6 +1546,10 @@ static BBAudioManager *bbAudioManager = nil;
     {
         dspThresholder->SetSelectedChannel(_selectedChannel);
     }
+    if(rtSpikeSorting)
+    {
+        [[BBAnalysisManager bbAnalysisManager] clearRTSpikes];
+    }
 }
 
 //private. Starts selection functionality
