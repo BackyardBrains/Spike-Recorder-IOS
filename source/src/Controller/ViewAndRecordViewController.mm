@@ -225,6 +225,7 @@
 	[UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
 	[self.stopButton setFrame:stopButtonRect];
 	[UIView commitAnimations];
+    [self.view bringSubviewToFront:self.stopButton];
     
     BBAudioManager *bbAudioManager = [BBAudioManager bbAudioManager];
     if (bbAudioManager.recording == false) {
