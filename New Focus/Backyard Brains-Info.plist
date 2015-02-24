@@ -49,7 +49,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>2.7.2</string>
+	<string>2.7.3</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSMainNibFile</key>
@@ -64,11 +64,6 @@
 	<true/>
 	<key>UIStatusBarStyle</key>
 	<string>UIStatusBarStyleDefault</string>
-	<key>UISupportedExternalAccessoryProtocols</key>
-	<array>
-		<string>com.backyardbrains.ext.btalt</string>
-		<string>com.backyardbrains.ext.bt</string>
-	</array>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
