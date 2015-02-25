@@ -8,6 +8,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ViewAndRecordViewController">
             <connections>
                 <outlet property="btButton" destination="q8i-Hd-N5S" id="Csb-8b-LQf"/>
+                <outlet property="bufferStateIndicator" destination="HvO-69-ypB" id="Ne3-JC-llf"/>
                 <outlet property="recordButton" destination="15" id="16"/>
                 <outlet property="rtSpikeViewButton" destination="FHw-PQ-7Yp" id="ncU-bS-D1e"/>
                 <outlet property="stimulateButton" destination="18" id="22"/>
@@ -98,6 +99,11 @@
                 </button>
                 <view contentMode="scaleToFill" id="FHw-PQ-7Yp" customClass="BYBHandleButton">
                     <rect key="frame" x="99" y="15" width="39" height="39"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                </view>
+                <view contentMode="scaleToFill" id="HvO-69-ypB" customClass="BufferStateIndicator">
+                    <rect key="frame" x="23" y="18" width="21" height="36"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                 </view>

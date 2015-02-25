@@ -17,6 +17,7 @@
 
 #define MAX_THRESHOLD_VISIBLE_TIME 1.5
 #define HIDE_HANDLES_AFTER_SECONDS 4.0
+#define MAXIMUM_POSITION_OF_HANDLES -5.6
 
 
 @interface MultichannelCindeGLView ()
@@ -925,6 +926,7 @@
 
     float radiusXAxis = HANDLE_RADIUS*scaleXY.x;
     float radiusYAxis = HANDLE_RADIUS*scaleXY.y;
+    float transparencyForAxis = 1.0f;
     
     //hide/show animation of handles
     if(handlesShouldBeVisible)
@@ -938,11 +940,14 @@
     else
     {
         offsetPositionOfHandles-=radiusXAxis/5.0;
-        if(offsetPositionOfHandles<-5.6*radiusXAxis)
+        if(offsetPositionOfHandles<MAXIMUM_POSITION_OF_HANDLES*radiusXAxis)
         {
-            offsetPositionOfHandles = -5.6*radiusXAxis;
+            offsetPositionOfHandles = MAXIMUM_POSITION_OF_HANDLES*radiusXAxis;
         }
     }
+    transparencyForAxis = 1.0f - offsetPositionOfHandles/(MAXIMUM_POSITION_OF_HANDLES*radiusXAxis);
+    transparencyForAxis = (transparencyForAxis>1.0f)?1.0f:transparencyForAxis;
+    transparencyForAxis = (transparencyForAxis<0.0f)?0.0f:transparencyForAxis;
     
     centerOfCircleX += offsetPositionOfHandles;
     
@@ -953,6 +958,14 @@
     //draw all handles
     for(int indexOfChannel = 0;indexOfChannel<maxNumberOfChannels;indexOfChannel++)
     {
+        //draw tickmark
+        if([self channelActive:indexOfChannel])
+        {
+            glLineWidth(2.0f);
+            glColor4f(1.0f, 1.0f, 1.0f, 1.0-transparencyForAxis);
+            gl::drawLine(Vec2f(-maxTimeSpan, yOffsets[indexOfChannel]), Vec2f(-maxTimeSpan+20*scaleXY.x, yOffsets[indexOfChannel]));
+            
+        }
 
          //draw handle for active channels
         [self setColorWithIndex:indexOfChannel transparency:1.0f];
@@ -967,16 +980,18 @@
         }
         
         //draw line for active channel
-        [self setColorWithIndex:indexOfChannel transparency:1.0f];
-        glLineWidth(2.0f);
+        
         if([self channelActive:indexOfChannel])
         {
+            [self setColorWithIndex:indexOfChannel transparency:transparencyForAxis];
+            glLineWidth(2.0f);
             gl::drawLine(Vec2f(centerOfCircleX, yOffsets[indexOfChannel]), Vec2f(0.0f, yOffsets[indexOfChannel]));
+
         }
         glLineWidth(1.0f);
         
         
-        
+        [self setColorWithIndex:indexOfChannel transparency:1.0f];
         //draw holow unselected handle
         if(indexOfChannel!=selectedChannel)
         {
@@ -1016,10 +1031,10 @@
                                       Vec2f(xPositionOfThreshold-1.6*radiusXAxis, yPositionOfThreshold),
                                       Vec2f(xPositionOfThreshold-0.35*radiusXAxis, yPositionOfThreshold-radiusYAxis*0.97)
                                       );
-                if(handlesShouldBeVisible)
-                {
-                    gl::drawLine(Vec2f(-maxTimeSpan, yPositionOfThreshold), Vec2f(0.0f, yPositionOfThreshold));
-                }
+                [self setColorWithIndex:indexOfChannel transparency:transparencyForAxis];
+
+                gl::drawLine(Vec2f(-maxTimeSpan, yPositionOfThreshold), Vec2f(0.0f, yPositionOfThreshold));
+                
             }
         
         }
@@ -1224,8 +1239,13 @@
     //Debug code for BT buffer size
     if([[BBAudioManager bbAudioManager] btOn])
     {
-        xStringStream.str("");
-        xStringStream << [[BBBTManager btManager] numberOfFramesBuffered] << " Samp.";
+        //xStringStream.str("");
+        //xStringStream << [[BBBTManager btManager] numberOfFramesBuffered] << " Samp.";
+        if([dataSourceDelegate respondsToSelector:@selector(updateBTBufferIndicator)])
+        {
+            [dataSourceDelegate updateBTBufferIndicator];
+        }
+        
     }
     //==================================================
     

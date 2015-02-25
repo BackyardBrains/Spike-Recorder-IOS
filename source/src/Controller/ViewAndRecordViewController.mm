@@ -31,6 +31,7 @@
 @synthesize recordButton;
 @synthesize stimulateButton;
 @synthesize stimulatePreferenceButton;
+@synthesize bufferStateIndicator;
 
 - (void)viewWillAppear:(BOOL)animated
 {
@@ -60,10 +61,12 @@
 	[glView startAnimation];
     // set our view controller's prop that will hold a pointer to our newly created CCGLTouchView
     
+    
     if([[BBAudioManager bbAudioManager] btOn])
     {
         glView.channelsConfiguration = [[BBBTManager btManager] activeChannels];
         [self.btButton setImage:[UIImage imageNamed:@"inputicon.png"] forState:UIControlStateNormal];
+        [self.bufferStateIndicator setHidden:NO];
     }
     else
     {
@@ -78,6 +81,7 @@
         glView.channelsConfiguration = configurationOfChannels;
         
         [self.btButton setImage:[UIImage imageNamed:@"bluetooth.png"] forState:UIControlStateNormal];
+        [self.bufferStateIndicator setHidden:YES];
     }
 
    /* [glView stopAnimation];
@@ -310,6 +314,12 @@
 */
 
 #pragma mark - BT connection
+
+-(void) updateBTBufferIndicator
+{
+    [self.bufferStateIndicator updateBufferState:(((float)[[BBBTManager btManager] numberOfFramesBuffered])/[[BBAudioManager bbAudioManager] sourceSamplingRate])];
+}
+
 - (IBAction)btButtonPressed:(id)sender {
     
     //[self openDevicesPopover];
@@ -365,6 +375,7 @@
     {
         glView.channelsConfiguration = [[BBBTManager btManager] activeChannels];
         [self.btButton setImage:[UIImage imageNamed:@"inputicon.png"] forState:UIControlStateNormal];
+        [self.bufferStateIndicator setHidden:NO];
     }
     else
     {
@@ -380,6 +391,7 @@
 
         
         [self.btButton setImage:[UIImage imageNamed:@"bluetooth.png"] forState:UIControlStateNormal];
+        [self.bufferStateIndicator setHidden:YES];
     }
     stimulateButton.selected = NO;
 
@@ -443,6 +455,7 @@
     int tempSampleRate = [[BBBTManager btManager] maxSampleRateForDevice]/[[BBBTManager btManager] maxNumberOfChannelsForDevice];
 
     [self.btButton setImage:[UIImage imageNamed:@"inputicon.png"] forState:UIControlStateNormal];
+    [self.bufferStateIndicator setHidden:NO];
     
     if(glView)
     {
@@ -507,7 +520,7 @@
     tempActiveChannels = tempActiveChannels & (~tempMask);
     float * tempChannelsOffset = [glView getChannelOffsets];
     int tempSampleRate = [[BBBTManager btManager] maxSampleRateForDevice]/[self countNumberOfChannels:tempActiveChannels];
-    
+    [self.bufferStateIndicator setHidden:NO];
     [self.btButton setImage:[UIImage imageNamed:@"inputicon.png"] forState:UIControlStateNormal];
     
     if(glView)
@@ -543,6 +556,7 @@
     float * tempChannelsOffset = [glView getChannelOffsets];
     int tempSampleRate = [[BBBTManager btManager] maxSampleRateForDevice]/[self countNumberOfChannels:tempActiveChannels];
     
+    [self.bufferStateIndicator setHidden:NO];
     [self.btButton setImage:[UIImage imageNamed:@"inputicon.png"] forState:UIControlStateNormal];
     
     if(glView)
@@ -660,6 +674,7 @@
 
 -(void) noBTConnection
 {
+    [self.bufferStateIndicator setHidden:YES];
     [self.btButton setImage:[UIImage imageNamed:@"bluetooth.png"] forState:UIControlStateNormal];
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"No Bluetooth connection."
                                                     message:@"Please pair with BYB bluetooth device in Bluetooth settings."
@@ -674,6 +689,7 @@
 {
     if([[BBAudioManager bbAudioManager] btOn])
     {
+        [self.bufferStateIndicator setHidden:YES];
         [self.btButton setImage:[UIImage imageNamed:@"bluetooth.png"] forState:UIControlStateNormal];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"No Bluetooth connection."
                                                         message:@"Bluetooth device disconnected. Get in range of the device and try to pair with the device in Bluetooth settings again."
@@ -687,8 +703,10 @@
 
 -(void) btSlowConnection
 {
+    
     if([[BBAudioManager bbAudioManager] btOn])
     {
+        [self.bufferStateIndicator setHidden:YES];
         [self.btButton setImage:[UIImage imageNamed:@"bluetooth.png"] forState:UIControlStateNormal];
 
     }
@@ -752,6 +770,7 @@
     [_stopButton release];
     [_btButton release];
     [_rtSpikeViewButton release];
+    [bufferStateIndicator release];
     [super dealloc];
 }
 

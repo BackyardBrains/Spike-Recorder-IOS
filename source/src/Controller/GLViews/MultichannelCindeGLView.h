@@ -90,6 +90,7 @@ typedef enum {
 -(BOOL) selecting;
 -(float) rmsOfSelection;
 -(NSMutableArray * ) spikesCount;
+-(void) updateBTBufferIndicator;
 
 -(BOOL) thresholding;
 -(float) threshold;
