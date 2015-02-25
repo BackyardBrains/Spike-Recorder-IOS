@@ -1497,9 +1497,6 @@
                 [[BBAudioManager bbAudioManager] setRtThreshold:(glWorldTouchPos.y-yOffsets[selectedChannel])/zoom];
                 return;
             }
-            
-            
-        
         }
         
         //Remove channel X button
@@ -1635,6 +1632,7 @@
     {
         return YES;
     }
+    return NO;
 }
 
 
