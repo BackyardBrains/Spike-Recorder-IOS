@@ -1750,7 +1750,7 @@
 					"$(CINDER_PATH)/boost",
 				);
 				INFOPLIST_FILE = "src/Spike Recorder-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(CINDER_PATH)/lib",
 					"$(CINDER_PATH)/lib/ios",
@@ -1807,7 +1807,7 @@
 					"$(CINDER_PATH)/boost",
 				);
 				INFOPLIST_FILE = "src/Spike Recorder-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(CINDER_PATH)/lib",
 					"$(CINDER_PATH)/lib/ios",
@@ -1824,7 +1824,7 @@
 				);
 				PRODUCT_NAME = "Spike Recorder";
 				PROVISIONING_PROFILE = "";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "a7609145-0209-4557-b1b9-01492361bcf0";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "74bca803-24ed-4e00-9b27-6e47d659efb7";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "$(CINDER_PATH)/include";
