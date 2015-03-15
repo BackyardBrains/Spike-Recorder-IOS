@@ -825,7 +825,7 @@
         
         int i;
         BOOL hasSomeSpikes;
-        hasSomeSpikes = YES;
+        hasSomeSpikes = NO;
         for(i=0;i<[spikeCountArray count];i++)
         {
             if([[spikeCountArray objectAtIndex:i] integerValue]>0)
@@ -951,95 +951,101 @@
     
     centerOfCircleX += offsetPositionOfHandles;
     
-    //put background of handles to black
-    glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
-    gl::drawSolidRect(Rectf(-maxTimeSpan,maxVoltsSpan,centerOfCircleX+1.6*radiusXAxis,-maxVoltsSpan));
-
-    //draw all handles
-    for(int indexOfChannel = 0;indexOfChannel<maxNumberOfChannels;indexOfChannel++)
+    if(multichannel || [[BBAudioManager bbAudioManager] rtSpikeSorting])
     {
-        //draw tickmark
-        if([self channelActive:indexOfChannel])
-        {
-            glLineWidth(2.0f);
-            glColor4f(1.0f, 1.0f, 1.0f, 1.0-transparencyForAxis);
-            gl::drawLine(Vec2f(-maxTimeSpan, yOffsets[indexOfChannel]), Vec2f(-maxTimeSpan+20*scaleXY.x, yOffsets[indexOfChannel]));
-            
-        }
+    
+        //put background of handles to black
+        glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
+        gl::drawSolidRect(Rectf(-maxTimeSpan,maxVoltsSpan,centerOfCircleX+1.6*radiusXAxis,-maxVoltsSpan));
 
-         //draw handle for active channels
-        [self setColorWithIndex:indexOfChannel transparency:1.0f];
-        if(self.mode == MultichannelGLViewModeView || [self channelActive:indexOfChannel])
+        //draw all handles
+        for(int indexOfChannel = 0;indexOfChannel<maxNumberOfChannels;indexOfChannel++)
         {
-            gl::drawSolidEllipse( Vec2f(centerOfCircleX, yOffsets[indexOfChannel]), radiusXAxis, radiusYAxis, 1000 );
-            gl::drawSolidTriangle(
-                                  Vec2f(centerOfCircleX+0.35*radiusXAxis, yOffsets[indexOfChannel]+radiusYAxis*0.97),
-                                  Vec2f(centerOfCircleX+1.6*radiusXAxis, yOffsets[indexOfChannel]),
-                                  Vec2f(centerOfCircleX+0.35*radiusXAxis, yOffsets[indexOfChannel]-radiusYAxis*0.97)
-                                  );
-        }
-        
-        //draw line for active channel
-        
-        if([self channelActive:indexOfChannel])
-        {
-            [self setColorWithIndex:indexOfChannel transparency:transparencyForAxis];
-            glLineWidth(2.0f);
-            gl::drawLine(Vec2f(centerOfCircleX, yOffsets[indexOfChannel]), Vec2f(0.0f, yOffsets[indexOfChannel]));
-
-        }
-        glLineWidth(1.0f);
-        
-        
-        [self setColorWithIndex:indexOfChannel transparency:1.0f];
-        //draw holow unselected handle
-        if(indexOfChannel!=selectedChannel)
-        {
-            glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
-            gl::drawSolidEllipse( Vec2f(centerOfCircleX, yOffsets[indexOfChannel]), radiusXAxis*0.8, radiusYAxis*0.8, 1000 );
-        }
-        else
-        {
-            if(self.mode == MultichannelGLViewModeView && multichannel)
+            //draw tickmark
+            if([self channelActive:indexOfChannel])
             {
-                //Draw X icon for channel removal
-                //Draw X icon for channel removal
-                xPositionOfRemove = - offsetPositionOfHandles -60*scaleXY.x;
-                yPositionOfRemove = yOffsets[indexOfChannel]+100*scaleXY.y;
-                gl::drawSolidEllipse( Vec2f(xPositionOfRemove, yPositionOfRemove), radiusXAxis+2*scaleXY.x, radiusYAxis+2*scaleXY.y, 1000 );
-                glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
-                gl::drawSolidEllipse( Vec2f(xPositionOfRemove, yPositionOfRemove), radiusXAxis+0.0*scaleXY.x, radiusYAxis+0.0*scaleXY.y, 1000 );
-                [self setColorWithIndex:indexOfChannel transparency:1.0f];
                 glLineWidth(2.0f);
-                gl::drawLine(Vec2f(xPositionOfRemove-radiusXAxis*0.7, yPositionOfRemove), Vec2f(xPositionOfRemove+radiusXAxis*0.7, yPositionOfRemove));
-                glLineWidth(1.0f);
+                glColor4f(1.0f, 1.0f, 1.0f, 1.0-transparencyForAxis);
+                gl::drawLine(Vec2f(-maxTimeSpan, yOffsets[indexOfChannel]), Vec2f(-maxTimeSpan+20*scaleXY.x, yOffsets[indexOfChannel]));
+                
             }
-        }
-        
-        //draw RT handle on selected channe;
-        if(indexOfChannel == selectedChannel)
-        {
-            if(self.mode == MultichannelGLViewModeView && [[BBAudioManager bbAudioManager] rtSpikeSorting])
+
+             //draw handle for active channels
+            [self setColorWithIndex:indexOfChannel transparency:1.0f];
+            if(self.mode == MultichannelGLViewModeView || [self channelActive:indexOfChannel])
             {
-                float zoom = maxVoltsSpan/ numVoltsVisible[selectedChannel];
-                float xPositionOfThreshold = - offsetPositionOfHandles-radiusXAxis;
-                float yPositionOfThreshold = yOffsets[indexOfChannel]+[[BBAudioManager bbAudioManager] rtThreshold]*zoom;
-                
-                gl::drawSolidEllipse( Vec2f(xPositionOfThreshold, yPositionOfThreshold), radiusXAxis, radiusYAxis, 1000 );
+                gl::drawSolidEllipse( Vec2f(centerOfCircleX, yOffsets[indexOfChannel]), radiusXAxis, radiusYAxis, 1000 );
                 gl::drawSolidTriangle(
-                                      Vec2f(xPositionOfThreshold-0.35*radiusXAxis, yPositionOfThreshold+radiusYAxis*0.97),
-                                      Vec2f(xPositionOfThreshold-1.6*radiusXAxis, yPositionOfThreshold),
-                                      Vec2f(xPositionOfThreshold-0.35*radiusXAxis, yPositionOfThreshold-radiusYAxis*0.97)
+                                      Vec2f(centerOfCircleX+0.35*radiusXAxis, yOffsets[indexOfChannel]+radiusYAxis*0.97),
+                                      Vec2f(centerOfCircleX+1.6*radiusXAxis, yOffsets[indexOfChannel]),
+                                      Vec2f(centerOfCircleX+0.35*radiusXAxis, yOffsets[indexOfChannel]-radiusYAxis*0.97)
                                       );
-                [self setColorWithIndex:indexOfChannel transparency:transparencyForAxis];
-
-                gl::drawLine(Vec2f(-maxTimeSpan, yPositionOfThreshold), Vec2f(0.0f, yPositionOfThreshold));
-                
             }
-        
-        }
-        
+            
+            //draw line for active channel
+            
+            if([self channelActive:indexOfChannel])
+            {
+                [self setColorWithIndex:indexOfChannel transparency:transparencyForAxis];
+                glLineWidth(2.0f);
+                gl::drawLine(Vec2f(centerOfCircleX, yOffsets[indexOfChannel]), Vec2f(0.0f, yOffsets[indexOfChannel]));
 
+            }
+            glLineWidth(1.0f);
+            
+            
+            [self setColorWithIndex:indexOfChannel transparency:1.0f];
+            //draw holow unselected handle
+            if(indexOfChannel!=selectedChannel)
+            {
+                glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
+                gl::drawSolidEllipse( Vec2f(centerOfCircleX, yOffsets[indexOfChannel]), radiusXAxis*0.8, radiusYAxis*0.8, 1000 );
+            }
+            else
+            {
+                if(self.mode == MultichannelGLViewModeView && multichannel)
+                {
+                    //Draw X icon for channel removal
+                    //Draw X icon for channel removal
+                    xPositionOfRemove = - offsetPositionOfHandles -60*scaleXY.x;
+                    yPositionOfRemove = yOffsets[indexOfChannel]+100*scaleXY.y;
+                    gl::drawSolidEllipse( Vec2f(xPositionOfRemove, yPositionOfRemove), radiusXAxis+2*scaleXY.x, radiusYAxis+2*scaleXY.y, 1000 );
+                    glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
+                    gl::drawSolidEllipse( Vec2f(xPositionOfRemove, yPositionOfRemove), radiusXAxis+0.0*scaleXY.x, radiusYAxis+0.0*scaleXY.y, 1000 );
+                    [self setColorWithIndex:indexOfChannel transparency:1.0f];
+                    glLineWidth(2.0f);
+                    gl::drawLine(Vec2f(xPositionOfRemove-radiusXAxis*0.7, yPositionOfRemove), Vec2f(xPositionOfRemove+radiusXAxis*0.7, yPositionOfRemove));
+                    glLineWidth(1.0f);
+                }
+            }
+            
+            //draw RT handle on selected channe;
+            if(indexOfChannel == selectedChannel)
+            {
+                if(self.mode == MultichannelGLViewModeView && [[BBAudioManager bbAudioManager] rtSpikeSorting])
+                {
+                    float zoom = maxVoltsSpan/ numVoltsVisible[selectedChannel];
+                    float xPositionOfThreshold = - offsetPositionOfHandles-radiusXAxis;
+                    float yPositionOfThreshold = yOffsets[indexOfChannel]+[[BBAudioManager bbAudioManager] rtThreshold]*zoom;
+                    
+                    gl::drawSolidEllipse( Vec2f(xPositionOfThreshold, yPositionOfThreshold), radiusXAxis, radiusYAxis, 1000 );
+                    gl::drawSolidTriangle(
+                                          Vec2f(xPositionOfThreshold-0.35*radiusXAxis, yPositionOfThreshold+radiusYAxis*0.97),
+                                          Vec2f(xPositionOfThreshold-1.6*radiusXAxis, yPositionOfThreshold),
+                                          Vec2f(xPositionOfThreshold-0.35*radiusXAxis, yPositionOfThreshold-radiusYAxis*0.97)
+                                          );
+                    [self setColorWithIndex:indexOfChannel transparency:transparencyForAxis];
+
+                    gl::drawLine(Vec2f(-maxTimeSpan, yPositionOfThreshold), Vec2f(0.0f, yPositionOfThreshold));
+                    
+                }
+            
+            }
+            
+        
+            
+
+        }
     }
     gl::enableDepthRead();
 }
@@ -1661,6 +1667,12 @@
 //
 -(int) checkIntersectionWithHandles:(Vec2f) touchPos
 {
+    if(!multichannel)
+    {
+        return -1;
+    }
+    
+    
     float intersectionDistanceX = 8000*scaleXY.x*scaleXY.x;
     float intersectionDistanceY = 8000*scaleXY.y*scaleXY.y;
     
@@ -1850,7 +1862,8 @@
     iindex = iindex%5;
     switch (iindex) {
         case 0:
-            glColor4f(0.9686274509803922f, 0.4980392156862745f, 0.011764705882352941f, transp);
+            glColor4f(0.0f, 1.0f, 0.0f, transp);
+            
             break;
         case 1:
             glColor4f(1.0f, 0.011764705882352941f, 0.011764705882352941f, transp);
@@ -1859,7 +1872,7 @@
             glColor4f( 0.9882352941176471f, 0.9372549019607843f, 0.011764705882352941f, transp);
             break;
         case 3:
-            glColor4f(0.0f, 0.0f, 1.0f, transp);
+            glColor4f(0.9686274509803922f, 0.4980392156862745f, 0.011764705882352941f, transp);
             break;
         case 4:
             glColor4f(1.0f, 0.0f, 1.0f, transp);
