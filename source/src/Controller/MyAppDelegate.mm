@@ -23,11 +23,11 @@
 @implementation MyAppDelegate
 @synthesize tabBarController;
 @synthesize window;
-@synthesize healthStore;
+//@synthesize healthStore;
 
 - (void)launch
 {    
-    self.healthStore = [[HKHealthStore alloc] init];
+   /// self.healthStore = [[HKHealthStore alloc] init];
     // Hide the status bar
 //    [[UIApplication sharedApplication] setStatusBarHidden:YES animated:NO];
     
@@ -246,7 +246,7 @@
 - (void)dealloc
 {
     [tabBarController release];
-    [healthStore release];
+   // [healthStore release];
     [window release];
     [super dealloc];
 }

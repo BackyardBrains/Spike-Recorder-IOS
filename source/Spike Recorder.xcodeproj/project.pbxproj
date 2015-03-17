@@ -1412,7 +1412,7 @@
 						DevelopmentTeam = MLGRKD657P;
 						SystemCapabilities = {
 							com.apple.HealthKit = {
-								enabled = 1;
+								enabled = 0;
 							};
 						};
 					};
@@ -1825,7 +1825,7 @@
 				);
 				PRODUCT_NAME = "Spike Recorder";
 				PROVISIONING_PROFILE = "";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "1e5e027b-b5d5-4138-9496-a3ea54bf40d8";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "015676db-ef7d-4852-824c-71fc2022d151";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = iphoneos8.1;
 				TARGETED_DEVICE_FAMILY = "1,2";

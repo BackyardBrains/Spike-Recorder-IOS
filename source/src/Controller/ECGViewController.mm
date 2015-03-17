@@ -20,7 +20,7 @@
 
 @implementation ECGViewController
 @synthesize activeHeartImg;
-@synthesize healthStore;
+//@synthesize healthStore;
 
 - (void)viewWillAppear:(BOOL)animated
 {
@@ -49,7 +49,7 @@
     
     
     MyAppDelegate * appDelegate = (MyAppDelegate*)[[UIApplication sharedApplication] delegate];
-    self.healthStore = appDelegate.healthStore;
+   // self.healthStore = appDelegate.healthStore;
     
         //Bluetooth notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(noBTConnection) name:NO_BT_CONNECTION object:nil];
@@ -66,7 +66,7 @@
     dataSouldBeSavedToHK = NO;
     //Try to init health kit
     
-    if ([HKHealthStore isHealthDataAvailable]) {
+  /*  if ([HKHealthStore isHealthDataAvailable]) {
         NSSet *writeDataTypes = [self dataTypesToWrite];
         NSSet *readDataTypes = [self dataTypesToRead];
         
@@ -82,7 +82,7 @@
                 dataSouldBeSavedToHK = YES;
             });
         }];
-    }
+    }*/
 }
 
 
@@ -90,7 +90,7 @@
                       startDate:(NSDate *)startDate endDate:(NSDate *)endDate
                      completion:(void (^)(NSError *error))compeltion
 {
-    HKQuantityType *rateType = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierHeartRate];
+   /* HKQuantityType *rateType = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierHeartRate];
     HKQuantity *rateQuantity = [HKQuantity quantityWithUnit:[[HKUnit countUnit] unitDividedByUnit:[HKUnit minuteUnit]]
                                                 doubleValue:(double)beats];
     HKQuantitySample *rateSample = [HKQuantitySample quantitySampleWithType:rateType
@@ -102,16 +102,16 @@
         if(compeltion) {
             compeltion(error);
         }
-    }];
+    }];*/
 }
 
 
 
 // Returns the types of data that Fit wishes to write to HealthKit.
 - (NSSet *)dataTypesToWrite {
-    HKQuantityType *heartRateType = [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierHeartRate];
+   // HKQuantityType *heartRateType = [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierHeartRate];
     
-    return [NSSet setWithObjects:heartRateType, nil];
+    return nil;//[NSSet setWithObjects:heartRateType, nil];
 }
 
 // Returns the types of data that Fit wishes to read from HealthKit.
