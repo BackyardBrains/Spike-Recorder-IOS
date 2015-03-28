@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		240D8067190E98F6009F9AEA /* CrossCorrViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 240D8065190E98F6009F9AEA /* CrossCorrViewController.xib */; };
+		241453CF1AB87B33001B5D92 /* RTSpikeSortingButton.mm in Sources */ = {isa = PBXBuildFile; fileRef = 241453CE1AB87B33001B5D92 /* RTSpikeSortingButton.mm */; };
+		241453D21AB88916001B5D92 /* RTCancelButton.mm in Sources */ = {isa = PBXBuildFile; fileRef = 241453D11AB88916001B5D92 /* RTCancelButton.mm */; };
 		2418FCB51A83EAAB00662547 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2418FCB41A83EAAB00662547 /* HealthKit.framework */; };
 		2418FE5F1A83F4C600662547 /* beep.wav in Resources */ = {isa = PBXBuildFile; fileRef = 2418FE5E1A83F4C600662547 /* beep.wav */; };
 		2418FEB71A83F5D700662547 /* again.png in Resources */ = {isa = PBXBuildFile; fileRef = 2418FE891A83F5D700662547 /* again.png */; };
@@ -243,6 +245,10 @@
 
 /* Begin PBXFileReference section */
 		240D8065190E98F6009F9AEA /* CrossCorrViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CrossCorrViewController.xib; sourceTree = "<group>"; };
+		241453CD1AB87B33001B5D92 /* RTSpikeSortingButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTSpikeSortingButton.h; sourceTree = "<group>"; };
+		241453CE1AB87B33001B5D92 /* RTSpikeSortingButton.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RTSpikeSortingButton.mm; sourceTree = "<group>"; };
+		241453D01AB88916001B5D92 /* RTCancelButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTCancelButton.h; sourceTree = "<group>"; };
+		241453D11AB88916001B5D92 /* RTCancelButton.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RTCancelButton.mm; sourceTree = "<group>"; };
 		2418FCB41A83EAAB00662547 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
 		2418FDA31A83F14700662547 /* CCGLTouchAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCGLTouchAppDelegate.h; sourceTree = "<group>"; };
 		2418FDA41A83F14700662547 /* CCGLTouchAppDelegate.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = CCGLTouchAppDelegate.mm; sourceTree = "<group>"; };
@@ -1174,6 +1180,10 @@
 				2418FF3E1A83FD6700662547 /* BYBHandleButton.mm */,
 				249C24491A9E272500B81B1A /* BufferStateIndicator.h */,
 				249C244A1A9E272500B81B1A /* BufferStateIndicator.mm */,
+				241453CD1AB87B33001B5D92 /* RTSpikeSortingButton.h */,
+				241453CE1AB87B33001B5D92 /* RTSpikeSortingButton.mm */,
+				241453D01AB88916001B5D92 /* RTCancelButton.h */,
+				241453D11AB88916001B5D92 /* RTCancelButton.mm */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -1629,9 +1639,11 @@
 				247087631A85102F004C6B9B /* NVHighpassFilter.m in Sources */,
 				247087721A85103D004C6B9B /* FPPopoverController.m in Sources */,
 				247087741A85103D004C6B9B /* FPPopoverView.m in Sources */,
+				241453D21AB88916001B5D92 /* RTCancelButton.mm in Sources */,
 				247087761A85103D004C6B9B /* FPTouchView.m in Sources */,
 				247087651A85102F004C6B9B /* NVHighShelvingFilter.m in Sources */,
 				2470876F1A851035004C6B9B /* NVDSP.mm in Sources */,
+				241453CF1AB87B33001B5D92 /* RTSpikeSortingButton.mm in Sources */,
 				247087671A85102F004C6B9B /* NVLowpassFilter.m in Sources */,
 				247087691A85102F004C6B9B /* NVLowShelvingFilter.m in Sources */,
 				2470876B1A85102F004C6B9B /* NVNotchFilter.m in Sources */,
@@ -1787,7 +1799,7 @@
 				CLANG_ENABLE_OBJC_ARC = NO;
 				CODE_SIGN_ENTITLEMENTS = "Backyard Brains.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVICE_FAMILY = iPhone/iPad;
 				FRAMEWORK_SEARCH_PATHS = (

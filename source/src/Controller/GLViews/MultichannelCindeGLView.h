@@ -55,7 +55,7 @@ typedef enum {
 
 @property (assign) int channelsConfiguration;
 @property (assign) MultichannelGLViewMode mode;
-
+@property (nonatomic, assign) BOOL rtConfigurationActive;
 
 -(float *) getChannelOffsets;
 -(void) setChannelOffsets:(float *) tempChannelOffsets;

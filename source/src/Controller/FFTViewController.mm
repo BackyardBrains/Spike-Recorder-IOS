@@ -30,7 +30,7 @@
         [glView release];
         glView = nil;
     }
-    float maxTime = 10.0f;
+    float maxTime = MAX_NUMBER_OF_FFT_SEC;
     glView = [[DynamicFFTCinderGLView alloc] initWithFrame:self.view.frame];
     float baseFreq = 0.5*((float)[[BBAudioManager bbAudioManager] sourceSamplingRate])/((float)[[BBAudioManager bbAudioManager] lengthOfFFTData]);
     [glView setupWithBaseFreq:baseFreq lengthOfFFT:[[BBAudioManager bbAudioManager] lengthOf30HzData] numberOfGraphs:[[BBAudioManager bbAudioManager] lenghtOfFFTGraphBuffer] maxTime:maxTime];

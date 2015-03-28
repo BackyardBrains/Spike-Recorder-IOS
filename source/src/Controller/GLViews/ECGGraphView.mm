@@ -62,8 +62,10 @@
     numSamplesMin  = (int) (0.1*samplingRate);
     numSamplesVisible = (float)(int) (numSamplesMax + numSamplesMin)/2;
     
+    numVoltsMin = [[defaults valueForKey:@"numVoltsMin"] floatValue];
+    numVoltsMax = [[defaults valueForKey:@"numVoltsMax"] floatValue];
+    numVoltsVisible = numVoltsMax*0.2f;
     
-    numVoltsVisible = 0.1f;
     
     //Make x coordinates for signal
     displayVector = PolyLine2f();
@@ -78,8 +80,11 @@
     }
     displayVector.setClosed(false);
     
+    [[BBAudioManager bbAudioManager] setEcgThreshold:numVoltsVisible*0.3];
+    
     [self startAnimation];
 }
+
 
 -(void) calculateScale
 {
@@ -372,6 +377,11 @@
         
        
         if (numVoltsVisible < 0.001)
+        {
+            touchDistanceDelta.y = 1.0f;
+            numVoltsVisible = oldNumVoltsVisible;
+        }
+        if(numVoltsVisible>numVoltsMax)
         {
             touchDistanceDelta.y = 1.0f;
             numVoltsVisible = oldNumVoltsVisible;

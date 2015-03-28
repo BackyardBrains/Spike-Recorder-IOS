@@ -20,6 +20,7 @@
 
 #define RESETUP_SCREEN_NOTIFICATION @"resetupScreenNotification"
 #define FILTER_PARAMETERS_CHANGED @"filterParametersChanged"
+#define MAX_NUMBER_OF_FFT_SEC 6.0f
 
 @class BBFile;
 
@@ -159,7 +160,8 @@ typedef enum BBStimulationType
 -(float *) rtSpikeValues;
 -(float *) rtSpikeIndexes;
 -(int) numberOfRTSpikes;
-@property float rtThreshold;
+@property float rtThresholdFirst;
+@property float rtThresholdSecond;
 
 //ECG
 -(void) startECG;

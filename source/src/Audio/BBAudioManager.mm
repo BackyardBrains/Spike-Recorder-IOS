@@ -741,14 +741,24 @@ static BBAudioManager *bbAudioManager = nil;
     rtSpikeSorting = true;
 }
 
--(void) setRtThreshold:(float)rtThreshold
+-(void) setRtThresholdFirst:(float)rtThreshold
 {
-    [[BBAnalysisManager bbAnalysisManager] setRtThreshold:rtThreshold];
+    [[BBAnalysisManager bbAnalysisManager] setRtThresholdFirst:rtThreshold];
 }
 
--(float) rtThreshold
+-(void) setRtThresholdSecond:(float)rtThreshold
 {
-    return [[BBAnalysisManager bbAnalysisManager] rtThreshold];
+    [[BBAnalysisManager bbAnalysisManager] setRtThresholdSecond:rtThreshold];
+}
+
+-(float) rtThresholdFirst
+{
+    return [[BBAnalysisManager bbAnalysisManager] rtThresholdFirst];
+}
+
+-(float) rtThresholdSecond
+{
+    return [[BBAnalysisManager bbAnalysisManager] rtThresholdSecond];
 }
 
 
@@ -1037,7 +1047,7 @@ static BBAudioManager *bbAudioManager = nil;
 
 -(void) startDynanimcFFT
 {
-    float maxNumOfSeconds = 10.0f;
+    float maxNumOfSeconds = MAX_NUMBER_OF_FFT_SEC;
     [self quitAllFunctions];
     [self getChannelsConfig];
     //Try to make under 1Hz resolution

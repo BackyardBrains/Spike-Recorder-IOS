@@ -96,7 +96,10 @@
 
      [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reSetupScreen) name:RESETUP_SCREEN_NOTIFICATION object:nil];
    // [self detectBluetooth];
-    [self.rtSpikeViewButton nextColor:[BYBGLView getSpikeTrainColorWithIndex:4 transparency:1.0f]];
+    [self.rtSpikeViewButton objectColor:[BYBGLView getSpikeTrainColorWithIndex:4 transparency:1.0f]];
+    [self.rtSpikeViewButton changeCurrentState:HANDLE_STATE];
+    [self.cancelRTViewButton setHidden:YES];
+    [glView setRtConfigurationActive:NO];
     
 }
 
@@ -108,6 +111,7 @@
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
+    [self tapOnCancelRTButton];
     NSLog(@"Stopping regular view");
     [glView saveSettings:FALSE]; // save non-threshold settings
     [glView stopAnimation];
@@ -133,11 +137,20 @@
     // Listen for going down
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate:) name:UIApplicationWillTerminateNotification object:nil];
     
+    //Add handler for start of RT view
     UITapGestureRecognizer *singleFingerTap =
     [[UITapGestureRecognizer alloc] initWithTarget:self
                                             action:@selector(tapOnRTButton)];
     [self.rtSpikeViewButton addGestureRecognizer:singleFingerTap];
     [singleFingerTap release];
+    
+    //Add handler for end of RT view
+    UITapGestureRecognizer *cancelFingerTap =
+    [[UITapGestureRecognizer alloc] initWithTarget:self
+                                            action:@selector(tapOnCancelRTButton)];
+    [self.cancelRTViewButton addGestureRecognizer:cancelFingerTap];
+    [cancelFingerTap release];
+    
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
@@ -715,19 +728,51 @@
 
 
 #pragma mark - Actions
+
+//
+// Start RT processing or just change position of handles
+//
 -(void) tapOnRTButton
 {
     BBAudioManager *bbAudioManager = [BBAudioManager bbAudioManager];
-    if (bbAudioManager.rtSpikeSorting == false) {
-        NSLog(@"Start real time spike sorting");
-        [bbAudioManager startRTSpikeSorting];
-        [self.rtSpikeViewButton nextColor:[BYBGLView getSpikeTrainColorWithIndex:0 transparency:1.0f]];
+    if([self.rtSpikeViewButton currentStatus] == TICK_MARK_STATE)
+    {
+        [self.rtSpikeViewButton changeCurrentState:HANDLE_STATE];
+        [self.cancelRTViewButton setHidden:YES];
+        [glView setRtConfigurationActive:NO];
+        [self.rtSpikeViewButton objectColor:[BYBGLView getSpikeTrainColorWithIndex:4 transparency:1.0f]];
+    
     }
-    else {
-        [bbAudioManager stopRTSpikeSorting];
-        [self.rtSpikeViewButton nextColor:[BYBGLView getSpikeTrainColorWithIndex:4 transparency:1.0f]];
+    else
+    {
+        if (bbAudioManager.rtSpikeSorting == false) {
+            NSLog(@"Start real time spike sorting");
+            [bbAudioManager startRTSpikeSorting];
+        }
+        [glView setRtConfigurationActive:YES];
+        [self.cancelRTViewButton setHidden:NO];
+        [self.rtSpikeViewButton changeCurrentState:TICK_MARK_STATE];
     }
 }
+
+
+//
+// Cancel RT processing
+//
+-(void) tapOnCancelRTButton
+{
+     NSLog(@"Stop real time spike sorting");
+    [glView setRtConfigurationActive:NO];
+     BBAudioManager *bbAudioManager = [BBAudioManager bbAudioManager];
+    if([bbAudioManager rtSpikeSorting])
+    {
+        [bbAudioManager stopRTSpikeSorting];
+    }
+    [self.rtSpikeViewButton changeCurrentState:HANDLE_STATE];
+    [self.cancelRTViewButton setHidden:YES];
+    
+}
+
 
 
 - (IBAction)stimulateButtonPressed:(id)sender {
@@ -771,6 +816,7 @@
     [_btButton release];
     [_rtSpikeViewButton release];
     [bufferStateIndicator release];
+    [_cancelRTViewButton release];
     [super dealloc];
 }
 
