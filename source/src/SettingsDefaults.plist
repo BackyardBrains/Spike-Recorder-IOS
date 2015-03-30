@@ -7,7 +7,7 @@
 	<key>notchFilterOn</key>
 	<false/>
 	<key>highFilterFreq</key>
-	<string>4000</string>
+	<string>10000</string>
 	<key>lowFilterFreq</key>
 	<integer>0</integer>
 	<key>numSamplesMin</key>

@@ -260,3 +260,26 @@ float DSPAnalysis::SDT(const float *data, int64_t mSizeOfBuffer)
     std = sqrt(sum/mSizeOfBuffer); // calculated std deviation
     return std;
 }
+
+void DSPAnalysis::calculateBasicStats(const float *data, int64_t mSizeOfBuffer, float * inStd, float * inMin, float * inMax, float * inMean)
+{
+    float mean = 0; // place holder for mean
+    vDSP_meanv(data,1,&mean,mSizeOfBuffer); // find the mean of the vector
+    *inMean = mean;
+    mean = -1*mean; // Invert mean so when we add it is actually subtraction
+    float *subMeanVec  = (float*)calloc(mSizeOfBuffer,sizeof(float)); // placeholder vector
+    vDSP_vsadd(data,1,&mean,subMeanVec,1,mSizeOfBuffer); // subtract mean from vector
+    float *squared = (float*)calloc(mSizeOfBuffer,sizeof(float)); // placeholder for squared vector
+    vDSP_vsq(subMeanVec,1,squared,1,mSizeOfBuffer); // Square vector element by element
+    free(subMeanVec); // free some memory
+    float sum = 0; // place holder for sum
+    vDSP_sve(squared,1,&sum,mSizeOfBuffer); //sum entire vector
+    free(squared); // free squared vector
+    *inStd = sqrt(sum/mSizeOfBuffer);
+    
+    //find max
+    vDSP_maxv(data,1,inMax,mSizeOfBuffer);
+    vDSP_minv(data,1,inMin,mSizeOfBuffer);
+    
+}
+

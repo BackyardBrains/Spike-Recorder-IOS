@@ -18,6 +18,9 @@ public:
     float RMSSelection(const float *data, int64_t mSizeOfBuffer);
     //Calculate standard deviation of data array
     float SDT(const float *data, int64_t mSizeOfBuffer);
+    //calculate basic stats of signal min, max, mean, STD
+    void calculateBasicStats(const float *data, int64_t mSizeOfBuffer, float * inStd, float * inMin, float * inMax, float * inMean);
+    
     
     //Simple FFT
     

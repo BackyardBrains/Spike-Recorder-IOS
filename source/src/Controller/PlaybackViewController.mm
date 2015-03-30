@@ -102,6 +102,10 @@
     //[[BBAudioManager bbAudioManager] clearWaveform];
     //
     
+    UITapGestureRecognizer *doubleTap = [[[UITapGestureRecognizer alloc] initWithTarget: self action:@selector(autorangeView)] autorelease];
+    doubleTap.numberOfTapsRequired = 2;
+    [glView addGestureRecognizer:doubleTap];
+    
     // Make sure that we're playing out of the right audioroute, and if it changes
     // (e.g., if you unplug the headphones while playing), it just works
     [self ifNoHeadphonesConfigureAudioToPlayOutOfSpeakers];
@@ -211,7 +215,10 @@
     [glView setCurrentBounds:self.view.frame];
 }
 
-
+-(void) autorangeView
+{
+    [glView autorangeSelectedChannel];
+}
 
 - (void)setGLView:(MultichannelCindeGLView *)view
 {

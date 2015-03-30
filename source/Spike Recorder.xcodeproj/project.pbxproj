@@ -205,6 +205,7 @@
 		2490D73B1A927C1B00E1D5E9 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2490D73A1A927C1B00E1D5E9 /* HealthKit.framework */; };
 		249A246319058465005F5F03 /* AutocorrelationGraphViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 249A246119058465005F5F03 /* AutocorrelationGraphViewController.xib */; };
 		249A24681906AC59005F5F03 /* ISIHistogramViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 249A24661906AC59005F5F03 /* ISIHistogramViewController.xib */; };
+		249C244B1A9E272500B81B1A /* BufferStateIndicator.mm in Sources */ = {isa = PBXBuildFile; fileRef = 249C244A1A9E272500B81B1A /* BufferStateIndicator.mm */; };
 		24A13BD4192B8F3500BCE9D1 /* ExternalAccessory.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24A13BD3192B8F3500BCE9D1 /* ExternalAccessory.framework */; };
 		24BB8365199E7D0C00C12932 /* GraphDCMDTrialViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 24BB8363199E7D0C00C12932 /* GraphDCMDTrialViewController.xib */; };
 		24D697BA1A6FF3EB00108D78 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 24D697B91A6FF3EB00108D78 /* Images.xcassets */; };
@@ -622,6 +623,8 @@
 		2490D73A1A927C1B00E1D5E9 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
 		249A246119058465005F5F03 /* AutocorrelationGraphViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AutocorrelationGraphViewController.xib; sourceTree = "<group>"; };
 		249A24661906AC59005F5F03 /* ISIHistogramViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ISIHistogramViewController.xib; sourceTree = "<group>"; };
+		249C24491A9E272500B81B1A /* BufferStateIndicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BufferStateIndicator.h; sourceTree = "<group>"; };
+		249C244A1A9E272500B81B1A /* BufferStateIndicator.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BufferStateIndicator.mm; sourceTree = "<group>"; };
 		24A13BD3192B8F3500BCE9D1 /* ExternalAccessory.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ExternalAccessory.framework; path = System/Library/Frameworks/ExternalAccessory.framework; sourceTree = SDKROOT; };
 		24BB8363199E7D0C00C12932 /* GraphDCMDTrialViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GraphDCMDTrialViewController.xib; sourceTree = "<group>"; };
 		24D697B91A6FF3EB00108D78 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = "Backyard Brains/Images.xcassets"; sourceTree = SOURCE_ROOT; };
@@ -1169,6 +1172,8 @@
 			children = (
 				2418FF3D1A83FD6700662547 /* BYBHandleButton.h */,
 				2418FF3E1A83FD6700662547 /* BYBHandleButton.mm */,
+				249C24491A9E272500B81B1A /* BufferStateIndicator.h */,
+				249C244A1A9E272500B81B1A /* BufferStateIndicator.mm */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -1407,7 +1412,7 @@
 						DevelopmentTeam = MLGRKD657P;
 						SystemCapabilities = {
 							com.apple.HealthKit = {
-								enabled = 1;
+								enabled = 0;
 							};
 						};
 					};
@@ -1640,6 +1645,7 @@
 				2418FF591A83FDA100662547 /* AutoGraphCollectionViewCell.m in Sources */,
 				2418FF811A83FDD500662547 /* ExperimentsViewController.mm in Sources */,
 				2418FF0F1A83F79200662547 /* BBAnalysisManager.mm in Sources */,
+				249C244B1A9E272500B81B1A /* BufferStateIndicator.mm in Sources */,
 				2418FF821A83FDD500662547 /* TrialActionsViewController.mm in Sources */,
 				2418FF5C1A83FDA100662547 /* ColumnHeaderCollectionViewCell.m in Sources */,
 				2418FF351A83FD3700662547 /* FilterSettingsViewController.mm in Sources */,
@@ -1744,7 +1750,7 @@
 					"$(CINDER_PATH)/boost",
 				);
 				INFOPLIST_FILE = "src/Spike Recorder-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(CINDER_PATH)/lib",
 					"$(CINDER_PATH)/lib/ios",
@@ -1762,9 +1768,10 @@
 				PRODUCT_NAME = "Spike Recorder";
 				PROVISIONING_PROFILE = "";
 				RUN_CLANG_STATIC_ANALYZER = YES;
+				SDKROOT = iphoneos8.1;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "$(CINDER_PATH)/include";
-				VALID_ARCHS = "armv7 arm64";
+				VALID_ARCHS = "armv7 arm64 armv7s ";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1801,7 +1808,7 @@
 					"$(CINDER_PATH)/boost",
 				);
 				INFOPLIST_FILE = "src/Spike Recorder-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(CINDER_PATH)/lib",
 					"$(CINDER_PATH)/lib/ios",
@@ -1818,11 +1825,12 @@
 				);
 				PRODUCT_NAME = "Spike Recorder";
 				PROVISIONING_PROFILE = "";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "4bac9af3-edd7-498e-9ed8-874c4b5c0ba8";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "015676db-ef7d-4852-824c-71fc2022d151";
 				RUN_CLANG_STATIC_ANALYZER = YES;
+				SDKROOT = iphoneos8.1;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "$(CINDER_PATH)/include";
-				VALID_ARCHS = "armv7 arm64";
+				VALID_ARCHS = "armv7 arm64 armv7s ";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

@@ -15,6 +15,7 @@
 #import "BBBTChooserViewController.h"
 
 
+
 @interface ViewAndRecordViewController() {
     dispatch_source_t callbackTimer;
     BBFile *aFile;
@@ -30,6 +31,7 @@
 @synthesize recordButton;
 @synthesize stimulateButton;
 @synthesize stimulatePreferenceButton;
+@synthesize bufferStateIndicator;
 
 - (void)viewWillAppear:(BOOL)animated
 {
@@ -57,12 +59,19 @@
 	[self.view addSubview:glView];
     [self.view sendSubviewToBack:glView];
 	[glView startAnimation];
+    
+    UITapGestureRecognizer *doubleTap = [[[UITapGestureRecognizer alloc] initWithTarget: self action:@selector(autorangeView)] autorelease];
+    doubleTap.numberOfTapsRequired = 2;
+    [glView addGestureRecognizer:doubleTap];
+    
     // set our view controller's prop that will hold a pointer to our newly created CCGLTouchView
+    
     
     if([[BBAudioManager bbAudioManager] btOn])
     {
         glView.channelsConfiguration = [[BBBTManager btManager] activeChannels];
         [self.btButton setImage:[UIImage imageNamed:@"inputicon.png"] forState:UIControlStateNormal];
+        [self.bufferStateIndicator setHidden:NO];
     }
     else
     {
@@ -77,6 +86,7 @@
         glView.channelsConfiguration = configurationOfChannels;
         
         [self.btButton setImage:[UIImage imageNamed:@"bluetooth.png"] forState:UIControlStateNormal];
+        [self.bufferStateIndicator setHidden:YES];
     }
 
    /* [glView stopAnimation];
@@ -91,6 +101,7 @@
 
      [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reSetupScreen) name:RESETUP_SCREEN_NOTIFICATION object:nil];
    // [self detectBluetooth];
+    [self.rtSpikeViewButton nextColor:[BYBGLView getSpikeTrainColorWithIndex:4 transparency:1.0f]];
     
 }
 
@@ -126,6 +137,12 @@
     stimulateButton.selected = NO;
     // Listen for going down
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate:) name:UIApplicationWillTerminateNotification object:nil];
+    
+    UITapGestureRecognizer *singleFingerTap =
+    [[UITapGestureRecognizer alloc] initWithTarget:self
+                                            action:@selector(tapOnRTButton)];
+    [self.rtSpikeViewButton addGestureRecognizer:singleFingerTap];
+    [singleFingerTap release];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
@@ -140,6 +157,12 @@
     callbackTimer = nil;
 }
 
+-(void) autorangeView
+{
+    [glView autorangeSelectedChannel];
+}
+
+
 #pragma mark - MultichannelGLViewDelegate function
 - (float) fetchDataToDisplay:(float *)data numFrames:(UInt32)numFrames whichChannel:(UInt32)whichChannel
 {
@@ -148,6 +171,12 @@
     //display of waveform and spike marks
     return [[BBAudioManager bbAudioManager] fetchAudio:data numFrames:numFrames whichChannel:whichChannel stride:1];
 }
+
+-(void) selectChannel:(int) selectedChannel
+{
+    [[BBAudioManager bbAudioManager] selectChannel:selectedChannel];
+}
+
 
 //
 // It works with extended channel index
@@ -211,6 +240,7 @@
 	[UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
 	[self.stopButton setFrame:stopButtonRect];
 	[UIView commitAnimations];
+    [self.view bringSubviewToFront:self.stopButton];
     
     BBAudioManager *bbAudioManager = [BBAudioManager bbAudioManager];
     if (bbAudioManager.recording == false) {
@@ -295,6 +325,12 @@
 */
 
 #pragma mark - BT connection
+
+-(void) updateBTBufferIndicator
+{
+    [self.bufferStateIndicator updateBufferState:(((float)[[BBBTManager btManager] numberOfFramesBuffered])/[[BBAudioManager bbAudioManager] sourceSamplingRate])];
+}
+
 - (IBAction)btButtonPressed:(id)sender {
     
     //[self openDevicesPopover];
@@ -350,6 +386,7 @@
     {
         glView.channelsConfiguration = [[BBBTManager btManager] activeChannels];
         [self.btButton setImage:[UIImage imageNamed:@"inputicon.png"] forState:UIControlStateNormal];
+        [self.bufferStateIndicator setHidden:NO];
     }
     else
     {
@@ -365,6 +402,7 @@
 
         
         [self.btButton setImage:[UIImage imageNamed:@"bluetooth.png"] forState:UIControlStateNormal];
+        [self.bufferStateIndicator setHidden:YES];
     }
     stimulateButton.selected = NO;
 
@@ -428,6 +466,7 @@
     int tempSampleRate = [[BBBTManager btManager] maxSampleRateForDevice]/[[BBBTManager btManager] maxNumberOfChannelsForDevice];
 
     [self.btButton setImage:[UIImage imageNamed:@"inputicon.png"] forState:UIControlStateNormal];
+    [self.bufferStateIndicator setHidden:NO];
     
     if(glView)
     {
@@ -492,7 +531,7 @@
     tempActiveChannels = tempActiveChannels & (~tempMask);
     float * tempChannelsOffset = [glView getChannelOffsets];
     int tempSampleRate = [[BBBTManager btManager] maxSampleRateForDevice]/[self countNumberOfChannels:tempActiveChannels];
-    
+    [self.bufferStateIndicator setHidden:NO];
     [self.btButton setImage:[UIImage imageNamed:@"inputicon.png"] forState:UIControlStateNormal];
     
     if(glView)
@@ -528,6 +567,7 @@
     float * tempChannelsOffset = [glView getChannelOffsets];
     int tempSampleRate = [[BBBTManager btManager] maxSampleRateForDevice]/[self countNumberOfChannels:tempActiveChannels];
     
+    [self.bufferStateIndicator setHidden:NO];
     [self.btButton setImage:[UIImage imageNamed:@"inputicon.png"] forState:UIControlStateNormal];
     
     if(glView)
@@ -645,6 +685,7 @@
 
 -(void) noBTConnection
 {
+    [self.bufferStateIndicator setHidden:YES];
     [self.btButton setImage:[UIImage imageNamed:@"bluetooth.png"] forState:UIControlStateNormal];
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"No Bluetooth connection."
                                                     message:@"Please pair with BYB bluetooth device in Bluetooth settings."
@@ -659,6 +700,7 @@
 {
     if([[BBAudioManager bbAudioManager] btOn])
     {
+        [self.bufferStateIndicator setHidden:YES];
         [self.btButton setImage:[UIImage imageNamed:@"bluetooth.png"] forState:UIControlStateNormal];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"No Bluetooth connection."
                                                         message:@"Bluetooth device disconnected. Get in range of the device and try to pair with the device in Bluetooth settings again."
@@ -672,8 +714,10 @@
 
 -(void) btSlowConnection
 {
+    
     if([[BBAudioManager bbAudioManager] btOn])
     {
+        [self.bufferStateIndicator setHidden:YES];
         [self.btButton setImage:[UIImage imageNamed:@"bluetooth.png"] forState:UIControlStateNormal];
 
     }
@@ -682,6 +726,19 @@
 
 
 #pragma mark - Actions
+-(void) tapOnRTButton
+{
+    BBAudioManager *bbAudioManager = [BBAudioManager bbAudioManager];
+    if (bbAudioManager.rtSpikeSorting == false) {
+        NSLog(@"Start real time spike sorting");
+        [bbAudioManager startRTSpikeSorting];
+        [self.rtSpikeViewButton nextColor:[BYBGLView getSpikeTrainColorWithIndex:0 transparency:1.0f]];
+    }
+    else {
+        [bbAudioManager stopRTSpikeSorting];
+        [self.rtSpikeViewButton nextColor:[BYBGLView getSpikeTrainColorWithIndex:4 transparency:1.0f]];
+    }
+}
 
 
 - (IBAction)stimulateButtonPressed:(id)sender {
@@ -723,6 +780,8 @@
     [stimulatePreferenceButton release];
     [_stopButton release];
     [_btButton release];
+    [_rtSpikeViewButton release];
+    [bufferStateIndicator release];
     [super dealloc];
 }
 

@@ -95,6 +95,14 @@ typedef enum BBStimulationType
 @property float currentFileTime;
 @property (readonly) float fileDuration;
 
+
+//Basic stats properties
+@property float currSTD;
+@property float currMax;
+@property float currMin;
+@property float currMean;
+
+//States of manager
 @property (readonly) BOOL recording;
 @property BOOL stimulating;
 @property (readonly) BOOL thresholding;
@@ -103,6 +111,7 @@ typedef enum BBStimulationType
 @property (readonly) BOOL btOn;
 @property (readonly) BOOL FFTOn;
 @property (readonly) BOOL ECGOn;
+@property (readonly) BOOL rtSpikeSorting;
 @property BOOL seeking;
 
 
@@ -150,7 +159,15 @@ typedef enum BBStimulationType
 -(void) startDynanimcFFT;
 -(UInt32) indexOfFFTGraphBuffer;
 -(UInt32) lenghtOfFFTGraphBuffer;
--(float *) movingAverageFFT;
+
+
+//RT Spike Sorting
+-(void) startRTSpikeSorting;
+-(void) stopRTSpikeSorting;
+-(float *) rtSpikeValues;
+-(float *) rtSpikeIndexes;
+-(int) numberOfRTSpikes;
+@property float rtThreshold;
 
 //ECG
 -(void) startECG;

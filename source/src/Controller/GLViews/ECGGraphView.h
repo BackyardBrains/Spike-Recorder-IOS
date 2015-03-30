@@ -40,6 +40,9 @@
     NSTimeInterval currentUserInteractionTime;//temp variable for calculation
     BOOL handlesShouldBeVisible;
     float offsetPositionOfHandle;
+    
+    NSTimer * autorangeTimer;
+    BOOL autorangeActive;
 
 }
 
@@ -50,5 +53,7 @@
 
 @protocol HeartBeatDelegate <NSObject>
 -(void) changeHeartActive:(BOOL) active;
+
+-(void) autorangeSelectedChannel;
 
 @end

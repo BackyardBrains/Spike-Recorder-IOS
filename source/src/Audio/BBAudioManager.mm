@@ -6,7 +6,7 @@
 //
 
 #import "BBAudioManager.h"
-
+#import "BBAnalysisManager.h"
 #import "BBBTManager.h"
 #import "BBFile.h"
 #import "BBSpike.h"
@@ -58,6 +58,13 @@ static BBAudioManager *bbAudioManager = nil;
     float * tempResampledBuffer;
     bool differentFreqInOut;
     
+    //basic stats
+    float _currentSTD;
+    float _currentMax;
+    float _currentMin;
+    float _currentMean;
+    
+    
     //ECG
     BBECGAnalysis * ecgAnalysis;
     
@@ -108,6 +115,7 @@ static BBAudioManager *bbAudioManager = nil;
 @synthesize btOn;
 @synthesize FFTOn;
 @synthesize ECGOn;
+@synthesize rtSpikeSorting;
 
 
 #pragma mark - Singleton Methods
@@ -176,6 +184,11 @@ static BBAudioManager *bbAudioManager = nil;
         
         maxNumberOfSamplesToDisplay = [[defaults valueForKey:@"numSamplesMax"] integerValue];
 
+        //Setup initial values for statistics
+        _currentMax = [[defaults valueForKey:@"numVoltsMax"] floatValue]*0.8;
+        _currentMin = -[[defaults valueForKey:@"numVoltsMax"] floatValue]*0.8;
+        _currentMean = 0.0f;
+        _currentSTD = _currentMax/6.0f;
 
         ringBuffer = new RingBuffer(maxNumberOfSamplesToDisplay, _sourceNumberOfChannels);
         tempCalculationBuffer = (float *)calloc(maxNumberOfSamplesToDisplay*_sourceNumberOfChannels, sizeof(float));
@@ -200,6 +213,7 @@ static BBAudioManager *bbAudioManager = nil;
         FFTOn = false;
         ECGOn = false;
         btOn = false;
+        rtSpikeSorting = false;
         
         [self filterParametersChanged];
         
@@ -415,6 +429,7 @@ static BBAudioManager *bbAudioManager = nil;
 
 -(void) resetBuffers
 {
+
     delete ringBuffer;
     free(tempCalculationBuffer);
     //create new buffers
@@ -422,6 +437,11 @@ static BBAudioManager *bbAudioManager = nil;
     ringBuffer = new RingBuffer(maxNumberOfSamplesToDisplay, _sourceNumberOfChannels);
     tempCalculationBuffer = (float *)calloc(maxNumberOfSamplesToDisplay*_sourceNumberOfChannels, sizeof(float));
     [self filterParametersChanged];
+    if(rtSpikeSorting)
+    {
+        [[BBAnalysisManager bbAnalysisManager] stopRTSpikeSorting];
+        [[BBAnalysisManager bbAnalysisManager] initRTSpikeSorting:_sourceSamplingRate];
+    }
 }
 
 -(void) makeInputOutput
@@ -468,6 +488,7 @@ static BBAudioManager *bbAudioManager = nil;
     }
     
     [self filterData:data numFrames:numFrames numChannels:numChannels];
+    [self updateBasicStatsOnData:data numFrames:numFrames numChannels:numChannels];
    
     if (thresholding)
     {
@@ -488,6 +509,11 @@ static BBAudioManager *bbAudioManager = nil;
     {
          [ecgAnalysis calculateECGWithThreshold:data numberOfFrames:numFrames selectedChannel:_selectedChannel];
        // [ecgAnalysis calculateECGAnalysis:data numberOfFrames:numFrames selectedChannel:_selectedChannel];
+    }
+    
+    if(rtSpikeSorting)
+    {
+        [[BBAnalysisManager bbAnalysisManager] findSpikesInRTForData:data numberOfFrames:numFrames numberOfChannel:numChannels selectedChannel:_selectedChannel];
     }
     
 }
@@ -541,6 +567,39 @@ static BBAudioManager *bbAudioManager = nil;
 }
 
 
+-(void) updateBasicStatsOnData:(float *)newData numFrames:(UInt32)thisNumFrames numChannels:(UInt32)thisNumChannels
+{
+    //get data for selected channel
+    float zero = 0.0f;
+    //get selected channel
+    vDSP_vsadd((float *)&newData[_selectedChannel],
+               thisNumChannels,
+               &zero,
+               tempResamplingBuffer,
+               1,
+               thisNumFrames);
+    
+    dspAnalizer->calculateBasicStats(tempResamplingBuffer, thisNumFrames, &_currentSTD, &_currentMin, &_currentMax, &_currentMean);
+    
+    self.currSTD = 0.001*_currentSTD + 0.999*self.currSTD;
+    self.currMean = 0.001*_currentMean + 0.999*self.currMean;
+    
+   /* if(self.currMin>_currentMin)
+    {
+        self.currMin = _currentMin;
+    }*/
+    self.currMin = ringBuffer->Min();
+    /*if(self.currMax<_currentMax)
+    {
+        self.currMax = _currentMax;
+    }*/
+    self.currMax = ringBuffer->Max();
+    if(ABS(self.currMin)>self.currMax)
+    {
+        self.currMax = ABS(self.currMin);
+    }
+}
+
 -(void) quitAllFunctions
 {
     
@@ -568,6 +627,11 @@ static BBAudioManager *bbAudioManager = nil;
     if(ECGOn)
     {
         [self stopECG];
+    }
+    
+    if(rtSpikeSorting)
+    {
+        [self stopRTSpikeSorting];
     }
     
 }
@@ -688,6 +752,49 @@ static BBAudioManager *bbAudioManager = nil;
     [fileWriter release];
     fileWriter = nil;
 
+}
+
+
+#pragma mark - RT Spike Sorting
+
+-(float *) rtSpikeValues
+{
+    return [[BBAnalysisManager bbAnalysisManager] rtPeaksValues];
+}
+-(float *) rtSpikeIndexes
+{
+    return [[BBAnalysisManager bbAnalysisManager] rtPeaksIndexs];
+}
+
+-(int) numberOfRTSpikes
+{
+    return [[BBAnalysisManager bbAnalysisManager] numberOfRTSpikes];
+}
+
+-(void) stopRTSpikeSorting
+{
+    if(rtSpikeSorting)
+    {
+        rtSpikeSorting = false;
+        [[BBAnalysisManager bbAnalysisManager] stopRTSpikeSorting];
+    }
+
+}
+
+-(void) startRTSpikeSorting
+{
+    [[BBAnalysisManager bbAnalysisManager] initRTSpikeSorting:_sourceSamplingRate];
+    rtSpikeSorting = true;
+}
+
+-(void) setRtThreshold:(float)rtThreshold
+{
+    [[BBAnalysisManager bbAnalysisManager] setRtThreshold:rtThreshold];
+}
+
+-(float) rtThreshold
+{
+    return [[BBAnalysisManager bbAnalysisManager] rtThreshold];
 }
 
 
@@ -868,8 +975,6 @@ static BBAudioManager *bbAudioManager = nil;
             [self filterData:tempCalculationBuffer numFrames:realNumberOfFrames numChannels:_sourceNumberOfChannels];
             
             
-            
-            
             //move just numChannels in buffer
             float zero = 0.0f;
            
@@ -909,8 +1014,12 @@ static BBAudioManager *bbAudioManager = nil;
           
             ringBuffer->AddNewInterleavedFloatData(tempCalculationBuffer, realNumberOfFrames, _sourceNumberOfChannels);
             _preciseTimeOfLastData = fileReader.currentTime;
+            [self updateBasicStatsOnData:tempCalculationBuffer numFrames:realNumberOfFrames numChannels:_sourceNumberOfChannels];
+            
+
             
         });
+        
         
         
         //------- Stop - End of file ----------------
@@ -1484,6 +1593,10 @@ static BBAudioManager *bbAudioManager = nil;
     if(thresholding)
     {
         dspThresholder->SetSelectedChannel(_selectedChannel);
+    }
+    if(rtSpikeSorting)
+    {
+        [[BBAnalysisManager bbAnalysisManager] clearRTSpikes];
     }
 }
 

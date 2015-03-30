@@ -38,9 +38,23 @@
     lastUserInteraction = [[NSDate date] timeIntervalSince1970];
     handlesShouldBeVisible = NO;
     offsetPositionOfHandle = 0.0f;
+    
+
+    
+    autorangeActive = YES;
+    autorangeTimer = [NSTimer scheduledTimerWithTimeInterval:2.5 target:self selector:@selector(stopAutorange) userInfo:nil repeats:NO];
 }
 
-
+-(void) stopAutorange
+{
+    if(autorangeTimer!=nil)
+    {
+        autorangeActive = NO;
+        [autorangeTimer invalidate];
+        autorangeTimer = nil;
+    }
+    
+}
 
 //
 // Setup all parameters of view
@@ -81,6 +95,13 @@
     [self startAnimation];
 }
 
+
+-(void) autorangeSelectedChannel
+{
+    numVoltsVisible= [[BBAudioManager bbAudioManager] currMax]*1.3;
+    [[BBAudioManager bbAudioManager] setEcgThreshold:numVoltsVisible*0.47];
+}
+
 -(void) calculateScale
 {
     scaleXY = [self screenToWorld:Vec2f(1.0f,1.0f)];
@@ -88,6 +109,7 @@
     scaleXY.x = fabsf(scaleXY.x - scaleXYZero.x);
     scaleXY.y = fabsf(scaleXY.y - scaleXYZero.y);
 }
+
 
 //
 // Draw graph
@@ -111,6 +133,11 @@
             heartRateFont = gl::TextureFont::create( Font("Helvetica", 32) );
             mScaleFont = gl::TextureFont::create( Font("Helvetica", 18) );
             
+        }
+    
+        if(autorangeActive)
+        {
+            [self autorangeSelectedChannel];
         }
     
     

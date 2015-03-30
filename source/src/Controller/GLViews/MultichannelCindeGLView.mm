@@ -17,6 +17,7 @@
 
 #define MAX_THRESHOLD_VISIBLE_TIME 1.5
 #define HIDE_HANDLES_AFTER_SECONDS 4.0
+#define MAXIMUM_POSITION_OF_HANDLES -5.6
 
 
 @interface MultichannelCindeGLView ()
@@ -58,6 +59,9 @@
     float lastXPosition;
     int frameCount;
     
+    
+    NSTimer * autorangeTimer;
+    BOOL autorangeActive;
 }
 
 @end
@@ -106,6 +110,9 @@
     handlesShouldBeVisible = NO;
     offsetPositionOfHandles = 0;
     selectionEnabledAfterSecond = false;
+    
+    autorangeActive = YES;
+    autorangeTimer = [NSTimer scheduledTimerWithTimeInterval:2.5 target:self selector:@selector(stopAutorange) userInfo:nil repeats:NO];
     
 }
 
@@ -289,6 +296,7 @@
 }
 
 
+
 - (void)dealloc
 {
     mScaleFont = nil;
@@ -359,6 +367,20 @@
             }
         }
         
+    }
+    
+    [self autorangeSelectedChannel];
+    
+}
+
+
+-(void) autorangeSelectedChannel
+{
+    numVoltsVisible[selectedChannel] = [[BBAudioManager bbAudioManager] currMax]*2.6;
+    if (self.mode == MultichannelGLViewModeThresholding)
+    {
+        float zoom = maxVoltsSpan/ numVoltsVisible[selectedChannel];
+        [dataSourceDelegate setThreshold:(maxVoltsSpan*0.18)/zoom];
     }
     
 }
@@ -545,7 +567,7 @@
             //to the same color as text if we don't make new instance here
             //TODO: find a reason for this
            // mScaleFont = nil;
-            if(frameCount>4)
+            if(frameCount>4 && !autorangeActive)
             {
                 firstDrawAfterChannelChange = NO;
             }
@@ -558,12 +580,12 @@
         currentUserInteractionTime = [[NSDate date] timeIntervalSince1970];
         handlesShouldBeVisible = (currentUserInteractionTime-lastUserInteraction)<HIDE_HANDLES_AFTER_SECONDS;
         
-        //mScaleFont = gl::TextureFont::create( Font("Helvetica", 18) );
+
+
         // this pair of lines is the standard way to clear the screen in OpenGL
         gl::clear( Color( 0.0f, 0.0f, 0.0f ), true );
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
         // Look at it right
-        //+(((float)maxTimeSpan)/(float)numSamplesVisible)
         mCam.setOrtho(-maxTimeSpan, -0.0f, -maxVoltsSpan/2.0f, maxVoltsSpan/2.0f, 1, 100);
         gl::setMatrices( mCam );
         
@@ -572,8 +594,10 @@
         scaleXY.x = fabsf(scaleXY.x - scaleXYZero.x);
         scaleXY.y = fabsf(scaleXY.y - scaleXYZero.y);
 
-        //mCam.setOrtho(-maxTimeSpan*2, maxTimeSpan, -maxVoltsSpan/2.0f, maxVoltsSpan/2.0f, 1, 100);
-        //gl::setMatrices( mCam );
+        if(autorangeActive)
+        {
+            [self autorangeSelectedChannel];
+        }
         
         if ([dataSourceDelegate respondsToSelector:@selector(selecting)])
         {
@@ -590,7 +614,12 @@
         
         // Put the audio on the screen
         gl::disableDepthRead();
+        if([[BBAudioManager bbAudioManager] rtSpikeSorting])
+        {
+            [self drawRTSpikes];
+        }
         [self fillDisplayVector];
+
         int realIndexOfChannel = 0;
         for(int channelIndex=0;channelIndex<maxNumberOfChannels;channelIndex++)
         {
@@ -602,13 +631,15 @@
             }
 
         }
-        
+
         //Draw spikes
         glLineWidth(1.0f);
         if(self.mode == MultichannelGLViewModePlayback)
         {
             [self drawSpikes];
         }
+        
+
         
         //Draw handlws for movement of axis
         if(multichannel || self.mode == MultichannelGLViewModeView)
@@ -817,7 +848,7 @@
         
         int i;
         BOOL hasSomeSpikes;
-        hasSomeSpikes = YES;
+        hasSomeSpikes = NO;
         for(i=0;i<[spikeCountArray count];i++)
         {
             if([[spikeCountArray objectAtIndex:i] integerValue]>0)
@@ -918,6 +949,7 @@
 
     float radiusXAxis = HANDLE_RADIUS*scaleXY.x;
     float radiusYAxis = HANDLE_RADIUS*scaleXY.y;
+    float transparencyForAxis = 1.0f;
     
     //hide/show animation of handles
     if(handlesShouldBeVisible)
@@ -931,22 +963,37 @@
     else
     {
         offsetPositionOfHandles-=radiusXAxis/5.0;
-        if(offsetPositionOfHandles<-5.6*radiusXAxis)
+        if(offsetPositionOfHandles<MAXIMUM_POSITION_OF_HANDLES*radiusXAxis)
         {
-            offsetPositionOfHandles = -5.6*radiusXAxis;
+            offsetPositionOfHandles = MAXIMUM_POSITION_OF_HANDLES*radiusXAxis;
         }
     }
+    transparencyForAxis = 1.0f - offsetPositionOfHandles/(MAXIMUM_POSITION_OF_HANDLES*radiusXAxis);
+    transparencyForAxis = (transparencyForAxis>1.0f)?1.0f:transparencyForAxis;
+    transparencyForAxis = (transparencyForAxis<0.0f)?0.0f:transparencyForAxis;
     
     centerOfCircleX += offsetPositionOfHandles;
     
-    //put background of handles to black
-    glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
-    gl::drawSolidRect(Rectf(-maxTimeSpan,maxVoltsSpan,centerOfCircleX+1.6*radiusXAxis,-maxVoltsSpan));
-
-    //draw all handles
-    for(int indexOfChannel = 0;indexOfChannel<maxNumberOfChannels;indexOfChannel++)
+    if(multichannel || [[BBAudioManager bbAudioManager] rtSpikeSorting])
     {
+    
+        //put background of handles to black
+        glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
+        gl::drawSolidRect(Rectf(-maxTimeSpan,maxVoltsSpan,centerOfCircleX+1.6*radiusXAxis,-maxVoltsSpan));
 
+        //draw all handles
+        for(int indexOfChannel = 0;indexOfChannel<maxNumberOfChannels;indexOfChannel++)
+        {
+            //draw tickmark
+            if([self channelActive:indexOfChannel])
+            {
+                glLineWidth(2.0f);
+                glColor4f(1.0f, 1.0f, 1.0f, 1.0-transparencyForAxis);
+                gl::drawLine(Vec2f(-maxTimeSpan, yOffsets[indexOfChannel]), Vec2f(-maxTimeSpan+20*scaleXY.x, yOffsets[indexOfChannel]));
+                
+            }
+
+             //draw handle for active channels
             [self setColorWithIndex:indexOfChannel transparency:1.0f];
             if(self.mode == MultichannelGLViewModeView || [self channelActive:indexOfChannel])
             {
@@ -957,38 +1004,71 @@
                                       Vec2f(centerOfCircleX+0.35*radiusXAxis, yOffsets[indexOfChannel]-radiusYAxis*0.97)
                                       );
             }
-        
-        [self setColorWithIndex:indexOfChannel transparency:1.0f];
-        glLineWidth(2.0f);
-        if([self channelActive:indexOfChannel])
-        {
-            gl::drawLine(Vec2f(centerOfCircleX, yOffsets[indexOfChannel]), Vec2f(0.0f, yOffsets[indexOfChannel]));
-        }
-        glLineWidth(1.0f);
-        
-        //draw holow unselected handle
-        if(indexOfChannel!=selectedChannel)
-        {
-            glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
-            gl::drawSolidEllipse( Vec2f(centerOfCircleX, yOffsets[indexOfChannel]), radiusXAxis*0.8, radiusYAxis*0.8, 1000 );
-        }
-        else
-        {
-            if(self.mode == MultichannelGLViewModeView && multichannel)
+            
+            //draw line for active channel
+            
+            if([self channelActive:indexOfChannel])
             {
-                //Draw X icon for channel removal
-                xPositionOfRemove = - offsetPositionOfHandles -60*scaleXY.x;
-                yPositionOfRemove = yOffsets[indexOfChannel]+100*scaleXY.y;
-                gl::drawSolidEllipse( Vec2f(xPositionOfRemove, yPositionOfRemove), radiusXAxis+2*scaleXY.x, radiusYAxis+2*scaleXY.y, 1000 );
-                glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
-                gl::drawSolidEllipse( Vec2f(xPositionOfRemove, yPositionOfRemove), radiusXAxis+0.0*scaleXY.x, radiusYAxis+0.0*scaleXY.y, 1000 );
-                [self setColorWithIndex:indexOfChannel transparency:1.0f];
+                [self setColorWithIndex:indexOfChannel transparency:transparencyForAxis];
                 glLineWidth(2.0f);
-                gl::drawLine(Vec2f(xPositionOfRemove-radiusXAxis*0.7, yPositionOfRemove), Vec2f(xPositionOfRemove+radiusXAxis*0.7, yPositionOfRemove));
-                glLineWidth(1.0f);
-            }
-        }
+                gl::drawLine(Vec2f(centerOfCircleX, yOffsets[indexOfChannel]), Vec2f(0.0f, yOffsets[indexOfChannel]));
 
+            }
+            glLineWidth(1.0f);
+            
+            
+            [self setColorWithIndex:indexOfChannel transparency:1.0f];
+            //draw holow unselected handle
+            if(indexOfChannel!=selectedChannel)
+            {
+                glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
+                gl::drawSolidEllipse( Vec2f(centerOfCircleX, yOffsets[indexOfChannel]), radiusXAxis*0.8, radiusYAxis*0.8, 1000 );
+            }
+            else
+            {
+                if(self.mode == MultichannelGLViewModeView && multichannel)
+                {
+                    //Draw X icon for channel removal
+                    //Draw X icon for channel removal
+                    xPositionOfRemove = - offsetPositionOfHandles -60*scaleXY.x;
+                    yPositionOfRemove = yOffsets[indexOfChannel]+100*scaleXY.y;
+                    gl::drawSolidEllipse( Vec2f(xPositionOfRemove, yPositionOfRemove), radiusXAxis+2*scaleXY.x, radiusYAxis+2*scaleXY.y, 1000 );
+                    glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
+                    gl::drawSolidEllipse( Vec2f(xPositionOfRemove, yPositionOfRemove), radiusXAxis+0.0*scaleXY.x, radiusYAxis+0.0*scaleXY.y, 1000 );
+                    [self setColorWithIndex:indexOfChannel transparency:1.0f];
+                    glLineWidth(2.0f);
+                    gl::drawLine(Vec2f(xPositionOfRemove-radiusXAxis*0.7, yPositionOfRemove), Vec2f(xPositionOfRemove+radiusXAxis*0.7, yPositionOfRemove));
+                    glLineWidth(1.0f);
+                }
+            }
+            
+            //draw RT handle on selected channe;
+            if(indexOfChannel == selectedChannel)
+            {
+                if(self.mode == MultichannelGLViewModeView && [[BBAudioManager bbAudioManager] rtSpikeSorting])
+                {
+                    float zoom = maxVoltsSpan/ numVoltsVisible[selectedChannel];
+                    float xPositionOfThreshold = - offsetPositionOfHandles-radiusXAxis;
+                    float yPositionOfThreshold = yOffsets[indexOfChannel]+[[BBAudioManager bbAudioManager] rtThreshold]*zoom;
+                    
+                    gl::drawSolidEllipse( Vec2f(xPositionOfThreshold, yPositionOfThreshold), radiusXAxis, radiusYAxis, 1000 );
+                    gl::drawSolidTriangle(
+                                          Vec2f(xPositionOfThreshold-0.35*radiusXAxis, yPositionOfThreshold+radiusYAxis*0.97),
+                                          Vec2f(xPositionOfThreshold-1.6*radiusXAxis, yPositionOfThreshold),
+                                          Vec2f(xPositionOfThreshold-0.35*radiusXAxis, yPositionOfThreshold-radiusYAxis*0.97)
+                                          );
+                    [self setColorWithIndex:indexOfChannel transparency:transparencyForAxis];
+
+                    gl::drawLine(Vec2f(-maxTimeSpan, yPositionOfThreshold), Vec2f(0.0f, yPositionOfThreshold));
+                    
+                }
+            
+            }
+            
+        
+            
+
+        }
     }
     gl::enableDepthRead();
 }
@@ -1096,6 +1176,49 @@
   
 }
 
+//
+//
+// Draw RT spikes on selected channel
+-(void) drawRTSpikes
+{
+    float * spikeIndexes = [[BBAudioManager bbAudioManager] rtSpikeIndexes];
+    float * spikeValues = [[BBAudioManager bbAudioManager] rtSpikeValues];
+    float zeroOffset = yOffsets[selectedChannel];
+    int numberOfSpikes = [[BBAudioManager bbAudioManager] numberOfRTSpikes];
+    
+    
+    float realNumberOfSamplesVisible = numSamplesVisible;
+    /*if (realNumberOfSamplesVisible > numSamplesMax) {
+     realNumberOfSamplesVisible = numSamplesMax;
+     }*/
+    if (realNumberOfSamplesVisible < numSamplesMin) {
+        realNumberOfSamplesVisible = numSamplesMin;
+    }
+    //calc. real size of time span that is displayed
+    float virtualVisibleTimeSpan = realNumberOfSamplesVisible * 1.0f/samplingRate;
+    
+    float sizeOfPointX = scaleXY.x * 5;
+    float sizeOfPointY = scaleXY.y * 5;
+    [self setGLColor:[BYBGLView getSpikeTrainColorWithIndex:selectedChannel transparency:1.0f]];
+    float zoom = maxVoltsSpan/ numVoltsVisible[selectedChannel];
+    float thrValue = [[BBAudioManager bbAudioManager] rtThreshold];
+    
+    for(int i=0;i<numberOfSpikes;i++)
+    {
+        if(spikeValues[i]!=0.0f && spikeValues[i]>thrValue)
+        {
+            float xValue = spikeIndexes[i] * (-(1.0f/samplingRate)) * (maxTimeSpan/virtualVisibleTimeSpan);
+            if(spikeIndexes[i]>numSamplesMax)
+            {
+                continue;
+            }
+            //recalculate Y axis with zoom and offset
+            float yValue = spikeValues[i] * zoom +zeroOffset;
+            
+            gl::drawSolidEllipse( Vec2f(xValue, yValue), sizeOfPointX,sizeOfPointY, 40 );
+        }
+    }
+}
 
 
 //
@@ -1145,8 +1268,13 @@
     //Debug code for BT buffer size
     if([[BBAudioManager bbAudioManager] btOn])
     {
-        xStringStream.str("");
-        xStringStream << [[BBBTManager btManager] numberOfFramesBuffered] << " Samp.";
+        //xStringStream.str("");
+        //xStringStream << [[BBBTManager btManager] numberOfFramesBuffered] << " Samp.";
+        if([dataSourceDelegate respondsToSelector:@selector(updateBTBufferIndicator)])
+        {
+            [dataSourceDelegate updateBTBufferIndicator];
+        }
+        
     }
     //==================================================
     
@@ -1347,9 +1475,6 @@
         //if user grabbed the handle of channel
         if((multichannel || self.mode == MultichannelGLViewModeView) && (grabbedHandleIndex = [self checkIntersectionWithHandles:glWorldTouchPos])!=-1)
         {
-            //TODO:add here adding of channels
-            
-            
             
             weAreHoldingHandle = YES;
             //move channel
@@ -1408,6 +1533,22 @@
         
         }
         
+        //RT spike sorting line
+        if(self.mode == MultichannelGLViewModeView && [[BBAudioManager bbAudioManager] rtSpikeSorting])
+        {
+            float zoom = maxVoltsSpan/ numVoltsVisible[selectedChannel];
+            Vec2f screenThresholdPos1 = [self worldToScreen:Vec2f(0.0f, [[BBAudioManager bbAudioManager] rtThreshold]*zoom + yOffsets[selectedChannel])];
+            
+            float distance1 = (touchPos.y - screenThresholdPos1.y)*(touchPos.y - screenThresholdPos1.y)+(touchPos.x - screenThresholdPos1.x)*(touchPos.x - screenThresholdPos1.x);
+            
+            if (distance1 < 8500) // set via experimentation
+            {
+                [[BBAudioManager bbAudioManager] setRtThreshold:(glWorldTouchPos.y-yOffsets[selectedChannel])/zoom];
+                return;
+            }
+        }
+        
+        //Remove channel X button
         if([self checkIntesectionWithRemoveButton:glWorldTouchPos])
         {
             if([dataSourceDelegate respondsToSelector:@selector(removeChannel:)])
@@ -1461,8 +1602,7 @@
                     else
                     {
                     // if selection is not enabled
-                        
-                        
+
                         if (touchTimer==nil)//if timer is not running start it
                         {
                             touchTimer = [NSTimer scheduledTimerWithTimeInterval:0.6 target:self selector:@selector(touchHasBeenHeld:) userInfo:nil repeats:NO];
@@ -1528,6 +1668,18 @@
 
 }
 
+-(void) stopAutorange
+{
+    if(autorangeTimer!=nil)
+    {
+        autorangeActive = NO;
+        [autorangeTimer invalidate];
+        autorangeTimer = nil;
+    }
+    
+}
+
+
 -(BOOL) checkIntesectionWithRemoveButton:(Vec2f) touchPos
 {
     float intersectionDistanceX = 800*scaleXY.x*scaleXY.x;
@@ -1541,6 +1693,7 @@
     {
         return YES;
     }
+    return NO;
 }
 
 
@@ -1549,6 +1702,12 @@
 //
 -(int) checkIntersectionWithHandles:(Vec2f) touchPos
 {
+    if(!multichannel)
+    {
+        return -1;
+    }
+    
+    
     float intersectionDistanceX = 8000*scaleXY.x*scaleXY.x;
     float intersectionDistanceY = 8000*scaleXY.y*scaleXY.y;
     
@@ -1738,7 +1897,8 @@
     iindex = iindex%5;
     switch (iindex) {
         case 0:
-            glColor4f(0.9686274509803922f, 0.4980392156862745f, 0.011764705882352941f, transp);
+            glColor4f(0.0f, 1.0f, 0.0f, transp);
+            
             break;
         case 1:
             glColor4f(1.0f, 0.011764705882352941f, 0.011764705882352941f, transp);
@@ -1747,7 +1907,7 @@
             glColor4f( 0.9882352941176471f, 0.9372549019607843f, 0.011764705882352941f, transp);
             break;
         case 3:
-            glColor4f(0.0f, 0.0f, 1.0f, transp);
+            glColor4f(0.9686274509803922f, 0.4980392156862745f, 0.011764705882352941f, transp);
             break;
         case 4:
             glColor4f(1.0f, 0.0f, 1.0f, transp);

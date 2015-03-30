@@ -79,4 +79,15 @@ typedef struct _averageSpikeData {
 //Change threshold's limits so that we don't have overlapping
 -(void) solveOverlapForIndex;
 
+
+//RT spike sorting
+-(void) initRTSpikeSorting:(float) samplingRate;
+-(void) stopRTSpikeSorting;
+-(void) findSpikesInRTForData:(float *) data numberOfFrames:(int) numberOfFramesInData numberOfChannel:(int) numOfChannels selectedChannel:(int) whichChannel;
+-(void) clearRTSpikes;
+-(float *) rtPeaksIndexs;
+-(float *) rtPeaksValues;
+-(int) numberOfRTSpikes;
+@property float rtThreshold;
+
 @end

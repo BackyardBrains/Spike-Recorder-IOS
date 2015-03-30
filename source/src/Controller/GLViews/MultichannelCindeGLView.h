@@ -56,7 +56,7 @@ typedef enum {
 @property (assign) int channelsConfiguration;
 @property (assign) MultichannelGLViewMode mode;
 
-
+-(void) autorangeSelectedChannel;
 -(float *) getChannelOffsets;
 -(void) setChannelOffsets:(float *) tempChannelOffsets;
 
@@ -90,6 +90,7 @@ typedef enum {
 -(BOOL) selecting;
 -(float) rmsOfSelection;
 -(NSMutableArray * ) spikesCount;
+-(void) updateBTBufferIndicator;
 
 -(BOOL) thresholding;
 -(float) threshold;

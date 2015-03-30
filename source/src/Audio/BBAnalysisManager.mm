@@ -19,6 +19,9 @@
 #define kSchmittOFF 2
 
 #define AVERAGE_SPIKE_HALF_LENGTH_SECONDS 0.002
+#define LENGTH_OF_STD_CIRC_ARRAY 200 //used for RT spike sorting
+#define LENGTH_OF_RT_DATA_BUFFER 2048 //used for RT spike sorting
+#define LENGTH_OF_PEAKS_BUFFER 2048 // used to store RT detected peaks
 
 static BBAnalysisManager *bbAnalysisManager = nil;
 
@@ -31,6 +34,24 @@ static BBAnalysisManager *bbAnalysisManager = nil;
     int _currentChannel;
     int _currentTrainIndex;
     NSArray * alphabetArray;
+    
+    
+    //RT spike sorting
+    float rtKillInterval;
+    float *stdCircArray;
+    float *singleChannelDataBuffer;
+    int headSTDCircArray;
+    int rtSchmitPosState;
+    int rtSchmitNegState;
+    float rtMaxPeakValue;
+    int rtMaxPeakIndex;
+    float rtMinPeakValue;
+    int rtMinPeakIndex;
+    float *peaksIndexCircBuffer; //used to store index of real time detected peaks
+    float *peaksValueCircBuffer; //used to store value of real time detected peaks
+    int headPeaksBuffer;
+    float rtSamplingRate;
+    
 }
 @end
 
@@ -38,6 +59,7 @@ static BBAnalysisManager *bbAnalysisManager = nil;
 @implementation BBAnalysisManager
 
 @synthesize fileToAnalyze;
+@synthesize rtThreshold;
 
 
 #pragma mark - Singleton Methods
@@ -88,7 +110,7 @@ static BBAnalysisManager *bbAnalysisManager = nil;
         tempCalculationBuffer = (float *)calloc(BUFFER_SIZE, sizeof(float));
         dspAnalizer = new DSPAnalysis();
         alphabetArray = [[NSArray arrayWithObjects:  @"a", @"b", @"c", @"d", @"e", @"f", @"g", @"h", @"i", @"j", @"k", @"l", @"m", @"n", @"o", @"p", @"q", @"r", @"s", @"t", @"u", @"v", @"w", @"x", @"y", @"z", nil] retain];
-        
+        self.rtThreshold = 0.0f;
         
     }
     
@@ -154,6 +176,235 @@ static BBAnalysisManager *bbAnalysisManager = nil;
     }
     return result;
 }
+
+
+//-------------------- RT spike sorting ---------------------------------
+
+-(float *) rtPeaksIndexs
+{
+    return peaksIndexCircBuffer;
+}
+
+-(float *) rtPeaksValues
+{
+    return peaksValueCircBuffer;
+}
+
+-(int) numberOfRTSpikes
+{
+    return LENGTH_OF_PEAKS_BUFFER;
+}
+
+//
+// Init variables and buffers for real time spike sorting
+//
+-(void) initRTSpikeSorting:(float) samplingRate
+{
+    rtSamplingRate = samplingRate;
+    rtKillInterval = 0.005f;//5ms
+    stdCircArray = (float*)calloc(LENGTH_OF_STD_CIRC_ARRAY,sizeof(float));
+    headSTDCircArray = 0;
+    singleChannelDataBuffer = (float*)calloc(LENGTH_OF_RT_DATA_BUFFER,sizeof(float));
+    
+    rtSchmitPosState  = kSchmittOFF;
+    rtSchmitNegState  = kSchmittOFF;
+    rtMaxPeakValue  = -1000.0;
+    rtMaxPeakIndex  = 0;
+    rtMinPeakValue  = 1000.0;
+    rtMinPeakIndex  = 0;
+    
+    peaksIndexCircBuffer  = (float*)calloc(LENGTH_OF_PEAKS_BUFFER,sizeof(float));
+    peaksValueCircBuffer = (float*)calloc(LENGTH_OF_PEAKS_BUFFER,sizeof(float));
+    headPeaksBuffer = 0;
+}
+
+
+-(void) stopRTSpikeSorting
+{
+    free(stdCircArray);
+    free(singleChannelDataBuffer);
+    free(peaksValueCircBuffer);
+    free(peaksIndexCircBuffer);
+}
+
+-(void) clearRTSpikes
+{
+    memset(peaksValueCircBuffer, 0, sizeof(float)*LENGTH_OF_PEAKS_BUFFER);
+    memset(peaksIndexCircBuffer, 0, sizeof(float)*LENGTH_OF_PEAKS_BUFFER);
+}
+
+//
+//Process batch of data for real time spike sorting
+//
+-(void) findSpikesInRTForData:(float *) data numberOfFrames:(int) numberOfFramesInData numberOfChannel:(int) numOfChannels selectedChannel:(int) whichChannel
+{
+    //move old peaks in time (add numberOfFramesInData to their index)
+    float indexOffset = (float)numberOfFramesInData;
+    vDSP_vsadd(peaksIndexCircBuffer,
+               1,
+               &indexOffset,
+               peaksIndexCircBuffer,
+               1,
+               LENGTH_OF_PEAKS_BUFFER);
+    
+    //first calculate STD of current batch of data and put it in circular STD buffer
+    float zero = 0.0f;
+    vDSP_vsadd((float *)&data[whichChannel],
+               numOfChannels,
+               &zero,
+               singleChannelDataBuffer,
+               1,
+               numberOfFramesInData);
+    stdCircArray[headSTDCircArray] = dspAnalizer->SDT(singleChannelDataBuffer, numberOfFramesInData);
+    headSTDCircArray = (headSTDCircArray+1)%LENGTH_OF_STD_CIRC_ARRAY;
+    
+    //calculate mean STD for last LENGTH_OF_STD_CIRC_ARRAY batches
+    float meanSTD = 0;
+    vDSP_meanv(stdCircArray,1,&meanSTD,LENGTH_OF_STD_CIRC_ARRAY);
+    float sig = meanSTD*1.5;
+    float negsig = -1* sig;
+    
+    
+
+    
+    //find peaks
+    int isample;
+    
+
+    NSMutableArray * peaksIndexes = [[NSMutableArray alloc] initWithCapacity:0];
+    NSMutableArray * peaksIndexesNeg = [[NSMutableArray alloc] initWithCapacity:0];
+
+
+    
+    for(isample=0;isample<numberOfFramesInData;isample++)
+    {
+        //determine state of positive schmitt trigger
+        if(rtSchmitPosState == kSchmittOFF && singleChannelDataBuffer[isample]>sig)
+        {
+            rtSchmitPosState =kSchmittON;
+            rtMaxPeakValue = -1000.0;
+        }
+        else if(rtSchmitPosState == kSchmittON && singleChannelDataBuffer[isample]<0)
+        {
+            rtSchmitPosState = kSchmittOFF;
+            BBSpike * tempSpike = [[BBSpike alloc] initWithValue:rtMaxPeakValue index:rtMaxPeakIndex andTime:((float)isample)/rtSamplingRate];
+            [peaksIndexes addObject:tempSpike];//add max of positive peak
+            [tempSpike release];
+        }
+        
+        //determine state of negative schmitt trigger
+        if(rtSchmitNegState == kSchmittOFF && singleChannelDataBuffer[isample]<negsig)
+        {
+            rtSchmitNegState =kSchmittON;
+            rtMinPeakValue = 1000.0;
+        }
+        else if(rtSchmitNegState == kSchmittON && singleChannelDataBuffer[isample]>0)
+        {
+            rtSchmitNegState = kSchmittOFF;
+            BBSpike * tempSpike = [[BBSpike alloc] initWithValue:rtMinPeakValue index:rtMinPeakIndex andTime:((float)isample)/rtSamplingRate];
+            [peaksIndexesNeg addObject:tempSpike]; //add min of negative peak
+            [tempSpike release];
+        }
+        
+        //find max in positive peak
+        if(rtSchmitPosState==kSchmittON && singleChannelDataBuffer[isample]>rtMaxPeakValue)
+        {
+            rtMaxPeakValue = singleChannelDataBuffer[isample];
+            rtMaxPeakIndex = numberOfFramesInData - isample;
+        }
+        
+        //find min in negative peak
+        else if(rtSchmitNegState==kSchmittON && singleChannelDataBuffer[isample]<rtMinPeakValue)
+        {
+            rtMinPeakValue = singleChannelDataBuffer[isample];
+            rtMinPeakIndex = numberOfFramesInData - isample;
+        }
+    }
+
+    
+    int i;
+    if([peaksIndexes count]>0)
+    {
+        //Filter positive spikes using kill interval
+        
+        for(i=0;i<[peaksIndexes count]-1;i++) //look on the right
+        {
+            if([(BBSpike *)[peaksIndexes objectAtIndex:i] value]<[(BBSpike *)[peaksIndexes objectAtIndex:i+1] value])
+            {
+                if(([(BBSpike *)[peaksIndexes objectAtIndex:i+1] time]-[(BBSpike *)[peaksIndexes objectAtIndex:i] time])<rtKillInterval)
+                {
+                    [peaksIndexes removeObjectAtIndex:i];
+                    i--;
+                }
+            }
+        }
+        
+        for(i=1;i<[peaksIndexes count];i++) //look on the left neighbor
+        {
+            if([(BBSpike *)[peaksIndexes objectAtIndex:i] value]<[(BBSpike *)[peaksIndexes objectAtIndex:i-1] value])
+            {
+                if(([(BBSpike *)[peaksIndexes objectAtIndex:i] time]-[(BBSpike *)[peaksIndexes objectAtIndex:i-1] time])<rtKillInterval)
+                {
+                    [peaksIndexes removeObjectAtIndex:i];
+                    i--;
+                }
+            }
+        }
+    }
+    
+    if([peaksIndexesNeg count]>0)
+    {
+        //Filter negative spikes using kill interval
+        for(i=0;i<[peaksIndexesNeg count]-1;i++)
+        {
+            if([(BBSpike *)[peaksIndexesNeg objectAtIndex:i] value]>[(BBSpike *)[peaksIndexesNeg objectAtIndex:i+1] value])
+            {
+                if(([(BBSpike *)[peaksIndexesNeg objectAtIndex:i+1] time]-[(BBSpike *)[peaksIndexesNeg objectAtIndex:i] time])<rtKillInterval)
+                {
+                    [peaksIndexesNeg removeObjectAtIndex:i];
+                    i--;
+                }
+            }
+        }
+        
+        for(i=1;i<[peaksIndexesNeg count];i++)
+        {
+            if([(BBSpike *)[peaksIndexesNeg objectAtIndex:i] value]>[(BBSpike *)[peaksIndexesNeg objectAtIndex:i-1] value])
+            {
+                if(([(BBSpike *)[peaksIndexesNeg objectAtIndex:i] time]-[(BBSpike *)[peaksIndexesNeg objectAtIndex:i-1] time])<rtKillInterval)
+                {
+                    [peaksIndexesNeg removeObjectAtIndex:i];
+                    i--;
+                }
+            }
+        }
+    }
+    [peaksIndexes addObjectsFromArray:peaksIndexesNeg];
+    
+    //sort all spikes according to time
+    NSSortDescriptor *sortDescriptor;
+    sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"index"
+                                                 ascending:YES];
+    NSArray *sortDescriptors = [NSArray arrayWithObject:sortDescriptor];
+    NSMutableArray *sortedArray;
+    sortedArray = [[peaksIndexes sortedArrayUsingDescriptors:sortDescriptors] mutableCopy];
+    
+    
+    for(i=0;i<[sortedArray count];i++)
+    {
+        peaksIndexCircBuffer[headPeaksBuffer] = (float)[(BBSpike *)[sortedArray objectAtIndex:i] index];
+        peaksValueCircBuffer[headPeaksBuffer] = [(BBSpike *)[sortedArray objectAtIndex:i] value];
+        headPeaksBuffer = (headPeaksBuffer+1)%LENGTH_OF_PEAKS_BUFFER;
+    }
+
+
+    [peaksIndexes release];
+    [peaksIndexesNeg release];
+    [sortDescriptor release];
+    [sortedArray release];
+    
+}
+//------------------------------------------------------------------------
 
 //
 // Find spikes in one channel with index: channelIndex
