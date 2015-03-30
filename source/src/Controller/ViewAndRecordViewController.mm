@@ -738,19 +738,6 @@
 
 
 #pragma mark - Actions
--(void) tapOnRTButton
-{
-    BBAudioManager *bbAudioManager = [BBAudioManager bbAudioManager];
-    if (bbAudioManager.rtSpikeSorting == false) {
-        NSLog(@"Start real time spike sorting");
-        [bbAudioManager startRTSpikeSorting];
-        [self.rtSpikeViewButton nextColor:[BYBGLView getSpikeTrainColorWithIndex:0 transparency:1.0f]];
-    }
-    else {
-        [bbAudioManager stopRTSpikeSorting];
-        [self.rtSpikeViewButton nextColor:[BYBGLView getSpikeTrainColorWithIndex:4 transparency:1.0f]];
-    }
-}
 
 //
 // Start RT processing or just change position of handles

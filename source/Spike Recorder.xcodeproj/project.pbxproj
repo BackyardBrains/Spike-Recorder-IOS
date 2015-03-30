@@ -246,14 +246,11 @@
 
 /* Begin PBXFileReference section */
 		240D8065190E98F6009F9AEA /* CrossCorrViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CrossCorrViewController.xib; sourceTree = "<group>"; };
-<<<<<<< HEAD
-=======
 		241453CD1AB87B33001B5D92 /* RTSpikeSortingButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTSpikeSortingButton.h; sourceTree = "<group>"; };
 		241453CE1AB87B33001B5D92 /* RTSpikeSortingButton.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RTSpikeSortingButton.mm; sourceTree = "<group>"; };
 		241453D01AB88916001B5D92 /* RTCancelButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTCancelButton.h; sourceTree = "<group>"; };
 		241453D11AB88916001B5D92 /* RTCancelButton.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RTCancelButton.mm; sourceTree = "<group>"; };
 		2418FCB41A83EAAB00662547 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
->>>>>>> rtspikesorting
 		2418FDA31A83F14700662547 /* CCGLTouchAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCGLTouchAppDelegate.h; sourceTree = "<group>"; };
 		2418FDA41A83F14700662547 /* CCGLTouchAppDelegate.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = CCGLTouchAppDelegate.mm; sourceTree = "<group>"; };
 		2418FDA51A83F14700662547 /* CCGLTouchView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCGLTouchView.h; sourceTree = "<group>"; };
@@ -1185,13 +1182,10 @@
 				2418FF3E1A83FD6700662547 /* BYBHandleButton.mm */,
 				249C24491A9E272500B81B1A /* BufferStateIndicator.h */,
 				249C244A1A9E272500B81B1A /* BufferStateIndicator.mm */,
-<<<<<<< HEAD
-=======
 				241453CD1AB87B33001B5D92 /* RTSpikeSortingButton.h */,
 				241453CE1AB87B33001B5D92 /* RTSpikeSortingButton.mm */,
 				241453D01AB88916001B5D92 /* RTCancelButton.h */,
 				241453D11AB88916001B5D92 /* RTCancelButton.mm */,
->>>>>>> rtspikesorting
 			);
 			path = Components;
 			sourceTree = "<group>";
