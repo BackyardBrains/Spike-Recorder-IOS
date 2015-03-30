@@ -59,7 +59,8 @@ static BBAnalysisManager *bbAnalysisManager = nil;
 @implementation BBAnalysisManager
 
 @synthesize fileToAnalyze;
-@synthesize rtThreshold;
+@synthesize rtThresholdFirst;
+@synthesize rtThresholdSecond;
 
 
 #pragma mark - Singleton Methods
@@ -110,8 +111,8 @@ static BBAnalysisManager *bbAnalysisManager = nil;
         tempCalculationBuffer = (float *)calloc(BUFFER_SIZE, sizeof(float));
         dspAnalizer = new DSPAnalysis();
         alphabetArray = [[NSArray arrayWithObjects:  @"a", @"b", @"c", @"d", @"e", @"f", @"g", @"h", @"i", @"j", @"k", @"l", @"m", @"n", @"o", @"p", @"q", @"r", @"s", @"t", @"u", @"v", @"w", @"x", @"y", @"z", nil] retain];
-        self.rtThreshold = 0.0f;
-        
+        self.rtThresholdSecond = 0.0f;
+        self.rtThresholdFirst = 0.0f;
     }
     
     return self;

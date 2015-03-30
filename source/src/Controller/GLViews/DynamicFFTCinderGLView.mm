@@ -96,7 +96,7 @@
         rawSignal.push_back(Vec2f(x, 0.0f));
     }
     rawSignal.setClosed(false);
-    rawSignalTimeVisible = 1.0f;
+    rawSignalTimeVisible = 6.0f;
     rawSignalVoltsVisible = 10.0f;
     
     [self startAnimation];
@@ -511,12 +511,16 @@
         Vec2f position1 = [self screenToWorld:touches[0].getPos()];
         Vec2f position2 = [self screenToWorld:touches[1].getPos()];
         
+        
+        
+        //FFT graph zoom
+        
+        Vec2f touchDistanceDelta = [self calculateTouchDistanceChange:touches];
+        
         if(position1.y<currentMaxFreq && position2.y<currentMaxFreq)
         {
-            Vec2f touchDistanceDelta = [self calculateTouchDistanceChange:touches];
+            
             float oldMaxFreq = currentMaxFreq;
-            float oldMaxTime = currentMaxTime;
-            currentMaxTime /= (sqrtf(touchDistanceDelta.x) - 1) + 1;
             currentMaxFreq /= (sqrtf(touchDistanceDelta.y) - 1) + 1;
             
             // Make sure that we don't go out of bounds
@@ -528,69 +532,28 @@
             {
                 currentMaxFreq = maxFreq;
             }
-            
-            if (currentMaxTime < 1.1 )
-            {
-                currentMaxTime = 1.1;
-            }
-            
-            if(currentMaxTime>maxTime)
-            {
-                currentMaxTime = maxTime;
-            }
-            
-            
-            float zero = 0.0f;
-            float zoom = currentMaxTime/oldMaxTime;
-            
-            
-            //compensate for camera move so that raw signal is not zoomed
-            
-            vDSP_vsmsa ((float *)&(rawSignal.getPoints()[0]),
-                        2,
-                        &zoom,
-                        &zero,
-                        (float *)&(rawSignal.getPoints()[0]),
-                        2,
-                        numberOfSamplesMax
-                        );
-            
-            rawSignalVoltsVisible *= currentMaxFreq/oldMaxFreq;
-            
-            
-            
         }
+        
+        
+        //raw signal zoom
         if(position1.y>currentMaxFreq && position2.y>currentMaxFreq)
         {
-            Vec2f touchDistanceDelta = [self calculateTouchDistanceChange:touches];
-            float oldTimeVisible = rawSignalTimeVisible;
-            rawSignalTimeVisible /= (sqrtf(touchDistanceDelta.x) - 1) + 1;
             rawSignalVoltsVisible *= (sqrtf(touchDistanceDelta.y) - 1) + 1;
-            
-            if(rawSignalTimeVisible<1.0f)
-            {
-                
-                float zero = 0.0f;
-                float zoom = oldTimeVisible/rawSignalTimeVisible;
-                
-                
-                //compensate for camera move so that raw signal is not zoomed
-                
-                vDSP_vsmsa ((float *)&(rawSignal.getPoints()[0]),
-                            2,
-                            &zoom,
-                            &zero,
-                            (float *)&(rawSignal.getPoints()[0]),
-                            2,
-                            numberOfSamplesMax
-                            );
-            }
-            else
-            {
-                rawSignalTimeVisible = 1.0f;
-            }
-            
         }
+        
+        currentMaxTime /= (sqrtf(touchDistanceDelta.x) - 1) + 1;
+        
+        
+        if (currentMaxTime < 1.1 )
+        {
+            currentMaxTime = 1.1;
+        }
+        
+        if(currentMaxTime>maxTime)
+        {
+            currentMaxTime = maxTime;
+        }
+
     }
     
     // Touching to change the threshold value, if we're thresholding

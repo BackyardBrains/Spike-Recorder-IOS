@@ -311,11 +311,11 @@
             [theFilenames addObject:[NSURL fileURLWithPath:[[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingPathComponent:thisFile.filename]]];
         }
         self.fileNamesToShare = (NSArray *)theFilenames;
-        [theFilenames release];
+        
         
 
         UIActivityViewController * activities = [[[UIActivityViewController alloc]
-                                                 initWithActivityItems:theFilenames
+                                                 initWithActivityItems:self.fileNamesToShare
                                                  applicationActivities:nil] autorelease];
         
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
@@ -329,6 +329,7 @@
                              completion:nil];
             
         }
+        [theFilenames release];
 
 	}
 	else if ([cell.textLabel.text isEqualToString:@"Delete"])

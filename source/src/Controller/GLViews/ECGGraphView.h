@@ -29,7 +29,9 @@
     int numSamplesMax;
     int numSamplesMin;
     float numSamplesVisible; //current zoom for every channel x axis
-
+    
+    float numVoltsMax;
+    float numVoltsMin;
     float numVoltsVisible; //current zoom for every channel y axis
 
     BOOL firstDrawAfterChannelChange;

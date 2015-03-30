@@ -13,7 +13,7 @@
 	<key>numSamplesMin</key>
 	<string>10</string>
 	<key>numSamplesMax</key>
-	<string>132300</string>
+	<string>264600</string>
 	<key>numSamplesVisibleThreshold</key>
 	<string>1000</string>
 	<key>numSamplesVisible</key>

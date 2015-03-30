@@ -47,7 +47,6 @@
     [self.view sendSubviewToBack:glView];
     [glView startAnimation];
     
-    
     UITapGestureRecognizer *doubleTap = [[[UITapGestureRecognizer alloc] initWithTarget: self action:@selector(autorangeView)] autorelease];
     doubleTap.numberOfTapsRequired = 2;
     [glView addGestureRecognizer:doubleTap];
