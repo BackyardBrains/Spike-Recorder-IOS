@@ -7,10 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2407C4381AE573FD005D671B /* OBSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 2407C4371AE573FD005D671B /* OBSlider.m */; };
 		240D8067190E98F6009F9AEA /* CrossCorrViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 240D8065190E98F6009F9AEA /* CrossCorrViewController.xib */; };
 		241453CF1AB87B33001B5D92 /* RTSpikeSortingButton.mm in Sources */ = {isa = PBXBuildFile; fileRef = 241453CE1AB87B33001B5D92 /* RTSpikeSortingButton.mm */; };
 		241453D21AB88916001B5D92 /* RTCancelButton.mm in Sources */ = {isa = PBXBuildFile; fileRef = 241453D11AB88916001B5D92 /* RTCancelButton.mm */; };
-		2418FCB51A83EAAB00662547 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2418FCB41A83EAAB00662547 /* HealthKit.framework */; };
 		2418FE5F1A83F4C600662547 /* beep.wav in Resources */ = {isa = PBXBuildFile; fileRef = 2418FE5E1A83F4C600662547 /* beep.wav */; };
 		2418FEB71A83F5D700662547 /* again.png in Resources */ = {isa = PBXBuildFile; fileRef = 2418FE891A83F5D700662547 /* again.png */; };
 		2418FEB81A83F5D700662547 /* again@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2418FE8A1A83F5D700662547 /* again@2x.png */; };
@@ -245,12 +245,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2407C4361AE573FD005D671B /* OBSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OBSlider.h; sourceTree = "<group>"; };
+		2407C4371AE573FD005D671B /* OBSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OBSlider.m; sourceTree = "<group>"; };
 		240D8065190E98F6009F9AEA /* CrossCorrViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CrossCorrViewController.xib; sourceTree = "<group>"; };
 		241453CD1AB87B33001B5D92 /* RTSpikeSortingButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTSpikeSortingButton.h; sourceTree = "<group>"; };
 		241453CE1AB87B33001B5D92 /* RTSpikeSortingButton.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RTSpikeSortingButton.mm; sourceTree = "<group>"; };
 		241453D01AB88916001B5D92 /* RTCancelButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTCancelButton.h; sourceTree = "<group>"; };
 		241453D11AB88916001B5D92 /* RTCancelButton.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RTCancelButton.mm; sourceTree = "<group>"; };
-		2418FCB41A83EAAB00662547 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
 		2418FDA31A83F14700662547 /* CCGLTouchAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCGLTouchAppDelegate.h; sourceTree = "<group>"; };
 		2418FDA41A83F14700662547 /* CCGLTouchAppDelegate.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = CCGLTouchAppDelegate.mm; sourceTree = "<group>"; };
 		2418FDA51A83F14700662547 /* CCGLTouchView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCGLTouchView.h; sourceTree = "<group>"; };
@@ -705,9 +706,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2407C4351AE573FD005D671B /* OBSlider */ = {
+			isa = PBXGroup;
+			children = (
+				2407C4361AE573FD005D671B /* OBSlider.h */,
+				2407C4371AE573FD005D671B /* OBSlider.m */,
+			);
+			path = OBSlider;
+			sourceTree = "<group>";
+		};
 		2418FDA11A83F14700662547 /* libs */ = {
 			isa = PBXGroup;
 			children = (
+				2407C4351AE573FD005D671B /* OBSlider */,
 				2418FDA21A83F14700662547 /* CCGLTouchCore */,
 				2418FDA91A83F14700662547 /* CorePlot */,
 				2418FDFA1A83F14700662547 /* Novocaine */,
@@ -1585,6 +1596,7 @@
 				2418FF9D1A83FE1200662547 /* MultichannelCindeGLView.mm in Sources */,
 				2418FF631A83FDA100662547 /* ISIGraphViewController.mm in Sources */,
 				2418FEF51A83F6C800662547 /* BBDCMDExperiment.mm in Sources */,
+				2407C4381AE573FD005D671B /* OBSlider.m in Sources */,
 				2418FF341A83FD3700662547 /* FFTViewController.mm in Sources */,
 				2418FF311A83FD3700662547 /* BBBTChooserViewController.m in Sources */,
 				2418FF5A1A83FDA100662547 /* AutoGraphViewController.mm in Sources */,

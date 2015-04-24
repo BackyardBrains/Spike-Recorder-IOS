@@ -63,6 +63,7 @@
     }*/
     
     [self loadSettings];
+    [self addDoneButton];
     
     [super viewWillAppear:animated];
 }
@@ -71,6 +72,20 @@
 {
     [super viewWillDisappear:animated];
     [self saveSettings];
+}
+
+- (void)addDoneButton {
+    UIToolbar* keyboardToolbar = [[UIToolbar alloc] init];
+    [keyboardToolbar sizeToFit];
+    UIBarButtonItem *flexBarButton = [[UIBarButtonItem alloc]
+                                      initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
+                                      target:nil action:nil];
+    UIBarButtonItem *doneBarButton = [[UIBarButtonItem alloc]
+                                      initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                      target:self.view action:@selector(endEditing:)];
+    keyboardToolbar.items = @[flexBarButton, doneBarButton];
+    self.lowTI.inputAccessoryView = keyboardToolbar;
+    self.highTI.inputAccessoryView = keyboardToolbar;
 }
 
 -(void) applyFilter:(id) sender
