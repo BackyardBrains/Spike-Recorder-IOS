@@ -1,6 +1,6 @@
 
 #import "ThresholdViewController.h"
-#import "BBBTManager.h"
+//#import "BBBTManager.h"
 
 @interface ThresholdViewController() {
     dispatch_source_t callbackTimer;
@@ -40,9 +40,9 @@
     
     [glView loadSettings:TRUE];
     [glView startAnimation];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(noBTConnection) name:NO_BT_CONNECTION object:nil];
+   /* [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(noBTConnection) name:NO_BT_CONNECTION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(btDisconnected) name:BT_DISCONNECTED object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(btSlowConnection) name:BT_SLOW_CONNECTION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(btSlowConnection) name:BT_SLOW_CONNECTION object:nil];*/
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reSetupScreen) name:RESETUP_SCREEN_NOTIFICATION object:nil];
 }
 
@@ -52,14 +52,15 @@
     [[BBAudioManager bbAudioManager] saveSettingsToUserDefaults];
     [[BBAudioManager bbAudioManager] stopThresholding];
     [glView stopAnimation];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:NO_BT_CONNECTION object:nil];
+   /* [[NSNotificationCenter defaultCenter] removeObserver:self name:NO_BT_CONNECTION object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:BT_DISCONNECTED object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:BT_SLOW_CONNECTION object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:BT_SLOW_CONNECTION object:nil];*/
     [[NSNotificationCenter defaultCenter] removeObserver:self name:RESETUP_SCREEN_NOTIFICATION object:nil];
     
     [glView removeFromSuperview];
     [glView release];
     glView = nil;
+   // [super viewWillDisappear:<#animated#>];
 }
 
 - (void)viewDidLoad

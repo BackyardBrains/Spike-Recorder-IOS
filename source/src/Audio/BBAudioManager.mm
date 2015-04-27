@@ -7,7 +7,6 @@
 
 #import "BBAudioManager.h"
 #import "BBAnalysisManager.h"
-#import "BBBTManager.h"
 #import "BBFile.h"
 #import "BBSpike.h"
 #import "BBSpikeTrain.h"
@@ -182,7 +181,7 @@ static BBAudioManager *bbAudioManager = nil;
         tempResamplingBuffer = (float *)calloc(1024, sizeof(float));
         tempResampledBuffer = (float *)calloc(1024, sizeof(float));
         
-        maxNumberOfSamplesToDisplay = [[defaults valueForKey:@"numSamplesMax"] integerValue];
+        maxNumberOfSamplesToDisplay = [[defaults valueForKey:@"numSamplesMaxNew"] integerValue];
 
         //Setup initial values for statistics
         _currentMax = [[defaults valueForKey:@"numVoltsMax"] floatValue]*0.8;
@@ -368,36 +367,36 @@ static BBAudioManager *bbAudioManager = nil;
 
 -(void) testBluetoothConnection
 {
-    [[BBBTManager btManager] startBluetooth];
+   // [[BBBTManager btManager] startBluetooth];
 }
 
 -(void) switchToBluetoothWithChannels:(int) channelConfiguration andSampleRate:(int) inSampleRate
 {
-    btOn = YES;
+  /*  btOn = YES;
     [[BBBTManager btManager] configBluetoothWithChannelConfiguration:channelConfiguration andSampleRate:inSampleRate];
     _sourceSamplingRate=inSampleRate;
     _sourceNumberOfChannels=[[BBBTManager btManager] numberOfChannels];
     
     [self stopAllInputOutput];
     [self resetBuffers];
-    [self makeInputOutput];
+    [self makeInputOutput];*/
 }
 
 -(void) closeBluetooth
 {
-    [self stopAllInputOutput];
+    /*[self stopAllInputOutput];
     [[BBBTManager btManager] stopCurrentBluetoothConnection];
     _sourceSamplingRate =  audioManager.samplingRate;
     _sourceNumberOfChannels = audioManager.numInputChannels;
     btOn = NO;
     [self resetBuffers];
     [self makeInputOutput];
-    [[NSNotificationCenter defaultCenter] postNotificationName:RESETUP_SCREEN_NOTIFICATION object:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:RESETUP_SCREEN_NOTIFICATION object:self];*/
 }
 
 -(int) numberOfFramesBuffered
 {
-    return [[BBBTManager btManager] numberOfFramesBuffered];
+    return 0;//[[BBBTManager btManager] numberOfFramesBuffered];
 }
 
 
@@ -406,7 +405,7 @@ static BBAudioManager *bbAudioManager = nil;
 
 -(void) stopAllInputOutput
 {
-    [[BBBTManager btManager] setInputBlock:nil];
+    //[[BBBTManager btManager] setInputBlock:nil];
     audioManager.inputBlock = nil;
     audioManager.outputBlock = nil;
 }
@@ -415,8 +414,8 @@ static BBAudioManager *bbAudioManager = nil;
 {
     if(btOn)
     {
-        _sourceSamplingRate =  [[BBBTManager btManager] samplingRate];
-        _sourceNumberOfChannels = [[BBBTManager btManager] numberOfChannels];
+     /*   _sourceSamplingRate =  [[BBBTManager btManager] samplingRate];
+        _sourceNumberOfChannels = [[BBBTManager btManager] numberOfChannels];*/
     }
     else
     {
@@ -451,7 +450,7 @@ static BBAudioManager *bbAudioManager = nil;
     if(btOn)
     {
         //Get the data
-        [[BBBTManager btManager] setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
+      /*  [[BBBTManager btManager] setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
         {
              [self additionalProcessingOfInputData:data forNumOfFrames:numFrames andNumChannels:numChannels];
             
@@ -464,7 +463,7 @@ static BBAudioManager *bbAudioManager = nil;
             memset(data, 0, numChannels*numFrames*sizeof(float));
         }];
         
-        
+        */
     }
     else
     {
@@ -487,7 +486,7 @@ static BBAudioManager *bbAudioManager = nil;
         [fileWriter writeNewAudio:data numFrames:numFrames numChannels:numChannels];
     }
     
-    [self filterData:data numFrames:numFrames numChannels:numChannels];
+   // [self filterData:data numFrames:numFrames numChannels:numChannels];
     [self updateBasicStatsOnData:data numFrames:numFrames numChannels:numChannels];
    
     if (thresholding)
@@ -943,7 +942,7 @@ static BBAudioManager *bbAudioManager = nil;
                     
                     
                     //Filtering of recorded data while scrolling
-                    [self filterData:tempCalculationBuffer numFrames:(UInt32)(targetFrame-startFrame) numChannels:_sourceNumberOfChannels];
+                    //[self filterData:tempCalculationBuffer numFrames:(UInt32)(targetFrame-startFrame) numChannels:_sourceNumberOfChannels];
                     
                     
                     
@@ -982,7 +981,7 @@ static BBAudioManager *bbAudioManager = nil;
             
             
             //FIltering of playback data
-            [self filterData:tempCalculationBuffer numFrames:realNumberOfFrames numChannels:_sourceNumberOfChannels];
+          //  [self filterData:tempCalculationBuffer numFrames:realNumberOfFrames numChannels:_sourceNumberOfChannels];
             
             
             //move just numChannels in buffer

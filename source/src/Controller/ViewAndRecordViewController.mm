@@ -11,7 +11,7 @@
 
 #import "ViewAndRecordViewController.h"
 #import "StimulationParameterViewController.h"
-#import "BBBTManager.h"
+//#import "BBBTManager.h"
 #import "BBBTChooserViewController.h"
 
 
@@ -69,9 +69,9 @@
     
     if([[BBAudioManager bbAudioManager] btOn])
     {
-        glView.channelsConfiguration = [[BBBTManager btManager] activeChannels];
+      /*  glView.channelsConfiguration = [[BBBTManager btManager] activeChannels];
         [self.btButton setImage:[UIImage imageNamed:@"inputicon.png"] forState:UIControlStateNormal];
-        [self.bufferStateIndicator setHidden:NO];
+        [self.bufferStateIndicator setHidden:NO];*/
     }
     else
     {
@@ -93,10 +93,10 @@
     [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
     [glView startAnimation];
     */
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(noBTConnection) name:NO_BT_CONNECTION object:nil];
+  /*  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(noBTConnection) name:NO_BT_CONNECTION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(btDisconnected) name:BT_DISCONNECTED object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(btSlowConnection) name:BT_SLOW_CONNECTION object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(foundBTConnection) name:FOUND_BT_CONNECTION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(foundBTConnection) name:FOUND_BT_CONNECTION object:nil];*/
     
 
      [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reSetupScreen) name:RESETUP_SCREEN_NOTIFICATION object:nil];
@@ -126,10 +126,10 @@
     {
         [self btButtonPressed:nil];
     }*/
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:NO_BT_CONNECTION object:nil];
+  /*  [[NSNotificationCenter defaultCenter] removeObserver:self name:NO_BT_CONNECTION object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:FOUND_BT_CONNECTION object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:BT_DISCONNECTED object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:BT_SLOW_CONNECTION object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:BT_SLOW_CONNECTION object:nil];*/
     [[NSNotificationCenter defaultCenter] removeObserver:self name:RESETUP_SCREEN_NOTIFICATION object:nil];
 }
 
@@ -340,7 +340,7 @@
 
 -(void) updateBTBufferIndicator
 {
-    [self.bufferStateIndicator updateBufferState:(((float)[[BBBTManager btManager] numberOfFramesBuffered])/[[BBAudioManager bbAudioManager] sourceSamplingRate])];
+  /*  [self.bufferStateIndicator updateBufferState:(((float)[[BBBTManager btManager] numberOfFramesBuffered])/[[BBAudioManager bbAudioManager] sourceSamplingRate])];*/
 }
 
 - (IBAction)btButtonPressed:(id)sender {
@@ -396,9 +396,9 @@
     [self setGLView:glView];
     if([[BBAudioManager bbAudioManager] btOn])
     {
-        glView.channelsConfiguration = [[BBBTManager btManager] activeChannels];
+      /*  glView.channelsConfiguration = [[BBBTManager btManager] activeChannels];
         [self.btButton setImage:[UIImage imageNamed:@"inputicon.png"] forState:UIControlStateNormal];
-        [self.bufferStateIndicator setHidden:NO];
+        [self.bufferStateIndicator setHidden:NO];*/
     }
     else
     {
@@ -472,7 +472,7 @@
 
 -(void) foundBTConnection
 {
-    NSLog(@"foundConnection view function. Remove the Spinner");
+  /*  NSLog(@"foundConnection view function. Remove the Spinner");
     SAFE_ARC_RELEASE(channelPopover); channelPopover=nil;
     
     int tempSampleRate = [[BBBTManager btManager] maxSampleRateForDevice]/[[BBBTManager btManager] maxNumberOfChannelsForDevice];
@@ -513,7 +513,7 @@
     [self.view sendSubviewToBack:glView];
 
     // set our view controller's prop that will hold a pointer to our newly created CCGLTouchView
-    [self setGLView:glView];
+    [self setGLView:glView];*/
 }
 
 //
@@ -522,14 +522,14 @@
 -(int) countNumberOfChannels:(int) channelsConfig
 {
     int returnNumberOfChannels = 0;
-    int tempMask = 1;
+   /* int tempMask = 1;
     for(int i=0;i<[[BBBTManager btManager] maxNumberOfChannelsForDevice];i++)
     {
         if((channelsConfig & (tempMask<<i))>0)
         {
             returnNumberOfChannels++;
         }
-    }
+    }*/
     return returnNumberOfChannels;
 }
 
@@ -537,7 +537,7 @@
 -(void) removeBTChannel:(int) indexOfChannel
 {
 
-    int tempActiveChannels = [[BBBTManager btManager] activeChannels];
+   /* int tempActiveChannels = [[BBBTManager btManager] activeChannels];
     int tempMask = 1;
     tempMask = tempMask<<indexOfChannel;
     tempActiveChannels = tempActiveChannels & (~tempMask);
@@ -564,14 +564,14 @@
     [self.view sendSubviewToBack:glView];
     
     // set our view controller's prop that will hold a pointer to our newly created CCGLTouchView
-    [self setGLView:glView];
+    [self setGLView:glView];*/
 
 }
 
 
 -(void) addBTChannel:(int) indexOfChannel
 {
-    int tempActiveChannels = [[BBBTManager btManager] activeChannels];
+  /*  int tempActiveChannels = [[BBBTManager btManager] activeChannels];
     int tempMask = 1;
     tempMask = tempMask<<indexOfChannel;
     tempActiveChannels = tempActiveChannels | tempMask;
@@ -600,7 +600,7 @@
     [self.view sendSubviewToBack:glView];
     
     // set our view controller's prop that will hold a pointer to our newly created CCGLTouchView
-    [self setGLView:glView];
+    [self setGLView:glView];*/
 
 }
 

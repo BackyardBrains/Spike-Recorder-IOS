@@ -11,7 +11,7 @@
 #import "BBSpike.h"
 #import "BBSpikeTrain.h"
 #import "BBChannel.h"
-#import "BBBTManager.h"
+//#import "BBBTManager.h"
 #import "BBAudioManager.h"
 #define HANDLE_RADIUS 20
 
@@ -127,7 +127,7 @@
     
     if([[BBAudioManager bbAudioManager] btOn])
     {
-        maxNumberOfChannels = [[BBBTManager btManager] maxNumberOfChannelsForDevice];
+      //  maxNumberOfChannels = [[BBBTManager btManager] maxNumberOfChannelsForDevice];
     }
     else
     {
@@ -227,7 +227,7 @@
     
     if([[BBAudioManager bbAudioManager] btOn])
     {
-        channelsConfiguration = [[BBBTManager btManager] activeChannels];
+       // channelsConfiguration = [[BBBTManager btManager] activeChannels];
     }
     else
     {
@@ -348,7 +348,7 @@
         }
     }
     else {
-        numSamplesMax = [[defaults valueForKey:@"numSamplesMax"] floatValue];
+        numSamplesMax = [[defaults valueForKey:@"numSamplesMaxNew"] floatValue];
         numSamplesMin = [[defaults valueForKey:@"numSamplesMin"] floatValue];
         numSamplesVisible = [[defaults valueForKey:@"numSamplesVisible"] floatValue];
         numVoltsMin = [[defaults valueForKey:@"numVoltsMin"] floatValue];
@@ -408,7 +408,7 @@
         [defaults setValue:[NSNumber numberWithFloat:numVoltsVisible[0]] forKey:@"numVoltsVisibleThreshold"];
     }
     else {
-        [defaults setValue:[NSNumber numberWithFloat:numSamplesMax] forKey:@"numSamplesMax"];
+        [defaults setValue:[NSNumber numberWithFloat:numSamplesMax] forKey:@"numSamplesMaxNew"];
         [defaults setValue:[NSNumber numberWithFloat:numSamplesMin] forKey:@"numSamplesMin"];
         [defaults setValue:[NSNumber numberWithFloat:numSamplesVisible] forKey:@"numSamplesVisible"];
         [defaults setValue:[NSNumber numberWithFloat:numVoltsMin] forKey:@"numVoltsMin"];

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6751" systemVersion="14C109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7531" systemVersion="14C109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6736"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7520"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ViewAndRecordViewController">
@@ -72,7 +72,7 @@
                         <action selector="stimulatePrefButtonPressed:" destination="-1" eventType="touchUpInside" id="26"/>
                     </connections>
                 </button>
-                <button opaque="NO" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="q8i-Hd-N5S">
+                <button hidden="YES" opaque="NO" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="q8i-Hd-N5S">
                     <rect key="frame" x="45" y="15" width="50" height="42"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <state key="normal" image="bluetooth.png">
@@ -98,7 +98,7 @@
                         <action selector="stopRecording:" destination="-1" eventType="touchUpInside" id="32"/>
                     </connections>
                 </button>
-                <view contentMode="scaleToFill" id="FHw-PQ-7Yp" customClass="RTSpikeSortingButton">
+                <view hidden="YES" contentMode="scaleToFill" id="FHw-PQ-7Yp" customClass="RTSpikeSortingButton">
                     <rect key="frame" x="99" y="15" width="39" height="39"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
