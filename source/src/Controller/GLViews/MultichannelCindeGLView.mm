@@ -1392,6 +1392,33 @@
     return Vec2f(deltaX, deltaY);
 }
 
+
+
+//
+//1 - vertical pinch, 2 - horizontal pinch, 0 no pinch
+//
+-(int) determinePinchType:(std::vector<ci::app::TouchEvent::Touch>)touches
+{
+    float thisXDistance = fabs(touches[0].getX() - touches[1].getX());
+    float thisYDistance = fabs(touches[0].getY() - touches[1].getY());
+    if(thisYDistance>thisXDistance)
+    {
+        if(thisXDistance<140)
+        {
+            return 1;
+        }
+    }
+    else
+    {
+        if(thisYDistance<140)
+        {
+            return 2;
+        }
+    }
+   // NSLog(@"X: %f,   Y: %f ", thisXDistance, thisYDistance);
+    return 0;
+}
+
 //
 // React on one and two finger gestures
 //
@@ -1411,15 +1438,25 @@
         
         float deltax = fabs(touchDistanceDelta.x-1.0f);
         float deltay = fabs(touchDistanceDelta.y-1.0f);
-        // NSLog(@"Touch X: %f", deltax/deltay);
-        if((deltax/deltay)<0.4 || touchDistanceDelta.y != 1.0f)
+         NSLog(@"Touch X: %f", deltax/deltay);
+     
+        //determine pinch type and make zoom mutual exclusive (vertical or horizontal)
+        int pinchType = [self determinePinchType:touches];
+        switch(pinchType)
         {
-            touchDistanceDelta.x = 1.0f;
+                case 1: //vertical pinch
+                    touchDistanceDelta.x = 1.0f;
+                break;
+                case 2: //horizontal pinch
+                    touchDistanceDelta.y = 1.0f;
+                break;
+                default: //diagonal pinch, we don't react on that
+                    touchDistanceDelta.x = 1.0f;
+                    touchDistanceDelta.y = 1.0f;
+                break;
         }
-        if((deltay/deltax)<0.4)
-        {
-            touchDistanceDelta.y = 1.0f;
-        }
+       
+        
         
         numSamplesVisible /= (touchDistanceDelta.x - 1) + 1;
         numVoltsVisible[selectedChannel] /= (touchDistanceDelta.y - 1) + 1;
