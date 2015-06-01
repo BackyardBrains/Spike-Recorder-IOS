@@ -348,7 +348,7 @@
         }
     }
     else {
-        numSamplesMax = [[defaults valueForKey:@"numSamplesMax"] floatValue];
+        numSamplesMax = [[defaults valueForKey:@"numSamplesMaxExt"] floatValue];
         numSamplesMin = [[defaults valueForKey:@"numSamplesMin"] floatValue];
         numSamplesVisible = [[defaults valueForKey:@"numSamplesVisible"] floatValue];
         numVoltsMin = [[defaults valueForKey:@"numVoltsMin"] floatValue];
@@ -408,7 +408,7 @@
         [defaults setValue:[NSNumber numberWithFloat:numVoltsVisible[0]] forKey:@"numVoltsVisibleThreshold"];
     }
     else {
-        [defaults setValue:[NSNumber numberWithFloat:numSamplesMax] forKey:@"numSamplesMax"];
+        [defaults setValue:[NSNumber numberWithFloat:numSamplesMax] forKey:@"numSamplesMaxExt"];
         [defaults setValue:[NSNumber numberWithFloat:numSamplesMin] forKey:@"numSamplesMin"];
         [defaults setValue:[NSNumber numberWithFloat:numSamplesVisible] forKey:@"numSamplesVisible"];
         [defaults setValue:[NSNumber numberWithFloat:numVoltsMin] forKey:@"numVoltsMin"];
@@ -1438,7 +1438,7 @@
         
         float deltax = fabs(touchDistanceDelta.x-1.0f);
         float deltay = fabs(touchDistanceDelta.y-1.0f);
-         NSLog(@"Touch X: %f", deltax/deltay);
+        // NSLog(@"Touch X: %f", deltax/deltay);
      
         //determine pinch type and make zoom mutual exclusive (vertical or horizontal)
         int pinchType = [self determinePinchType:touches];

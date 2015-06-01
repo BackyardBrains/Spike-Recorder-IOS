@@ -72,7 +72,7 @@
     [[NSUserDefaults standardUserDefaults] registerDefaults:defaultsDict];
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
-    numSamplesMax = [[defaults valueForKey:@"numSamplesMax"] floatValue];
+    numSamplesMax = [[defaults valueForKey:@"numSamplesMaxExt"] floatValue];
     numSamplesMin  = (int) (0.1*samplingRate);
     numSamplesVisible = (float)(int) (numSamplesMax + numSamplesMin)/2;
     

@@ -83,7 +83,7 @@
     [[NSUserDefaults standardUserDefaults] registerDefaults:defaultsDict];
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
-    numberOfSamplesMax = [[defaults valueForKey:@"numSamplesMax"] floatValue];
+    numberOfSamplesMax = [[defaults valueForKey:@"numSamplesMaxExt"] floatValue];
     
     //Make x coordinates for raw signal
     rawSignal = PolyLine2f();

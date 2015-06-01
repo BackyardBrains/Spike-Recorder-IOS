@@ -12,7 +12,7 @@
 	<integer>0</integer>
 	<key>numSamplesMin</key>
 	<string>10</string>
-	<key>numSamplesMax</key>
+	<key>numSamplesMaxExt</key>
 	<string>264600</string>
 	<key>numSamplesVisibleThreshold</key>
 	<string>1000</string>
