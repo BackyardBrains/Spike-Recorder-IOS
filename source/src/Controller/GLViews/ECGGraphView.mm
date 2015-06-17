@@ -19,10 +19,11 @@
 //
 - (void)setup
 {
+    frameCount = 0;
     [self enableMultiTouch:YES];
     firstDrawAfterChannelChange = YES;
     [super setup];//this calls [self startAnimation]
-    
+
     // Setup the camera
 	mCam.lookAt( Vec3f(0.0f, 0.0f, 40.0f), Vec3f::zero() );
     
@@ -32,21 +33,31 @@
     self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     
     // Set up our font, which we'll use to display the unit scales
-    heartRateFont = gl::TextureFont::create( Font("Helvetica", 32) );
-    mScaleFont = gl::TextureFont::create( Font("Helvetica", 18) );
+    heartFont = Font("Helvetica", 32);
+    scaleFont =  Font("Helvetica", 18) ;
+    heartRateFont = gl::TextureFont::create( heartFont );
+    mScaleFont = gl::TextureFont::create( scaleFont );
     foundBeat = NO;
     lastUserInteraction = [[NSDate date] timeIntervalSince1970];
     handlesShouldBeVisible = NO;
     offsetPositionOfHandle = 0.0f;
     
 
-    
-    autorangeActive = YES;
-    autorangeTimer = [NSTimer scheduledTimerWithTimeInterval:2.5 target:self selector:@selector(stopAutorange) userInfo:nil repeats:NO];
+    int frameCount;//counts frames, used to fix white lable bug
+   // autorangeActive = YES;
+   // autorangeTimer = [NSTimer scheduledTimerWithTimeInterval:2.5 target:self selector:@selector(stopAutorange) userInfo:nil repeats:NO];
 }
 
 -(void) stopAutorange
 {
+
+    [self autorangeSelectedChannel];
+    
+    heartRateFont = nil;
+    mScaleFont = nil;
+    heartRateFont = gl::TextureFont::create( Font("Helvetica", 32) );
+    mScaleFont = gl::TextureFont::create( Font("Helvetica", 18) );
+
     if(autorangeTimer!=nil)
     {
         autorangeActive = NO;
@@ -65,6 +76,7 @@
     [self stopAnimation];
     
     firstDrawAfterChannelChange = YES;
+    frameCount = 0;
     samplingRate = inSamplingRate;
     [[BBAudioManager bbAudioManager] setEcgThreshold:0.0f];
     // Setup display vector
@@ -128,10 +140,17 @@
     
         if(firstDrawAfterChannelChange)
         {
+
+            
             //this is fix for bug. Draw text starts to paint background of text
             //to the same color as text if we don't make new instance here
             //TODO: find a reason for this
-            firstDrawAfterChannelChange = NO;
+            if(frameCount>6 )
+            {
+                firstDrawAfterChannelChange = NO;
+            }
+            [self autorangeSelectedChannel];
+            
             heartRateFont = nil;
             mScaleFont = nil;
             heartRateFont = gl::TextureFont::create( Font("Helvetica", 32) );
@@ -139,10 +158,31 @@
             
         }
     
-        if(autorangeActive)
+    
+   /* if(firstDrawAfterChannelChange )
+    {
+        //frameCount++;
+        //this is fix for bug. Draw text starts to paint background of text
+        //to the same color as text if we don't make new instance here
+        //TODO: find a reason for this
+        // mScaleFont = nil;
+        if(frameCount>4 && !autorangeActive)
         {
-            [self autorangeSelectedChannel];
+            firstDrawAfterChannelChange = NO;
         }
+        if((frameCount %2)==1)
+        {
+            heartRateFont = nil;
+            mScaleFont = nil;
+            heartRateFont = gl::TextureFont::create( heartFont );
+        
+            mScaleFont = gl::TextureFont::create( scaleFont );
+        }
+    }*/
+    
+    
+    
+
     
     
         if(foundBeat != [[BBAudioManager bbAudioManager] heartBeatPresent])
@@ -191,12 +231,13 @@
         gl::disableDepthRead();
         gl::setMatricesWindow( Vec2i(self.frame.size.width, self.frame.size.height) );
         gl::enableAlphaBlending();
-    
+
+
     
         //Draw heart bit rate text
     
         std::stringstream rateString;
-        glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+    
         Vec2f xScaleTextSize;
         Vec2f xScaleTextPosition = Vec2f(0.,0.);
         glLineWidth(2.0f);
@@ -207,6 +248,8 @@
         xScaleTextPosition.y =43;
         if(foundBeat)
         {
+
+            glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
             heartRateFont->drawString(rateString.str(), xScaleTextPosition);
         }
     
@@ -225,12 +268,12 @@
             // xStringStream.precision(2);
             xStringStream << fixed << xScale << " msec";
         }
-
-    
         xScaleTextSize = mScaleFont->measureString(xStringStream.str());
         xScaleTextPosition = Vec2f(0.,0.);
         xScaleTextPosition.x = (self.frame.size.width - xScaleTextSize.x)/2.0;
         xScaleTextPosition.y =self.frame.size.height - 18;
+
+        glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         mScaleFont->drawString(xStringStream.str(), xScaleTextPosition);
     
 }

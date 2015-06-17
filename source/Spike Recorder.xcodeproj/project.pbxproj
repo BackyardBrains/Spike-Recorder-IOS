@@ -1794,7 +1794,7 @@
 				PRODUCT_NAME = "Spike Recorder";
 				PROVISIONING_PROFILE = "";
 				RUN_CLANG_STATIC_ANALYZER = YES;
-				SDKROOT = iphoneos8.1;
+				SDKROOT = iphoneos8.3;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "$(CINDER_PATH)/include";
 				VALID_ARCHS = "armv7 arm64 armv7s ";
@@ -1853,7 +1853,7 @@
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "9fa7cb93-fd75-4c85-a02b-3f929ed76b6b";
 				RUN_CLANG_STATIC_ANALYZER = YES;
-				SDKROOT = iphoneos8.1;
+				SDKROOT = iphoneos8.3;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "$(CINDER_PATH)/include";
 				VALID_ARCHS = "armv7 arm64 armv7s ";

@@ -112,8 +112,7 @@
     offsetPositionOfHandles = 0;
     selectionEnabledAfterSecond = false;
     
-    autorangeActive = YES;
-    autorangeTimer = [NSTimer scheduledTimerWithTimeInterval:2.5 target:self selector:@selector(stopAutorange) userInfo:nil repeats:NO];
+
     
 }
 
@@ -124,6 +123,12 @@
 //
 - (void)setNumberOfChannels:(int) newNumberOfChannels samplingRate:(float) newSamplingRate andDataSource:(id <MultichannelGLViewDelegate>) newDataSource
 {
+    
+    if(self.mode != MultichannelGLViewModeThresholding)
+    {
+        autorangeActive = YES;
+        autorangeTimer = [NSTimer scheduledTimerWithTimeInterval:2.5 target:self selector:@selector(stopAutorange) userInfo:nil repeats:NO];
+    }
     
     if([[BBAudioManager bbAudioManager] btOn])
     {
@@ -381,7 +386,7 @@
     if (self.mode == MultichannelGLViewModeThresholding)
     {
         float zoom = maxVoltsSpan/ numVoltsVisible[selectedChannel];
-        [dataSourceDelegate setThreshold:(maxVoltsSpan*0.18)/zoom];
+        [dataSourceDelegate setThreshold:(maxVoltsSpan*0.13)/zoom];
     }
     
 }
@@ -573,7 +578,9 @@
                 firstDrawAfterChannelChange = NO;
             }
             //mFont = Font("Helvetica", 18);
+           
             mScaleFont = gl::TextureFont::create( mFont );
+            
            // mScaleFont = gl::TextureFont::create( mFont );
           //  mScaleFont->create(mFont);
         }
@@ -796,7 +803,7 @@
     gl::color( ColorA( 1.0, 1.0f, 1.0f, 1.0f ) );
     //draw text
     mScaleFont->drawString(timeStream.str(), xScaleTextPosition);
-    
+
     
     //Draw RMS -------------------------------------------------
     

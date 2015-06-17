@@ -16,8 +16,12 @@
 {
     CameraOrtho mCam;
     gl::Texture mColorScale;
+    Font heartFont;
+    Font scaleFont;
     gl::TextureFontRef heartRateFont;
     gl::TextureFontRef mScaleFont;
+    gl::TextureFontRef tempHeartRateFont;
+    gl::TextureFontRef tempMScaleFont;
     
     PolyLine2f displayVector;
 
