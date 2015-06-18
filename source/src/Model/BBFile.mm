@@ -189,8 +189,9 @@ using namespace tinyxml2;
 
 -(void) changeParameterWithName:(NSString *)name forParent:(XMLElement *) parent withValue:(NSString *) value
 {
+    
     XMLElement * tempElement = parent->FirstChildElement([name UTF8String]);
-    if(tempElement)
+    if(tempElement && value!=nil)
     {
         tempElement->SetText([value UTF8String]);
     }
