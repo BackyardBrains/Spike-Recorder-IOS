@@ -31,7 +31,7 @@
 	float filelength;
     int numberOfChannels;
     int fileUsage;
-    
+    NSString * inputDevice;
 	NSMutableArray *_allSpikes;
     NSMutableArray *_allChannels;
     NSMutableArray *_allEvents;
@@ -42,6 +42,7 @@
 @property (nonatomic, retain) NSString *shortname;
 @property (nonatomic, retain) NSString *subname;
 @property (nonatomic, retain) NSString *comment;
+@property (nonatomic, retain) NSString *inputDevice;
 @property (nonatomic, retain) NSDate *date;
 @property float samplingrate;
 @property float gain;

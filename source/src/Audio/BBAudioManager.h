@@ -133,6 +133,8 @@ typedef enum BBStimulationType
 - (float)fetchAudio:(float *)data numFrames:(UInt32)numFrames whichChannel:(UInt32)whichChannel stride:(UInt32)stride;
 - (float)fetchAudioForSelectedChannel:(float *)data numFrames:(UInt32)numFrames stride:(UInt32)stride;
 - (NSMutableArray *) getChannels;
+-(NSString *) inputDeviceType;
+
 
 //Selection
 -(void) endSelection;

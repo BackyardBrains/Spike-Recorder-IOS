@@ -999,7 +999,11 @@ static BBBTManager *btManager = nil;
     return _confSamplingRate;
 }
 
+-(NSString *) btDeviceType
+{
+    return @"BYB Bluetooth device";
 
+}
 
 
 @end

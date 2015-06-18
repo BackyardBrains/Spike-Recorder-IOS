@@ -26,6 +26,7 @@
 @synthesize gain;
 @synthesize filelength;
 @synthesize fileUsage;
+@synthesize inputDevice;
 
 @synthesize spikesFiltered;
 
@@ -222,23 +223,28 @@ using namespace tinyxml2;
         NSString *dateCreated = [df stringFromDate:self.date];
         [df release];
         [self changeParameterWithName:@"datecreated" forParent:rootElement withValue:dateCreated];
-        [self changeParameterWithName:@"description" forParent:rootElement withValue:self.description];
+        [self changeParameterWithName:@"description" forParent:rootElement withValue:self.comment];
         [self changeParameterWithName:@"subjectname" forParent:rootElement withValue:@"unknown"];
         [self changeParameterWithName:@"createdby" forParent:rootElement withValue:@"unknown"];
+        [self changeParameterWithName:@"hardwaretype" forParent:rootElement withValue:self.inputDevice];
         [self changeParameterWithName:@"softwaretype" forParent:rootElement withValue:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleIdentifier"]];
         [self changeParameterWithName:@"softwareversion" forParent:rootElement withValue:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"]];
         [self changeParameterWithName:@"softwarebuild" forParent:rootElement withValue:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]];
+       
+        [self changeParameterWithName:@"samplingrate" forParent:rootElement withValue:[NSString stringWithFormat:@"%d", (int)self.samplingrate ]];
+        [self changeParameterWithName:@"numberofchannels" forParent:rootElement withValue:[NSString stringWithFormat:@"%d", self.numberOfChannels ]];
+        
+        [self changeParameterWithName:@"duration" forParent:rootElement withValue:[NSString stringWithFormat:@"%f", self.filelength ]];
+        [self changeParameterWithName:@"lengthinsamples" forParent:rootElement withValue:[NSString stringWithFormat:@"%d", (int)(self.filelength * self.samplingrate) ]];
+        
     }
     else
     {
         NSLog(@"Error: Problem parsing XML template. No root element.");
     }
     
-    
-    //->FirstChildElement("softwareversion")->SetText([ UTF8String]);
-   
     //
-    NSURL * tempUrl = [NSURL fileURLWithPath:[[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingPathComponent:@"temp.xml"]];
+    NSURL * tempUrl = [NSURL fileURLWithPath:[[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingPathComponent:@"descriptor.xml"]];
      doc.SaveFile([[tempUrl path] UTF8String]);
     return tempUrl;
 }

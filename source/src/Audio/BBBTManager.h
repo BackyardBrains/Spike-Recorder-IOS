@@ -39,5 +39,5 @@ typedef void (^BBBTInputBlock)(float *data, UInt32 numFrames, UInt32 numChannels
 -(int) maxNumberOfChannelsForDevice;
 -(int) maxSampleRateForDevice;
 -(int) activeChannels;
-
+-(NSString *) btDeviceType;
 @end

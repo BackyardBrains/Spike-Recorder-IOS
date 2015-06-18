@@ -15,6 +15,7 @@
 #import "ISIGraphViewController.h"
 #import "AutoGraphViewController.h"
 #import "AverageSpikeGraphViewController.h"
+#import "ZipArchive.h"
 
 @implementation BBFileActionViewControllerTBV
 
@@ -305,13 +306,32 @@
 	{
         //grab just the filenames
         NSMutableArray *theFilenames = [[NSMutableArray alloc] initWithObjects:nil];
+        
+        ZipArchive* zip = [[[ZipArchive alloc] init] autorelease];
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+      
+        NSString * nameOfFile = [((BBFile *)[self.files objectAtIndex:0]) shortname];
+        NSString * nameOfZipFile = [NSString stringWithFormat:@"%@.byb",nameOfFile];
+        NSString *zipPath = [NSString stringWithFormat:@"%@/%@",[paths objectAtIndex:0],nameOfZipFile] ;
+        
+        
+        [zip CreateZipFile2:zipPath];
+       
+        
 		for (BBFile *thisFile in self.files)
         {
             [thisFile saveWithoutArrays];
-           // NSURL * url = [thisFile prepareBYBFile];
-            [theFilenames addObject:[NSURL fileURLWithPath:[[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingPathComponent:thisFile.filename]]];
+            NSURL * descriptorUrl = [thisFile prepareBYBFile];
+            [zip addFileToZip:[descriptorUrl path] newname:[[descriptorUrl path] lastPathComponent]];
+            NSString * pathOfAudioFile = [[NSURL fileURLWithPath:[[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingPathComponent:thisFile.filename]] path];
+            [zip addFileToZip:pathOfAudioFile newname:[pathOfAudioFile lastPathComponent]];
+
+           /* [theFilenames addObject:[NSURL fileURLWithPath:[[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingPathComponent:thisFile.filename]]];*/
         }
+        [zip CloseZipFile2];
+        [theFilenames addObject:[NSURL fileURLWithPath:zipPath isDirectory:NO]];
         self.fileNamesToShare = (NSArray *)theFilenames;
+        
         
         
 

@@ -405,6 +405,18 @@ static BBAudioManager *bbAudioManager = nil;
 #pragma mark - Helper functions
 
 
+-(NSString *) inputDeviceType
+{
+    if(btOn)
+    {
+        return [[BBBTManager btManager] btDeviceType];
+    }
+    else
+    {
+        return audioManager.inputRoute;
+    }
+}
+
 -(void) stopAllInputOutput
 {
     [[BBBTManager btManager] setInputBlock:nil];

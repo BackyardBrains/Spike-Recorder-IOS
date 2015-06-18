@@ -269,6 +269,7 @@
         }
         aFile.numberOfChannels = [bbAudioManager sourceNumberOfChannels];
         aFile.samplingrate = [bbAudioManager sourceSamplingRate];
+        aFile.inputDevice = [NSString stringWithFormat:@"IOS - %@", [bbAudioManager inputDeviceType]];
         [aFile setupChannels];//create name of channels without spike trains
         
         NSLog(@"URL: %@", [aFile fileURL]);
