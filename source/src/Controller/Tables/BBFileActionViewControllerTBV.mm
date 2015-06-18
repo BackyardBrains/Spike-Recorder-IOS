@@ -308,6 +308,7 @@
 		for (BBFile *thisFile in self.files)
         {
             [thisFile saveWithoutArrays];
+           // NSURL * url = [thisFile prepareBYBFile];
             [theFilenames addObject:[NSURL fileURLWithPath:[[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingPathComponent:thisFile.filename]]];
         }
         self.fileNamesToShare = (NSArray *)theFilenames;

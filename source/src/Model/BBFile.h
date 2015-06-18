@@ -60,6 +60,8 @@
 -(id) initWav;
 -(void) saveWithoutArrays;
 
+-(NSURL *) prepareBYBFile;
+
 -(int) numberOfSpikeTrains;
 -(void) setupChannels;
 -(BBSpikeTrain *) getSpikeTrainWithIndex:(int) spikeTrainIndex;

@@ -128,6 +128,8 @@
 		2418FFD31A8406A600662547 /* Screenshot@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2418FFCB1A8406A600662547 /* Screenshot@2x.png */; };
 		2418FFD51A85047F00662547 /* DropboxSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2418FFD41A85047F00662547 /* DropboxSDK.framework */; };
 		2418FFD71A8504AB00662547 /* SensibleTableView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2418FFD61A8504AB00662547 /* SensibleTableView.framework */; };
+		241C8AF41B31EEEA00CEFCEE /* tinyxml2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 241C8AF21B31EEEA00CEFCEE /* tinyxml2.mm */; };
+		241C8AF71B3201B800CEFCEE /* template.xml in Resources */ = {isa = PBXBuildFile; fileRef = 241C8AF61B3201B800CEFCEE /* template.xml */; };
 		242631B419C2042A00225E44 /* ECGViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 242631B219C2042A00225E44 /* ECGViewController.xib */; };
 		24507B53196C333C00E27BD2 /* AutoGraphViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 24507B51196C333C00E27BD2 /* AutoGraphViewController.xib */; };
 		2454D8AA19AD02010056B71B /* GraphDCMDExperimentViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2454D8A819AD02010056B71B /* GraphDCMDExperimentViewController.xib */; };
@@ -595,6 +597,9 @@
 		2418FFCB1A8406A600662547 /* Screenshot@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Screenshot@2x.png"; sourceTree = "<group>"; };
 		2418FFD41A85047F00662547 /* DropboxSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DropboxSDK.framework; path = libs/DropboxSDK.framework; sourceTree = "<group>"; };
 		2418FFD61A8504AB00662547 /* SensibleTableView.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SensibleTableView.framework; path = libs/SensibleTableView.framework; sourceTree = "<group>"; };
+		241C8AF21B31EEEA00CEFCEE /* tinyxml2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = tinyxml2.mm; sourceTree = "<group>"; };
+		241C8AF31B31EEEA00CEFCEE /* tinyxml2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tinyxml2.h; sourceTree = "<group>"; };
+		241C8AF61B3201B800CEFCEE /* template.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = template.xml; sourceTree = "<group>"; };
 		242631B219C2042A00225E44 /* ECGViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ECGViewController.xib; sourceTree = "<group>"; };
 		24507B51196C333C00E27BD2 /* AutoGraphViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AutoGraphViewController.xib; sourceTree = "<group>"; };
 		2454D8A819AD02010056B71B /* GraphDCMDExperimentViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GraphDCMDExperimentViewController.xib; sourceTree = "<group>"; };
@@ -718,6 +723,7 @@
 		2418FDA11A83F14700662547 /* libs */ = {
 			isa = PBXGroup;
 			children = (
+				241C8AF11B31EEEA00CEFCEE /* xml */,
 				2407C4351AE573FD005D671B /* OBSlider */,
 				2418FDA21A83F14700662547 /* CCGLTouchCore */,
 				2418FDA91A83F14700662547 /* CorePlot */,
@@ -989,6 +995,7 @@
 		2418FE5C1A83F4C600662547 /* Asset */ = {
 			isa = PBXGroup;
 			children = (
+				241C8AF51B3201B800CEFCEE /* templates */,
 				2418FE881A83F5D700662547 /* Images */,
 				2418FE601A83F57900662547 /* Icons */,
 				2418FE731A83F57900662547 /* Launch */,
@@ -1284,6 +1291,23 @@
 			path = GLViews;
 			sourceTree = "<group>";
 		};
+		241C8AF11B31EEEA00CEFCEE /* xml */ = {
+			isa = PBXGroup;
+			children = (
+				241C8AF21B31EEEA00CEFCEE /* tinyxml2.mm */,
+				241C8AF31B31EEEA00CEFCEE /* tinyxml2.h */,
+			);
+			path = xml;
+			sourceTree = "<group>";
+		};
+		241C8AF51B3201B800CEFCEE /* templates */ = {
+			isa = PBXGroup;
+			children = (
+				241C8AF61B3201B800CEFCEE /* template.xml */,
+			);
+			path = templates;
+			sourceTree = "<group>";
+		};
 		FA9A665015BA3DC000CF1697 /* iPad */ = {
 			isa = PBXGroup;
 			children = (
@@ -1493,6 +1517,7 @@
 				249A24681906AC59005F5F03 /* ISIHistogramViewController.xib in Resources */,
 				24EBC1B31997DD21001D3392 /* TrialActionsViewController.xib in Resources */,
 				2418FEC31A83F5D700662547 /* ecg.png in Resources */,
+				241C8AF71B3201B800CEFCEE /* template.xml in Resources */,
 				FA35CEFF15ABBADC0082FBC3 /* PlaybackViewController.xib in Resources */,
 				247087C61A851774004C6B9B /* Icon-Small.png in Resources */,
 				245B1847199172D200943684 /* ExperimentsViewController.xib in Resources */,
@@ -1651,6 +1676,7 @@
 				247087611A85102F004C6B9B /* NVBandpassQPeakGainFilter.m in Sources */,
 				247087781A851044004C6B9B /* MBProgressHUD.m in Sources */,
 				247087631A85102F004C6B9B /* NVHighpassFilter.m in Sources */,
+				241C8AF41B31EEEA00CEFCEE /* tinyxml2.mm in Sources */,
 				247087721A85103D004C6B9B /* FPPopoverController.m in Sources */,
 				247087741A85103D004C6B9B /* FPPopoverView.m in Sources */,
 				241453D21AB88916001B5D92 /* RTCancelButton.mm in Sources */,

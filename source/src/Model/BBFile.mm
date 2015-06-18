@@ -10,6 +10,7 @@
 #import "BBSpike.h"
 #import "BBChannel.h"
 #import "BBSpikeTrain.h"
+#import "tinyxml2.h"
 
 //#define  kDataID 1633969266
 
@@ -27,6 +28,8 @@
 @synthesize fileUsage;
 
 @synthesize spikesFiltered;
+
+using namespace tinyxml2;
 
 - (void)dealloc {
 	[filename release];
@@ -181,6 +184,65 @@
 	return self;
     
 }
+
+
+-(void) changeParameterWithName:(NSString *)name forParent:(XMLElement *) parent withValue:(NSString *) value
+{
+    XMLElement * tempElement = parent->FirstChildElement([name UTF8String]);
+    if(tempElement)
+    {
+        tempElement->SetText([value UTF8String]);
+    }
+    else
+    {
+        NSLog(@"Error: Problem parsing XML template. No %@.",name);
+    }
+
+
+}
+
+
+
+-(NSURL *)prepareBYBFile
+{
+    XMLDocument doc;
+  //  NSString * templateName = @"template.xml";
+    NSString *path = [[NSBundle mainBundle] pathForResource:@"template" ofType:@"xml"];
+    
+    doc.LoadFile([path UTF8String]);
+    XMLElement * rootElement = doc.FirstChildElement("bybrecording");
+    if(rootElement)
+    {
+        [self changeParameterWithName:@"filename" forParent:rootElement withValue:self.filename];
+        
+        NSDateFormatter* df = [[NSDateFormatter alloc]init];
+        NSTimeZone *gmt = [NSTimeZone timeZoneWithAbbreviation:@"GMT"];
+        [df setTimeZone:gmt];
+        [df setDateFormat: @"yyyy-MM-dd HH:mm:ss zzz"];
+        NSString *dateCreated = [df stringFromDate:self.date];
+        [df release];
+        [self changeParameterWithName:@"datecreated" forParent:rootElement withValue:dateCreated];
+        [self changeParameterWithName:@"description" forParent:rootElement withValue:self.description];
+        [self changeParameterWithName:@"subjectname" forParent:rootElement withValue:@"unknown"];
+        [self changeParameterWithName:@"createdby" forParent:rootElement withValue:@"unknown"];
+        [self changeParameterWithName:@"softwaretype" forParent:rootElement withValue:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleIdentifier"]];
+        [self changeParameterWithName:@"softwareversion" forParent:rootElement withValue:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"]];
+        [self changeParameterWithName:@"softwarebuild" forParent:rootElement withValue:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]];
+    }
+    else
+    {
+        NSLog(@"Error: Problem parsing XML template. No root element.");
+    }
+    
+    
+    //->FirstChildElement("softwareversion")->SetText([ UTF8String]);
+   
+    //
+    NSURL * tempUrl = [NSURL fileURLWithPath:[[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingPathComponent:@"temp.xml"]];
+     doc.SaveFile([[tempUrl path] UTF8String]);
+    return tempUrl;
+}
+
 
 -(void) setupChannels
 {

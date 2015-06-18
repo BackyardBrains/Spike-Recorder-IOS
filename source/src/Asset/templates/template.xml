@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<!--
+ This file defines main parameters for one recording.
+ BackyardBrains.com
+  -->
+<bybrecording>
+	<fileversion>0.1</fileversion>
+	<filename></filename>
+	<createdby></createdby>
+	<datecreated></datecreated>
+	<description></description>
+	<subjectname></subjectname>
+	<hardwaretype></hardwaretype>
+	<hardwareversion></hardwareversion>
+	<firmwareversion></firmwareversion>
+    <softwaretype></softwaretype>
+	<softwareversion></softwareversion>
+    <softwarebuild></softwarebuild>
+	<samplingrate></samplingrate>
+	<numberofchannels></numberofchannels>
+	<duration></duration>
+	<lengthinsamples></lengthinsamples>
+	<auxiliaryfiles>
+		<auxfile>
+			<filename></filename>
+			<filetype></filetype>
+		</auxfile>
+	</auxiliaryfiles>
+</bybrecording>

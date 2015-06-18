@@ -15,7 +15,6 @@
 #import <Accelerate/Accelerate.h>
 #import "BBECGAnalysis.h"
 
-
 //#define RING_BUFFER_SIZE 524288
 
 static BBAudioManager *bbAudioManager = nil;
@@ -164,10 +163,12 @@ static BBAudioManager *bbAudioManager = nil;
     if (self = [super init])
     {
         
+        
+        
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(filterParametersChanged) name:FILTER_PARAMETERS_CHANGED object:nil];
         
         audioManager = [Novocaine audioManager];
-        
+    
         _sourceSamplingRate =  audioManager.samplingRate;
         _sourceNumberOfChannels = audioManager.numInputChannels;
         
