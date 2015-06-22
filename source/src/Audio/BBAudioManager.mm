@@ -165,6 +165,9 @@ static BBAudioManager *bbAudioManager = nil;
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(filterParametersChanged) name:FILTER_PARAMETERS_CHANGED object:nil];
         
+          [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(resetupAudioInputs) name:@"audioChannelsChanged" object:nil];
+        
+        
         audioManager = [Novocaine audioManager];
         
         _sourceSamplingRate =  audioManager.samplingRate;
@@ -424,7 +427,16 @@ static BBAudioManager *bbAudioManager = nil;
     }
 }
 
-
+-(void) resetupAudioInputs
+{
+    [self stopAllInputOutput];
+    _sourceSamplingRate =  audioManager.samplingRate;
+    _sourceNumberOfChannels = audioManager.numInputChannels;
+    btOn = NO;
+    [self resetBuffers];
+    [self makeInputOutput];
+    [[NSNotificationCenter defaultCenter] postNotificationName:RESETUP_SCREEN_NOTIFICATION object:self];
+}
 
 -(void) resetBuffers
 {

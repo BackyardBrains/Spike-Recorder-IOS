@@ -112,8 +112,8 @@
     offsetPositionOfHandles = 0;
     selectionEnabledAfterSecond = false;
     
-    autorangeActive = YES;
-    autorangeTimer = [NSTimer scheduledTimerWithTimeInterval:2.5 target:self selector:@selector(stopAutorange) userInfo:nil repeats:NO];
+    //autorangeActive = YES;
+   // autorangeTimer = [NSTimer scheduledTimerWithTimeInterval:2.5 target:self selector:@selector(stopAutorange) userInfo:nil repeats:NO];
     
 }
 
@@ -370,7 +370,7 @@
         
     }
     
-    [self autorangeSelectedChannel];
+    //[self autorangeSelectedChannel];
     
 }
 
@@ -1030,7 +1030,7 @@
                 {
                     //Draw X icon for channel removal
                     //Draw X icon for channel removal
-                    xPositionOfRemove = - offsetPositionOfHandles -60*scaleXY.x;
+                 /*   xPositionOfRemove = - offsetPositionOfHandles -60*scaleXY.x;
                     yPositionOfRemove = yOffsets[indexOfChannel]+100*scaleXY.y;
                     gl::drawSolidEllipse( Vec2f(xPositionOfRemove, yPositionOfRemove), radiusXAxis+2*scaleXY.x, radiusYAxis+2*scaleXY.y, 1000 );
                     glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
@@ -1038,7 +1038,7 @@
                     [self setColorWithIndex:indexOfChannel transparency:1.0f];
                     glLineWidth(2.0f);
                     gl::drawLine(Vec2f(xPositionOfRemove-radiusXAxis*0.7, yPositionOfRemove), Vec2f(xPositionOfRemove+radiusXAxis*0.7, yPositionOfRemove));
-                    glLineWidth(1.0f);
+                    glLineWidth(1.0f);*/
                 }
             }
         }//for loop for channels
