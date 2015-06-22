@@ -318,17 +318,36 @@
         [zip CreateZipFile2:zipPath];
        
         
-		for (BBFile *thisFile in self.files)
+		for (BBFile *thisFile in self.files) //there should be only one selected
         {
-            [thisFile saveWithoutArrays];
-            NSURL * descriptorUrl = [thisFile prepareBYBFile];
+            [thisFile saveWithoutArrays];//???? not removing spikes. What does this do?
+            
+            NSURL * spikesURL =  [thisFile prepareSpikesFile];
+            if(spikesURL)
+            {
+                [zip addFileToZip:[spikesURL path] newname:[[spikesURL path] lastPathComponent]];
+            }
+            //make descriptor file
+            NSURL * descriptorUrl = [thisFile prepareBYBDescriptionFile:[[spikesURL path] lastPathComponent]];
+            
+            //add descriptor file to zip
             [zip addFileToZip:[descriptorUrl path] newname:[[descriptorUrl path] lastPathComponent]];
+            
+            //find path of audio file
             NSString * pathOfAudioFile = [[NSURL fileURLWithPath:[[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingPathComponent:thisFile.filename]] path];
+            //add audio file to zip
             [zip addFileToZip:pathOfAudioFile newname:[pathOfAudioFile lastPathComponent]];
-
-           /* [theFilenames addObject:[NSURL fileURLWithPath:[[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingPathComponent:thisFile.filename]]];*/
         }
+        //close zip file
         [zip CloseZipFile2];
+        
+       /* 
+        //Test code
+        [zip UnzipOpenFile:zipPath];
+        [zip UnzipOneFileFromZip:@"descriptor.xml" toPath:[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0]];
+        [zip UnzipCloseFile];*/
+        
+        //add file that we want to share (zip)
         [theFilenames addObject:[NSURL fileURLWithPath:zipPath isDirectory:NO]];
         self.fileNamesToShare = (NSArray *)theFilenames;
         
@@ -340,6 +359,12 @@
                                                  applicationActivities:nil] autorelease];
         
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            if([activities respondsToSelector:@selector(popoverPresentationController)])
+            {
+                //iOS8
+                activities.popoverPresentationController.sourceView = self.view;
+            }
+            
             [[[self parentViewController] parentViewController] presentViewController:activities animated:YES completion:nil];
 
         }

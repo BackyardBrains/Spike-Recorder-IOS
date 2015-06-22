@@ -204,8 +204,47 @@ using namespace tinyxml2;
 }
 
 
+-(NSURL *)prepareSpikesFile
+{
+     NSURL * tempUrl = [NSURL fileURLWithPath:[[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingPathComponent:@"spikes.spk"]];
+    [[NSFileManager defaultManager] createFileAtPath:[tempUrl path] contents:nil attributes:nil];
+    
+    NSMutableString *str = [NSMutableString string];
+    BOOL weHaveSomeSpikes = NO;
+    int channelIndex, spikeTrainIndex;
 
--(NSURL *)prepareBYBFile
+    channelIndex = 0;
+    for (BBChannel * channel in _allChannels) {
+        spikeTrainIndex = 0;
+        [str appendString:[NSString stringWithFormat:@"_channel%d\n",channelIndex]];
+        [str writeToFile:[tempUrl path] atomically:YES encoding:NSUTF8StringEncoding error:nil];
+        for(BBSpikeTrain * spikeTrain in channel.spikeTrains)
+        {
+            for(BBSpike * spike in spikeTrain.spikes)
+            {
+                weHaveSomeSpikes = YES;//setup flag
+                [str appendString:[NSString stringWithFormat:@"_neuron%d,\t%f,\t%f,\t%d\n",spikeTrainIndex, spike.time, spike.value, spike.index]];
+                
+            }
+            spikeTrainIndex++;
+        }
+        channelIndex++;
+    }
+    [str writeToFile:[tempUrl path] atomically:YES encoding:NSUTF8StringEncoding error:nil];
+    
+    //Return file url or nil
+    if(weHaveSomeSpikes)
+    {
+        return tempUrl;
+    }
+    else
+    {
+        return nil;
+    }
+}
+
+
+-(NSURL *) prepareBYBDescriptionFile:(NSString *) spikesFile;
 {
     XMLDocument doc;
   //  NSString * templateName = @"template.xml";
@@ -237,6 +276,39 @@ using namespace tinyxml2;
         
         [self changeParameterWithName:@"duration" forParent:rootElement withValue:[NSString stringWithFormat:@"%f", self.filelength ]];
         [self changeParameterWithName:@"lengthinsamples" forParent:rootElement withValue:[NSString stringWithFormat:@"%d", (int)(self.filelength * self.samplingrate) ]];
+        
+        
+        //add auxiliary files with structure:
+        /*
+         <auxiliaryfiles>
+            <auxfile>
+                <filename></filename>
+                <filetype></filetype>
+            </auxfile>-->
+         </auxiliaryfiles>
+         */
+        if(spikesFile!=nil)
+        {
+            XMLElement * auxParentElement = rootElement->FirstChildElement("auxiliaryfiles");
+            if(auxParentElement==nil)
+            {
+                auxParentElement = doc.NewElement("auxiliaryfiles");
+                rootElement->InsertEndChild(auxParentElement);
+            }
+
+            XMLElement * newAuxFile = doc.NewElement("auxfile");
+            auxParentElement->InsertEndChild(newAuxFile);
+            
+            XMLElement * newAuxFileName = doc.NewElement("filename");
+            newAuxFileName->SetText([spikesFile UTF8String]);
+            newAuxFile->InsertEndChild(newAuxFileName);
+            
+            XMLElement * newAuxFileType = doc.NewElement("filetype");
+            newAuxFileType->SetText("spiketrains");
+            newAuxFile->InsertEndChild(newAuxFileType);
+        }
+
+        
         
     }
     else

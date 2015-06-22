@@ -61,7 +61,8 @@
 -(id) initWav;
 -(void) saveWithoutArrays;
 
--(NSURL *) prepareBYBFile;
+-(NSURL *) prepareBYBDescriptionFile:(NSString *) spikesFile;
+-(NSURL *)prepareSpikesFile;
 
 -(int) numberOfSpikeTrains;
 -(void) setupChannels;

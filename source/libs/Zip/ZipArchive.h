@@ -43,6 +43,7 @@
 
 -(BOOL) UnzipOpenFile:(NSString*) zipFile;
 -(BOOL) UnzipOpenFile:(NSString*) zipFile Password:(NSString*) password;
+-(BOOL) UnzipOneFileFromZip:(NSString *) nameOfFile toPath:(NSString*) path;
 -(BOOL) UnzipFileTo:(NSString*) path overWrite:(BOOL) overwrite;
 -(BOOL) UnzipCloseFile;
 @end
