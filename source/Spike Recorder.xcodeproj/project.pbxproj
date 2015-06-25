@@ -128,6 +128,7 @@
 		2418FFD51A85047F00662547 /* DropboxSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2418FFD41A85047F00662547 /* DropboxSDK.framework */; };
 		2418FFD71A8504AB00662547 /* SensibleTableView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2418FFD61A8504AB00662547 /* SensibleTableView.framework */; };
 		242631B419C2042A00225E44 /* ECGViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 242631B219C2042A00225E44 /* ECGViewController.xib */; };
+		2444A54A1B3B9E6D005DFD5B /* coreplot_new.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2444A5491B3B9E6D005DFD5B /* coreplot_new.a */; };
 		24507B53196C333C00E27BD2 /* AutoGraphViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 24507B51196C333C00E27BD2 /* AutoGraphViewController.xib */; };
 		2454D8AA19AD02010056B71B /* GraphDCMDExperimentViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2454D8A819AD02010056B71B /* GraphDCMDExperimentViewController.xib */; };
 		2454D8B219AE18D50056B71B /* AverageSpikeGraphViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2454D8B019AE18D50056B71B /* AverageSpikeGraphViewController.xib */; };
@@ -177,7 +178,6 @@
 		247087A01A851063004C6B9B /* unzip.c in Sources */ = {isa = PBXBuildFile; fileRef = 2418FE561A83F14700662547 /* unzip.c */; };
 		247087A21A851063004C6B9B /* zip.c in Sources */ = {isa = PBXBuildFile; fileRef = 2418FE581A83F14700662547 /* zip.c */; };
 		247087A51A851079004C6B9B /* ZipArchive.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FE5B1A83F14700662547 /* ZipArchive.mm */; };
-		247087A71A85144F004C6B9B /* libCorePlot-CocoaTouch.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2418FDF91A83F14700662547 /* libCorePlot-CocoaTouch.a */; };
 		247087BA1A851774004C6B9B /* Icon-60.png in Resources */ = {isa = PBXBuildFile; fileRef = 247087A81A851774004C6B9B /* Icon-60.png */; };
 		247087BB1A851774004C6B9B /* Icon-60@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 247087A91A851774004C6B9B /* Icon-60@2x.png */; };
 		247087BC1A851774004C6B9B /* Icon-60@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 247087AA1A851774004C6B9B /* Icon-60@3x.png */; };
@@ -591,6 +591,7 @@
 		2418FFD41A85047F00662547 /* DropboxSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DropboxSDK.framework; path = libs/DropboxSDK.framework; sourceTree = "<group>"; };
 		2418FFD61A8504AB00662547 /* SensibleTableView.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SensibleTableView.framework; path = libs/SensibleTableView.framework; sourceTree = "<group>"; };
 		242631B219C2042A00225E44 /* ECGViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ECGViewController.xib; sourceTree = "<group>"; };
+		2444A5491B3B9E6D005DFD5B /* coreplot_new.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = coreplot_new.a; sourceTree = "<group>"; };
 		24507B51196C333C00E27BD2 /* AutoGraphViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AutoGraphViewController.xib; sourceTree = "<group>"; };
 		2454D8A819AD02010056B71B /* GraphDCMDExperimentViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GraphDCMDExperimentViewController.xib; sourceTree = "<group>"; };
 		2454D8B019AE18D50056B71B /* AverageSpikeGraphViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AverageSpikeGraphViewController.xib; sourceTree = "<group>"; };
@@ -674,7 +675,7 @@
 				2418FFD71A8504AB00662547 /* SensibleTableView.framework in Frameworks */,
 				2418FFD51A85047F00662547 /* DropboxSDK.framework in Frameworks */,
 				247ED9BE193DEC0800871BAC /* libz.dylib in Frameworks */,
-				247087A71A85144F004C6B9B /* libCorePlot-CocoaTouch.a in Frameworks */,
+				2444A54A1B3B9E6D005DFD5B /* coreplot_new.a in Frameworks */,
 				248C8EC118E5D90500307C4C /* ImageIO.framework in Frameworks */,
 				248C8EBF18E5D8FC00307C4C /* MobileCoreServices.framework in Frameworks */,
 				FA905A7C15AA8F370013688B /* MessageUI.framework in Frameworks */,
@@ -740,6 +741,7 @@
 		2418FDA91A83F14700662547 /* CorePlot */ = {
 			isa = PBXGroup;
 			children = (
+				2444A5491B3B9E6D005DFD5B /* coreplot_new.a */,
 				2418FDAA1A83F14700662547 /* CorePlotHeaders */,
 				2418FDF91A83F14700662547 /* libCorePlot-CocoaTouch.a */,
 			);
@@ -1801,8 +1803,8 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_OBJC_ARC = NO;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Backyard Brains (MLGRKD657P)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Backyard Brains (MLGRKD657P)";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVICE_FAMILY = iPhone/iPad;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1840,7 +1842,7 @@
 				);
 				PRODUCT_NAME = "Spike Recorder";
 				PROVISIONING_PROFILE = "";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "b2d932b4-1850-47f9-aee6-3c6d80d60453";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "c59210e3-2c37-48a6-bc2f-51fa6e710659";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = iphoneos8.1;
 				TARGETED_DEVICE_FAMILY = "1,2";
