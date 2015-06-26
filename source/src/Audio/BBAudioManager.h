@@ -119,6 +119,7 @@ typedef enum BBStimulationType
 
 
 + (BBAudioManager *) bbAudioManager;
+-(void) quitAllFunctions;
 - (void)startMonitoring;
 - (void)startStimulating:(BBStimulationType)newStimulationType;
 - (void)stopStimulating;

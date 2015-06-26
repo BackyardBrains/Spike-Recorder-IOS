@@ -32,11 +32,14 @@
 @synthesize stimulateButton;
 @synthesize stimulatePreferenceButton;
 @synthesize bufferStateIndicator;
+@synthesize cancelRTViewButton;
 
 - (void)viewWillAppear:(BOOL)animated
 {
     
-    [super viewWillAppear:animated];
+  
+  
+    
     [[BBAudioManager bbAudioManager] startMonitoring];
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -54,6 +57,10 @@
     glView = [[MultichannelCindeGLView alloc] initWithFrame:self.view.frame];
     [self setGLView:glView];
     glView.mode = MultichannelGLViewModeView;
+    
+    
+ 
+    
     [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels ] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
     
 	[self.view addSubview:glView];
@@ -67,14 +74,7 @@
     // set our view controller's prop that will hold a pointer to our newly created CCGLTouchView
     
     
-    if([[BBAudioManager bbAudioManager] btOn])
-    {
-      /*  glView.channelsConfiguration = [[BBBTManager btManager] activeChannels];
-        [self.btButton setImage:[UIImage imageNamed:@"inputicon.png"] forState:UIControlStateNormal];
-        [self.bufferStateIndicator setHidden:NO];*/
-    }
-    else
-    {
+
         
         //Set all channels to active
         UInt8 configurationOfChannels = 0;
@@ -85,26 +85,25 @@
         }
         glView.channelsConfiguration = configurationOfChannels;
         
-        [self.btButton setImage:[UIImage imageNamed:@"bluetooth.png"] forState:UIControlStateNormal];
-        [self.bufferStateIndicator setHidden:YES];
-    }
+    //    [self.btButton setImage:[UIImage imageNamed:@"bluetooth.png"] forState:UIControlStateNormal];
+    [self.bufferStateIndicator setHidden:YES];
+    [self.cancelRTViewButton setHidden:YES];
 
-   /* [glView stopAnimation];
-    [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
-    [glView startAnimation];
-    */
-  /*  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(noBTConnection) name:NO_BT_CONNECTION object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(btDisconnected) name:BT_DISCONNECTED object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(btSlowConnection) name:BT_SLOW_CONNECTION object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(foundBTConnection) name:FOUND_BT_CONNECTION object:nil];*/
+
     
 
-     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reSetupScreen) name:RESETUP_SCREEN_NOTIFICATION object:nil];
+
    // [self detectBluetooth];
-    [self.rtSpikeViewButton objectColor:[BYBGLView getSpikeTrainColorWithIndex:4 transparency:1.0f]];
-    [self.rtSpikeViewButton changeCurrentState:HANDLE_STATE];
-    [self.cancelRTViewButton setHidden:YES];
+   // [self.rtSpikeViewButton objectColor:[BYBGLView getSpikeTrainColorWithIndex:4 transparency:1.0f]];
+   // [self.rtSpikeViewButton changeCurrentState:HANDLE_STATE];
+   // [self.cancelRTViewButton setHidden:YES];
     [glView setRtConfigurationActive:NO];
+    [super viewWillAppear:animated];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reSetupScreen) name:RESETUP_SCREEN_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate:) name:UIApplicationWillTerminateNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
     
 }
 
@@ -115,32 +114,31 @@
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-    [super viewWillDisappear:animated];
-    [self tapOnCancelRTButton];
-    NSLog(@"Stopping regular view");
-    [glView saveSettings:FALSE]; // save non-threshold settings
+    NSLog(@"\n\nviewWillDisappear\n\n");
     [glView stopAnimation];
-    
-    
-   /* if([[BBAudioManager bbAudioManager] btOn])
-    {
-        [self btButtonPressed:nil];
-    }*/
-  /*  [[NSNotificationCenter defaultCenter] removeObserver:self name:NO_BT_CONNECTION object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:FOUND_BT_CONNECTION object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:BT_DISCONNECTED object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:BT_SLOW_CONNECTION object:nil];*/
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:RESETUP_SCREEN_NOTIFICATION object:nil];
+   // [self tapOnCancelRTButton];
+    NSLog(@"Stopping regular view");
+  //  [glView saveSettings:FALSE]; // save non-threshold settings
+
+    //[glView removeFromSuperview];
+    //[glView release];
+    //glView = nil;
+
+   [[NSNotificationCenter defaultCenter] removeObserver:self name:RESETUP_SCREEN_NOTIFICATION object:nil];
+
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillTerminateNotification object:nil];
+
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillResignActiveNotification object:nil];
+
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
+    [super viewWillDisappear:animated];
 }
 
 - (void)viewDidLoad
 {
-    
-    [super viewDidLoad];
-
     stimulateButton.selected = NO;
     // Listen for going down
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate:) name:UIApplicationWillTerminateNotification object:nil];
+
 
     //Add handler for start of RT view
     UITapGestureRecognizer *singleFingerTap =
@@ -155,12 +153,31 @@
                                             action:@selector(tapOnCancelRTButton)];
     [self.cancelRTViewButton addGestureRecognizer:cancelFingerTap];
     [cancelFingerTap release];
+    [super viewDidLoad];
+    
+ 
 }
+
+
+-(void) applicationDidBecomeActive:(UIApplication *)application {
+    NSLog(@"\n\nApp will become active - ViewRecord\n\n");
+    if(glView)
+    {
+        [glView startAnimation];
+    }
+}
+
+-(void) applicationWillResignActive:(UIApplication *)application {
+    NSLog(@"\n\nResign active - ViewRecord\n\n");
+   [glView stopAnimation];
+    // [glView stopAnimation];
+}
+
 
 - (void)applicationWillTerminate:(UIApplication *)application {
     NSLog(@"Terminating...");
     [glView saveSettings:FALSE];
-    [glView stopAnimation];
+   // [glView stopAnimation];
 }
 
 - (void)setGLView:(MultichannelCindeGLView *)view
@@ -394,6 +411,7 @@
     
     // set our view controller's prop that will hold a pointer to our newly created CCGLTouchView
     [self setGLView:glView];
+    [glView startAnimation];
     if([[BBAudioManager bbAudioManager] btOn])
     {
       /*  glView.channelsConfiguration = [[BBBTManager btManager] activeChannels];
@@ -826,7 +844,7 @@
     [_btButton release];
     [_rtSpikeViewButton release];
     [bufferStateIndicator release];
-    [_cancelRTViewButton release];
+    [cancelRTViewButton release];
     [super dealloc];
 }
 

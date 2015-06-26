@@ -72,6 +72,9 @@
 }
 
 
+
+
+
 -(void) deviceChooserClosed
 {
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -131,14 +134,7 @@
 
 - (void)applicationWillTerminate:(UIApplication *)application {
     
-    if([[BBAudioManager bbAudioManager] btOn])
-    {
-        [[BBAudioManager bbAudioManager] closeBluetooth];
-    }
-    if([[BBAudioManager bbAudioManager] rtSpikeSorting])
-    {
-        [[BBAudioManager bbAudioManager] stopRTSpikeSorting];
-    }
+   [[BBAudioManager bbAudioManager] quitAllFunctions];
     NSLog(@"Going into background.");
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setValue:[NSNumber numberWithInt:tabBarController.selectedIndex] forKey:@"tabIndex"];
@@ -148,10 +144,8 @@
 
 - (void)applicationWillResignActive:(UIApplication *)application
 {
-    if([[BBAudioManager bbAudioManager] btOn])
-    {
-        [[BBAudioManager bbAudioManager] closeBluetooth];
-    }
+    NSLog(@"\n\nApp will resign.\n\n");
+ 
 }
 
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {

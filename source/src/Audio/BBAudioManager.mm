@@ -429,13 +429,16 @@ static BBAudioManager *bbAudioManager = nil;
 
 -(void) resetupAudioInputs
 {
-    [self stopAllInputOutput];
-    _sourceSamplingRate =  audioManager.samplingRate;
-    _sourceNumberOfChannels = audioManager.numInputChannels;
-    btOn = NO;
-    [self resetBuffers];
-    [self makeInputOutput];
-    [[NSNotificationCenter defaultCenter] postNotificationName:RESETUP_SCREEN_NOTIFICATION object:self];
+    if(!playing && audioManager)
+    {
+        [self stopAllInputOutput];
+        _sourceSamplingRate =  audioManager.samplingRate;
+        _sourceNumberOfChannels = audioManager.numInputChannels;
+        btOn = NO;
+        [self resetBuffers];
+        [self makeInputOutput];
+        [[NSNotificationCenter defaultCenter] postNotificationName:RESETUP_SCREEN_NOTIFICATION object:self];
+    }
 }
 
 -(void) resetBuffers
@@ -640,10 +643,10 @@ static BBAudioManager *bbAudioManager = nil;
         [self stopECG];
     }
     
-    if(rtSpikeSorting)
+   /* if(rtSpikeSorting)
     {
         [self stopRTSpikeSorting];
-    }
+    }*/
     
 }
 
@@ -651,6 +654,8 @@ static BBAudioManager *bbAudioManager = nil;
 #pragma mark - Input Methods
 - (void)startMonitoring
 {
+    audioManager=[Novocaine audioManager];
+
     [self quitAllFunctions];
     [self getChannelsConfig];
     [self makeInputOutput];

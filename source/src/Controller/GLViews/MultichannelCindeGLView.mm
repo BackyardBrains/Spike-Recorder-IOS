@@ -225,19 +225,14 @@
     
     dataSourceDelegate = newDataSource;
     
-    if([[BBAudioManager bbAudioManager] btOn])
-    {
-       // channelsConfiguration = [[BBBTManager btManager] activeChannels];
-    }
-    else
-    {
+
         int tempMask = 1;
         channelsConfiguration = 0;
         for(int k=0;k<[[BBAudioManager bbAudioManager] sourceNumberOfChannels];k++)
         {
             channelsConfiguration = channelsConfiguration | (tempMask<<k);
         }
-    }
+    
     
     for(int i=0;i<maxNumberOfChannels;i++)
     {
@@ -253,7 +248,7 @@
     }
     
     NSLog(@"End setup number of channels");
-    [self startAnimation];
+   // [self startAnimation];
     
 }
 
