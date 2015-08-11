@@ -37,6 +37,10 @@
     
     // This is the line that we need for iOS 6.
     // TODO: test on iOS 5.
+    
+    
+    [self redirectConsoleLogToDocumentFolder];
+    
     window.rootViewController = tabBarController;
     tabBarController.delegate = self;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -72,6 +76,14 @@
 }
 
 
+- (void) redirectConsoleLogToDocumentFolder
+{
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,
+                                                         NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    NSString *logPath = [documentsDirectory stringByAppendingPathComponent:@"console.log"];
+    freopen([logPath fileSystemRepresentation],"a+",stderr);
+}
 
 
 

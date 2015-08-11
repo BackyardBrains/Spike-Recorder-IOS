@@ -171,6 +171,7 @@ static BBAudioManager *bbAudioManager = nil;
         audioManager = [Novocaine audioManager];
         
         _sourceSamplingRate =  audioManager.samplingRate;
+         NSLog(@"Init sampling rate: %f", _sourceSamplingRate);
         _sourceNumberOfChannels = audioManager.numInputChannels;
         
         _selectedChannel = 0;
@@ -423,6 +424,7 @@ static BBAudioManager *bbAudioManager = nil;
     else
     {
         _sourceSamplingRate =  audioManager.samplingRate;
+         NSLog(@"Get channel config sampling rate: %f", _sourceSamplingRate);
         _sourceNumberOfChannels = audioManager.numInputChannels;
     }
 }
@@ -433,6 +435,7 @@ static BBAudioManager *bbAudioManager = nil;
     {
         [self stopAllInputOutput];
         _sourceSamplingRate =  audioManager.samplingRate;
+        NSLog(@"resetup audio inputs sampling rate: %f", _sourceSamplingRate);
         _sourceNumberOfChannels = audioManager.numInputChannels;
         btOn = NO;
         [self resetBuffers];
@@ -744,7 +747,7 @@ static BBAudioManager *bbAudioManager = nil;
     }
     else {
         
-        
+        NSLog(@"Start recording at sample rate: %f", _sourceSamplingRate);
         
         // Grab a file writer. This takes care of the creation and management of the audio file.
         fileWriter = [[BBAudioFileWriter alloc]
@@ -895,6 +898,7 @@ static BBAudioManager *bbAudioManager = nil;
         NSLog(@"Error opening file: %@", [avPlayerError description]);
         _sourceNumberOfChannels =1;
         _sourceSamplingRate = 44100.0f;
+         NSLog(@"start playing 1 inputs sampling rate: %f", _sourceSamplingRate);
     }
     else
     {

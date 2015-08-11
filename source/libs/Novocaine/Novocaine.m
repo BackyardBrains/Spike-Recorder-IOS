@@ -106,6 +106,18 @@ static Novocaine *audioManager = nil;
     return nil; // on subsequent allocation attempts return nil
 }
 
+
++(void) informUserAboutError:(const char *) errorString
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+            UIAlertView *alert=[[UIAlertView alloc]initWithTitle:[NSString stringWithUTF8String:errorString] message:Nil delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+            [alert show];
+            [alert release];
+        
+    });
+}
+
 // ND: If NSCopying protocol is to be supported, it should be declared with class and done correctly. Disabled for now.
 
 //- (id)copyWithZone:(NSZone *)zone
@@ -118,32 +130,39 @@ static Novocaine *audioManager = nil;
 	if (self = [super init])
 	{
         
-        // Initialize a float buffer to hold audio
-		self.inData  = (float *)calloc(8192, sizeof(float)); // probably more than we'll need
-        self.outData = (float *)calloc(8192, sizeof(float));
-        
-        self.inputBlock = nil;
-        self.outputBlock = nil;
-        
-#if defined ( USING_OSX )
-        self.deviceNames = [[NSMutableArray alloc] initWithCapacity:100]; // more than we'll need
-#endif
-        
-        self.playing = NO;
-        // self.playThroughEnabled = NO;
-		
-		// Fire up the audio session ( with steady error checking ... )
-        [self setupAudioSession];
-        
-        // start audio units
-        [self setupAudioUnits];
-		
+        [self initNovocaine];
 		return self;
 		
 	}
 	
 	return nil;
 }
+
+
+-(void) initNovocaine
+{
+    NSLog(@"Init novocaine");
+    self.inData  = (float *)calloc(8192, sizeof(float)); // probably more than we'll need
+    self.outData = (float *)calloc(8192, sizeof(float));
+    
+    self.inputBlock = nil;
+    self.outputBlock = nil;
+    
+#if defined ( USING_OSX )
+    self.deviceNames = [[NSMutableArray alloc] initWithCapacity:100]; // more than we'll need
+#endif
+    
+    self.playing = NO;
+    // self.playThroughEnabled = NO;
+    
+    // Fire up the audio session ( with steady error checking ... )
+    [self setupAudioSession];
+    
+    // start audio units
+    [self setupAudioUnits];
+
+}
+
 
 - (void)dealloc
 {
@@ -209,6 +228,7 @@ static Novocaine *audioManager = nil;
 
 - (void)setupAudioSession
 {
+  
     // Initialize and configure the audio session, and add an interuption listener
     
 #if defined ( USING_IOS )
@@ -224,6 +244,49 @@ static Novocaine *audioManager = nil;
     [self enumerateAudioDevices];
     self.inputAvailable = YES;
 #endif
+}
+
+
+-(void) updateAudioUnits
+{
+    UInt32 size; //TODO: stanislav check this for HDMI
+    size = sizeof( AudioStreamBasicDescription );
+    CheckError( AudioUnitGetProperty(_inputUnit,
+                                     kAudioUnitProperty_StreamFormat,
+                                     kAudioUnitScope_Input,
+                                     1,
+                                     &_inputFormat,
+                                     &size ),
+               "Couldn't get the hardware input stream format");
+    
+    // Check the output stream format
+    size = sizeof( AudioStreamBasicDescription );
+    CheckError( AudioUnitGetProperty(_inputUnit,
+                                     kAudioUnitProperty_StreamFormat,
+                                     kAudioUnitScope_Output,
+                                     1,
+                                     &_outputFormat,
+                                     &size ),
+               "Couldn't get the hardware output stream format");
+    
+    // TODO: check this works on iOS!
+    _inputFormat.mSampleRate = 44100.0;
+    _outputFormat.mSampleRate = 44100.0;
+    self.samplingRate = _inputFormat.mSampleRate;
+  
+    self.numBytesPerSample = _inputFormat.mBitsPerChannel / 8;
+    
+    size = sizeof(AudioStreamBasicDescription);
+    CheckError(AudioUnitSetProperty(_inputUnit,
+                                    kAudioUnitProperty_StreamFormat,
+                                    kAudioUnitScope_Output,
+                                    kInputBus,
+                                    &_outputFormat,
+                                    size),
+               "Couldn't set the ASBD on the audio unit (after setting its sampling rate)");
+    
+    
+
 }
 
 
@@ -337,7 +400,7 @@ static Novocaine *audioManager = nil;
     // Check the input stream format
     
 # if defined ( USING_IOS )
-    UInt32 size;
+    UInt32 size; //TODO: stanislav check this for HDMI
 	size = sizeof( AudioStreamBasicDescription );
 	CheckError( AudioUnitGetProperty(_inputUnit,
                                      kAudioUnitProperty_StreamFormat, 
@@ -358,9 +421,10 @@ static Novocaine *audioManager = nil;
                "Couldn't get the hardware output stream format");
     
     // TODO: check this works on iOS!
-    _inputFormat.mSampleRate = 44100.0;
-    _outputFormat.mSampleRate = 44100.0;
+    _inputFormat.mSampleRate = 44100.0;//self.samplingRate;
+    _outputFormat.mSampleRate = 44100.0;// self.samplingRate;//44100.0;
     self.samplingRate = _inputFormat.mSampleRate;
+    
     self.numBytesPerSample = _inputFormat.mBitsPerChannel / 8;
     
     size = sizeof(AudioStreamBasicDescription);
@@ -443,6 +507,7 @@ static Novocaine *audioManager = nil;
     _outputFormat.mSampleRate = _inputFormat.mSampleRate;
 //    outputFormat.mFormatFlags =  kAudioFormatFlagsCanonical;
     self.samplingRate = _inputFormat.mSampleRate;
+
     self.numBytesPerSample = _inputFormat.mBitsPerChannel / 8;
     
     self.numInputChannels = _inputFormat.mChannelsPerFrame;
@@ -567,8 +632,13 @@ static Novocaine *audioManager = nil;
     
     
     
+    //TODO: this fails during call (OSStatus) error = 561017449
+    //This is defined in AVAudioSession.h:
     
-	CheckError(AudioUnitInitialize(_inputUnit), "Couldn't initialize the output unit");
+    //AVAudioSessionErrorInsufficientPriority = '!pri', /* 0x21707269, 561017449 */
+    //and is described as "The app was not allowed to set the audio category because another app (Phone, etc.) is controlling it."
+    //Stanislav
+	CheckError(AudioUnitInitialize(_inputUnit), "Couldn't initialize the input unit");
 #if defined ( USING_OSX )
     CheckError(AudioUnitInitialize(_outputUnit), "Couldn't initialize the output unit");
 #endif
@@ -699,7 +769,7 @@ OSStatus inputCallback   (void						*inRefCon,
         if (sm.inputBlock == nil)
             return noErr;    
         
-        
+      
         // Check the current number of channels		
         // Let's actually grab the audio
 #if TARGET_IPHONE_SIMULATOR
@@ -708,9 +778,14 @@ OSStatus inputCallback   (void						*inRefCon,
         if( inNumberFrames == 471 )
             inNumberFrames = 470;
 #endif
-        CheckError( AudioUnitRender(sm.inputUnit, ioActionFlags, inTimeStamp, inOutputBusNumber, inNumberFrames, sm.inputBuffer), "Couldn't render the output unit");
+        if( inNumberFrames == 941 )
+            inNumberFrames = 940;
         
+       // NSLog(@"\n\n Is interleaved: %d  \n  Number of bytes persample: %u \n Number of input channels: %u\n Number of output channels: %u \n  Number of frames: %u\n Output bus number: %u\n\n", sm.isInterleaved,sm.numBytesPerSample, sm.numInputChannels, sm.numOutputChannels, inNumberFrames, inOutputBusNumber);
+        //Stanislav changed because of HDMI
+       // CheckError( AudioUnitRender(sm.inputUnit, ioActionFlags, inTimeStamp, inOutputBusNumber, inNumberFrames, sm.inputBuffer), "Couldn't render the output unit");
         
+        AudioUnitRender(sm.inputUnit, ioActionFlags, inTimeStamp, inOutputBusNumber, inNumberFrames, sm.inputBuffer);
         // Convert the audio in something manageable
         // For Float32s ... 
         if ( sm.numBytesPerSample == 4 ) // then we've already got flaots
@@ -847,13 +922,21 @@ void sessionPropertyListener(void *                  inClientData,
     if (inID == kAudioSessionProperty_AudioRouteChange && routeChangeReason != kAudioSessionRouteChangeReason_CategoryChange)
     {
         Novocaine *sm = (__bridge Novocaine *)inClientData;
-        [sm checkSessionProperties];
+        
+       // [sm checkSessionProperties];
+        [sm pause];
+        [sm initNovocaine];
+        [sm play];
+        [sm sendNotificationToUpdateBuffersInMainApp];
+        
+        
     }
     
 }
 
 - (void)checkAudioSource {
     // Check what the incoming audio route is.
+
     UInt32 propertySize = sizeof(CFStringRef);
     CFStringRef route;
     CheckError( AudioSessionGetProperty(kAudioSessionProperty_AudioRoute, &propertySize, &route), "Couldn't check the audio route");
@@ -873,13 +956,15 @@ void sessionPropertyListener(void *                  inClientData,
     self.inputAvailable = (BOOL)isInputAvailable;
     NSLog(@"Input available? %d", self.inputAvailable);
     
+    
+
 }
 
 
 // To be run ONCE per session property change and once on initialization.
 - (void)checkSessionProperties
 {	
-    
+ 
     // Check if there is input, and from where
     [self checkAudioSource];
     
@@ -908,11 +993,20 @@ void sessionPropertyListener(void *                  inClientData,
     self.samplingRate = currentSamplingRate;
     NSLog(@"Current sampling rate: %f", self.samplingRate);
     
-    //hack by Stanislav
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"audioChannelsChanged" object:self];
-    
+   
+    [self sendNotificationToUpdateBuffersInMainApp];
 	
 }
+
+
+-(void) sendNotificationToUpdateBuffersInMainApp
+{
+    //added by Stanislav, used to inform rest of the application that audio changed so that
+    //rest of the application can accomodate buffers and views:
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"audioChannelsChanged" object:self];
+
+}
+
 
 void sessionInterruptionListener(void *inClientData, UInt32 inInterruption) {
     

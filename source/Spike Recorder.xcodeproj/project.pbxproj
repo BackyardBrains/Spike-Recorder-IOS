@@ -210,6 +210,7 @@
 		24BB8365199E7D0C00C12932 /* GraphDCMDTrialViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 24BB8363199E7D0C00C12932 /* GraphDCMDTrialViewController.xib */; };
 		24D697BA1A6FF3EB00108D78 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 24D697B91A6FF3EB00108D78 /* Images.xcassets */; };
 		24DBA92A197709DF00AEDE86 /* FFTViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 24DBA928197709DF00AEDE86 /* FFTViewController.xib */; };
+		24E1430D1B61407B00DA32B9 /* Log.m in Sources */ = {isa = PBXBuildFile; fileRef = 24E1430C1B61407B00DA32B9 /* Log.m */; };
 		24E6D8A91A011EE0006C8CED /* FilterSettingsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 24E6D8A71A011EE0006C8CED /* FilterSettingsViewController.xib */; };
 		24EBC1AE1997852D001D3392 /* TrialsDCMDTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 24EBC1AC1997852D001D3392 /* TrialsDCMDTableViewController.xib */; };
 		24EBC1B31997DD21001D3392 /* TrialActionsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 24EBC1B11997DD21001D3392 /* TrialActionsViewController.xib */; };
@@ -633,6 +634,8 @@
 		24BB8363199E7D0C00C12932 /* GraphDCMDTrialViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GraphDCMDTrialViewController.xib; sourceTree = "<group>"; };
 		24D697B91A6FF3EB00108D78 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = "Backyard Brains/Images.xcassets"; sourceTree = SOURCE_ROOT; };
 		24DBA928197709DF00AEDE86 /* FFTViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FFTViewController.xib; sourceTree = "<group>"; };
+		24E1430B1B61407B00DA32B9 /* Log.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Log.h; sourceTree = "<group>"; };
+		24E1430C1B61407B00DA32B9 /* Log.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Log.m; sourceTree = "<group>"; };
 		24E6D8A71A011EE0006C8CED /* FilterSettingsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FilterSettingsViewController.xib; sourceTree = "<group>"; };
 		24EBC1AC1997852D001D3392 /* TrialsDCMDTableViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TrialsDCMDTableViewController.xib; sourceTree = "<group>"; };
 		24EBC1B11997DD21001D3392 /* TrialActionsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TrialActionsViewController.xib; sourceTree = "<group>"; };
@@ -1355,6 +1358,8 @@
 				FADF266B1596362F006C87BA /* InfoPlist.strings */,
 				FADF266E1596362F006C87BA /* main.m */,
 				FADF26701596362F006C87BA /* Spike Recorder-Prefix.pch */,
+				24E1430B1B61407B00DA32B9 /* Log.h */,
+				24E1430C1B61407B00DA32B9 /* Log.m */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -1573,6 +1578,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				24E1430D1B61407B00DA32B9 /* Log.m in Sources */,
 				247087011A850FF6004C6B9B /* CCGLTouchAppDelegate.mm in Sources */,
 				247087031A850FF6004C6B9B /* CCGLTouchView.mm in Sources */,
 				247087051A850FF6004C6B9B /* CCGLTouchViewController.mm in Sources */,

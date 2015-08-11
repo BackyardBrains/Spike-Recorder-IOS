@@ -411,6 +411,7 @@
     NSRange receiverRange = [routeStr rangeOfString : @"Receiver"];
     NSRange speakerRange = [routeStr rangeOfString : @"Speaker"];
     NSRange lineoutRange = [routeStr rangeOfString : @"Lineout"];
+    NSRange HDMIRange = [routeStr rangeOfString : @"HDMI"];
     
     if (headphoneRange.location != NSNotFound) {
         // Don't change the route if the headphone is plugged in.
@@ -444,6 +445,12 @@
     } else if (lineoutRange.location != NSNotFound) {
         // Don't change the route if the lineout is plugged in.
         UInt32 audioRouteOverride = kAudioSessionOverrideAudioRoute_None;
+        AudioSessionSetProperty (kAudioSessionProperty_OverrideAudioRoute,
+                                 sizeof (audioRouteOverride),
+                                 &audioRouteOverride);
+    }
+    else if (HDMIRange.location != NSNotFound) {
+        UInt32 audioRouteOverride = kAudioSessionOverrideAudioRoute_Speaker;
         AudioSessionSetProperty (kAudioSessionProperty_OverrideAudioRoute,
                                  sizeof (audioRouteOverride),
                                  &audioRouteOverride);
