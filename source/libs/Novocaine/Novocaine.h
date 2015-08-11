@@ -153,7 +153,7 @@ typedef void (^NovocaineInputBlock)(float *data, UInt32 numFrames, UInt32 numCha
 -(void) sendNotificationToUpdateBuffersInMainApp;//stanislav added function
 - (void)checkAudioSource;
 
-+(void) informUserAboutError:(const char *) errorString;
++(void) informUserAboutError:(const char *) errorString andType: (int) typeOfError;
 #endif
 
 
@@ -166,18 +166,18 @@ static void CheckError(OSStatus error, const char *operation)
     
     char str[20];
     // see if it appears to be a 4-char-code
-    *(UInt32 *)(str + 1) = CFSwapInt32HostToBig(error);
+  /*  *(UInt32 *)(str + 1) = CFSwapInt32HostToBig(error);
     if (isprint(str[1]) && isprint(str[2]) && isprint(str[3]) && isprint(str[4])) {
         str[0] = str[5] = '\'';
         str[6] = '\0';
-    } else
+    } else*/
         // no, format it as an integer
         sprintf(str, "%d", (int)error);
     
     fprintf(stderr, "Error: %s (%s)\n", operation, str);
     
 #if defined (USING_IOS)
-    [Novocaine informUserAboutError:operation];
+    [Novocaine informUserAboutError:operation andType:(int) error];
 #endif
     
     //exit(1);

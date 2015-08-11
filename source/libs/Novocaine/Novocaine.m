@@ -107,11 +107,16 @@ static Novocaine *audioManager = nil;
 }
 
 
-+(void) informUserAboutError:(const char *) errorString
++(void) informUserAboutError:(const char *) errorString andType: (int) typeOfError
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         
-            UIAlertView *alert=[[UIAlertView alloc]initWithTitle:[NSString stringWithUTF8String:errorString] message:Nil delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+            NSMutableString *finalString = [NSMutableString stringWithString:@"Error: "];
+            NSMutableString*  errorNSString = [NSMutableString stringWithUTF8String:errorString];
+            NSMutableString*  typeNSString = [NSMutableString stringWithFormat:@" (%d)",typeOfError];
+            [finalString appendString:errorNSString];
+            [finalString appendString:typeNSString];
+            UIAlertView *alert=[[UIAlertView alloc]initWithTitle:finalString message:Nil delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
             [alert show];
             [alert release];
         
