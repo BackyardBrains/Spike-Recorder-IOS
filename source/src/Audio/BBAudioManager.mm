@@ -319,6 +319,7 @@ static BBAudioManager *bbAudioManager = nil;
 
 - (void)loadSettingsFromUserDefaults
 {
+    NSLog(@"Audio manager loadSettingsFromUserDefaults\n");
     // Make sure we've got our defaults right, y'know? Important.
     NSDictionary *defaultsDict = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"SettingsDefaults" ofType:@"plist"]];
     [[NSUserDefaults standardUserDefaults] registerDefaults:defaultsDict];
@@ -348,6 +349,7 @@ static BBAudioManager *bbAudioManager = nil;
 - (void)saveSettingsToUserDefaults
 {
 
+    NSLog(@"Audio Manager saveSettingsToUserDefaults\n");
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
     [defaults setValue:[NSNumber numberWithInt:numPulsesInDigitalStimulation] forKey:@"numPulsesInDigitalStimulation"];
@@ -409,6 +411,7 @@ static BBAudioManager *bbAudioManager = nil;
 
 -(void) stopAllInputOutput
 {
+    NSLog(@"stopAllInputOutput\n");
     //[[BBBTManager btManager] setInputBlock:nil];
     audioManager.inputBlock = nil;
     audioManager.outputBlock = nil;
@@ -424,13 +427,15 @@ static BBAudioManager *bbAudioManager = nil;
     else
     {
         _sourceSamplingRate =  audioManager.samplingRate;
-         NSLog(@"Get channel config sampling rate: %f", _sourceSamplingRate);
+         NSLog(@"Get source channel config sampling rate: %f", _sourceSamplingRate);
         _sourceNumberOfChannels = audioManager.numInputChannels;
+        NSLog(@"Get source number of channels: %d", _sourceNumberOfChannels);
     }
 }
 
 -(void) resetupAudioInputs
 {
+    NSLog(@"resetupAudioInputs\n");
     if(!playing && audioManager)
     {
         [self stopAllInputOutput];
@@ -446,7 +451,8 @@ static BBAudioManager *bbAudioManager = nil;
 
 -(void) resetBuffers
 {
-
+    NSLog(@"resetBuffers\n");
+    
     delete ringBuffer;
     free(tempCalculationBuffer);
     //create new buffers
@@ -463,6 +469,7 @@ static BBAudioManager *bbAudioManager = nil;
 
 -(void) makeInputOutput
 {
+     NSLog(@"makeInputOutput\n");
    // [self resetBuffers];
     
     if(btOn)
@@ -619,7 +626,7 @@ static BBAudioManager *bbAudioManager = nil;
 
 -(void) quitAllFunctions
 {
-    
+    NSLog(@"quitAllFunctions\n");
     [self stopAllInputOutput];
     
     if (recording)
@@ -657,10 +664,17 @@ static BBAudioManager *bbAudioManager = nil;
 #pragma mark - Input Methods
 - (void)startMonitoring
 {
+    NSLog(@"Audio manager startMonitoring\n");
     audioManager=[Novocaine audioManager];
-
+    
     [self quitAllFunctions];
+    float tempSamplingRate = _sourceSamplingRate;
+    int tempNumberOfChannels = _sourceNumberOfChannels;
     [self getChannelsConfig];
+    if(tempSamplingRate != _sourceSamplingRate  || tempNumberOfChannels != _sourceNumberOfChannels)
+    {
+        [self resetBuffers];
+    }
     [self makeInputOutput];
 }
 
@@ -875,6 +889,7 @@ static BBAudioManager *bbAudioManager = nil;
 
 - (void)startPlaying:(BBFile *) fileToPlay
 {
+    NSLog(@"Audio manager startPlaying\n");
     [self stopAllInputOutput];
     
     if (self.playing == true)
@@ -1073,6 +1088,7 @@ static BBAudioManager *bbAudioManager = nil;
 
 -(void) clearWaveform
 {
+    NSLog(@"clear waveform");
     if(ringBuffer)
     {
         ringBuffer->Clear();
@@ -1081,8 +1097,10 @@ static BBAudioManager *bbAudioManager = nil;
 
 - (void)stopPlaying
 {
+    NSLog(@"Stop Playing\n");
     if(self.playing)
     {
+       NSLog(@"Stop Playing - inside\n");
         [self pausePlaying];
         _file = nil;
         _preciseTimeOfLastData = 0.0f;
@@ -1172,10 +1190,12 @@ static BBAudioManager *bbAudioManager = nil;
 
 - (float)fetchAudio:(float *)data numFrames:(UInt32)numFrames whichChannel:(UInt32)whichChannel stride:(UInt32)stride
 {
+    
     if(whichChannel>=_sourceNumberOfChannels)
     {
         return 0.0f;
     }
+    
     if (!thresholding) {
         //Fetch data and get time of data as precise as posible. Used to sichronize
         //display of waveform and spike marks

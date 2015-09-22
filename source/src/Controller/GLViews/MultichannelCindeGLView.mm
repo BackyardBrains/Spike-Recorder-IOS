@@ -343,6 +343,7 @@
         }
     }
     else {
+        NSLog(@"Setting normal defaults\n");
         numSamplesMax = [[defaults valueForKey:@"numSamplesMaxNew"] floatValue];
         numSamplesMin = [[defaults valueForKey:@"numSamplesMin"] floatValue];
         numSamplesVisible = [[defaults valueForKey:@"numSamplesVisible"] floatValue];
@@ -383,6 +384,7 @@
 
 - (void)saveSettings:(BOOL)useThresholdSettings
 {
+    NSLog(@"MultichannelGL view saveSettings\n");
     NSDictionary *defaultsDict = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"SettingsDefaults" ofType:@"plist"]];
     [[NSUserDefaults standardUserDefaults] registerDefaults:defaultsDict];
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -428,6 +430,7 @@
 //
 - (void)fillDisplayVector
 {
+    NSLog(@"fillDisplayVector");
     
     // We'll be checking if we have to limit the amount of points we display on the screen
     // (e.g., the user is allowed to pinch beyond the maximum allowed range, but we
@@ -530,8 +533,9 @@
                 offset = 0;
             }
         
-            timeForSincDrawing =  [dataSourceDelegate fetchDataToDisplay:tempDataBuffer numFrames:numPoints whichChannel:realIndexOfChannel];
             
+            timeForSincDrawing =  [dataSourceDelegate fetchDataToDisplay:tempDataBuffer numFrames:numPoints whichChannel:realIndexOfChannel];
+            NSLog(@"After - Fetch Data to display");
             float zero = yOffsets[channelIndex];
             float zoom = maxVoltsSpan/ numVoltsVisible[channelIndex];
             //float zoom = 1.0f;

@@ -1848,7 +1848,7 @@
 				);
 				PRODUCT_NAME = "Spike Recorder";
 				PROVISIONING_PROFILE = "";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "c59210e3-2c37-48a6-bc2f-51fa6e710659";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "705ff090-5a4f-40b8-bd60-a5d62d4095da";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = iphoneos8.1;
 				TARGETED_DEVICE_FAMILY = "1,2";

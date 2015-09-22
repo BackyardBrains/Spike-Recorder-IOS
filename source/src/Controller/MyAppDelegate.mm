@@ -39,7 +39,7 @@
     // TODO: test on iOS 5.
     
     
-   // [self redirectConsoleLogToDocumentFolder];
+    [self redirectConsoleLogToDocumentFolder];
     
     window.rootViewController = tabBarController;
     tabBarController.delegate = self;

@@ -59,7 +59,8 @@ static pthread_mutex_t threadLock;
     self = [super init];
     if (self)
     {
-        isWawFile = !([[[urlToAudioFile pathExtension] uppercaseString] rangeOfString:@"WAV"].location == NSNotFound);        
+        isWawFile = !([[[urlToAudioFile pathExtension] uppercaseString] rangeOfString:@"WAV"].location == NSNotFound);
+       
         if(isWawFile)
         {
             if(wavManager)
@@ -100,6 +101,7 @@ static pthread_mutex_t threadLock;
             _outputFormat.mBytesPerFrame = 4*self.numChannels;
             _outputFormat.mChannelsPerFrame = self.numChannels;
             _outputFormat.mBitsPerChannel = 32;
+            //_outputFormat.mFormatFlags =  kAudioFormatFlagIsSignedInteger | kAudioFormatFlagIsBigEndian | kLinearPCMFormatFlagIsPacked;
             
             UInt32 codecManf = kAppleSoftwareAudioCodecManufacturer;
             ExtAudioFileSetProperty(_inputFile, kExtAudioFileProperty_CodecManufacturer, sizeof(UInt32), &codecManf);

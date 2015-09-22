@@ -58,13 +58,14 @@
     [self setGLView:glView];
     glView.mode = MultichannelGLViewModeView;
     
-    
+    NSLog(@"ViewAndRecord - set number of channesl");
  
     
     [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels ] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
     
 	[self.view addSubview:glView];
     [self.view sendSubviewToBack:glView];
+    NSLog(@"ViewAndRecord - start animation");
 	[glView startAnimation];
     
     UITapGestureRecognizer *doubleTap = [[[UITapGestureRecognizer alloc] initWithTarget: self action:@selector(autorangeView)] autorelease];
@@ -74,7 +75,7 @@
     // set our view controller's prop that will hold a pointer to our newly created CCGLTouchView
     
     
-
+    NSLog(@"ViewAndRecord - set active channels");
         
         //Set all channels to active
         UInt8 configurationOfChannels = 0;
@@ -91,7 +92,7 @@
 
 
     
-
+    NSLog(@"ViewAndRecord -add notifications");
 
    // [self detectBluetooth];
    // [self.rtSpikeViewButton objectColor:[BYBGLView getSpikeTrainColorWithIndex:4 transparency:1.0f]];
@@ -109,6 +110,7 @@
 
 - (void)viewDidAppear:(BOOL)animated
 {
+    NSLog(@"View and record viewDidAppear");
     [super viewDidAppear:animated];
 }
 
@@ -118,7 +120,7 @@
     [glView stopAnimation];
    // [self tapOnCancelRTButton];
     NSLog(@"Stopping regular view");
-  //  [glView saveSettings:FALSE]; // save non-threshold settings
+    [glView saveSettings:FALSE]; // save non-threshold settings
 
     //[glView removeFromSuperview];
     //[glView release];
@@ -136,6 +138,7 @@
 
 - (void)viewDidLoad
 {
+    NSLog(@"\n View and Record - viewDidLoad\n\n");
     stimulateButton.selected = NO;
     // Listen for going down
 
@@ -198,6 +201,7 @@
     
     //Fetch data and get time of data as precise as posible. Used to sichronize
     //display of waveform and spike marks
+   
     return [[BBAudioManager bbAudioManager] fetchAudio:data numFrames:numFrames whichChannel:whichChannel stride:1];
 }
 
