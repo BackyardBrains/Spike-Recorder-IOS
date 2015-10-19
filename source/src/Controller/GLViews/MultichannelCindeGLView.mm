@@ -326,7 +326,7 @@
             numSamplesVisible = MAX_THRESHOLD_VISIBLE_TIME*samplingRate;
         }
         numVoltsMin = [[defaults valueForKey:@"numVoltsMinThreshold"] floatValue];
-        numVoltsMax = [[defaults valueForKey:@"numVoltsMaxThreshold"] floatValue];
+        numVoltsMax = [[defaults valueForKey:@"numVoltsMaxThresholdUpdate1"] floatValue];
        
         for(int i=0;i<maxNumberOfChannels;i++)
         {
@@ -348,7 +348,7 @@
         numSamplesMin = [[defaults valueForKey:@"numSamplesMin"] floatValue];
         numSamplesVisible = [[defaults valueForKey:@"numSamplesVisible"] floatValue];
         numVoltsMin = [[defaults valueForKey:@"numVoltsMin"] floatValue];
-        numVoltsMax = [[defaults valueForKey:@"numVoltsMax"] floatValue];
+        numVoltsMax = [[defaults valueForKey:@"numVoltsMaxUpdate1"] floatValue];
         
         for(int i=0;i<maxNumberOfChannels;i++)
         {
@@ -397,7 +397,7 @@
         [defaults setValue:[NSNumber numberWithFloat:numSamplesVisible] forKey:@"numSamplesVisibleThreshold"];
         [defaults setValue:[NSNumber numberWithFloat:numVoltsMin] forKey:@"numVoltsMinThreshold"];
         
-        [defaults setValue:[NSNumber numberWithFloat:numVoltsMax] forKey:@"numVoltsMaxThreshold"];
+        [defaults setValue:[NSNumber numberWithFloat:numVoltsMax] forKey:@"numVoltsMaxThresholdUpdate1"];
         if(numVoltsVisible[0]>numVoltsMax)
         {
             numVoltsVisible[0] = numVoltsMax;
@@ -409,7 +409,7 @@
         [defaults setValue:[NSNumber numberWithFloat:numSamplesMin] forKey:@"numSamplesMin"];
         [defaults setValue:[NSNumber numberWithFloat:numSamplesVisible] forKey:@"numSamplesVisible"];
         [defaults setValue:[NSNumber numberWithFloat:numVoltsMin] forKey:@"numVoltsMin"];
-        [defaults setValue:[NSNumber numberWithFloat:numVoltsMax] forKey:@"numVoltsMax"];
+        [defaults setValue:[NSNumber numberWithFloat:numVoltsMax] forKey:@"numVoltsMaxUpdate1"];
         if(numVoltsVisible[0]>numVoltsMax)
         {
             numVoltsVisible[0] = numVoltsMax;

@@ -60,8 +60,8 @@
 	<real>0.1</real>
 	<key>numVoltsMin</key>
 	<real>0.05</real>
-	<key>numVoltsMax</key>
-	<integer>6</integer>
+	<key>numVoltsMaxUpdate1</key>
+	<integer>40</integer>
 	<key>numVoltsVisible</key>
 	<real>1.6</real>
 	<key>numSecondsMaxThreshold</key>
@@ -72,8 +72,8 @@
 	<real>0.1</real>
 	<key>numVoltsMinThreshold</key>
 	<real>0.05</real>
-	<key>numVoltsMaxThreshold</key>
-	<integer>6</integer>
+	<key>numVoltsMaxThresholdUpdate1</key>
+	<integer>40</integer>
 	<key>numVoltsVisibleThreshold</key>
 	<real>1.6</real>
 </dict>

@@ -109,7 +109,7 @@
     numSecondsMin = [[defaults valueForKey:@"numSecondsMin"] floatValue];
     numSecondsVisible = [[defaults valueForKey:@"numSecondsVisible"] floatValue];
     numVoltsMin = [[defaults valueForKey:@"numVoltsMin"] floatValue];
-    numVoltsMax = [[defaults valueForKey:@"numVoltsMax"] floatValue];
+    numVoltsMax = [[defaults valueForKey:@"numVoltsMaxUpdate1"] floatValue];
     numVoltsVisible = [[defaults valueForKey:@"numVoltsVisible"] floatValue];
     if(numVoltsVisible > numVoltsMax)
     {
@@ -129,7 +129,7 @@
     [defaults setValue:[NSNumber numberWithFloat:numSecondsMin] forKey:@"numSecondsMin"];
     [defaults setValue:[NSNumber numberWithFloat:numSecondsVisible] forKey:@"numSecondsVisible"];
     [defaults setValue:[NSNumber numberWithFloat:numVoltsMin] forKey:@"numVoltsMin"];
-    [defaults setValue:[NSNumber numberWithFloat:numVoltsMax] forKey:@"numVoltsMax"];
+    [defaults setValue:[NSNumber numberWithFloat:numVoltsMax] forKey:@"numVoltsMaxUpdate1"];
     if(numVoltsVisible > numVoltsMax)
     {
         numVoltsVisible = numVoltsMax;

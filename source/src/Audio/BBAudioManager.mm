@@ -188,8 +188,8 @@ static BBAudioManager *bbAudioManager = nil;
         maxNumberOfSamplesToDisplay = [[defaults valueForKey:@"numSamplesMaxNew"] integerValue];
 
         //Setup initial values for statistics
-        _currentMax = [[defaults valueForKey:@"numVoltsMax"] floatValue]*0.8;
-        _currentMin = -[[defaults valueForKey:@"numVoltsMax"] floatValue]*0.8;
+        _currentMax = [[defaults valueForKey:@"numVoltsMaxUpdate1"] floatValue]*0.8;
+        _currentMin = -[[defaults valueForKey:@"numVoltsMaxUpdate1"] floatValue]*0.8;
         _currentMean = 0.0f;
         _currentSTD = _currentMax/6.0f;
 
