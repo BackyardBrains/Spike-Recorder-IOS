@@ -503,6 +503,10 @@ static BBAudioManager *bbAudioManager = nil;
     }
 }
 
+
+//
+// Main routing function. All the processing should hook up here onto data packets
+//
 -(void) additionalProcessingOfInputData:(float *) data forNumOfFrames:(UInt32) numFrames andNumChannels:(UInt32) numChannels
 {
     

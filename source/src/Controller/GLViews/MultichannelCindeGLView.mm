@@ -213,10 +213,10 @@
 
     for(int channelIndex = 0; channelIndex < maxNumberOfChannels; channelIndex++)
     {
-        if(yOffsets[channelIndex]==0.0f)
-        {
+        //if(yOffsets[channelIndex]==0.0f)
+        //{
             yOffsets[channelIndex] = -usableYAxisSpan*0.4 + (channelIndex+1)*(usableYAxisSpan/((float)maxNumberOfChannels))- 0.5*(usableYAxisSpan/((float)maxNumberOfChannels));
-        }
+        //}
     }
     if(maxNumberOfChannels==1)
     {
@@ -232,7 +232,7 @@
         {
             channelsConfiguration = channelsConfiguration | (tempMask<<k);
         }
-    
+     NSLog([[NSString alloc] initWithFormat:@"Channel configuration: %d", channelsConfiguration ]);
     
     for(int i=0;i<maxNumberOfChannels;i++)
     {
@@ -430,7 +430,7 @@
 //
 - (void)fillDisplayVector
 {
-    NSLog(@"fillDisplayVector");
+   // NSLog(@"fillDisplayVector");
     
     // We'll be checking if we have to limit the amount of points we display on the screen
     // (e.g., the user is allowed to pinch beyond the maximum allowed range, but we
@@ -535,7 +535,7 @@
         
             
             timeForSincDrawing =  [dataSourceDelegate fetchDataToDisplay:tempDataBuffer numFrames:numPoints whichChannel:realIndexOfChannel];
-            NSLog(@"After - Fetch Data to display");
+          //  NSLog(@"After - Fetch Data to display");
             float zero = yOffsets[channelIndex];
             float zoom = maxVoltsSpan/ numVoltsVisible[channelIndex];
             //float zoom = 1.0f;
@@ -984,9 +984,12 @@
         //draw all handles
         for(int indexOfChannel = 0;indexOfChannel<maxNumberOfChannels;indexOfChannel++)
         {
+            
+           
             //draw tickmark
             if([self channelActive:indexOfChannel])
             {
+                // NSLog([[NSString alloc] initWithFormat:@"Channel configuration: %d, offset: %f, index: %d", channelsConfiguration,  yOffsets[indexOfChannel]], indexOfChannel);
                 glLineWidth(2.0f);
                 glColor4f(1.0f, 1.0f, 1.0f, 1.0-transparencyForAxis);
                 gl::drawLine(Vec2f(-maxTimeSpan, yOffsets[indexOfChannel]), Vec2f(-maxTimeSpan+20*scaleXY.x, yOffsets[indexOfChannel]));
@@ -1007,8 +1010,11 @@
             
             //draw line for active channel
             
+            
+            
             if([self channelActive:indexOfChannel])
             {
+            
                 [self setColorWithIndex:indexOfChannel transparency:transparencyForAxis];
                 glLineWidth(2.0f);
                 gl::drawLine(Vec2f(centerOfCircleX, yOffsets[indexOfChannel]), Vec2f(0.0f, yOffsets[indexOfChannel]));

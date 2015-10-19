@@ -172,7 +172,7 @@ float RingBuffer::FetchFreshData2(float *outData, SInt64 numFrames, SInt64 which
     //TODO: make timestamp of data part of this class
     float tempTime = [[BBAudioManager bbAudioManager] getTimeForSpikes];
    NSString * logString = [NSString stringWithFormat:@"Num of frames: %lld, which channel: %lld, stride: %lld", numFrames, whichChannel, stride];
-    NSLog(logString);
+    //NSLog(logString);
     if (mLastWrittenIndex[whichChannel] - numFrames >= 0) { // if we're requesting samples that won't go off the left end of the ring buffer, then go ahead and copy them all out.
         NSLog(@"fetch audio 4");
         UInt32 idx = mLastWrittenIndex[whichChannel] - numFrames;
