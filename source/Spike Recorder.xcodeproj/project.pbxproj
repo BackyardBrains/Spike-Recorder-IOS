@@ -125,7 +125,6 @@
 		2418FFD11A8406A600662547 /* Screenshot-750x1334.png in Resources */ = {isa = PBXBuildFile; fileRef = 2418FFC91A8406A600662547 /* Screenshot-750x1334.png */; };
 		2418FFD21A8406A600662547 /* Screenshot-1242x2208.png in Resources */ = {isa = PBXBuildFile; fileRef = 2418FFCA1A8406A600662547 /* Screenshot-1242x2208.png */; };
 		2418FFD31A8406A600662547 /* Screenshot@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2418FFCB1A8406A600662547 /* Screenshot@2x.png */; };
-		2418FFD51A85047F00662547 /* DropboxSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2418FFD41A85047F00662547 /* DropboxSDK.framework */; };
 		2418FFD71A8504AB00662547 /* SensibleTableView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2418FFD61A8504AB00662547 /* SensibleTableView.framework */; };
 		242631B419C2042A00225E44 /* ECGViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 242631B219C2042A00225E44 /* ECGViewController.xib */; };
 		24507B53196C333C00E27BD2 /* AutoGraphViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 24507B51196C333C00E27BD2 /* AutoGraphViewController.xib */; };
@@ -204,6 +203,7 @@
 		248C8EC118E5D90500307C4C /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 248C8EC018E5D90500307C4C /* ImageIO.framework */; };
 		2490139C1966CD5E00E5EF91 /* GraphMatrixViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2490139A1966CD5E00E5EF91 /* GraphMatrixViewController.xib */; };
 		249013A4196AB45200E5EF91 /* ISIGraphViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 249013A2196AB45200E5EF91 /* ISIGraphViewController.xib */; };
+		249737421CDFC2CE007A73FA /* DropboxSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 249737411CDFC2CE007A73FA /* DropboxSDK.framework */; settings = {ASSET_TAGS = (); }; };
 		249A246319058465005F5F03 /* AutocorrelationGraphViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 249A246119058465005F5F03 /* AutocorrelationGraphViewController.xib */; };
 		249A24681906AC59005F5F03 /* ISIHistogramViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 249A24661906AC59005F5F03 /* ISIHistogramViewController.xib */; };
 		249C244B1A9E272500B81B1A /* BufferStateIndicator.mm in Sources */ = {isa = PBXBuildFile; fileRef = 249C244A1A9E272500B81B1A /* BufferStateIndicator.mm */; };
@@ -589,7 +589,6 @@
 		2418FFC91A8406A600662547 /* Screenshot-750x1334.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Screenshot-750x1334.png"; sourceTree = "<group>"; };
 		2418FFCA1A8406A600662547 /* Screenshot-1242x2208.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Screenshot-1242x2208.png"; sourceTree = "<group>"; };
 		2418FFCB1A8406A600662547 /* Screenshot@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Screenshot@2x.png"; sourceTree = "<group>"; };
-		2418FFD41A85047F00662547 /* DropboxSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DropboxSDK.framework; path = libs/DropboxSDK.framework; sourceTree = "<group>"; };
 		2418FFD61A8504AB00662547 /* SensibleTableView.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SensibleTableView.framework; path = libs/SensibleTableView.framework; sourceTree = "<group>"; };
 		242631B219C2042A00225E44 /* ECGViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ECGViewController.xib; sourceTree = "<group>"; };
 		2444A5491B3B9E6D005DFD5B /* coreplot_new.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = coreplot_new.a; sourceTree = "<group>"; };
@@ -627,6 +626,7 @@
 		2490139A1966CD5E00E5EF91 /* GraphMatrixViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GraphMatrixViewController.xib; sourceTree = "<group>"; };
 		249013A2196AB45200E5EF91 /* ISIGraphViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ISIGraphViewController.xib; sourceTree = "<group>"; };
 		2490D73A1A927C1B00E1D5E9 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
+		249737411CDFC2CE007A73FA /* DropboxSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DropboxSDK.framework; path = libs/DropboxSDK.framework; sourceTree = "<group>"; };
 		249A246119058465005F5F03 /* AutocorrelationGraphViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AutocorrelationGraphViewController.xib; sourceTree = "<group>"; };
 		249A24661906AC59005F5F03 /* ISIHistogramViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ISIHistogramViewController.xib; sourceTree = "<group>"; };
 		249C24491A9E272500B81B1A /* BufferStateIndicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BufferStateIndicator.h; sourceTree = "<group>"; };
@@ -676,7 +676,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				2418FFD71A8504AB00662547 /* SensibleTableView.framework in Frameworks */,
-				2418FFD51A85047F00662547 /* DropboxSDK.framework in Frameworks */,
 				247ED9BE193DEC0800871BAC /* libz.dylib in Frameworks */,
 				248BA1F21B3DAFB600EEB5E4 /* libCorePlot-CocoaTouch.a in Frameworks */,
 				248C8EC118E5D90500307C4C /* ImageIO.framework in Frameworks */,
@@ -685,6 +684,7 @@
 				FA905A7A15AA8F0C0013688B /* CFNetwork.framework in Frameworks */,
 				FA905A4815AA8BBA0013688B /* Security.framework in Frameworks */,
 				FA90598A15A9F4E20013688B /* libsqlite3.0.dylib in Frameworks */,
+				249737421CDFC2CE007A73FA /* DropboxSDK.framework in Frameworks */,
 				FAAC8E7D15A3738D003EB28A /* Accelerate.framework in Frameworks */,
 				FADF265F1596362F006C87BA /* AudioToolbox.framework in Frameworks */,
 				FADF26551596362F006C87BA /* UIKit.framework in Frameworks */,
@@ -1308,10 +1308,10 @@
 		FADF26531596362F006C87BA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				249737411CDFC2CE007A73FA /* DropboxSDK.framework */,
 				2490D73A1A927C1B00E1D5E9 /* HealthKit.framework */,
 				2418FDA11A83F14700662547 /* libs */,
 				2418FFD61A8504AB00662547 /* SensibleTableView.framework */,
-				2418FFD41A85047F00662547 /* DropboxSDK.framework */,
 				247ED9BD193DEC0800871BAC /* libz.dylib */,
 				FA90598915A9F4E20013688B /* libsqlite3.0.dylib */,
 				248C8EC018E5D90500307C4C /* ImageIO.framework */,
