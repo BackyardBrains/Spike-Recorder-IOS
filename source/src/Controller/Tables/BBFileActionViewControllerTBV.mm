@@ -226,7 +226,11 @@
 	{
         
         // Launch a detail view here.
-        BBFileDetailViewController *bbdvc = [[BBFileDetailViewController alloc] initWithBBFile:[self.files objectAtIndex:0]];
+        BBFileDetailsTableViewController *bbdvc = [[BBFileDetailsTableViewController alloc] initWithBBFile:[self.files objectAtIndex:0]];
+        
+        /* BBFileDetailViewController *bbdvc = [[BBFileDetailViewController alloc] initWithBBFile:[self.files objectAtIndex:0]];*/
+        
+        
         [self.navigationController pushViewController:bbdvc animated:YES];
         [bbdvc release];
         

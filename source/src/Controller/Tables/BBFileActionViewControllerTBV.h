@@ -10,11 +10,10 @@
 #import <Foundation/Foundation.h>
 #import <MessageUI/MessageUI.h>
 #import <MessageUI/MFMailComposeViewController.h>
-#import "BBFileDetailViewController.h"
 #import "BBFileTableCell.h"
-#import "BBFileDetailViewController.h"
 #import "PlaybackViewController.h"
 #import "SpikesAnalysisViewController.h"
+#import "BBFileDetailsTableViewController.h"
 
 @protocol BBFileActionViewControllerDelegate
 @required

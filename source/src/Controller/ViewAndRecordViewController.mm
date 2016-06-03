@@ -10,7 +10,6 @@
 //
 
 #import "ViewAndRecordViewController.h"
-#import "StimulationParameterViewController.h"
 //#import "BBBTManager.h"
 #import "BBBTChooserViewController.h"
 
@@ -29,8 +28,6 @@
 @implementation ViewAndRecordViewController
 @synthesize slider;
 @synthesize recordButton;
-@synthesize stimulateButton;
-@synthesize stimulatePreferenceButton;
 @synthesize bufferStateIndicator;
 @synthesize cancelRTViewButton;
 
@@ -43,10 +40,7 @@
     [[BBAudioManager bbAudioManager] startMonitoring];
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    BOOL enabled = [[defaults valueForKey:@"stimulationEnabled"] boolValue];
 
-    stimulateButton.hidden = !enabled;
-    stimulatePreferenceButton.hidden = !enabled;
     if(glView)
     {
         [glView stopAnimation];
@@ -139,7 +133,6 @@
 - (void)viewDidLoad
 {
     NSLog(@"\n View and Record - viewDidLoad\n\n");
-    stimulateButton.selected = NO;
     // Listen for going down
 
 
@@ -438,7 +431,6 @@
         [self.btButton setImage:[UIImage imageNamed:@"bluetooth.png"] forState:UIControlStateNormal];
         [self.bufferStateIndicator setHidden:YES];
     }
-    stimulateButton.selected = NO;
 
 }
 
@@ -807,43 +799,10 @@
 
 
 
-- (IBAction)stimulateButtonPressed:(id)sender {
-
-    BBAudioManager *bbAudioManager = [BBAudioManager bbAudioManager];
-    if (bbAudioManager.stimulating == false) {
-        NSLog(@"Current stimulation type: %d", bbAudioManager.stimulationType);
-        [bbAudioManager startStimulating:bbAudioManager.stimulationType];
-        stimulateButton.selected = YES;
-    }
-    else {
-        [bbAudioManager stopStimulating];
-        stimulateButton.selected = NO;
-    }
-}
-
-- (IBAction)stimulatePrefButtonPressed:(id)sender {
-    
-    StimulationParameterViewController *spvc = [[StimulationParameterViewController alloc] initWithNibName:@"StimulationParameterView" bundle:nil];
-    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:spvc];
-    
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        NSLog(@"AWESOME");
-        navController.modalPresentationStyle = UIModalPresentationFormSheet;
-    }
-
-    [self.tabBarController presentViewController:navController animated:YES completion:nil];
-    
-    [spvc release];
-    [navController release];
-    
-}
-
-
 - (void)dealloc {
     [slider release];
     [recordButton release];
-    [stimulateButton release];
-    [stimulatePreferenceButton release];
+
     [_stopButton release];
     [_btButton release];
     [_rtSpikeViewButton release];
@@ -855,8 +814,6 @@
 - (void)viewDidUnload {
     [self setSlider:nil];
     [self setRecordButton:nil];
-    [self setStimulateButton:nil];
-    [self setStimulatePreferenceButton:nil];
     [self setStopButton:nil];
     [super viewDidUnload];
 }
