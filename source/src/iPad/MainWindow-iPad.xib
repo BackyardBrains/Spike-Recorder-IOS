@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.iPad.XIB" version="3.0" toolsVersion="7531" systemVersion="14C109" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.iPad.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7520"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="UIApplication">
@@ -21,7 +21,7 @@
             <extendedEdge key="edgesForExtendedLayout"/>
             <nil key="simulatedStatusBarMetrics"/>
             <nil key="simulatedBottomBarMetrics"/>
-            <tabBar key="tabBar" contentMode="scaleToFill" barStyle="black" id="21">
+            <tabBar key="tabBar" contentMode="scaleToFill" barStyle="black" selectedItem="GZg-wM-W9V" id="21">
                 <rect key="frame" x="0.0" y="975" width="768" height="49"/>
                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -49,6 +49,23 @@
                         </viewController>
                     </viewControllers>
                 </navigationController>
+                <navigationController id="aTS-CD-hjT" userLabel="Experiments">
+                    <tabBarItem key="tabBarItem" title="Experiments" selectedImage="grasshopper.png" id="GZg-wM-W9V"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Odu-UN-erX">
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <viewControllers>
+                        <viewController id="rYB-IQ-VhB" customClass="ExperimentsViewController">
+                            <view key="view" contentMode="scaleToFill" id="cTk-X1-eIv">
+                                <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
+                            <navigationItem key="navigationItem" title="Item" id="zq7-as-PCW"/>
+                        </viewController>
+                    </viewControllers>
+                </navigationController>
             </viewControllers>
         </tabBarController>
         <window opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="12">
@@ -62,10 +79,6 @@
         <image name="FileNeuron.png" width="30" height="30"/>
         <image name="ThresholdImage.png" width="30" height="30"/>
         <image name="WaveImage.png" width="30" height="30"/>
+        <image name="grasshopper.png" width="128" height="128"/>
     </resources>
-    <simulatedMetricsContainer key="defaultSimulatedMetrics">
-        <simulatedStatusBarMetrics key="statusBar"/>
-        <simulatedOrientationMetrics key="orientation"/>
-        <simulatedScreenMetrics key="destination"/>
-    </simulatedMetricsContainer>
 </document>

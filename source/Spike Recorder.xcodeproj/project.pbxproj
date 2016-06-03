@@ -13,6 +13,9 @@
 		1CD05BA51CFD02EE00A83727 /* BBFileDetailsViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1CD05BA31CFD02EE00A83727 /* BBFileDetailsViewCell.xib */; };
 		1CD05BA91CFD398400A83727 /* BBCommentDetailsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CD05BA71CFD398400A83727 /* BBCommentDetailsCell.m */; };
 		1CD05BAA1CFD398400A83727 /* BBCommentDetailsCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1CD05BA81CFD398400A83727 /* BBCommentDetailsCell.xib */; };
+		1CD464DA1D01DC69000A5C0D /* ForthTabViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CD464D81D01DC69000A5C0D /* ForthTabViewController.m */; };
+		1CD464DB1D01DC69000A5C0D /* ForthTabViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1CD464D91D01DC69000A5C0D /* ForthTabViewController.xib */; };
+		1CD464E11D01EE92000A5C0D /* grasshopper.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CD464E01D01EE92000A5C0D /* grasshopper.png */; };
 		2407C4381AE573FD005D671B /* OBSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 2407C4371AE573FD005D671B /* OBSlider.m */; };
 		240D8067190E98F6009F9AEA /* CrossCorrViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 240D8065190E98F6009F9AEA /* CrossCorrViewController.xib */; };
 		241453CF1AB87B33001B5D92 /* RTSpikeSortingButton.mm in Sources */ = {isa = PBXBuildFile; fileRef = 241453CE1AB87B33001B5D92 /* RTSpikeSortingButton.mm */; };
@@ -252,6 +255,10 @@
 		1CD05BA61CFD398400A83727 /* BBCommentDetailsCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BBCommentDetailsCell.h; sourceTree = "<group>"; };
 		1CD05BA71CFD398400A83727 /* BBCommentDetailsCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BBCommentDetailsCell.m; sourceTree = "<group>"; };
 		1CD05BA81CFD398400A83727 /* BBCommentDetailsCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BBCommentDetailsCell.xib; sourceTree = "<group>"; };
+		1CD464D71D01DC69000A5C0D /* ForthTabViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ForthTabViewController.h; sourceTree = "<group>"; };
+		1CD464D81D01DC69000A5C0D /* ForthTabViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ForthTabViewController.m; sourceTree = "<group>"; };
+		1CD464D91D01DC69000A5C0D /* ForthTabViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ForthTabViewController.xib; sourceTree = "<group>"; };
+		1CD464E01D01EE92000A5C0D /* grasshopper.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = grasshopper.png; sourceTree = "<group>"; };
 		2407C4361AE573FD005D671B /* OBSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OBSlider.h; sourceTree = "<group>"; };
 		2407C4371AE573FD005D671B /* OBSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OBSlider.m; sourceTree = "<group>"; };
 		240D8065190E98F6009F9AEA /* CrossCorrViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CrossCorrViewController.xib; sourceTree = "<group>"; };
@@ -1044,6 +1051,7 @@
 		2418FE881A83F5D700662547 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				1CD464E01D01EE92000A5C0D /* grasshopper.png */,
 				2418FE891A83F5D700662547 /* again.png */,
 				2418FE8A1A83F5D700662547 /* again@2x.png */,
 				2418FE8B1A83F5D700662547 /* backbtn.png */,
@@ -1173,6 +1181,9 @@
 				2418FF2E1A83FD3700662547 /* ThresholdViewController.mm */,
 				2418FF2F1A83FD3700662547 /* ViewAndRecordViewController.h */,
 				2418FF301A83FD3700662547 /* ViewAndRecordViewController.mm */,
+				1CD464D71D01DC69000A5C0D /* ForthTabViewController.h */,
+				1CD464D81D01DC69000A5C0D /* ForthTabViewController.m */,
+				1CD464D91D01DC69000A5C0D /* ForthTabViewController.xib */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -1492,6 +1503,7 @@
 				24EBC1B31997DD21001D3392 /* TrialActionsViewController.xib in Resources */,
 				2418FEC31A83F5D700662547 /* ecg.png in Resources */,
 				FA35CEFF15ABBADC0082FBC3 /* PlaybackViewController.xib in Resources */,
+				1CD464E11D01EE92000A5C0D /* grasshopper.png in Resources */,
 				247087C61A851774004C6B9B /* Icon-Small.png in Resources */,
 				245B1847199172D200943684 /* ExperimentsViewController.xib in Resources */,
 				247087BA1A851774004C6B9B /* Icon-60.png in Resources */,
@@ -1562,6 +1574,7 @@
 				245E26FA19EAC01100EE298E /* BBBTChooserViewController.xib in Resources */,
 				2489D8251993ABCA00C00A9C /* DCMDExperimentViewController.xib in Resources */,
 				2418FED41A83F5D700662547 /* settings.png in Resources */,
+				1CD464DB1D01DC69000A5C0D /* ForthTabViewController.xib in Resources */,
 				24EBC1AE1997852D001D3392 /* TrialsDCMDTableViewController.xib in Resources */,
 				2418FECA1A83F5D700662547 /* inputicon@2x.png in Resources */,
 				247087C71A851774004C6B9B /* Icon-Small@2x.png in Resources */,
@@ -1675,6 +1688,7 @@
 				2418FF821A83FDD500662547 /* TrialActionsViewController.mm in Sources */,
 				2418FF5C1A83FDA100662547 /* ColumnHeaderCollectionViewCell.m in Sources */,
 				2418FF351A83FD3700662547 /* FilterSettingsViewController.mm in Sources */,
+				1CD464DA1D01DC69000A5C0D /* ForthTabViewController.m in Sources */,
 				2418FF5B1A83FDA100662547 /* AverageSpikeGraphViewController.mm in Sources */,
 				2418FF161A83F79200662547 /* DSPThreshold.mm in Sources */,
 				2418FF3B1A83FD3700662547 /* ViewAndRecordViewController.mm in Sources */,
