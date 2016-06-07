@@ -56,7 +56,7 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <viewControllers>
-                        <viewController id="S8m-rw-cS8" customClass="ExperimentsViewController">
+                        <viewController nibName="ExperimentsViewController" id="S8m-rw-cS8" customClass="ExperimentsViewController">
                             <view key="view" contentMode="scaleToFill" id="VxA-9n-Lrg">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="519"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -80,6 +80,6 @@
         <image name="FileNeuron.png" width="30" height="30"/>
         <image name="ThresholdImage.png" width="30" height="30"/>
         <image name="WaveImage.png" width="30" height="30"/>
-        <image name="grasshopper.png" width="128" height="128"/>
+        <image name="grasshopper.png" width="25" height="25"/>
     </resources>
 </document>

@@ -13,8 +13,9 @@
 #import "TrialsDCMDTableViewController.h"
 
 @interface ExperimentsViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, DCMDSetupExperimentDelegate, DCMDExperimentDelegate>
+@property (retain, nonatomic)  UITableView *expTableView;
 
-@property (retain, nonatomic) IBOutlet UITableView *expTableView;
+
 @property (nonatomic,retain) NSMutableArray* allExperiments;
 @property (nonatomic, retain) BBDCMDExperiment * myNewExperiment;
 @end

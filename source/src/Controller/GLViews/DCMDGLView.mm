@@ -19,6 +19,7 @@
 #define START_RECORDING_SECONDS_BEFORE 2.0f
 #define WHAIT_WITH_MAX_ANGLE_SECONDS 2.0f
 
+#define NUMBER_OF_SEGMENTS_IN_ELPISE 100
 
 @implementation DCMDGLView
 
@@ -76,8 +77,9 @@
             {
                 angle = maxAngle;
             }
+           
             //sizeOnScreen = 2.0f*tempTrial.distance*tanf(angle);
-            [tempTrial.angles addObject:[NSNumber numberWithFloat:(float)angle]];
+            [tempTrial.angles addObject:[NSNumber numberWithFloat:(float)angle*2.0]];
             [tempTrial.angles addObject:[NSNumber numberWithFloat:0.0f]];
             
         }
@@ -198,11 +200,11 @@
                 [currentTrial.angles replaceObjectAtIndex:indexOfAngle+1 withObject:[NSNumber numberWithFloat:(float)currentTime]];
                 if(!isRotated)
                 {
-                    gl::drawSolidEllipse( centerOfScreen, sizesForEllipse[indexOfAngle], sizesForEllipse[indexOfAngle+1] );
+                    gl::drawSolidEllipse( centerOfScreen, sizesForEllipse[indexOfAngle], sizesForEllipse[indexOfAngle+1] ,NUMBER_OF_SEGMENTS_IN_ELPISE);
                 }
                 else
                 {
-                    gl::drawSolidEllipse( centerOfScreen, sizesForEllipse[indexOfAngle+1], sizesForEllipse[indexOfAngle] );
+                    gl::drawSolidEllipse( centerOfScreen, sizesForEllipse[indexOfAngle+1], sizesForEllipse[indexOfAngle] , NUMBER_OF_SEGMENTS_IN_ELPISE);
                 }
                 
                 if((indexOfAngle+=2) == maxIndexOfAngleInTrial)
@@ -224,11 +226,11 @@
                 //Draw circle
                 if(!isRotated)
                 {
-                    gl::drawSolidEllipse( centerOfScreen, radiusXAxis, radiusYAxis );
+                    gl::drawSolidEllipse( centerOfScreen, radiusXAxis, radiusYAxis , NUMBER_OF_SEGMENTS_IN_ELPISE);
                 }
                 else
                 {
-                    gl::drawSolidEllipse( centerOfScreen, radiusYAxis, radiusXAxis );
+                    gl::drawSolidEllipse( centerOfScreen, radiusYAxis, radiusXAxis , NUMBER_OF_SEGMENTS_IN_ELPISE);
                 }
                 
                 if(currentTime> currentTrial.timeOfImpact + WHAIT_WITH_MAX_ANGLE_SECONDS)
@@ -305,6 +307,7 @@
     {
         //sizeOnScreen = 2.0f*tempTrial.distance*tanf(([[tempTrial.angles objectAtIndex:i] floatValue]/2.0f));
         sizeOnScreen = tempTrial.distance*tanf(([[tempTrial.angles objectAtIndex:i] floatValue]/2.0f));
+         NSLog(@"[ang]%f - [m] %f - [pix] %f\n", (([[tempTrial.angles objectAtIndex:i] floatValue]/2.0f)/(2*M_PI))*360.0, sizeOnScreen, sizeOnScreen*pixelsPerMeter);
         sizesForEllipse[i] =sizeOnScreen*pixelsPerMeter*scaleXY.x;
         sizesForEllipse[i+1] =sizeOnScreen*pixelsPerMeter*scaleXY.y;
     }

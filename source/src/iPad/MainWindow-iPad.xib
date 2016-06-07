@@ -50,7 +50,7 @@
                     </viewControllers>
                 </navigationController>
                 <navigationController id="aTS-CD-hjT" userLabel="Experiments">
-                    <tabBarItem key="tabBarItem" title="Experiments" selectedImage="grasshopper.png" id="GZg-wM-W9V"/>
+                    <tabBarItem key="tabBarItem" title="Experiments" image="grasshopper.png" selectedImage="grasshopper.png" id="GZg-wM-W9V"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="Odu-UN-erX">
                         <rect key="frame" x="0.0" y="0.0" width="768" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -79,6 +79,6 @@
         <image name="FileNeuron.png" width="30" height="30"/>
         <image name="ThresholdImage.png" width="30" height="30"/>
         <image name="WaveImage.png" width="30" height="30"/>
-        <image name="grasshopper.png" width="128" height="128"/>
+        <image name="grasshopper.png" width="25" height="25"/>
     </resources>
 </document>

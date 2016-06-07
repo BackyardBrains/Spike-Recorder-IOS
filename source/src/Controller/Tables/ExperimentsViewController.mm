@@ -16,6 +16,7 @@
 @implementation ExperimentsViewController
 @synthesize allExperiments = _allExperiments;
 @synthesize myNewExperiment = _myNewExperiment;
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -26,17 +27,46 @@
     return self;
 }
 
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    
+    if(self = [super initWithCoder:aDecoder]) {
+       
+        
+       _allExperiments = [[NSMutableArray alloc] initWithCapacity:0];
+      
+    }
+    
+    return self;
+}
+
 - (void)viewDidLoad
 {
     self.title = @"Experiments";
     [super viewDidLoad];
+    self.expTableView  = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
+    [self.expTableView setAutoresizesSubviews:YES];
+    [self.expTableView setAutoresizingMask:
+     UIViewAutoresizingFlexibleWidth |
+     UIViewAutoresizingFlexibleHeight];
+    // must set delegate & dataSource, otherwise the the table will be empty and not responsive
     self.expTableView.delegate = self;
     self.expTableView.dataSource = self;
+    
+    
+    // add to canvas
+    [self.view addSubview:self.expTableView];
+
 }
 
+- (void) willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+   self.expTableView.frame = self.view.bounds;
+   [self.expTableView reloadData];
+}
 
 -(void) viewWillAppear:(BOOL)animated
 {
+    self.expTableView.delegate = self;
+    self.expTableView.dataSource = self;
 
     _allExperiments = [[NSMutableArray arrayWithArray:[BBDCMDExperiment allObjects]] retain];
     
@@ -57,7 +87,8 @@
 }
 
 - (void)dealloc {
-    [_expTableView release];
+    [self.expTableView release];
+
     [super dealloc];
 }
 
