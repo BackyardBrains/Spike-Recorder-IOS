@@ -36,6 +36,7 @@
 //
 - (void)setup
 {
+    firstTimeStimuly = true;
     needStartTime = YES;
     trialIndex  = 0;
     startAngle = M_PI/360.0f;
@@ -106,9 +107,12 @@
         retinaPonder = 0.5;
     }
     
+    
+    
     [self calculateSizesForEllipseForTrial:currentTrial];
     // Make sure that we can autorotate 'n what not.
     self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    needStartTime = true;
 
 }
 
@@ -150,6 +154,11 @@
             glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
             [self calculateScale];
             NSLog(@"Setup start of experiment");
+            if(firstTimeStimuly)
+            {
+                [self calculateSizesForEllipseForTrial:currentTrial];
+                firstTimeStimuly = false;
+            }
         }
         
 //float fr = app::getFrameRate();

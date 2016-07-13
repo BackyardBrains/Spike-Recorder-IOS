@@ -13,7 +13,7 @@
 #define DEFAULT_Y_SIZE_OF_SPIKE 16
 #define MIN_SIZE_OF_HISTOGRAM 150
 #define GRAPH_MARGIN 10
-#define SIZE_OF_BIN 0.1f
+#define SIZE_OF_BIN 0.025f
 @implementation ExperimentDCMDGraphView
 
 //

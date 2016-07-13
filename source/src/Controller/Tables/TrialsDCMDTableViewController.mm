@@ -15,6 +15,9 @@
 #import "GraphDCMDExperimentViewController.h"
 
 @interface TrialsDCMDTableViewController ()
+{
+    UIBarButtonItem *saveButton ;
+}
 
 @end
 
@@ -50,7 +53,7 @@
         NSMutableArray* buttons = [[NSMutableArray alloc] initWithCapacity:2];
         
         // create a standard save button
-        UIBarButtonItem *saveButton = [[UIBarButtonItem alloc]
+        saveButton = [[UIBarButtonItem alloc]
                                        initWithBarButtonSystemItem:UIBarButtonSystemItemAction
                                        target:self
                                        action:@selector(exportExperiment:)];
@@ -120,6 +123,7 @@
                                              applicationActivities:nil] autorelease];
     
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        activities.popoverPresentationController.barButtonItem = saveButton;
         [[[self parentViewController] parentViewController] presentViewController:activities animated:YES completion:nil];
         
     }

@@ -126,6 +126,8 @@
     [glView removeFromSuperview];
     [glView saveSettings];
     [glView stopAnimation];
+    
+    [self.masterDelegate spikesSortingFinished];
     [glView release];
     glView = nil;
     [self.navigationController setNavigationBarHidden:NO animated:YES];
@@ -277,6 +279,7 @@
     
     [self.nextBtn nextColor:[BYBGLView getSpikeTrainColorWithIndex:nextIndex transparency:1.0f]];
 }
+
 
 #pragma mark - Selection of channels Popover
 //====================================================================================

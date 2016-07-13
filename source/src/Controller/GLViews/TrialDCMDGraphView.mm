@@ -66,17 +66,28 @@
     // Setup angles display vectors
     anglesDisplayVector = PolyLine2f();
     normalizedAngles = (float*) malloc(sizeof(float) * [currentTrial.angles count]);
-
+    float eightyDeg = 3.14159265359*(80.0/180.0);
     for (int i=0; i < [currentTrial.angles count]-2; i+=2)
     {
+        
+        
+        
         float x1 = [((NSNumber *)[[currentTrial angles] objectAtIndex:i+1]) floatValue]-currentTrial.timeOfImpact;
         float y1 = [((NSNumber *)[[currentTrial angles] objectAtIndex:i]) floatValue];
+        if(y1>eightyDeg)
+        {
+            y1 = eightyDeg;
+        }
         anglesDisplayVector.push_back(Vec2f(x1,y1));
         normalizedAngles[i] = y1;
         
         
         float x2 = [((NSNumber *)[[currentTrial angles] objectAtIndex:i+3]) floatValue]-currentTrial.timeOfImpact;
         float y2 = [((NSNumber *)[[currentTrial angles] objectAtIndex:i]) floatValue];
+        if(y2>eightyDeg)
+        {
+            y2 = eightyDeg;
+        }
         anglesDisplayVector.push_back(Vec2f(x2,y2));
         normalizedAngles[i+1] = y2;
     }

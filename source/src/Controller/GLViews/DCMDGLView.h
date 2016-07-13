@@ -48,6 +48,7 @@
     float pixelsPerMeter;
     BOOL isRotated;
     float retinaPonder;
+    bool firstTimeStimuly;//patch
 }
 
 @property (nonatomic, assign) id <DCMDGLDelegate> controllerDelegate;

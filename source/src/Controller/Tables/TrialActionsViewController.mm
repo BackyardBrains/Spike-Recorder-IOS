@@ -80,6 +80,7 @@
                                               applicationActivities:nil] autorelease];
     
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        activities.popoverPresentationController.sourceView = self.view;
         [[[self parentViewController] parentViewController] presentViewController:activities animated:YES completion:nil];
         
     }
