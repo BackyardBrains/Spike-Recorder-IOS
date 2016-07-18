@@ -58,7 +58,17 @@
     
     
     [self registerForKeyboardNotifications];
+   
+    //set default values to form
     [self setDataFromExperimentToForm];
+    
+    //load and update data from settings (previous experiment)
+    if(![self loadDataFromSettings])
+    {
+        //if we have data in settings update object
+        [self getDataFromFormToExperiment];
+    }
+   
     
     self.title = @"Experiment Setup";
 }
@@ -71,11 +81,56 @@
     {
         return;
     }
+    
+    //save experiment details in local
+    [self saveParametersInSettings];
     [self createTrialsForExperiment];
     [_experiment save];
     [self.masterDelegate endOfSetup];
     
    
+}
+
+//
+// Save parameters in local settings file so that user
+// does not need type same thing every time
+//
+-(void) saveParametersInSettings
+{
+    NSDictionary *defaultsDict = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"SettingsDefaults" ofType:@"plist"]];
+    [[NSUserDefaults standardUserDefaults] registerDefaults:defaultsDict];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    
+    //[defaults setValue:[NSNumber numberWithFloat:numSecondsMax] forKey:@"numSecondsMax"];
+    [defaults setValue:self.distanceTB.text forKey:@"DCMDDistance"];
+    [defaults setValue:self.delayTB.text forKey:@"DCMDDelay"];
+    [defaults setValue:self.numOfTrialsTB.text forKey:@"DCMDNumberOfTrials"];
+    [defaults setValue:self.sizeTB.text forKey:@"DCMDSize"];
+    [defaults setValue:self.velocityTB.text forKey:@"DCMDVelocity"];
+    [defaults synchronize];
+}
+
+
+-(int) loadDataFromSettings
+{
+
+    NSDictionary *defaultsDict = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"SettingsDefaults" ofType:@"plist"]];
+    [[NSUserDefaults standardUserDefaults] registerDefaults:defaultsDict];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    if([defaults valueForKey:@"DCMDDistance"]==nil)
+    {
+        return 1;
+    }
+    
+    self.distanceTB.text = [defaults valueForKey:@"DCMDDistance"];
+    self.delayTB.text = [defaults valueForKey:@"DCMDDelay"];
+    self.numOfTrialsTB.text = [defaults valueForKey:@"DCMDNumberOfTrials"];
+    self.sizeTB.text = [defaults valueForKey:@"DCMDSize"];
+    self.velocityTB.text = [defaults valueForKey:@"DCMDVelocity"];
+    return 0;
+    
 }
 
 //
