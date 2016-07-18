@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="5056" systemVersion="13D65" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none">
     <dependencies>
-        <deployment defaultVersion="1536" identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ExperimentSetupViewController">
             <connections>
+                <outlet property="colorTB" destination="ala-ZH-4eq" id="7Lc-Ah-Ahm"/>
+                <outlet property="colorView" destination="ueJ-cN-Zkh" id="BaE-dd-mIV"/>
                 <outlet property="commentTB" destination="a1l-hE-MyI" id="pDe-gE-GEt"/>
                 <outlet property="cumulativeNumberOfTrialsLBL" destination="57V-Kh-IaH" id="oF7-aJ-YUt"/>
                 <outlet property="delayTB" destination="bl9-hT-C4V" id="vTC-uS-Okz"/>
                 <outlet property="distanceTB" destination="pwR-Ch-2Di" id="fVo-Ex-SzV"/>
-                <outlet property="doneBtn" destination="YMQ-oe-kwQ" id="FTu-Vc-2Cp"/>
                 <outlet property="nameTB" destination="bMw-TR-eau" id="ugA-8S-YDC"/>
                 <outlet property="numOfTrialsTB" destination="CZM-bs-fno" id="Yc6-sZ-kWV"/>
                 <outlet property="scroller" destination="s1p-XC-BG1" id="aSr-Ll-KAi"/>
@@ -22,11 +23,11 @@
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
-            <rect key="frame" x="0.0" y="0.0" width="320" height="930"/>
+            <rect key="frame" x="0.0" y="0.0" width="320" height="1040"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="s1p-XC-BG1">
-                    <rect key="frame" x="0.0" y="0.0" width="320" height="930"/>
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="1040"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                     <subviews>
                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Setup parameters for new DCMD experiment" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="SF3-UT-gzd">
@@ -99,7 +100,7 @@
                             <nil key="highlightedColor"/>
                         </label>
                         <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Cumulative number of trials" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="57V-Kh-IaH">
-                            <rect key="frame" x="20" y="759" width="280" height="54"/>
+                            <rect key="frame" x="20" y="876" width="280" height="54"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                             <color key="textColor" red="0.49509060332037919" green="0.50434470663265307" blue="0.49265482887101075" alpha="1" colorSpace="calibratedRGB"/>
@@ -117,15 +118,6 @@
                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="YMQ-oe-kwQ">
-                            <rect key="frame" x="230" y="841" width="70" height="30"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="23"/>
-                            <state key="normal" title="Done">
-                                <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                            </state>
-                        </button>
                         <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" id="bl9-hT-C4V">
                             <rect key="frame" x="20" y="710" width="280" height="30"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
@@ -139,7 +131,7 @@
                             <nil key="highlightedColor"/>
                         </label>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="lih-95-kIm">
-                            <rect key="frame" x="230" y="841" width="70" height="30"/>
+                            <rect key="frame" x="230" y="968" width="70" height="30"/>
                             <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                             <fontDescription key="fontDescription" type="system" pointSize="23"/>
                             <state key="normal" title="Done">
@@ -150,12 +142,29 @@
                                 <action selector="doneClick:" destination="-1" eventType="touchUpInside" id="OGF-1d-cbo"/>
                             </connections>
                         </button>
+                        <view contentMode="scaleToFill" id="ueJ-cN-Zkh">
+                            <rect key="frame" x="215" y="759" width="81" height="81"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        </view>
+                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Change color [HEX]" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="bHB-Qy-pHg">
+                            <rect key="frame" x="20" y="769" width="192" height="21"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="FFFFFF" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" id="ala-ZH-4eq">
+                            <rect key="frame" x="20" y="798" width="97" height="30"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="24"/>
+                            <textInputTraits key="textInputTraits" returnKeyType="done"/>
+                        </textField>
                     </subviews>
                 </scrollView>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-            <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="409" y="338"/>
         </view>
     </objects>
 </document>

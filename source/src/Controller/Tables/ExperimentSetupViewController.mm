@@ -9,6 +9,8 @@
 #import "ExperimentSetupViewController.h"
 #import "BBDCMDTrial.h"
 #import "DCMDExperimentViewController.h"
+
+
 @interface ExperimentSetupViewController ()
 {
     UITextField * activeField;
@@ -34,7 +36,7 @@
 {
     [super viewDidLoad];
     [self.scroller setScrollEnabled:YES];
-    [self.scroller setContentSize:CGSizeMake(self.view.frame.size.width, 930)];
+    [self.scroller setContentSize:CGSizeMake(self.view.frame.size.width, 1040)];
     self.commentTB.layer.borderWidth = 0.5f;
     self.commentTB.layer.borderColor = [[UIColor colorWithRed:0.1 green:0.1 blue:0.1 alpha:0.15] CGColor];
     //self.commentTB.layer.borderColor = [[UIColor lightGrayColor] CGColor];
@@ -55,6 +57,7 @@
     self.sizeTB.delegate = self;
     self.delayTB.delegate = self;
     self.numOfTrialsTB.delegate = self;
+    self.colorTB.delegate = self;
     
     
     [self registerForKeyboardNotifications];
@@ -69,6 +72,13 @@
         [self getDataFromFormToExperiment];
     }
    
+    self.colorView.layer.borderColor = [[UIColor grayColor] CGColor];
+    self.colorView.layer.borderWidth = 1.0;
+    UIColor * tempColor = [[UIColor alloc] initWithCGColor:[[UIColor blackColor] CGColor]];
+    if([self colorFromHexString:self.colorTB.text color:&tempColor])
+    {
+        self.colorView.backgroundColor = tempColor;
+    }
     
     self.title = @"Experiment Setup";
 }
@@ -108,6 +118,7 @@
     [defaults setValue:self.numOfTrialsTB.text forKey:@"DCMDNumberOfTrials"];
     [defaults setValue:self.sizeTB.text forKey:@"DCMDSize"];
     [defaults setValue:self.velocityTB.text forKey:@"DCMDVelocity"];
+    [defaults setValue:self.colorTB.text forKey:@"DCMDColor"];
     [defaults synchronize];
 }
 
@@ -129,6 +140,14 @@
     self.numOfTrialsTB.text = [defaults valueForKey:@"DCMDNumberOfTrials"];
     self.sizeTB.text = [defaults valueForKey:@"DCMDSize"];
     self.velocityTB.text = [defaults valueForKey:@"DCMDVelocity"];
+    if([defaults valueForKey:@"DCMDColor"]==nil)
+    {
+        self.colorTB.text = @"000000";
+    }
+    else
+    {
+        self.colorTB.text = [defaults valueForKey:@"DCMDColor"];
+    }
     return 0;
     
 }
@@ -286,11 +305,50 @@
             return NO;
         }
     }
+    UIColor * tempColor = [[UIColor alloc] initWithCGColor:[[UIColor blackColor] CGColor]];
+    if([self colorFromHexString:self.colorTB.text color:&tempColor])
+    {
+        self.colorView.backgroundColor = tempColor;
+        self.colorTB.text = [self hexStringFromColor:tempColor];
+        _experiment.color = [self.colorTB.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    }
+    else
+    {
+        [self validationAlertWithText:@"Enter valid RGB HEX value for color. Example: F122AA."];
+        return NO;
+    }
+    
     
      int cumulNumOfTrials = [_experiment.velocities count]*[_experiment.sizes count]*_experiment.numberOfTrialsPerPair;
      _cumulativeNumberOfTrialsLBL.text = [NSString stringWithFormat:@"Cummulative number of trials: %d (aprox. time %dmin)", cumulNumOfTrials, (int)(((float)(_experiment.delayBetweenTrials*cumulNumOfTrials))/60.0f)];
 
    // [tempNumber release];
+    return YES;
+}
+
+- (NSString *)hexStringFromColor:(UIColor *)color
+{
+    const CGFloat *components = CGColorGetComponents(color.CGColor);
+    
+    CGFloat r = components[0];
+    CGFloat g = components[1];
+    CGFloat b = components[2];
+    
+    return [NSString stringWithFormat:@"%02lX%02lX%02lX",
+            lroundf(r * 255),
+            lroundf(g * 255),
+            lroundf(b * 255)];
+}
+
+- (BOOL) colorFromHexString:(NSString *)hexString color:(UIColor **) outColor{
+    unsigned rgbValue = 0;
+    NSScanner *scanner = [NSScanner scannerWithString:hexString];
+    [scanner setScanLocation:0]; // bypass '#' character
+    if([scanner scanHexInt:&rgbValue]==NO)
+    {
+        return NO;
+    }
+    *outColor = [UIColor colorWithRed:((rgbValue & 0xFF0000) >> 16)/255.0 green:((rgbValue & 0xFF00) >> 8)/255.0 blue:(rgbValue & 0xFF)/255.0 alpha:1.0];
     return YES;
 }
 
@@ -401,6 +459,7 @@
     [self.distanceTB resignFirstResponder];
     [self.delayTB resignFirstResponder];
     [self.numOfTrialsTB resignFirstResponder];
+    [self.colorTB resignFirstResponder];
 }
 
 
@@ -425,7 +484,12 @@
     [_cumulativeNumberOfTrialsLBL release];
     [_delayTB release];
     [_experiment release];
+    [_colorView release];
+    [_colorTB release];
     [super dealloc];
 }
+
+
+
 
 @end

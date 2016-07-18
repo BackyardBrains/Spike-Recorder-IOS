@@ -86,6 +86,13 @@
         }
     }
     
+    UIColor * stimulusColor = [[UIColor alloc] initWithCGColor:[[UIColor blackColor] CGColor]];
+    [self colorFromHexString:self.experiment.color color:&stimulusColor];
+    const CGFloat *components = CGColorGetComponents(stimulusColor.CGColor);
+    
+    r = components[0];
+    g = components[1];
+    b = components[2];
     
     currentTrial = [self.experiment.trials objectAtIndex:[((NSNumber*)[trialIndexes objectAtIndex:trialIndex]) intValue]];
     currentSpeed = currentTrial.velocity;
@@ -151,7 +158,8 @@
             centerOfScreen = Vec2f(50.0f, 50.0f);
             needStartTime = NO;
             expStartTime = self.getElapsedSeconds;
-            glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
+            
+            glColor4f(r, g, b, 1.0f);
             [self calculateScale];
             NSLog(@"Setup start of experiment");
             if(firstTimeStimuly)
@@ -424,6 +432,18 @@
 -(BBDCMDExperiment *) experiment
 {
     return _experiment;
+}
+
+- (BOOL) colorFromHexString:(NSString *)hexString color:(UIColor **) outColor{
+    unsigned rgbValue = 0;
+    NSScanner *scanner = [NSScanner scannerWithString:hexString];
+    [scanner setScanLocation:0]; // bypass '#' character
+    if([scanner scanHexInt:&rgbValue]==NO)
+    {
+        return NO;
+    }
+    *outColor = [UIColor colorWithRed:((rgbValue & 0xFF0000) >> 16)/255.0 green:((rgbValue & 0xFF00) >> 8)/255.0 blue:(rgbValue & 0xFF)/255.0 alpha:1.0];
+    return YES;
 }
 
 //dealloc

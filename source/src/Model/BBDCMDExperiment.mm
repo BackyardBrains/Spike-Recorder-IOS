@@ -18,6 +18,7 @@
 @synthesize delayBetweenTrials;
 @synthesize contrast;
 @synthesize typeOfStimulus;
+@synthesize color;
 
 
 - (id)init{
@@ -39,6 +40,7 @@
         [_sizes addObject:[NSNumber numberWithFloat:0.1f]];
         [_sizes addObject:[NSNumber numberWithFloat:0.14f]];
         _trials = [[NSMutableArray alloc] initWithCapacity:0];
+        self.color = @"000000";
     }
     
 	return self;
@@ -99,6 +101,7 @@
                                   [_sizes copy], @"sizes",
                                   [NSNumber numberWithInt:numberOfTrialsPerPair], @"trialsPerPair",
                                   [NSNumber numberWithFloat:delayBetweenTrials], @"delayBetweenTrials",
+                                  color, @"color",
                                   nil] ;
     return returnDict;
 }
@@ -106,6 +109,7 @@
 - (void)dealloc {
 	[name release];
 	[comment release];
+    [color release];
     [date release];
 	
 	[_velocities release];

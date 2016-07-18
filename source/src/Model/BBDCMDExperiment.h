@@ -33,6 +33,7 @@
 @property float contrast;//in percentage
 @property int typeOfStimulus;
 @property (nonatomic,retain) NSMutableArray * trials;
+@property (nonatomic,retain) NSString *color;
 
 
 -(NSDictionary *) createExperimentDictionary;

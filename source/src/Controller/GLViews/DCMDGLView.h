@@ -49,6 +49,9 @@
     BOOL isRotated;
     float retinaPonder;
     bool firstTimeStimuly;//patch
+    CGFloat r;
+    CGFloat g;
+    CGFloat b;
 }
 
 @property (nonatomic, assign) id <DCMDGLDelegate> controllerDelegate;
