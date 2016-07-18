@@ -227,7 +227,7 @@
                 break;
             case STATE_WHAIT_AFTER_STIMULATION:
                // NSLog(@"After stimulation");
-                [currentTrial.angles addObject:[NSNumber numberWithFloat:(float)angle]];
+                [currentTrial.angles addObject:[NSNumber numberWithFloat:(float)angle*2.0]];
                 [currentTrial.angles addObject:[NSNumber numberWithFloat:(float)currentTime]];
 
                 
@@ -316,7 +316,7 @@
     {
         //sizeOnScreen = 2.0f*tempTrial.distance*tanf(([[tempTrial.angles objectAtIndex:i] floatValue]/2.0f));
         sizeOnScreen = tempTrial.distance*tanf(([[tempTrial.angles objectAtIndex:i] floatValue]/2.0f));
-         NSLog(@"[ang]%f - [m] %f - [pix] %f\n", (([[tempTrial.angles objectAtIndex:i] floatValue]/2.0f)/(2*M_PI))*360.0, sizeOnScreen, sizeOnScreen*pixelsPerMeter);
+        // NSLog(@"[ang]%f - [m] %f - [pix] %f\n", (([[tempTrial.angles objectAtIndex:i] floatValue]/2.0f)/(2*M_PI))*360.0, sizeOnScreen, sizeOnScreen*pixelsPerMeter);
         sizesForEllipse[i] =sizeOnScreen*pixelsPerMeter*scaleXY.x;
         sizesForEllipse[i+1] =sizeOnScreen*pixelsPerMeter*scaleXY.y;
     }

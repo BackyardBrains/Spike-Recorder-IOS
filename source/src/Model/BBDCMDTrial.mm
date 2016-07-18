@@ -8,6 +8,9 @@
 
 #import "BBDCMDTrial.h"
 #import "BBChannel.h"
+#import "BBAnalysisManager.h"
+#import "BBSpike.h"
+
 @implementation BBDCMDTrial
 
 @synthesize size;
@@ -53,18 +56,28 @@
 {
     NSMutableArray * tempAngles = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
     NSMutableArray * tempTimestamps = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
+    float tempTimestamp;
     for(int i = 0;i<[_angles count];i+=2)
     {
         [tempAngles addObject:(NSNumber *)[_angles objectAtIndex:i]];
-        [tempTimestamps addObject:(NSNumber *)[_angles objectAtIndex:i+1]];
+        tempTimestamp = [(NSNumber *)[_angles objectAtIndex:i+1] floatValue]-startOfRecording;
+        [tempTimestamps addObject:[NSNumber numberWithFloat: tempTimestamp]];
     }
-    BBChannel * tempChannel = (BBChannel *)[_file.allChannels objectAtIndex:0];
-    BBSpikeTrain * tempSpikestrain = (BBSpikeTrain *)[[tempChannel spikeTrains] objectAtIndex:0];
-    NSArray * tempSpikeTimestamps = [tempSpikestrain makeArrayOfTimestampsWithOffset:startOfRecording];
+    [[BBAnalysisManager bbAnalysisManager] findSpikes:_file];
+    
+    NSMutableArray * tempSpikeTimestamps = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
+    for(int i=0;i<[[[_file allSpikes] objectAtIndex:0] count];i++)
+    {
+        [tempSpikeTimestamps addObject:[NSNumber numberWithFloat:[(BBSpike *)[[[_file allSpikes] objectAtIndex:0] objectAtIndex:i] time]]];
+    }
+    //return [tempTimestamps copy];
+    //BBChannel * tempChannel = (BBChannel *)[_file.allChannels objectAtIndex:0];
+    //BBSpikeTrain * tempSpikestrain = (BBSpikeTrain *)[[tempChannel spikeTrains] objectAtIndex:0];
+    //NSArray * tempSpikeTimestamps = [tempSpikestrain makeArrayOfTimestampsWithOffset:startOfRecording];
     NSDictionary * returnDict = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:size],@"size",
      [NSNumber numberWithFloat:velocity], @"velocity",
      [NSNumber numberWithFloat:distance], @"distance",
-     [NSNumber numberWithFloat:timeOfImpact], @"timeOfImpact",
+     [NSNumber numberWithFloat:timeOfImpact-startOfRecording], @"timeOfImpact",
      [NSNumber numberWithFloat:startOfRecording], @"startOfRecording",
      [tempAngles copy], @"angles",
      [tempTimestamps copy], @"timestamps",
