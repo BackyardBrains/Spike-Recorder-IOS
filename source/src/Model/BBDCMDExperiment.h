@@ -8,6 +8,8 @@
 
 #import "SQLitePersistentObject.h"
 
+#define JSON_VERSION @"3"
+
 @interface BBDCMDExperiment : SQLitePersistentObject
 {
     NSString *name;

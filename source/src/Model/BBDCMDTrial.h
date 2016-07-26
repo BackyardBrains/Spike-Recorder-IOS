@@ -8,6 +8,7 @@
 
 #import "SQLitePersistentObject.h"
 #import "BBFile.h"
+#import "BBDCMDExperiment.h"
 @interface BBDCMDTrial : SQLitePersistentObject
 {
     float size;
@@ -28,5 +29,5 @@
 @property float startOfRecording;
 
 -(id) initWithSize:(float) inSize velocity:(float) inVelocity andDistance:(float) inDistance;
-- (NSDictionary *) createTrialDictionary;
+- (NSDictionary *) createTrialDictionaryWithVersion:(BOOL)addVersion;
 @end

@@ -8,6 +8,7 @@
 
 #import "BBDCMDExperiment.h"
 #import "BBDCMDTrial.h"
+
 @implementation BBDCMDExperiment
 
 @synthesize name;
@@ -90,8 +91,13 @@
     NSMutableArray * tempTrials = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
     for(int i=0;i<[_trials count];i++)
     {
-        [tempTrials addObject:[((BBDCMDTrial *)[_trials objectAtIndex:i]) createTrialDictionary]];
+        [tempTrials addObject:[((BBDCMDTrial *)[_trials objectAtIndex:i]) createTrialDictionaryWithVersion:NO]];
     }
+    
+    
+    
+    NSMutableDictionary * retDic = [[NSMutableDictionary alloc] initWithCapacity:0];
+    
     
     NSDictionary * returnDict = [NSDictionary dictionaryWithObjectsAndKeys:name,@"name",
                                   comment, @"comment",
@@ -103,7 +109,9 @@
                                   [NSNumber numberWithFloat:delayBetweenTrials], @"delayBetweenTrials",
                                   color, @"color",
                                   nil] ;
-    return returnDict;
+    [retDic addEntriesFromDictionary:returnDict];
+    [retDic setValue:JSON_VERSION forKey:@"jsonversion"];
+    return [NSDictionary dictionaryWithDictionary:retDic];
 }
 
 - (void)dealloc {

@@ -60,7 +60,7 @@
     firstAngleTime = [((NSNumber *)[[currentTrial angles] objectAtIndex:1]) floatValue];
     maxXAxis = lastRecordedTime-currentTrial.timeOfImpact;
     minXAxis = firstAngleTime-currentTrial.timeOfImpact;
-    maxAngle = [((NSNumber *)[[currentTrial angles] objectAtIndex:[currentTrial.angles count]-2]) floatValue];
+    maxAngle = [((NSNumber *)[[currentTrial angles] objectAtIndex:[currentTrial.angles count]-2]) floatValue]/2.0;
     
     
     // Setup angles display vectors
@@ -73,7 +73,7 @@
         
         
         float x1 = [((NSNumber *)[[currentTrial angles] objectAtIndex:i+1]) floatValue]-currentTrial.timeOfImpact;
-        float y1 = [((NSNumber *)[[currentTrial angles] objectAtIndex:i]) floatValue];
+        float y1 = [((NSNumber *)[[currentTrial angles] objectAtIndex:i]) floatValue]/2.0;
         if(y1>eightyDeg)
         {
             y1 = eightyDeg;
@@ -83,7 +83,7 @@
         
         
         float x2 = [((NSNumber *)[[currentTrial angles] objectAtIndex:i+3]) floatValue]-currentTrial.timeOfImpact;
-        float y2 = [((NSNumber *)[[currentTrial angles] objectAtIndex:i]) floatValue];
+        float y2 = [((NSNumber *)[[currentTrial angles] objectAtIndex:i]) floatValue]/2.0;
         if(y2>eightyDeg)
         {
             y2 = eightyDeg;

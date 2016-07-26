@@ -99,7 +99,7 @@
     
     NSError *writeError = nil;
 
-    NSDictionary * expDictionary = [currentTrial createTrialDictionary];
+    NSDictionary * expDictionary = [currentTrial createTrialDictionaryWithVersion:YES];
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:expDictionary options:NSJSONWritingPrettyPrinted error:&writeError];
     NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
 

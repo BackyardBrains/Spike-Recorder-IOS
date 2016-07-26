@@ -52,7 +52,7 @@
 }
 
 
-- (NSDictionary *) createTrialDictionary
+- (NSDictionary *) createTrialDictionaryWithVersion:(BOOL) addVersion
 {
     NSMutableArray * tempAngles = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
     NSMutableArray * tempTimestamps = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
@@ -63,27 +63,56 @@
         tempTimestamp = [(NSNumber *)[_angles objectAtIndex:i+1] floatValue]-startOfRecording;
         [tempTimestamps addObject:[NSNumber numberWithFloat: tempTimestamp]];
     }
-    [[BBAnalysisManager bbAnalysisManager] findSpikes:_file];
+    /*[[BBAnalysisManager bbAnalysisManager] findSpikes:_file];
     
     NSMutableArray * tempSpikeTimestamps = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
     for(int i=0;i<[[[_file allSpikes] objectAtIndex:0] count];i++)
     {
         [tempSpikeTimestamps addObject:[NSNumber numberWithFloat:[(BBSpike *)[[[_file allSpikes] objectAtIndex:0] objectAtIndex:i] time]]];
+    }*/
+
+    BBChannel * tempChannel = (BBChannel *)[_file.allChannels objectAtIndex:0];
+    BBSpikeTrain * tempSpikestrain = (BBSpikeTrain *)[[tempChannel spikeTrains] objectAtIndex:0];
+    NSArray * tempSpikeTimestamps = [tempSpikestrain makeArrayOfTimestampsWithOffset:0];
+    NSDictionary * returnDict;
+    NSMutableDictionary * retDic = [[NSMutableDictionary alloc] initWithCapacity:0];
+    if(addVersion)
+    {
+        
+        
+        
+        
+        
+        returnDict = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:size],@"size",
+                      [NSNumber numberWithFloat:velocity], @"velocity",
+                      [NSNumber numberWithFloat:distance], @"distance",
+                      [NSNumber numberWithFloat:timeOfImpact-startOfRecording], @"timeOfImpact",
+                      [NSNumber numberWithFloat:startOfRecording], @"startOfRecording",
+                      [tempAngles copy], @"angles",
+                      [tempTimestamps copy], @"timestamps",
+                      _file.filename, @"filename",
+                      tempSpikeTimestamps, @"spikeTimestamps",
+                      nil] ;
+        [retDic addEntriesFromDictionary:returnDict];
+        [retDic setValue:JSON_VERSION forKey:@"jsonversion"];
+        return [NSDictionary dictionaryWithDictionary:retDic];
+        
     }
-    //return [tempTimestamps copy];
-    //BBChannel * tempChannel = (BBChannel *)[_file.allChannels objectAtIndex:0];
-    //BBSpikeTrain * tempSpikestrain = (BBSpikeTrain *)[[tempChannel spikeTrains] objectAtIndex:0];
-    //NSArray * tempSpikeTimestamps = [tempSpikestrain makeArrayOfTimestampsWithOffset:startOfRecording];
-    NSDictionary * returnDict = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:size],@"size",
-     [NSNumber numberWithFloat:velocity], @"velocity",
-     [NSNumber numberWithFloat:distance], @"distance",
-     [NSNumber numberWithFloat:timeOfImpact-startOfRecording], @"timeOfImpact",
-     [NSNumber numberWithFloat:startOfRecording], @"startOfRecording",
-     [tempAngles copy], @"angles",
-     [tempTimestamps copy], @"timestamps",
-     _file.filename, @"filename",
-     tempSpikeTimestamps, @"spikeTimestamps",
-     nil] ;
+    else
+    {
+        returnDict = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:size],@"size",
+                      [NSNumber numberWithFloat:velocity], @"velocity",
+                      [NSNumber numberWithFloat:distance], @"distance",
+                      [NSNumber numberWithFloat:timeOfImpact-startOfRecording], @"timeOfImpact",
+                      [NSNumber numberWithFloat:startOfRecording], @"startOfRecording",
+                      [tempAngles copy], @"angles",
+                      [tempTimestamps copy], @"timestamps",
+                      _file.filename, @"filename",
+                      tempSpikeTimestamps, @"spikeTimestamps",
+                      nil] ;
+    
+    }
+    
     return returnDict;
 }
 
