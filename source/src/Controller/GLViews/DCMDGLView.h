@@ -52,6 +52,8 @@
     CGFloat r;
     CGFloat g;
     CGFloat b;
+    BBFile * recordingFile;
+    float startTimeOfTrial;
 }
 
 @property (nonatomic, assign) id <DCMDGLDelegate> controllerDelegate;

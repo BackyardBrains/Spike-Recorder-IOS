@@ -18,7 +18,7 @@
 @synthesize file=_file;
 @synthesize distance;
 @synthesize timeOfImpact;
-@synthesize startOfRecording;
+@synthesize startOfTrialTimestamp;
 
 -(id) initWithSize:(float) inSize velocity:(float) inVelocity andDistance:(float) inDistance
 {
@@ -29,7 +29,7 @@
         self.file = nil;//[[BBFile allObjects] objectAtIndex:0];
         self.distance = inDistance;
         self.timeOfImpact = 0.0;//This should be calculated when we get experiment start time
-        self.startOfRecording = 0.0;
+        self.startOfTrialTimestamp = 0.0;
         _angles = [[NSMutableArray  alloc] initWithCapacity:0];
     }
     return self;
@@ -60,7 +60,7 @@
     for(int i = 0;i<[_angles count];i+=2)
     {
         [tempAngles addObject:(NSNumber *)[_angles objectAtIndex:i]];
-        tempTimestamp = [(NSNumber *)[_angles objectAtIndex:i+1] floatValue]-startOfRecording;
+        tempTimestamp = [(NSNumber *)[_angles objectAtIndex:i+1] floatValue]+startOfTrialTimestamp;
         [tempTimestamps addObject:[NSNumber numberWithFloat: tempTimestamp]];
     }
     /*[[BBAnalysisManager bbAnalysisManager] findSpikes:_file];
@@ -73,21 +73,28 @@
 
     BBChannel * tempChannel = (BBChannel *)[_file.allChannels objectAtIndex:0];
     BBSpikeTrain * tempSpikestrain = (BBSpikeTrain *)[[tempChannel spikeTrains] objectAtIndex:0];
-    NSArray * tempSpikeTimestamps = [tempSpikestrain makeArrayOfTimestampsWithOffset:0];
+    NSMutableArray * tempSpikeTimestamps = [[NSMutableArray alloc] initWithArray:[tempSpikestrain makeArrayOfTimestampsWithOffset:0]];
+    
+ 
+    
+    for(int spikeIndex = [tempSpikeTimestamps count]-1;spikeIndex>=0;spikeIndex--)
+    {
+        if([[tempSpikeTimestamps objectAtIndex:spikeIndex] floatValue] <startOfTrialTimestamp || [[tempSpikeTimestamps objectAtIndex:spikeIndex] floatValue] >[[tempTimestamps objectAtIndex:([tempTimestamps count]-1)] floatValue])
+        {
+            [tempSpikeTimestamps removeObjectAtIndex:spikeIndex];
+        }
+    }
+    
     NSDictionary * returnDict;
     NSMutableDictionary * retDic = [[NSMutableDictionary alloc] initWithCapacity:0];
     if(addVersion)
     {
-        
-        
-        
-        
-        
+
         returnDict = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:size],@"size",
                       [NSNumber numberWithFloat:velocity], @"velocity",
                       [NSNumber numberWithFloat:distance], @"distance",
-                      [NSNumber numberWithFloat:timeOfImpact-startOfRecording], @"timeOfImpact",
-                      [NSNumber numberWithFloat:startOfRecording], @"startOfRecording",
+                      [NSNumber numberWithFloat:timeOfImpact+startOfTrialTimestamp], @"timeOfImpact",
+                      [NSNumber numberWithFloat:startOfTrialTimestamp], @"startOfTrial",
                       [tempAngles copy], @"angles",
                       [tempTimestamps copy], @"timestamps",
                       _file.filename, @"filename",
@@ -103,8 +110,8 @@
         returnDict = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:size],@"size",
                       [NSNumber numberWithFloat:velocity], @"velocity",
                       [NSNumber numberWithFloat:distance], @"distance",
-                      [NSNumber numberWithFloat:timeOfImpact-startOfRecording], @"timeOfImpact",
-                      [NSNumber numberWithFloat:startOfRecording], @"startOfRecording",
+                      [NSNumber numberWithFloat:timeOfImpact+startOfTrialTimestamp], @"timeOfImpact",
+                      [NSNumber numberWithFloat:startOfTrialTimestamp], @"startOfTrial",
                       [tempAngles copy], @"angles",
                       [tempTimestamps copy], @"timestamps",
                       _file.filename, @"filename",

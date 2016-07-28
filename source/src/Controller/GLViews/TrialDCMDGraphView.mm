@@ -102,7 +102,7 @@
 {
     BBChannel * tempChannel = (BBChannel *)[currentTrial.file.allChannels objectAtIndex:0];
     BBSpikeTrain * tempSpikestrain = (BBSpikeTrain *)[[tempChannel spikeTrains] objectAtIndex:0];
-    spikesCoordinate = [tempSpikestrain makeArrayOfTimestampsWithOffset:currentTrial.startOfRecording];
+    spikesCoordinate = [tempSpikestrain makeArrayOfTimestampsWithOffset:-currentTrial.startOfTrialTimestamp];
     
     
     float lStartTime = [((NSNumber *)[[currentTrial angles] objectAtIndex:1]) floatValue];

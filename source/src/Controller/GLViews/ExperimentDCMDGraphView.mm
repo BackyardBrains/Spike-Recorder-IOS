@@ -77,7 +77,7 @@
         tempTrial = [sortedArray objectAtIndex:i];
         tempChannel = (BBChannel *)[tempTrial.file.allChannels objectAtIndex:0];
         tempSpikestrain = (BBSpikeTrain *)[[tempChannel spikeTrains] objectAtIndex:0];
-        tempArrayOfSpikes = [tempSpikestrain makeArrayOfTimestampsWithOffset:tempTrial.startOfRecording-tempTrial.timeOfImpact];
+        tempArrayOfSpikes = [tempSpikestrain makeArrayOfTimestampsWithOffset:-tempTrial.startOfTrialTimestamp-tempTrial.timeOfImpact];
         
         
         lastRecordedTime = [((NSNumber *)[[tempTrial angles] objectAtIndex:[tempTrial.angles count]-1]) floatValue];

@@ -16,7 +16,7 @@
 #define STATE_WHAIT_FOR_USER_INTERACTION 5
 
 
-#define START_RECORDING_SECONDS_BEFORE 2.0f
+#define START_RECORDING_SECONDS_BEFORE 0.0f
 #define WHAIT_WITH_MAX_ANGLE_SECONDS 2.0f
 
 #define NUMBER_OF_SEGMENTS_IN_ELPISE 100
@@ -119,7 +119,33 @@
     [self calculateSizesForEllipseForTrial:currentTrial];
     // Make sure that we can autorotate 'n what not.
     self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    needStartTime = true;
+    
+    
+    
+   //start recording experiment (all trials together)
+    BBAudioManager *bbAudioManager = [BBAudioManager bbAudioManager];
+    if (bbAudioManager.recording == false) {
+        
+        //check if we have non-standard requirements for format and make custom wav
+        if([bbAudioManager sourceNumberOfChannels]>2 || [bbAudioManager sourceSamplingRate]!=44100.0f)
+        {
+            self.experiment.file = [[[BBFile alloc] initWav] autorelease];
+        }
+        else
+        {
+            //if everything is standard make .m4a file (it has beter compression )
+            self.experiment.file = [[[BBFile alloc] init] autorelease];
+        }
+        self.experiment.file.numberOfChannels = [bbAudioManager sourceNumberOfChannels];
+        self.experiment.file.samplingrate = [bbAudioManager sourceSamplingRate];
+        [self.experiment.file setupChannels];//create name of channels without spike trains
+        
+       // NSLog(@"Start recording exp file URL: %@ time: %f", [currentTrial.file fileURL], currentTime);
+        [bbAudioManager startRecording:[self.experiment.file fileURL]];
+        expStartTime = self.getElapsedSeconds;
+    }
+    
+
 
 }
 
@@ -157,8 +183,9 @@
             gl::setMatrices( mCam );
             centerOfScreen = Vec2f(50.0f, 50.0f);
             needStartTime = NO;
-            expStartTime = self.getElapsedSeconds;
             
+            startTimeOfTrial = (float)self.getElapsedSeconds;
+            currentTrial.startOfTrialTimestamp = (float)self.getElapsedSeconds-expStartTime;
             glColor4f(r, g, b, 1.0f);
             [self calculateScale];
             NSLog(@"Setup start of experiment");
@@ -170,35 +197,17 @@
         }
         
 //float fr = app::getFrameRate();
-        currentTime = (float)self.getElapsedSeconds-expStartTime;
+        currentTime = (float)self.getElapsedSeconds-startTimeOfTrial;
         
         switch (stateOfExp) {
             case STATE_BLANK_WAIT:
                 
                 if(currentTime>(self.experiment.delayBetweenTrials-START_RECORDING_SECONDS_BEFORE ))
                 {
-                    BBAudioManager *bbAudioManager = [BBAudioManager bbAudioManager];
-                    if (bbAudioManager.recording == false) {
-                        
-                        //check if we have non-standard requirements for format and make custom wav
-                        if([bbAudioManager sourceNumberOfChannels]>2 || [bbAudioManager sourceSamplingRate]!=44100.0f)
-                        {
-                            currentTrial.file = [[[BBFile alloc] initWav] autorelease];
-                        }
-                        else
-                        {
-                            //if everything is standard make .m4a file (it has beter compression )
-                            currentTrial.file = [[[BBFile alloc] init] autorelease];
-                        }
-                        currentTrial.file.numberOfChannels = [bbAudioManager sourceNumberOfChannels];
-                        currentTrial.file.samplingrate = [bbAudioManager sourceSamplingRate];
-                        [currentTrial.file setupChannels];//create name of channels without spike trains
-                        
-                        NSLog(@"Start recording exp file URL: %@ time: %f", [currentTrial.file fileURL], currentTime);
-                        [bbAudioManager startRecording:[currentTrial.file fileURL]];
-                        
-                        currentTrial.startOfRecording = (float)self.getElapsedSeconds-expStartTime;                        stateOfExp = STATE_RECORDING_STARTED;
-                    }
+                    currentTrial.file = self.experiment.file;
+                    
+                    stateOfExp = STATE_RECORDING_STARTED;
+                    
                 }
                 break;
                 
@@ -256,22 +265,30 @@
                     //End of trial
                     NSLog(@"End of max angle whait. Time: %f", currentTime);
                     
-                    BBAudioManager *bbAudioManager = [BBAudioManager bbAudioManager];
-                    currentTrial.file.filelength = bbAudioManager.fileDuration;
-                    currentTrial.file.fileUsage = EXPERIMENT_FILE_USAGE;
-                    [bbAudioManager stopRecording];
-                    [currentTrial.file save];
                     
                     
-                    needStartTime = YES;
+                    
                     trialIndex++;
                     if(trialIndex>= [trialIndexes count])
                     {
                         stateOfExp = STATE_WHAIT_FOR_USER_INTERACTION;
+                        
                         //End of experiment
+                        
+                        BBAudioManager *bbAudioManager = [BBAudioManager bbAudioManager];
+                        self.experiment.file.filelength = bbAudioManager.fileDuration;
+                        self.experiment.file.fileUsage = EXPERIMENT_FILE_USAGE;
+                        [bbAudioManager stopRecording];
+                        [self.experiment.file save];
+
+                        
                         NSLog(@"End of experiment %@", self.experiment.name);
                         [self.controllerDelegate startSavingExperiment];
                         break;
+                    }
+                    else
+                    {
+                        needStartTime = YES;
                     }
                     currentTrial = [self.experiment.trials objectAtIndex:[((NSNumber*)[trialIndexes objectAtIndex:trialIndex]) intValue]];
  
@@ -344,7 +361,7 @@
     BBAudioManager *bbAudioManager = [BBAudioManager bbAudioManager];
     if (bbAudioManager.recording)
     {
-        currentTrial.file.fileUsage = EXPERIMENT_FILE_USAGE;
+        self.experiment.file.fileUsage = EXPERIMENT_FILE_USAGE;
         [bbAudioManager stopRecording];
     }
     [self.controllerDelegate userWantsInterupt];

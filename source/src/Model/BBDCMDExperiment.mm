@@ -8,6 +8,7 @@
 
 #import "BBDCMDExperiment.h"
 #import "BBDCMDTrial.h"
+#import "BBChannel.h"
 
 @implementation BBDCMDExperiment
 
@@ -20,6 +21,7 @@
 @synthesize contrast;
 @synthesize typeOfStimulus;
 @synthesize color;
+@synthesize file;
 
 
 - (id)init{
@@ -30,6 +32,7 @@
         self.distance = 0.09;
         self.numberOfTrialsPerPair = 5;
         self.delayBetweenTrials = 40.0;
+        self.file = nil;
         self.contrast = 100;//percentage
         self.typeOfStimulus = 1;//Type of stimulus 1 - circle, 2 - ?
         _velocities = [[NSMutableArray alloc] initWithCapacity:0];
@@ -105,12 +108,21 @@
                                   [tempTrials copy], @"trials",
                                   [_velocities copy], @"velocities",
                                   [_sizes copy], @"sizes",
+                                  _file.filename, @"filename",
                                   [NSNumber numberWithInt:numberOfTrialsPerPair], @"trialsPerPair",
                                   [NSNumber numberWithFloat:delayBetweenTrials], @"delayBetweenTrials",
                                   color, @"color",
                                   nil] ;
+    BBDCMDTrial * tempFirstTrial = (BBDCMDTrial *)[_trials objectAtIndex:0];
+    BBFile * tempFile = [tempFirstTrial file];
+    BBChannel * tempChannel = (BBChannel *)[tempFile.allChannels objectAtIndex:0];
+    BBSpikeTrain * tempSpikestrain = (BBSpikeTrain *)[[tempChannel spikeTrains] objectAtIndex:0];
+    NSMutableArray * tempSpikeTimestamps = [[NSMutableArray alloc] initWithArray:[tempSpikestrain makeArrayOfTimestampsWithOffset:0]];
+    
     [retDic addEntriesFromDictionary:returnDict];
     [retDic setValue:JSON_VERSION forKey:@"jsonversion"];
+    [retDic setValue:[tempFile filename] forKey:@"filename"];
+    [retDic setValue:tempSpikeTimestamps forKey: @"allSpikeTimestamps"];
     return [NSDictionary dictionaryWithDictionary:retDic];
 }
 
