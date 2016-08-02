@@ -1,6 +1,6 @@
 
 #import "ThresholdViewController.h"
-#import "BBBTManager.h"
+//#import "BBBTManager.h"
 
 @interface ThresholdViewController() {
     dispatch_source_t callbackTimer;
@@ -25,12 +25,12 @@
     }
 
     
-    [[BBAudioManager bbAudioManager] startThresholding:8192];
+    
     
     glView = [[MultichannelCindeGLView alloc] initWithFrame:self.view.frame];
     glView.mode = MultichannelGLViewModeThresholding;
     [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels ] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
-    
+    [[BBAudioManager bbAudioManager] startThresholding:8192];
 	[self.view addSubview:glView];
     [self.view sendSubviewToBack:glView];
 	
@@ -40,9 +40,12 @@
     
     [glView loadSettings:TRUE];
     [glView startAnimation];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(noBTConnection) name:NO_BT_CONNECTION object:nil];
+   /* [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(noBTConnection) name:NO_BT_CONNECTION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(btDisconnected) name:BT_DISCONNECTED object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(btSlowConnection) name:BT_SLOW_CONNECTION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(btSlowConnection) name:BT_SLOW_CONNECTION object:nil];*/
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate:) name:UIApplicationWillTerminateNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reSetupScreen) name:RESETUP_SCREEN_NOTIFICATION object:nil];
 }
 
@@ -52,14 +55,20 @@
     [[BBAudioManager bbAudioManager] saveSettingsToUserDefaults];
     [[BBAudioManager bbAudioManager] stopThresholding];
     [glView stopAnimation];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:NO_BT_CONNECTION object:nil];
+   /* [[NSNotificationCenter defaultCenter] removeObserver:self name:NO_BT_CONNECTION object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:BT_DISCONNECTED object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:BT_SLOW_CONNECTION object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:BT_SLOW_CONNECTION object:nil];*/
     [[NSNotificationCenter defaultCenter] removeObserver:self name:RESETUP_SCREEN_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillTerminateNotification object:nil];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillResignActiveNotification object:nil];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
     
     [glView removeFromSuperview];
     [glView release];
     glView = nil;
+   // [super viewWillDisappear:<#animated#>];
 }
 
 - (void)viewDidLoad
@@ -67,12 +76,26 @@
     [super viewDidLoad];
     
     
-   
 
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate:) name:UIApplicationWillTerminateNotification object:nil];
 
 }
+
+
+-(void) applicationDidBecomeActive:(UIApplication *)application {
+    NSLog(@"\n\nApp will become active - Threshold\n\n");
+    if(glView)
+    {
+        [glView startAnimation];
+        [[BBAudioManager bbAudioManager] startThresholding:8192];
+    }
+}
+
+-(void) applicationWillResignActive:(UIApplication *)application {
+    NSLog(@"\n\nResign active - Threshold\n\n");
+    [glView stopAnimation];
+    [[BBAudioManager bbAudioManager] stopThresholding];
+}
+
 
 - (void)applicationWillTerminate:(UIApplication *)application {
     NSLog(@"Terminating from threshold app...");
@@ -81,6 +104,7 @@
     [glView stopAnimation];
     [[BBAudioManager bbAudioManager] stopThresholding];
 }
+
 
 
 
@@ -138,18 +162,18 @@
     }
     
     
-    [[BBAudioManager bbAudioManager] startThresholding:8192];
+   
     
     glView = [[MultichannelCindeGLView alloc] initWithFrame:self.view.frame];
     glView.mode = MultichannelGLViewModeThresholding;
     [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels ] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
-    
+    [[BBAudioManager bbAudioManager] startThresholding:8192];
     [self.view addSubview:glView];
     [self.view sendSubviewToBack:glView];
     
     // set our view controller's prop that will hold a pointer to our newly created CCGLTouchView
     [self setGLView:glView];
-
+    [glView startAnimation];
 }
 
 

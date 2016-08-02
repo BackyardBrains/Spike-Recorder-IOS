@@ -89,7 +89,7 @@
     numSamplesVisible = (float)(int) (numSamplesMax + numSamplesMin)/2;
     
     numVoltsMin = [[defaults valueForKey:@"numVoltsMin"] floatValue];
-    numVoltsMax = [[defaults valueForKey:@"numVoltsMax"] floatValue];
+    numVoltsMax = [[defaults valueForKey:@"numVoltsMaxUpdate1"] floatValue];
     numVoltsVisible = numVoltsMax*0.2f;
     
     

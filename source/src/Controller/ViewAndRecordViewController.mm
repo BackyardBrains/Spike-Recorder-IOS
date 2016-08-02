@@ -10,8 +10,7 @@
 //
 
 #import "ViewAndRecordViewController.h"
-#import "StimulationParameterViewController.h"
-#import "BBBTManager.h"
+//#import "BBBTManager.h"
 #import "BBBTChooserViewController.h"
 
 
@@ -29,21 +28,19 @@
 @implementation ViewAndRecordViewController
 @synthesize slider;
 @synthesize recordButton;
-@synthesize stimulateButton;
-@synthesize stimulatePreferenceButton;
 @synthesize bufferStateIndicator;
+@synthesize cancelRTViewButton;
 
 - (void)viewWillAppear:(BOOL)animated
 {
     
-    [super viewWillAppear:animated];
+  
+  
+    
     [[BBAudioManager bbAudioManager] startMonitoring];
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    BOOL enabled = [[defaults valueForKey:@"stimulationEnabled"] boolValue];
 
-    stimulateButton.hidden = !enabled;
-    stimulatePreferenceButton.hidden = !enabled;
     if(glView)
     {
         [glView stopAnimation];
@@ -54,10 +51,15 @@
     glView = [[MultichannelCindeGLView alloc] initWithFrame:self.view.frame];
     [self setGLView:glView];
     glView.mode = MultichannelGLViewModeView;
+    
+    NSLog(@"ViewAndRecord - set number of channesl");
+ 
+    
     [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels ] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
     
 	[self.view addSubview:glView];
     [self.view sendSubviewToBack:glView];
+    NSLog(@"ViewAndRecord - start animation");
 	[glView startAnimation];
     
     UITapGestureRecognizer *doubleTap = [[[UITapGestureRecognizer alloc] initWithTarget: self action:@selector(autorangeView)] autorelease];
@@ -67,14 +69,7 @@
     // set our view controller's prop that will hold a pointer to our newly created CCGLTouchView
     
     
-    if([[BBAudioManager bbAudioManager] btOn])
-    {
-        glView.channelsConfiguration = [[BBBTManager btManager] activeChannels];
-        [self.btButton setImage:[UIImage imageNamed:@"inputicon.png"] forState:UIControlStateNormal];
-        [self.bufferStateIndicator setHidden:NO];
-    }
-    else
-    {
+    NSLog(@"ViewAndRecord - set active channels");
         
         //Set all channels to active
         UInt8 configurationOfChannels = 0;
@@ -85,62 +80,61 @@
         }
         glView.channelsConfiguration = configurationOfChannels;
         
-        [self.btButton setImage:[UIImage imageNamed:@"bluetooth.png"] forState:UIControlStateNormal];
-        [self.bufferStateIndicator setHidden:YES];
-    }
-
-   /* [glView stopAnimation];
-    [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
-    [glView startAnimation];
-    */
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(noBTConnection) name:NO_BT_CONNECTION object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(btDisconnected) name:BT_DISCONNECTED object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(btSlowConnection) name:BT_SLOW_CONNECTION object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(foundBTConnection) name:FOUND_BT_CONNECTION object:nil];
-    
-
-     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reSetupScreen) name:RESETUP_SCREEN_NOTIFICATION object:nil];
-   // [self detectBluetooth];
-    [self.rtSpikeViewButton objectColor:[BYBGLView getSpikeTrainColorWithIndex:4 transparency:1.0f]];
-    [self.rtSpikeViewButton changeCurrentState:HANDLE_STATE];
+    //    [self.btButton setImage:[UIImage imageNamed:@"bluetooth.png"] forState:UIControlStateNormal];
+    [self.bufferStateIndicator setHidden:YES];
     [self.cancelRTViewButton setHidden:YES];
+
+
+    
+    NSLog(@"ViewAndRecord -add notifications");
+
+   // [self detectBluetooth];
+   // [self.rtSpikeViewButton objectColor:[BYBGLView getSpikeTrainColorWithIndex:4 transparency:1.0f]];
+   // [self.rtSpikeViewButton changeCurrentState:HANDLE_STATE];
+   // [self.cancelRTViewButton setHidden:YES];
     [glView setRtConfigurationActive:NO];
+    [super viewWillAppear:animated];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reSetupScreen) name:RESETUP_SCREEN_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate:) name:UIApplicationWillTerminateNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
     
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
+    NSLog(@"View and record viewDidAppear");
     [super viewDidAppear:animated];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-    [super viewWillDisappear:animated];
-    [self tapOnCancelRTButton];
+    NSLog(@"\n\nviewWillDisappear\n\n");
+    [glView stopAnimation];
+   // [self tapOnCancelRTButton];
     NSLog(@"Stopping regular view");
     [glView saveSettings:FALSE]; // save non-threshold settings
-    [glView stopAnimation];
-    
-    
-   /* if([[BBAudioManager bbAudioManager] btOn])
-    {
-        [self btButtonPressed:nil];
-    }*/
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:NO_BT_CONNECTION object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:FOUND_BT_CONNECTION object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:BT_DISCONNECTED object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:BT_SLOW_CONNECTION object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:RESETUP_SCREEN_NOTIFICATION object:nil];
+
+    //[glView removeFromSuperview];
+    //[glView release];
+    //glView = nil;
+
+   [[NSNotificationCenter defaultCenter] removeObserver:self name:RESETUP_SCREEN_NOTIFICATION object:nil];
+
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillTerminateNotification object:nil];
+
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillResignActiveNotification object:nil];
+
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
+    [super viewWillDisappear:animated];
 }
 
 - (void)viewDidLoad
 {
-    
-    [super viewDidLoad];
-
-    stimulateButton.selected = NO;
+    NSLog(@"\n View and Record - viewDidLoad\n\n");
     // Listen for going down
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate:) name:UIApplicationWillTerminateNotification object:nil];
+
 
     //Add handler for start of RT view
     UITapGestureRecognizer *singleFingerTap =
@@ -155,12 +149,31 @@
                                             action:@selector(tapOnCancelRTButton)];
     [self.cancelRTViewButton addGestureRecognizer:cancelFingerTap];
     [cancelFingerTap release];
+    [super viewDidLoad];
+    
+ 
 }
+
+
+-(void) applicationDidBecomeActive:(UIApplication *)application {
+    NSLog(@"\n\nApp will become active - ViewRecord\n\n");
+    if(glView)
+    {
+        [glView startAnimation];
+    }
+}
+
+-(void) applicationWillResignActive:(UIApplication *)application {
+    NSLog(@"\n\nResign active - ViewRecord\n\n");
+   [glView stopAnimation];
+    // [glView stopAnimation];
+}
+
 
 - (void)applicationWillTerminate:(UIApplication *)application {
     NSLog(@"Terminating...");
     [glView saveSettings:FALSE];
-    [glView stopAnimation];
+   // [glView stopAnimation];
 }
 
 - (void)setGLView:(MultichannelCindeGLView *)view
@@ -181,6 +194,7 @@
     
     //Fetch data and get time of data as precise as posible. Used to sichronize
     //display of waveform and spike marks
+   
     return [[BBAudioManager bbAudioManager] fetchAudio:data numFrames:numFrames whichChannel:whichChannel stride:1];
 }
 
@@ -340,7 +354,7 @@
 
 -(void) updateBTBufferIndicator
 {
-    [self.bufferStateIndicator updateBufferState:(((float)[[BBBTManager btManager] numberOfFramesBuffered])/[[BBAudioManager bbAudioManager] sourceSamplingRate])];
+  /*  [self.bufferStateIndicator updateBufferState:(((float)[[BBBTManager btManager] numberOfFramesBuffered])/[[BBAudioManager bbAudioManager] sourceSamplingRate])];*/
 }
 
 - (IBAction)btButtonPressed:(id)sender {
@@ -398,11 +412,12 @@
     
     // set our view controller's prop that will hold a pointer to our newly created CCGLTouchView
     [self setGLView:glView];
+    [glView startAnimation];
     if([[BBAudioManager bbAudioManager] btOn])
     {
-        glView.channelsConfiguration = [[BBBTManager btManager] activeChannels];
+      /*  glView.channelsConfiguration = [[BBBTManager btManager] activeChannels];
         [self.btButton setImage:[UIImage imageNamed:@"inputicon.png"] forState:UIControlStateNormal];
-        [self.bufferStateIndicator setHidden:NO];
+        [self.bufferStateIndicator setHidden:NO];*/
     }
     else
     {
@@ -420,7 +435,6 @@
         [self.btButton setImage:[UIImage imageNamed:@"bluetooth.png"] forState:UIControlStateNormal];
         [self.bufferStateIndicator setHidden:YES];
     }
-    stimulateButton.selected = NO;
 
 }
 
@@ -476,7 +490,7 @@
 
 -(void) foundBTConnection
 {
-    NSLog(@"foundConnection view function. Remove the Spinner");
+  /*  NSLog(@"foundConnection view function. Remove the Spinner");
     SAFE_ARC_RELEASE(channelPopover); channelPopover=nil;
     
     int tempSampleRate = [[BBBTManager btManager] maxSampleRateForDevice]/[[BBBTManager btManager] maxNumberOfChannelsForDevice];
@@ -521,7 +535,7 @@
     [glView addGestureRecognizer:doubleTap];
     
     // set our view controller's prop that will hold a pointer to our newly created CCGLTouchView
-    [self setGLView:glView];
+    [self setGLView:glView];*/
 }
 
 //
@@ -530,14 +544,14 @@
 -(int) countNumberOfChannels:(int) channelsConfig
 {
     int returnNumberOfChannels = 0;
-    int tempMask = 1;
+   /* int tempMask = 1;
     for(int i=0;i<[[BBBTManager btManager] maxNumberOfChannelsForDevice];i++)
     {
         if((channelsConfig & (tempMask<<i))>0)
         {
             returnNumberOfChannels++;
         }
-    }
+    }*/
     return returnNumberOfChannels;
 }
 
@@ -545,7 +559,7 @@
 -(void) removeBTChannel:(int) indexOfChannel
 {
 
-    int tempActiveChannels = [[BBBTManager btManager] activeChannels];
+   /* int tempActiveChannels = [[BBBTManager btManager] activeChannels];
     int tempMask = 1;
     tempMask = tempMask<<indexOfChannel;
     tempActiveChannels = tempActiveChannels & (~tempMask);
@@ -576,14 +590,14 @@
     [glView addGestureRecognizer:doubleTap];
     
     // set our view controller's prop that will hold a pointer to our newly created CCGLTouchView
-    [self setGLView:glView];
+    [self setGLView:glView];*/
 
 }
 
 
 -(void) addBTChannel:(int) indexOfChannel
 {
-    int tempActiveChannels = [[BBBTManager btManager] activeChannels];
+  /*  int tempActiveChannels = [[BBBTManager btManager] activeChannels];
     int tempMask = 1;
     tempMask = tempMask<<indexOfChannel;
     tempActiveChannels = tempActiveChannels | tempMask;
@@ -616,7 +630,7 @@
     [glView addGestureRecognizer:doubleTap];
     
     // set our view controller's prop that will hold a pointer to our newly created CCGLTouchView
-    [self setGLView:glView];
+    [self setGLView:glView];*/
 
 }
 
@@ -801,56 +815,21 @@
 
 
 
-- (IBAction)stimulateButtonPressed:(id)sender {
-
-    BBAudioManager *bbAudioManager = [BBAudioManager bbAudioManager];
-    if (bbAudioManager.stimulating == false) {
-        NSLog(@"Current stimulation type: %d", bbAudioManager.stimulationType);
-        [bbAudioManager startStimulating:bbAudioManager.stimulationType];
-        stimulateButton.selected = YES;
-    }
-    else {
-        [bbAudioManager stopStimulating];
-        stimulateButton.selected = NO;
-    }
-}
-
-- (IBAction)stimulatePrefButtonPressed:(id)sender {
-    
-    StimulationParameterViewController *spvc = [[StimulationParameterViewController alloc] initWithNibName:@"StimulationParameterView" bundle:nil];
-    UINavigationController *navController = [[UINavigationController alloc] initWithRootViewController:spvc];
-    
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        NSLog(@"AWESOME");
-        navController.modalPresentationStyle = UIModalPresentationFormSheet;
-    }
-
-    [self.tabBarController presentViewController:navController animated:YES completion:nil];
-    
-    [spvc release];
-    [navController release];
-    
-}
-
-
 - (void)dealloc {
     [slider release];
     [recordButton release];
-    [stimulateButton release];
-    [stimulatePreferenceButton release];
+
     [_stopButton release];
     [_btButton release];
     [_rtSpikeViewButton release];
     [bufferStateIndicator release];
-    [_cancelRTViewButton release];
+    [cancelRTViewButton release];
     [super dealloc];
 }
 
 - (void)viewDidUnload {
     [self setSlider:nil];
     [self setRecordButton:nil];
-    [self setStimulateButton:nil];
-    [self setStimulatePreferenceButton:nil];
     [self setStopButton:nil];
     [super viewDidUnload];
 }

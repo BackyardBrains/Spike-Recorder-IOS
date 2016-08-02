@@ -138,6 +138,14 @@
     });
     
     dispatch_resume(callbackTimer);
+    //[glView startAnimation];
+    
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate:) name:UIApplicationWillTerminateNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
+    
+    
     [super viewWillAppear:animated];
 }
 
@@ -146,19 +154,21 @@
     [super viewDidAppear:animated];
     [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
     audioPaused = NO;
-
+    [glView startAnimation];
 }
 
 
 - (void)viewWillDisappear:(BOOL)animated
 {
 
+    NSLog(@"\n\nviewWillDisappear - Playback\n\n");
+    [glView stopAnimation];
     [[BBAudioManager bbAudioManager] clearWaveform];  
     
     [self.navigationController setNavigationBarHidden:NO animated:YES];
     [glView saveSettings:FALSE]; // save non-threshold settings
     
-    [glView stopAnimation];
+
     dispatch_suspend(callbackTimer);
     [[BBAudioManager bbAudioManager] stopPlaying];
 
@@ -169,6 +179,17 @@
     [glView removeFromSuperview];
     [glView release];
     glView = nil;
+    
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillTerminateNotification object:nil];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillResignActiveNotification object:nil];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
+    
+    
+    
+    
     [super viewWillDisappear:animated];
 }
 
@@ -185,25 +206,31 @@
               forControlEvents:(UIControlEventTouchDown)];
     
 
-      /* if(glView)
-    {
-        [glView stopAnimation];
-        [glView removeFromSuperview];
-        [glView release];
-        glView = nil;
-    }
-    
-    // our CCGLTouchView being added as a subview
-    glView = [[MultichannelCindeGLView alloc] initWithFrame:self.view.frame];
-    
-    //[glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
-    glView.mode = MultichannelGLViewModePlayback;
-	[self.view addSubview:glView];
-    [self.view sendSubviewToBack:glView];
-    
-    // set our view controller's prop that will hold a pointer to our newly created CCGLTouchView
-    [self setGLView:glView];*/
+
 }
+
+
+-(void) applicationDidBecomeActive:(UIApplication *)application {
+    NSLog(@"\n\nApp will become active - Playback\n\n");
+    if(glView)
+    {
+        [glView startAnimation];
+    }
+}
+
+-(void) applicationWillResignActive:(UIApplication *)application {
+    NSLog(@"\n\nResign active - Playback\n\n");
+    [glView stopAnimation];
+    // [glView stopAnimation];
+}
+
+
+- (void)applicationWillTerminate:(UIApplication *)application {
+    NSLog(@"Terminating...");
+   // [glView saveSettings:FALSE];
+    // [glView stopAnimation];
+}
+
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
 {
@@ -384,6 +411,7 @@
     NSRange receiverRange = [routeStr rangeOfString : @"Receiver"];
     NSRange speakerRange = [routeStr rangeOfString : @"Speaker"];
     NSRange lineoutRange = [routeStr rangeOfString : @"Lineout"];
+    NSRange HDMIRange = [routeStr rangeOfString : @"HDMI"];
     
     if (headphoneRange.location != NSNotFound) {
         // Don't change the route if the headphone is plugged in.
@@ -417,6 +445,12 @@
     } else if (lineoutRange.location != NSNotFound) {
         // Don't change the route if the lineout is plugged in.
         UInt32 audioRouteOverride = kAudioSessionOverrideAudioRoute_None;
+        AudioSessionSetProperty (kAudioSessionProperty_OverrideAudioRoute,
+                                 sizeof (audioRouteOverride),
+                                 &audioRouteOverride);
+    }
+    else if (HDMIRange.location != NSNotFound) {
+        UInt32 audioRouteOverride = kAudioSessionOverrideAudioRoute_Speaker;
         AudioSessionSetProperty (kAudioSessionProperty_OverrideAudioRoute,
                                  sizeof (audioRouteOverride),
                                  &audioRouteOverride);

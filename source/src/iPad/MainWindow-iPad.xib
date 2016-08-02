@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.iPad.XIB" version="3.0" toolsVersion="6250" systemVersion="13F34" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.iPad.XIB" version="3.0" toolsVersion="7531" systemVersion="14C109" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6244"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7520"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="UIApplication">
@@ -35,10 +35,6 @@
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <tabBarItem key="tabBarItem" title="Threshold" image="ThresholdImage.png" id="43"/>
                 </viewController>
-                <viewController title="Ecg" nibName="ECGViewController" id="1iG-AJ-Jd4" userLabel="ECG View Controller - Ecg" customClass="ECGViewController">
-                    <extendedEdge key="edgesForExtendedLayout"/>
-                    <tabBarItem key="tabBarItem" title="Ecg" image="ecg.png" id="y3r-Ad-4ZW"/>
-                </viewController>
                 <navigationController definesPresentationContext="YES" id="27">
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <tabBarItem key="tabBarItem" title="Recordings" image="FileNeuron.png" id="31"/>
@@ -53,13 +49,6 @@
                         </viewController>
                     </viewControllers>
                 </navigationController>
-                <viewController title="EEG" nibName="FFTViewController" id="KjW-jS-GRx" customClass="FFTViewController">
-                    <extendedEdge key="edgesForExtendedLayout"/>
-                    <tabBarItem key="tabBarItem" title="EEG" image="spectrum.png" id="eb4-Jo-VAn"/>
-                </viewController>
-                <viewController title="Settings" nibName="FilterSettingsViewController" id="e8F-15-Zhs" customClass="FilterSettingsViewController">
-                    <tabBarItem key="tabBarItem" title="Settings" image="settings.png" id="jag-1i-8Wf"/>
-                </viewController>
             </viewControllers>
         </tabBarController>
         <window opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="12">
@@ -73,9 +62,6 @@
         <image name="FileNeuron.png" width="30" height="30"/>
         <image name="ThresholdImage.png" width="30" height="30"/>
         <image name="WaveImage.png" width="30" height="30"/>
-        <image name="ecg.png" width="30" height="30"/>
-        <image name="settings.png" width="30" height="30"/>
-        <image name="spectrum.png" width="30" height="30"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>

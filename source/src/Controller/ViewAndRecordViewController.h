@@ -32,8 +32,6 @@
 
 @property (retain, nonatomic) IBOutlet UISlider *slider;
 @property (retain, nonatomic) IBOutlet UIButton *recordButton;
-@property (retain, nonatomic) IBOutlet UIButton *stimulateButton;
-@property (retain, nonatomic) IBOutlet UIButton *stimulatePreferenceButton;
 @property (retain, nonatomic) IBOutlet UIButton *stopButton;
 @property (retain, nonatomic) IBOutlet UIButton *btButton;
 @property (retain, nonatomic) IBOutlet BufferStateIndicator *bufferStateIndicator;
@@ -41,8 +39,6 @@
 @property (retain, nonatomic) IBOutlet RTSpikeSortingButton *rtSpikeViewButton;
 @property (retain, nonatomic) IBOutlet RTCancelButton *cancelRTViewButton;
 
-- (IBAction)stimulateButtonPressed:(id)sender;
-- (IBAction)stimulatePrefButtonPressed:(id)sender;
 - (IBAction)stopRecording:(id)sender;
 - (IBAction)startRecording:(id)sender;
 - (IBAction)btButtonPressed:(id)sender;

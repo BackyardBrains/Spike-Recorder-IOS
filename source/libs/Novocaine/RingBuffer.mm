@@ -40,6 +40,7 @@ mSizeOfBuffer(bufferLength)
 	else
 		mNumChannels = numChannels;
 	
+    NSLog(@"Create buffer number of channels: %lld   length: %lld\n",numChannels, bufferLength);
 	mData = (float **)calloc(numChannels, sizeof(float *));
 	for (int i=0; i < numChannels; ++i) {
 		mData[i] = (float *)calloc(bufferLength, sizeof(float));
@@ -170,8 +171,10 @@ float RingBuffer::FetchFreshData2(float *outData, SInt64 numFrames, SInt64 which
     //display of spike marks and waveform are not sinchronized
     //TODO: make timestamp of data part of this class
     float tempTime = [[BBAudioManager bbAudioManager] getTimeForSpikes];
+   NSString * logString = [NSString stringWithFormat:@"Num of frames: %lld, which channel: %lld, stride: %lld", numFrames, whichChannel, stride];
+    //NSLog(logString);
     if (mLastWrittenIndex[whichChannel] - numFrames >= 0) { // if we're requesting samples that won't go off the left end of the ring buffer, then go ahead and copy them all out.
-        
+        NSLog(@"fetch audio 4");
         UInt32 idx = mLastWrittenIndex[whichChannel] - numFrames;
         float zero = 0.0f;
         vDSP_vsadd(&mData[whichChannel][idx], 
@@ -184,7 +187,7 @@ float RingBuffer::FetchFreshData2(float *outData, SInt64 numFrames, SInt64 which
     }
     
     else { // if we will overrun, then we need to do two separate copies.
-        
+       // NSLog(@"fetch audio 5");
         // The copy that bleeds off the left, and cycles back to the right of the ring buffer
         int numSamplesInFirstCopy = numFrames - mLastWrittenIndex[whichChannel];
         // The copy that starts at the beginning, and proceeds to the end.

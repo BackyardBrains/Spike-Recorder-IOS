@@ -24,33 +24,14 @@
 
 @class BBFile;
 
-typedef enum BBStimulationType
-{
-	BBStimulationTypePWM = 0,
-	BBStimulationTypeBiphasic = 1,
-	BBStimulationTypeTone = 2,
-    BBStimulationTypeTonePulse = 3,
-    BBStimulationTypePWMPulse = 4,
-    BBStimulationTypeDigitalControl = 5,
-    BBStimulationTypeDigitalControlPulse = 6
-    
-} BBStimulationType;
-
 
 @interface BBAudioManager : NSObject
 {
-    float stimulationPulseFrequency;
-    float stimulationPulseDuration;
-    float stimulationToneFrequency;
-    float stimulationToneDuration;
-    float pulseDutyCycle;
-    int numPulsesInBiphasicStimulation;
-    float maxStimulationAmplitude;
-    float minStimulationAmplitude;
+
     
     UInt32 numPointsToSavePerThreshold;
     UInt32 numTriggersInThresholdHistory;
-    BBStimulationType stimulationType;
+
     
     BOOL recording;
     BOOL stimulating;
@@ -71,21 +52,6 @@ typedef enum BBStimulationType
 @property (getter=sourceSamplingRate, readonly) float sourceSamplingRate;
 @property (getter=sourceNumberOfChannels, readonly) int sourceNumberOfChannels;
 
-
-@property int numPulsesInDigitalStimulation;
-@property float stimulationDigitalMessageFrequency; // the embedded high-frequency signal interpreted by hardware
-@property float stimulationDigitalDuration;
-@property float stimulationDigitalDutyCycle;
-@property float stimulationDigitalFrequency; // the frequency of the digital pulses (carrier frequency)
-@property float stimulationPulseFrequency;
-@property float stimulationPulseDuration;
-@property float stimulationToneFrequency;
-@property float stimulationToneDuration;
-@property float pulseDutyCycle;
-@property int numPulsesInBiphasicStimulation;
-@property float maxStimulationAmplitude;
-@property float minStimulationAmplitude;
-@property BBStimulationType stimulationType;
 @property UInt32 numTriggersInThresholdHistory;
 
 @property float threshold;
@@ -119,9 +85,9 @@ typedef enum BBStimulationType
 
 
 + (BBAudioManager *) bbAudioManager;
+-(void) quitAllFunctions;
 - (void)startMonitoring;
-- (void)startStimulating:(BBStimulationType)newStimulationType;
-- (void)stopStimulating;
+
 - (void)startRecording:(NSURL *)urlToFile;
 - (void)stopRecording;
 - (void)startThresholding:(UInt32)newNumPointsToSavePerThreshold;

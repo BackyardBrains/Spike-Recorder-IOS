@@ -19,10 +19,9 @@
 }
 
 - (void)drawRect:(CGRect)rect {
-    if(currentColor == nil)
-    {
-        currentColor = [BYBGLView getSpikeTrainColorWithIndex:0 transparency:1.0f];
-    }
+
+    currentColor = [BYBGLView getSpikeTrainColorWithIndex:0 transparency:1.0f];
+    
     
     float startOfCircleX = self.bounds.origin.x+self.bounds.size.width*0.3;
     float startOfCircleY = self.bounds.origin.y+self.bounds.size.width*0.28;

@@ -226,7 +226,11 @@
 	{
         
         // Launch a detail view here.
-        BBFileDetailViewController *bbdvc = [[BBFileDetailViewController alloc] initWithBBFile:[self.files objectAtIndex:0]];
+        BBFileDetailsTableViewController *bbdvc = [[BBFileDetailsTableViewController alloc] initWithBBFile:[self.files objectAtIndex:0]];
+        
+        /* BBFileDetailViewController *bbdvc = [[BBFileDetailViewController alloc] initWithBBFile:[self.files objectAtIndex:0]];*/
+        
+        
         [self.navigationController pushViewController:bbdvc animated:YES];
         [bbdvc release];
         
@@ -320,6 +324,12 @@
                                                  applicationActivities:nil] autorelease];
         
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            
+            if([activities respondsToSelector:@selector(popoverPresentationController)])
+            {
+                    //iOS8
+                    activities.popoverPresentationController.sourceView = self.view;
+            }
             [[[self parentViewController] parentViewController] presentViewController:activities animated:YES completion:nil];
 
         }

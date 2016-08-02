@@ -11,7 +11,7 @@
 #import "BBSpike.h"
 #import "BBSpikeTrain.h"
 #import "BBChannel.h"
-#import "BBBTManager.h"
+//#import "BBBTManager.h"
 #import "BBAudioManager.h"
 #define HANDLE_RADIUS 20
 
@@ -132,7 +132,7 @@
     
     if([[BBAudioManager bbAudioManager] btOn])
     {
-        maxNumberOfChannels = [[BBBTManager btManager] maxNumberOfChannelsForDevice];
+      //  maxNumberOfChannels = [[BBBTManager btManager] maxNumberOfChannelsForDevice];
     }
     else
     {
@@ -218,10 +218,10 @@
 
     for(int channelIndex = 0; channelIndex < maxNumberOfChannels; channelIndex++)
     {
-        if(yOffsets[channelIndex]==0.0f)
-        {
+        //if(yOffsets[channelIndex]==0.0f)
+        //{
             yOffsets[channelIndex] = -usableYAxisSpan*0.4 + (channelIndex+1)*(usableYAxisSpan/((float)maxNumberOfChannels))- 0.5*(usableYAxisSpan/((float)maxNumberOfChannels));
-        }
+        //}
     }
     if(maxNumberOfChannels==1)
     {
@@ -230,19 +230,14 @@
     
     dataSourceDelegate = newDataSource;
     
-    if([[BBAudioManager bbAudioManager] btOn])
-    {
-        channelsConfiguration = [[BBBTManager btManager] activeChannels];
-    }
-    else
-    {
+
         int tempMask = 1;
         channelsConfiguration = 0;
         for(int k=0;k<[[BBAudioManager bbAudioManager] sourceNumberOfChannels];k++)
         {
             channelsConfiguration = channelsConfiguration | (tempMask<<k);
         }
-    }
+     NSLog([[NSString alloc] initWithFormat:@"Channel configuration: %d", channelsConfiguration ]);
     
     for(int i=0;i<maxNumberOfChannels;i++)
     {
@@ -258,7 +253,7 @@
     }
     
     NSLog(@"End setup number of channels");
-    [self startAnimation];
+   // [self startAnimation];
     
 }
 
@@ -336,7 +331,7 @@
             numSamplesVisible = MAX_THRESHOLD_VISIBLE_TIME*samplingRate;
         }
         numVoltsMin = [[defaults valueForKey:@"numVoltsMinThreshold"] floatValue];
-        numVoltsMax = [[defaults valueForKey:@"numVoltsMaxThreshold"] floatValue];
+        numVoltsMax = [[defaults valueForKey:@"numVoltsMaxThresholdUpdate1"] floatValue];
        
         for(int i=0;i<maxNumberOfChannels;i++)
         {
@@ -357,7 +352,7 @@
         numSamplesMin = [[defaults valueForKey:@"numSamplesMin"] floatValue];
         numSamplesVisible = [[defaults valueForKey:@"numSamplesVisible"] floatValue];
         numVoltsMin = [[defaults valueForKey:@"numVoltsMin"] floatValue];
-        numVoltsMax = [[defaults valueForKey:@"numVoltsMax"] floatValue];
+        numVoltsMax = [[defaults valueForKey:@"numVoltsMaxUpdate1"] floatValue];
         
         for(int i=0;i<maxNumberOfChannels;i++)
         {
@@ -375,7 +370,7 @@
         
     }
     
-    [self autorangeSelectedChannel];
+    //[self autorangeSelectedChannel];
     
 }
 
@@ -393,6 +388,7 @@
 
 - (void)saveSettings:(BOOL)useThresholdSettings
 {
+    NSLog(@"MultichannelGL view saveSettings\n");
     NSDictionary *defaultsDict = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"SettingsDefaults" ofType:@"plist"]];
     [[NSUserDefaults standardUserDefaults] registerDefaults:defaultsDict];
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -405,7 +401,7 @@
         [defaults setValue:[NSNumber numberWithFloat:numSamplesVisible] forKey:@"numSamplesVisibleThreshold"];
         [defaults setValue:[NSNumber numberWithFloat:numVoltsMin] forKey:@"numVoltsMinThreshold"];
         
-        [defaults setValue:[NSNumber numberWithFloat:numVoltsMax] forKey:@"numVoltsMaxThreshold"];
+        [defaults setValue:[NSNumber numberWithFloat:numVoltsMax] forKey:@"numVoltsMaxThresholdUpdate1"];
         if(numVoltsVisible[0]>numVoltsMax)
         {
             numVoltsVisible[0] = numVoltsMax;
@@ -417,7 +413,7 @@
         [defaults setValue:[NSNumber numberWithFloat:numSamplesMin] forKey:@"numSamplesMin"];
         [defaults setValue:[NSNumber numberWithFloat:numSamplesVisible] forKey:@"numSamplesVisible"];
         [defaults setValue:[NSNumber numberWithFloat:numVoltsMin] forKey:@"numVoltsMin"];
-        [defaults setValue:[NSNumber numberWithFloat:numVoltsMax] forKey:@"numVoltsMax"];
+        [defaults setValue:[NSNumber numberWithFloat:numVoltsMax] forKey:@"numVoltsMaxUpdate1"];
         if(numVoltsVisible[0]>numVoltsMax)
         {
             numVoltsVisible[0] = numVoltsMax;
@@ -438,6 +434,7 @@
 //
 - (void)fillDisplayVector
 {
+   // NSLog(@"fillDisplayVector");
     
     // We'll be checking if we have to limit the amount of points we display on the screen
     // (e.g., the user is allowed to pinch beyond the maximum allowed range, but we
@@ -540,8 +537,9 @@
                 offset = 0;
             }
         
-            timeForSincDrawing =  [dataSourceDelegate fetchDataToDisplay:tempDataBuffer numFrames:numPoints whichChannel:realIndexOfChannel];
             
+            timeForSincDrawing =  [dataSourceDelegate fetchDataToDisplay:tempDataBuffer numFrames:numPoints whichChannel:realIndexOfChannel];
+          //  NSLog(@"After - Fetch Data to display");
             float zero = yOffsets[channelIndex];
             float zoom = maxVoltsSpan/ numVoltsVisible[channelIndex];
             //float zoom = 1.0f;
@@ -992,9 +990,12 @@
         //draw all handles
         for(int indexOfChannel = 0;indexOfChannel<maxNumberOfChannels;indexOfChannel++)
         {
+            
+           
             //draw tickmark
             if([self channelActive:indexOfChannel])
             {
+                // NSLog([[NSString alloc] initWithFormat:@"Channel configuration: %d, offset: %f, index: %d", channelsConfiguration,  yOffsets[indexOfChannel]], indexOfChannel);
                 glLineWidth(2.0f);
                 glColor4f(1.0f, 1.0f, 1.0f, 1.0-transparencyForAxis);
                 gl::drawLine(Vec2f(-maxTimeSpan, yOffsets[indexOfChannel]), Vec2f(-maxTimeSpan+20*scaleXY.x, yOffsets[indexOfChannel]));
@@ -1015,8 +1016,11 @@
             
             //draw line for active channel
             
+            
+            
             if([self channelActive:indexOfChannel])
             {
+            
                 [self setColorWithIndex:indexOfChannel transparency:transparencyForAxis];
                 glLineWidth(2.0f);
                 gl::drawLine(Vec2f(centerOfCircleX, yOffsets[indexOfChannel]), Vec2f(0.0f, yOffsets[indexOfChannel]));
@@ -1037,7 +1041,7 @@
                 {
                     //Draw X icon for channel removal
                     //Draw X icon for channel removal
-                    xPositionOfRemove = - offsetPositionOfHandles -60*scaleXY.x;
+                 /*   xPositionOfRemove = - offsetPositionOfHandles -60*scaleXY.x;
                     yPositionOfRemove = yOffsets[indexOfChannel]+100*scaleXY.y;
                     gl::drawSolidEllipse( Vec2f(xPositionOfRemove, yPositionOfRemove), radiusXAxis+2*scaleXY.x, radiusYAxis+2*scaleXY.y, 1000 );
                     glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
@@ -1045,7 +1049,7 @@
                     [self setColorWithIndex:indexOfChannel transparency:1.0f];
                     glLineWidth(2.0f);
                     gl::drawLine(Vec2f(xPositionOfRemove-radiusXAxis*0.7, yPositionOfRemove), Vec2f(xPositionOfRemove+radiusXAxis*0.7, yPositionOfRemove));
-                    glLineWidth(1.0f);
+                    glLineWidth(1.0f);*/
                 }
             }
         }//for loop for channels

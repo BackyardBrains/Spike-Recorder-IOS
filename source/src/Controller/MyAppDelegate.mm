@@ -12,7 +12,7 @@
 #import "MyAppDelegate.h"
 #import <DropboxSDK/DropboxSDK.h>
 #import "BBAudioFileReader.h"
-#import "BBBTManager.h"
+//#import "BBBTManager.h"
 
 
 #define kViewRecordTabBarIndex 0
@@ -37,6 +37,10 @@
     
     // This is the line that we need for iOS 6.
     // TODO: test on iOS 5.
+    
+    
+   // [self redirectConsoleLogToDocumentFolder];
+    
     window.rootViewController = tabBarController;
     tabBarController.delegate = self;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -63,13 +67,24 @@
     [DBSession setSharedSession:dbSession];
     
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(btSlowConnection) name:BT_SLOW_CONNECTION object:nil];
+   /* [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(btSlowConnection) name:BT_SLOW_CONNECTION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(btBadConnection) name:BT_BAD_CONNECTION object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deviceChooserClosed) name:BT_WAIT_TO_CONNECT object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(accessoryDisconnectedDuringInquiry) name:BT_ACCESSORY_DISCONNECTED_DURING_INQUIRY object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(foundBTConnection) name:FOUND_BT_CONNECTION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(foundBTConnection) name:FOUND_BT_CONNECTION object:nil];*/
 }
+
+
+- (void) redirectConsoleLogToDocumentFolder
+{
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,
+                                                         NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    NSString *logPath = [documentsDirectory stringByAppendingPathComponent:@"console.log"];
+    freopen([logPath fileSystemRepresentation],"a+",stderr);
+}
+
 
 
 -(void) deviceChooserClosed
@@ -131,14 +146,7 @@
 
 - (void)applicationWillTerminate:(UIApplication *)application {
     
-    if([[BBAudioManager bbAudioManager] btOn])
-    {
-        [[BBAudioManager bbAudioManager] closeBluetooth];
-    }
-    if([[BBAudioManager bbAudioManager] rtSpikeSorting])
-    {
-        [[BBAudioManager bbAudioManager] stopRTSpikeSorting];
-    }
+   [[BBAudioManager bbAudioManager] quitAllFunctions];
     NSLog(@"Going into background.");
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setValue:[NSNumber numberWithInt:tabBarController.selectedIndex] forKey:@"tabIndex"];
@@ -148,10 +156,8 @@
 
 - (void)applicationWillResignActive:(UIApplication *)application
 {
-    if([[BBAudioManager bbAudioManager] btOn])
-    {
-        [[BBAudioManager bbAudioManager] closeBluetooth];
-    }
+    NSLog(@"\n\nApp will resign.\n\n");
+ 
 }
 
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {

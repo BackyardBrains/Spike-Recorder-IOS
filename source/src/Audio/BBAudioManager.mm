@@ -7,7 +7,6 @@
 
 #import "BBAudioManager.h"
 #import "BBAnalysisManager.h"
-#import "BBBTManager.h"
 #import "BBFile.h"
 #import "BBSpike.h"
 #import "BBSpikeTrain.h"
@@ -88,21 +87,9 @@ static BBAudioManager *bbAudioManager = nil;
 //@synthesize sourceSamplingRate;
 //@synthesize sourceNumberOfChannels;
 
-@synthesize numPulsesInDigitalStimulation;
-@synthesize stimulationDigitalMessageFrequency;
-@synthesize stimulationDigitalDuration;
-@synthesize stimulationDigitalDutyCycle;
-@synthesize stimulationDigitalFrequency;
-@synthesize stimulationPulseFrequency;
-@synthesize stimulationPulseDuration;
-@synthesize stimulationToneFrequency;
-@synthesize stimulationToneDuration;
-@synthesize pulseDutyCycle;
-@synthesize numPulsesInBiphasicStimulation;
+
 @synthesize numTriggersInThresholdHistory;
-@synthesize maxStimulationAmplitude;
-@synthesize minStimulationAmplitude;
-@synthesize stimulationType;
+
 @synthesize threshold;
 @synthesize thresholdDirection;
 @synthesize recording;
@@ -167,9 +154,13 @@ static BBAudioManager *bbAudioManager = nil;
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(filterParametersChanged) name:FILTER_PARAMETERS_CHANGED object:nil];
         
+          [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(resetupAudioInputs) name:@"audioChannelsChanged" object:nil];
+        
+        
         audioManager = [Novocaine audioManager];
     
         _sourceSamplingRate =  audioManager.samplingRate;
+         NSLog(@"Init sampling rate: %f", _sourceSamplingRate);
         _sourceNumberOfChannels = audioManager.numInputChannels;
         
         _selectedChannel = 0;
@@ -186,8 +177,8 @@ static BBAudioManager *bbAudioManager = nil;
         maxNumberOfSamplesToDisplay = [[defaults valueForKey:@"numSamplesMaxExt"] integerValue];
 
         //Setup initial values for statistics
-        _currentMax = [[defaults valueForKey:@"numVoltsMax"] floatValue]*0.8;
-        _currentMin = -[[defaults valueForKey:@"numVoltsMax"] floatValue]*0.8;
+        _currentMax = [[defaults valueForKey:@"numVoltsMaxUpdate1"] floatValue]*0.8;
+        _currentMin = -[[defaults valueForKey:@"numVoltsMaxUpdate1"] floatValue]*0.8;
         _currentMean = 0.0f;
         _currentSTD = _currentMax/6.0f;
 
@@ -317,6 +308,7 @@ static BBAudioManager *bbAudioManager = nil;
 
 - (void)loadSettingsFromUserDefaults
 {
+    NSLog(@"Audio manager loadSettingsFromUserDefaults\n");
     // Make sure we've got our defaults right, y'know? Important.
     NSDictionary *defaultsDict = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"SettingsDefaults" ofType:@"plist"]];
     [[NSUserDefaults standardUserDefaults] registerDefaults:defaultsDict];
@@ -324,21 +316,8 @@ static BBAudioManager *bbAudioManager = nil;
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
-    self.numPulsesInDigitalStimulation = [[defaults valueForKey:@"numPulsesInDigitalStimulation"] intValue];
-    self.stimulationDigitalMessageFrequency = [[defaults valueForKey:@"stimulationDigitalMessageFrequency"] floatValue];
-    self.stimulationDigitalDuration = [[defaults valueForKey:@"stimulationDigitalDuration"] floatValue];
-    self.stimulationDigitalDutyCycle = [[defaults valueForKey:@"stimulationDigitalDutyCycle"] floatValue];
-    self.stimulationDigitalFrequency = [[defaults valueForKey:@"stimulationDigitalFrequency"] floatValue];
-    self.stimulationPulseFrequency = [[defaults valueForKey:@"stimulationPulseFrequency"] floatValue];
-    self.stimulationPulseDuration = [[defaults valueForKey:@"stimulationPulseDuration"] floatValue];
-    self.stimulationToneFrequency = [[defaults valueForKey:@"stimulationToneFrequency"] floatValue];
-    self.stimulationToneDuration = [[defaults valueForKey:@"stimulationToneDuration"] floatValue];
-    self.pulseDutyCycle = [[defaults valueForKey:@"pulseDutyCycle"] floatValue];
-    self.numPulsesInBiphasicStimulation = [[defaults valueForKey:@"numPulsesInBiphasicStimulation"] intValue];
-    self.maxStimulationAmplitude = [[defaults valueForKey:@"maxStimulationAmplitude"] floatValue];
-    self.minStimulationAmplitude = [[defaults valueForKey:@"minStimulationAmplitude"] floatValue];
     _threshold = [[defaults valueForKey:@"threshold"] floatValue];
-    self.stimulationType = (BBStimulationType)[[defaults valueForKey:@"stimulationType"] intValue];
+
 
 }
 
@@ -346,21 +325,9 @@ static BBAudioManager *bbAudioManager = nil;
 - (void)saveSettingsToUserDefaults
 {
 
+    NSLog(@"Audio Manager saveSettingsToUserDefaults\n");
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
-    [defaults setValue:[NSNumber numberWithInt:numPulsesInDigitalStimulation] forKey:@"numPulsesInDigitalStimulation"];
-    [defaults setValue:[NSNumber numberWithFloat:stimulationDigitalMessageFrequency] forKey:@"stimulationDigitalMessageFrequency"];
-    [defaults setValue:[NSNumber numberWithFloat:stimulationDigitalDuration] forKey:@"stimulationDigitalDuration"];
-    [defaults setValue:[NSNumber numberWithFloat:stimulationDigitalDutyCycle] forKey:@"stimulationDigitalDutyCycle"];
-    [defaults setValue:[NSNumber numberWithFloat:stimulationDigitalFrequency] forKey:@"stimulationDigitalFrequency"];
-    [defaults setValue:[NSNumber numberWithFloat:stimulationPulseDuration] forKey:@"stimulationPulseDuration"];
-    [defaults setValue:[NSNumber numberWithFloat:stimulationToneFrequency] forKey:@"stimulationToneFrequency"];
-    [defaults setValue:[NSNumber numberWithFloat:stimulationToneDuration] forKey:@"stimulationToneDuration"];
-    [defaults setValue:[NSNumber numberWithFloat:pulseDutyCycle] forKey:@"pulseDutyCycle"];
-    [defaults setValue:[NSNumber numberWithInt:numPulsesInBiphasicStimulation] forKey:@"numPulsesInBiphasicStimulation"];
-    [defaults setValue:[NSNumber numberWithFloat:maxStimulationAmplitude] forKey:@"maxStimulationAmplitude"];
-    [defaults setValue:[NSNumber numberWithFloat:minStimulationAmplitude] forKey:@"minStimulationAmplitude"];
-    [defaults setValue:[NSNumber numberWithInt:stimulationType] forKey:@"stimulationType"];
     [defaults setValue:[NSNumber numberWithFloat:_threshold] forKey:@"threshold"];
     [defaults synchronize];
 }
@@ -369,36 +336,36 @@ static BBAudioManager *bbAudioManager = nil;
 
 -(void) testBluetoothConnection
 {
-    [[BBBTManager btManager] startBluetooth];
+   // [[BBBTManager btManager] startBluetooth];
 }
 
 -(void) switchToBluetoothWithChannels:(int) channelConfiguration andSampleRate:(int) inSampleRate
 {
-    btOn = YES;
+  /*  btOn = YES;
     [[BBBTManager btManager] configBluetoothWithChannelConfiguration:channelConfiguration andSampleRate:inSampleRate];
     _sourceSamplingRate=inSampleRate;
     _sourceNumberOfChannels=[[BBBTManager btManager] numberOfChannels];
     
     [self stopAllInputOutput];
     [self resetBuffers];
-    [self makeInputOutput];
+    [self makeInputOutput];*/
 }
 
 -(void) closeBluetooth
 {
-    [self stopAllInputOutput];
+    /*[self stopAllInputOutput];
     [[BBBTManager btManager] stopCurrentBluetoothConnection];
     _sourceSamplingRate =  audioManager.samplingRate;
     _sourceNumberOfChannels = audioManager.numInputChannels;
     btOn = NO;
     [self resetBuffers];
     [self makeInputOutput];
-    [[NSNotificationCenter defaultCenter] postNotificationName:RESETUP_SCREEN_NOTIFICATION object:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:RESETUP_SCREEN_NOTIFICATION object:self];*/
 }
 
 -(int) numberOfFramesBuffered
 {
-    return [[BBBTManager btManager] numberOfFramesBuffered];
+    return 0;//[[BBBTManager btManager] numberOfFramesBuffered];
 }
 
 
@@ -407,7 +374,8 @@ static BBAudioManager *bbAudioManager = nil;
 
 -(void) stopAllInputOutput
 {
-    [[BBBTManager btManager] setInputBlock:nil];
+    NSLog(@"stopAllInputOutput\n");
+    //[[BBBTManager btManager] setInputBlock:nil];
     audioManager.inputBlock = nil;
     audioManager.outputBlock = nil;
 }
@@ -416,21 +384,38 @@ static BBAudioManager *bbAudioManager = nil;
 {
     if(btOn)
     {
-        _sourceSamplingRate =  [[BBBTManager btManager] samplingRate];
-        _sourceNumberOfChannels = [[BBBTManager btManager] numberOfChannels];
+     /*   _sourceSamplingRate =  [[BBBTManager btManager] samplingRate];
+        _sourceNumberOfChannels = [[BBBTManager btManager] numberOfChannels];*/
     }
     else
     {
         _sourceSamplingRate =  audioManager.samplingRate;
+         NSLog(@"Get source channel config sampling rate: %f", _sourceSamplingRate);
         _sourceNumberOfChannels = audioManager.numInputChannels;
+        NSLog(@"Get source number of channels: %d", _sourceNumberOfChannels);
     }
 }
 
-
+-(void) resetupAudioInputs
+{
+    NSLog(@"resetupAudioInputs\n");
+    if(!playing && audioManager)
+    {
+        [self stopAllInputOutput];
+        _sourceSamplingRate =  audioManager.samplingRate;
+        NSLog(@"resetup audio inputs sampling rate: %f", _sourceSamplingRate);
+        _sourceNumberOfChannels = audioManager.numInputChannels;
+        btOn = NO;
+        [self resetBuffers];
+        [self makeInputOutput];
+        [[NSNotificationCenter defaultCenter] postNotificationName:RESETUP_SCREEN_NOTIFICATION object:self];
+    }
+}
 
 -(void) resetBuffers
 {
-
+    NSLog(@"resetBuffers\n");
+    
     delete ringBuffer;
     free(tempCalculationBuffer);
     //create new buffers
@@ -447,12 +432,13 @@ static BBAudioManager *bbAudioManager = nil;
 
 -(void) makeInputOutput
 {
+     NSLog(@"makeInputOutput\n");
    // [self resetBuffers];
     
     if(btOn)
     {
         //Get the data
-        [[BBBTManager btManager] setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
+      /*  [[BBBTManager btManager] setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
         {
              [self additionalProcessingOfInputData:data forNumOfFrames:numFrames andNumChannels:numChannels];
             
@@ -465,7 +451,7 @@ static BBAudioManager *bbAudioManager = nil;
             memset(data, 0, numChannels*numFrames*sizeof(float));
         }];
         
-        
+        */
     }
     else
     {
@@ -480,6 +466,10 @@ static BBAudioManager *bbAudioManager = nil;
     }
 }
 
+
+//
+// Main routing function. All the processing should hook up here onto data packets
+//
 -(void) additionalProcessingOfInputData:(float *) data forNumOfFrames:(UInt32) numFrames andNumChannels:(UInt32) numChannels
 {
     
@@ -488,7 +478,7 @@ static BBAudioManager *bbAudioManager = nil;
         [fileWriter writeNewAudio:data numFrames:numFrames numChannels:numChannels];
     }
     
-    [self filterData:data numFrames:numFrames numChannels:numChannels];
+   // [self filterData:data numFrames:numFrames numChannels:numChannels];
     [self updateBasicStatsOnData:data numFrames:numFrames numChannels:numChannels];
    
     if (thresholding)
@@ -603,7 +593,7 @@ static BBAudioManager *bbAudioManager = nil;
 
 -(void) quitAllFunctions
 {
-    
+    NSLog(@"quitAllFunctions\n");
     [self stopAllInputOutput];
     
     if (recording)
@@ -630,10 +620,10 @@ static BBAudioManager *bbAudioManager = nil;
         [self stopECG];
     }
     
-    if(rtSpikeSorting)
+   /* if(rtSpikeSorting)
     {
         [self stopRTSpikeSorting];
-    }
+    }*/
     
 }
 
@@ -641,8 +631,17 @@ static BBAudioManager *bbAudioManager = nil;
 #pragma mark - Input Methods
 - (void)startMonitoring
 {
+    NSLog(@"Audio manager startMonitoring\n");
+    audioManager=[Novocaine audioManager];
+    
     [self quitAllFunctions];
+    float tempSamplingRate = _sourceSamplingRate;
+    int tempNumberOfChannels = _sourceNumberOfChannels;
     [self getChannelsConfig];
+    if(tempSamplingRate != _sourceSamplingRate  || tempNumberOfChannels != _sourceNumberOfChannels)
+    {
+        [self resetBuffers];
+    }
     [self makeInputOutput];
 }
 
@@ -729,7 +728,7 @@ static BBAudioManager *bbAudioManager = nil;
     }
     else {
         
-        
+        NSLog(@"Start recording at sample rate: %f", _sourceSamplingRate);
         
         // Grab a file writer. This takes care of the creation and management of the audio file.
         fileWriter = [[BBAudioFileWriter alloc]
@@ -857,6 +856,7 @@ static BBAudioManager *bbAudioManager = nil;
 
 - (void)startPlaying:(BBFile *) fileToPlay
 {
+    NSLog(@"Audio manager startPlaying\n");
     [self stopAllInputOutput];
     
     if (self.playing == true)
@@ -880,6 +880,7 @@ static BBAudioManager *bbAudioManager = nil;
         NSLog(@"Error opening file: %@", [avPlayerError description]);
         _sourceNumberOfChannels =1;
         _sourceSamplingRate = 44100.0f;
+         NSLog(@"start playing 1 inputs sampling rate: %f", _sourceSamplingRate);
     }
     else
     {
@@ -944,7 +945,7 @@ static BBAudioManager *bbAudioManager = nil;
                     
                     
                     //Filtering of recorded data while scrolling
-                    [self filterData:tempCalculationBuffer numFrames:(UInt32)(targetFrame-startFrame) numChannels:_sourceNumberOfChannels];
+                    //[self filterData:tempCalculationBuffer numFrames:(UInt32)(targetFrame-startFrame) numChannels:_sourceNumberOfChannels];
                     
                     
                     
@@ -983,7 +984,7 @@ static BBAudioManager *bbAudioManager = nil;
             
             
             //FIltering of playback data
-            [self filterData:tempCalculationBuffer numFrames:realNumberOfFrames numChannels:_sourceNumberOfChannels];
+          //  [self filterData:tempCalculationBuffer numFrames:realNumberOfFrames numChannels:_sourceNumberOfChannels];
             
             
             //move just numChannels in buffer
@@ -1054,6 +1055,7 @@ static BBAudioManager *bbAudioManager = nil;
 
 -(void) clearWaveform
 {
+    NSLog(@"clear waveform");
     if(ringBuffer)
     {
         ringBuffer->Clear();
@@ -1062,8 +1064,10 @@ static BBAudioManager *bbAudioManager = nil;
 
 - (void)stopPlaying
 {
+    NSLog(@"Stop Playing\n");
     if(self.playing)
     {
+       NSLog(@"Stop Playing - inside\n");
         [self pausePlaying];
         _file = nil;
         _preciseTimeOfLastData = 0.0f;
@@ -1153,10 +1157,12 @@ static BBAudioManager *bbAudioManager = nil;
 
 - (float)fetchAudio:(float *)data numFrames:(UInt32)numFrames whichChannel:(UInt32)whichChannel stride:(UInt32)stride
 {
+    
     if(whichChannel>=_sourceNumberOfChannels)
     {
         return 0.0f;
     }
+    
     if (!thresholding) {
         //Fetch data and get time of data as precise as posible. Used to sichronize
         //display of waveform and spike marks
@@ -1186,262 +1192,6 @@ static BBAudioManager *bbAudioManager = nil;
 -(NSMutableArray *) getChannels
 {
     return [_file allChannels];
-}
-
-
-
-#pragma mark - Output Methods
-- (void)startStimulating:(BBStimulationType)newStimulationType
-{
-        
-    self.stimulating = true;
-    self.stimulationType = newStimulationType;
-
-    // PWM
-    // ============================================================
-    if (stimulationType == BBStimulationTypePWM) {
-        __block int sample = 0;
-        
-        [audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
-            int numSamplesInPeriod = audioManager.samplingRate / stimulationPulseFrequency;
-            int numSamplesOn = (int)(pulseDutyCycle * audioManager.samplingRate / stimulationPulseFrequency);
-            for (int i=0; i < numFrames; ++i) {
-                for (int iChannel = 0; iChannel < numChannels; ++iChannel) {
-                    data[i*numChannels+iChannel] = (sample < numSamplesOn) ? maxStimulationAmplitude : minStimulationAmplitude;
-                }
-                sample += 1;
-                if (sample >= numSamplesInPeriod) {
-                    sample = 0;
-                }
-            }
-        }];
-        
-    }
-    
-    
-    
-    else if (stimulationType == BBStimulationTypePWMPulse) {
-        
-        __block float secondsPlayed = 0.0f;
-        __block int sample = 0;
-        
-        [audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
-            
-            if (secondsPlayed < stimulationPulseDuration) {
-                
-                int numSamplesInPeriod = audioManager.samplingRate / stimulationPulseFrequency;
-                int numSamplesOn = (int)(pulseDutyCycle * audioManager.samplingRate / stimulationPulseFrequency);
-                for (int i=0; i < numFrames; ++i) {
-                    for (int iChannel = 0; iChannel < numChannels; ++iChannel) {
-                        data[i*numChannels+iChannel] = (sample < numSamplesOn) ? maxStimulationAmplitude : minStimulationAmplitude;
-                    }
-                    sample += 1;
-                    if (sample >= numSamplesInPeriod) {
-                        sample = 0;
-                    }
-                    
-                    
-                }
-                secondsPlayed += (float)numFrames / self.samplingRate;
-            }
-            else {
-                audioManager.outputBlock = nil;
-                self.stimulating = false;
-            }
-        }];
-    }
-
-    
-    
-    // Single-shot PWM
-    // ============================================================
-    
-    // The pulses should be 1ms width. 
-    else if (stimulationType == BBStimulationTypeBiphasic) {
-
-        __block int sample = 0;
-        __block int numPulsesPlayed = 0;
-        
-        [audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
-            
-            int numSamplesInPeriod = audioManager.samplingRate / self.stimulationPulseFrequency;
-            int numSamplesOn = (int)(audioManager.samplingRate / 1000.0f); // always 1ms pulses
-            
-            if (numPulsesPlayed < numPulsesInBiphasicStimulation) {
-                
-                for (int i=0; i < numFrames; ++i) {
-                    for (int iChannel = 0; iChannel < numChannels; ++iChannel) {
-                        data[i*numChannels+iChannel] = (sample < numSamplesOn) ? maxStimulationAmplitude : minStimulationAmplitude;
-                    }
-                    sample = sample + 1;
-                    if (sample >= numSamplesInPeriod) {
-                        sample = 0;
-                        numPulsesPlayed = numPulsesPlayed + 1;
-                    }
-                }
-                
-            }
-            
-            else {
-                audioManager.outputBlock = nil;
-                self.stimulating = false;
-            }
-            
-        }];
-    }
-    
-    // Pure Tone
-    // ============================================================
-    else if (stimulationType == BBStimulationTypeTone) {
-        
-        __block float phase = 0.0;
-        
-        [audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
-         {
-
-             for (int i=0; i < numFrames; ++i)
-             {
-                 for (int iChannel = 0; iChannel < numChannels; ++iChannel) 
-                 {
-                     float theta = phase * M_PI * 2;
-                     data[i*numChannels + iChannel] = sin(theta);
-                 }
-                 phase += 1.0 / (self.samplingRate / self.stimulationToneFrequency);
-                 if (phase > 1.0) phase = -1;
-             }
-         }];
-    }
-    
-    // Pure Tone Pulse
-    // ============================================================
-
-    else if (stimulationType == BBStimulationTypeTonePulse) {
-        
-        __block float phase = 0.0f;
-        __block float secondsPlayed = 0.0f;
-        
-        [audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
-            
-            if (secondsPlayed < stimulationToneDuration) {
-            
-                for (int i=0; i < numFrames; ++i)
-                {
-                    for (int iChannel = 0; iChannel < numChannels; ++iChannel) 
-                    {
-                        float theta = phase * M_PI * 2;
-                        data[i*numChannels + iChannel] = sin(theta);
-                    }
-                    phase += 1.0 / (self.samplingRate / self.stimulationToneFrequency);
-                    if (phase > 1.0) phase = -1;
-                }
-                secondsPlayed += (float)numFrames / self.samplingRate;
-            }
-
-            else {
-                audioManager.outputBlock = nil;
-                self.stimulating = false;
-            }
-
-        }];
-    }
-    
-    
-    // Digital Control (bursts of high-frequency pure tones, ~20KHz,
-    // which custom hardware is designed to interpret)
-    // ============================================================
-    
-
-        
-    else if (stimulationType == BBStimulationTypeDigitalControlPulse) {
-        __block float pulsed_phase = 0.0f;
-        __block int pulsed_sample = 0;
-        __block int numPulsesPlayed = 0;
-
-        
-       [audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
-            
-            int numSamplesInPeriod = audioManager.samplingRate / self.stimulationDigitalFrequency;
-            int numSamplesOn = (int)(self.stimulationDigitalDutyCycle * audioManager.samplingRate / self.stimulationDigitalFrequency);
-            
-            if (numPulsesPlayed < self.numPulsesInDigitalStimulation) {
-
-                if (pulsed_sample + numFrames >= numSamplesInPeriod) {
-                    numPulsesPlayed += 1;
-                    
-                    if (numPulsesPlayed == self.numPulsesInDigitalStimulation) {
-                        numFrames = numSamplesInPeriod - pulsed_sample;
-                    }
-                }
-                
-                float lsamplingRate = self.samplingRate;
-                float messageFrequency = self.stimulationDigitalMessageFrequency;
-            
-                for (int i=0; i < numFrames; ++i) {
-                    for (int iChannel = 0; iChannel < numChannels; ++iChannel) {
-                        float theta = pulsed_phase * M_PI * 2;
-                        data[i*numChannels+iChannel] = (pulsed_sample < numSamplesOn) ? sin(theta) : 0.0f;
-                    }
-
-                    pulsed_phase += 1.0 / (lsamplingRate / messageFrequency);
-                    if (pulsed_phase > 1.0) pulsed_phase -= 2; // TODO: test this thingy
-                    pulsed_sample += 1;
-                    if (pulsed_sample >= numSamplesInPeriod) {
-                        pulsed_sample = 0;
-                    }
-                    
-                }
-
-            }
-
-            else {
-                audioManager.outputBlock = nil;
-                self.stimulating = false;
-            }
-        }];
-    }
-    
-    
-    else if (stimulationType == BBStimulationTypeDigitalControl) {
-        
-        __block float phase = 0.0f;
-        __block int sample = 0;
-        
-        [audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
-            
-            int numSamplesInPeriod = audioManager.samplingRate / self.stimulationDigitalFrequency;
-            int numSamplesOn = (int)(self.stimulationDigitalDutyCycle * audioManager.samplingRate / self.stimulationDigitalFrequency);
-            
-            float lsamplingRate = self.samplingRate;
-            float messageFrequency = self.stimulationDigitalMessageFrequency;
-            
-            for (int i=0; i < numFrames; ++i) {
-                for (int iChannel = 0; iChannel < numChannels; ++iChannel) {
-                    float theta = phase * M_PI * 2;
-                    data[i*numChannels+iChannel] = (sample < numSamplesOn) ? sin(theta) : 0.0f;
-                }
-                
-                phase += 1.0 / (lsamplingRate / messageFrequency);
-                if (phase > 1.0) phase -= 2; // TODO: test this thingy
-                sample += 1;
-                if (sample >= numSamplesInPeriod) {
-                    sample = 0;
-                }
-            }
-
-                        
-        }];
-    }
-    
-    
-    
-    
-}
-
-
-- (void)stopStimulating
-{
-    self.stimulating = false;
-    audioManager.outputBlock = nil;    
 }
 
 #pragma mark - Spikes
