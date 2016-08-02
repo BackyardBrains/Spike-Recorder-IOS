@@ -47,6 +47,9 @@
     for(int i=0;i<[self.experiment.trials count];i++)
     {
         [trialIndexes addObject:[NSNumber numberWithInt:i]];
+        
+        //randomize colors
+        
     }
     pixelsPerMeter = [UIDeviceExt pixelsPerCentimeter] * 100.0f;
     NSUInteger count = [trialIndexes count];
@@ -86,13 +89,13 @@
         }
     }
     
-    UIColor * stimulusColor = [[UIColor alloc] initWithCGColor:[[UIColor blackColor] CGColor]];
+   /* UIColor * stimulusColor = [[UIColor alloc] initWithCGColor:[[UIColor blackColor] CGColor]];
     [self colorFromHexString:self.experiment.color color:&stimulusColor];
     const CGFloat *components = CGColorGetComponents(stimulusColor.CGColor);
     
     r = components[0];
     g = components[1];
-    b = components[2];
+    b = components[2];*/
     
     currentTrial = [self.experiment.trials objectAtIndex:[((NSNumber*)[trialIndexes objectAtIndex:trialIndex]) intValue]];
     currentSpeed = currentTrial.velocity;
@@ -186,6 +189,14 @@
             
             startTimeOfTrial = (float)self.getElapsedSeconds;
             currentTrial.startOfTrialTimestamp = (float)self.getElapsedSeconds-expStartTime;
+            
+            UIColor * stimulusColor = [[UIColor alloc] initWithCGColor:[[UIColor blackColor] CGColor]];
+            [self colorFromHexString:currentTrial.color color:&stimulusColor];
+            const CGFloat *components = CGColorGetComponents(stimulusColor.CGColor);
+            
+            r = components[0];
+            g = components[1];
+            b = components[2];
             glColor4f(r, g, b, 1.0f);
             [self calculateScale];
             NSLog(@"Setup start of experiment");

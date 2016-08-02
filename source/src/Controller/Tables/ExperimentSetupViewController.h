@@ -26,7 +26,6 @@
 
 @property (retain, nonatomic) IBOutlet UITextField *delayTB;
 
-@property (retain, nonatomic) IBOutlet UIView *colorView;
 
 @property (retain, nonatomic) IBOutlet UITextField *colorTB;
 

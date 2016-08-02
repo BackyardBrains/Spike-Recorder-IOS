@@ -44,7 +44,8 @@
         [_sizes addObject:[NSNumber numberWithFloat:0.1f]];
         [_sizes addObject:[NSNumber numberWithFloat:0.14f]];
         _trials = [[NSMutableArray alloc] initWithCapacity:0];
-        self.color = @"000000";
+        _color =  [[NSMutableArray alloc] initWithCapacity:0];
+        [_color addObject:@"000000"];
     }
     
 	return self;
@@ -58,6 +59,17 @@
 {
     [_velocities removeAllObjects];
     [_velocities addObjectsFromArray:inVelocities];
+}
+
+-(void) setColor:(NSMutableArray *)inColor
+{
+    [_color removeAllObjects];
+    [_color addObjectsFromArray:inColor];
+}
+
+-(NSMutableArray *) color
+{
+    return _color;
 }
 
 -(NSMutableArray *) velocities
@@ -111,7 +123,7 @@
                                   _file.filename, @"filename",
                                   [NSNumber numberWithInt:numberOfTrialsPerPair], @"trialsPerPair",
                                   [NSNumber numberWithFloat:delayBetweenTrials], @"delayBetweenTrials",
-                                  color, @"color",
+                                  
                                   nil] ;
     BBDCMDTrial * tempFirstTrial = (BBDCMDTrial *)[_trials objectAtIndex:0];
     BBFile * tempFile = [tempFirstTrial file];

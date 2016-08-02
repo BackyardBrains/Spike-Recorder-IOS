@@ -72,14 +72,6 @@
         [self getDataFromFormToExperiment];
     }
    
-    self.colorView.layer.borderColor = [[UIColor grayColor] CGColor];
-    self.colorView.layer.borderWidth = 1.0;
-    UIColor * tempColor = [[UIColor alloc] initWithCGColor:[[UIColor blackColor] CGColor]];
-    if([self colorFromHexString:self.colorTB.text color:&tempColor])
-    {
-        self.colorView.backgroundColor = tempColor;
-    }
-    
     self.title = @"Experiment Setup";
 }
 
@@ -172,12 +164,17 @@
             newTrial.velocity = [(NSNumber *)[_experiment.velocities objectAtIndex:speedIndex] floatValue];
             newTrial.size = [(NSNumber *)[_experiment.sizes objectAtIndex:sizeIndex] floatValue];
             newTrial.distance = _experiment.distance;
+            newTrial.color =[NSString stringWithFormat:@"%@", (NSString *)[_experiment.color objectAtIndex:arc4random_uniform([_experiment.color count])]];
+            
             //??? TimeOfImpact  ???
             
             [_experiment.trials addObject:newTrial];
             [newTrial release];
         }
     }
+    
+    
+    
 }
 
 
@@ -219,6 +216,16 @@
     int cumulNumOfTrials = [_experiment.velocities count]*[_experiment.sizes count]*_experiment.numberOfTrialsPerPair;
         
     _cumulativeNumberOfTrialsLBL.text = [NSString stringWithFormat:@"Cummulative number of trials: %d (aprox. time %dmin)", cumulNumOfTrials, (int)(((float)(_experiment.delayBetweenTrials*cumulNumOfTrials))/60.0f)];
+    
+    NSMutableString * colorString = [[NSMutableString alloc] initWithString:@""];
+    for(int i=0;i<[_experiment.color count];i++)
+    {
+        [colorString appendFormat:@"%@",(NSString *)[_experiment.color objectAtIndex:i]];
+        if(i!=[_experiment.color count]-1)
+        {
+            [colorString appendString:@", "];
+        }
+    }
 }
 
 -(BOOL) getDataFromFormToExperiment
@@ -305,18 +312,36 @@
             return NO;
         }
     }
+    
+    
+    
+    
+    items = [self.colorTB.text componentsSeparatedByString:@","];
+    [_experiment.color removeAllObjects];
     UIColor * tempColor = [[UIColor alloc] initWithCGColor:[[UIColor blackColor] CGColor]];
-    if([self colorFromHexString:self.colorTB.text color:&tempColor])
+    for(int i=0;i<[items count];i++)
     {
-        self.colorView.backgroundColor = tempColor;
-        self.colorTB.text = [self hexStringFromColor:tempColor];
-        _experiment.color = [self.colorTB.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+        if([[(NSString *)[items objectAtIndex:i] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] isEqualToString:@""])
+        {
+            continue;
+        }
+        
+        if([self colorFromHexString:(NSString *)[items objectAtIndex:i] color:&tempColor])
+        {
+            [_experiment.color addObject:[self hexStringFromColor:tempColor]];
+        }
     }
-    else
+    
+    NSMutableString * colorString = [[NSMutableString alloc] initWithString:@""];
+    for(int i=0;i<[_experiment.color count];i++)
     {
-        [self validationAlertWithText:@"Enter valid RGB HEX value for color. Example: F122AA."];
-        return NO;
+        [colorString appendFormat:@"%@",(NSString *)[_experiment.color objectAtIndex:i]];
+        if(i!=[_experiment.color count]-1)
+        {
+            [colorString appendString:@", "];
+        }
     }
+    
     
     
      int cumulNumOfTrials = [_experiment.velocities count]*[_experiment.sizes count]*_experiment.numberOfTrialsPerPair;
@@ -484,7 +509,6 @@
     [_cumulativeNumberOfTrialsLBL release];
     [_delayTB release];
     [_experiment release];
-    [_colorView release];
     [_colorTB release];
     [super dealloc];
 }

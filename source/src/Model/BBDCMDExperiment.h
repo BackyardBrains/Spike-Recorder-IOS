@@ -9,7 +9,7 @@
 #import "SQLitePersistentObject.h"
 #import "BBFile.h"
 
-#define JSON_VERSION @"4"
+#define JSON_VERSION @"5"
 
 @interface BBDCMDExperiment : SQLitePersistentObject
 {
@@ -25,6 +25,7 @@
     int typeOfStimulus;
     NSMutableArray * _trials;
     BBFile * _file;
+    NSMutableArray * _color;
 }
 @property (nonatomic,retain) NSString *name;
 @property (nonatomic,retain) NSString *comment;
@@ -37,7 +38,7 @@
 @property float contrast;//in percentage
 @property int typeOfStimulus;
 @property (nonatomic,retain) NSMutableArray * trials;
-@property (nonatomic,retain) NSString *color;
+@property (nonatomic,retain) NSMutableArray * color;
 @property (nonatomic,retain) BBFile * file;
 
 

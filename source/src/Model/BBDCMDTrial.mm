@@ -19,6 +19,7 @@
 @synthesize distance;
 @synthesize timeOfImpact;
 @synthesize startOfTrialTimestamp;
+@synthesize color;
 
 -(id) initWithSize:(float) inSize velocity:(float) inVelocity andDistance:(float) inDistance
 {
@@ -31,6 +32,7 @@
         self.timeOfImpact = 0.0;//This should be calculated when we get experiment start time
         self.startOfTrialTimestamp = 0.0;
         _angles = [[NSMutableArray  alloc] initWithCapacity:0];
+        self.color = @"000000";
     }
     return self;
 }
@@ -102,6 +104,7 @@
                       nil] ;
         [retDic addEntriesFromDictionary:returnDict];
         [retDic setValue:JSON_VERSION forKey:@"jsonversion"];
+        [retDic setValue:color forKey:@"color"];
         return [NSDictionary dictionaryWithDictionary:retDic];
         
     }
@@ -117,6 +120,9 @@
                       _file.filename, @"filename",
                       tempSpikeTimestamps, @"spikeTimestamps",
                       nil] ;
+        [retDic addEntriesFromDictionary:returnDict];
+        [retDic setValue:color forKey:@"color"];
+        return [NSDictionary dictionaryWithDictionary:retDic];
     
     }
     
