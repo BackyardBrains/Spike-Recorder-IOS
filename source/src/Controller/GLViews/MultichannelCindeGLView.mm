@@ -348,7 +348,8 @@
         }
     }
     else {
-        numSamplesMax = [[defaults valueForKey:@"numSamplesMaxExt"] floatValue];
+        NSLog(@"Setting normal defaults\n");
+        numSamplesMax = [[defaults valueForKey:@"numSamplesMaxNew"] floatValue];
         numSamplesMin = [[defaults valueForKey:@"numSamplesMin"] floatValue];
         numSamplesVisible = [[defaults valueForKey:@"numSamplesVisible"] floatValue];
         numVoltsMin = [[defaults valueForKey:@"numVoltsMin"] floatValue];
@@ -410,7 +411,7 @@
     }
     else {
         [defaults setValue:[NSNumber numberWithFloat:numSamplesMax] forKey:@"numSamplesMaxExt"];
-        [defaults setValue:[NSNumber numberWithFloat:numSamplesMin] forKey:@"numSamplesMin"];
+        [defaults setValue:[NSNumber numberWithFloat:numSamplesMax] forKey:@"numSamplesMaxNew"];
         [defaults setValue:[NSNumber numberWithFloat:numSamplesVisible] forKey:@"numSamplesVisible"];
         [defaults setValue:[NSNumber numberWithFloat:numVoltsMin] forKey:@"numVoltsMin"];
         [defaults setValue:[NSNumber numberWithFloat:numVoltsMax] forKey:@"numVoltsMaxUpdate1"];

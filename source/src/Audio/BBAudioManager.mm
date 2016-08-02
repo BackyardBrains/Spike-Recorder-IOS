@@ -174,7 +174,7 @@ static BBAudioManager *bbAudioManager = nil;
         tempResamplingBuffer = (float *)calloc(1024, sizeof(float));
         tempResampledBuffer = (float *)calloc(1024, sizeof(float));
         
-        maxNumberOfSamplesToDisplay = [[defaults valueForKey:@"numSamplesMaxExt"] integerValue];
+        maxNumberOfSamplesToDisplay = [[defaults valueForKey:@"numSamplesMaxNew"] integerValue];
 
         //Setup initial values for statistics
         _currentMax = [[defaults valueForKey:@"numVoltsMaxUpdate1"] floatValue]*0.8;
