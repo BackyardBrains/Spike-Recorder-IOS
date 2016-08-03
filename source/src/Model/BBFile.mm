@@ -304,7 +304,7 @@ using namespace tinyxml2;
 
 +(NSArray *)allObjects
 {
-    NSArray * allFiles = [[self class] findByCriteria:@""];
+    NSArray * allFiles = [[self class] findByCriteria:@"ORDER BY date DESC"];
     int i;
     for(i=0;i<[allFiles count];i++)
     {

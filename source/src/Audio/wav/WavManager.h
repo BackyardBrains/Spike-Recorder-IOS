@@ -8,15 +8,16 @@
 
 #import <Foundation/Foundation.h>
 
-#define WAVE_FORMAT_IEEE_FLOAT 3; //32 bit float type
-#define WAVE_FORMAT_PCM  1;//16 bit integer
-#define WAVE_FORMAT_UNKNOWN  0;//16 bit integer
+#define WAVE_FORMAT_IEEE_FLOAT 3 //32 bit float type
+#define WAVE_FORMAT_PCM  1//16 bit integer
+#define WAVE_FORMAT_UNKNOWN  0//16 bit integer
 
 struct WavProperties
 {
     long sampleRate;
     unsigned int compressionType;
     unsigned int numOfChannels;
+    unsigned int bitsPerSample;
 };
 
 @interface WavManager : NSObject

@@ -126,8 +126,8 @@
     
     if(self.mode != MultichannelGLViewModeThresholding)
     {
-        autorangeActive = YES;
-        autorangeTimer = [NSTimer scheduledTimerWithTimeInterval:2.5 target:self selector:@selector(stopAutorange) userInfo:nil repeats:NO];
+       // autorangeActive = YES;
+       // autorangeTimer = [NSTimer scheduledTimerWithTimeInterval:2.5 target:self selector:@selector(stopAutorange) userInfo:nil repeats:NO];
     }
     
     if([[BBAudioManager bbAudioManager] btOn])
@@ -603,7 +603,7 @@
 
         if(autorangeActive)
         {
-            [self autorangeSelectedChannel];
+           // [self autorangeSelectedChannel];
         }
         
         if ([dataSourceDelegate respondsToSelector:@selector(selecting)])

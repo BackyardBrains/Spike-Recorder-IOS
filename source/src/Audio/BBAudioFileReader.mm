@@ -72,12 +72,12 @@ static pthread_mutex_t threadLock;
            struct WavProperties wavProp =  [wavManager openWav:urlToAudioFile];
             self.samplingRate = wavProp.sampleRate;
             self.numChannels = wavProp.numOfChannels;
-           if(wavProp.compressionType != 3)//float format
+           /*if(wavProp.compressionType != 3 )//float format
            {
                //Unsuported compression type
 
-               NSLog(@"Unsupported compression type.");
-           }
+               NSLog(@"PCM type of file.");
+           }*/
         }
         else
         {

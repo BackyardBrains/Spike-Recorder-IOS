@@ -6,6 +6,39 @@
 //  Copyright (c) 2014 Datta Lab, Harvard University. All rights reserved.
 //
 
+
+/*
+Wave File Format
+ 
+
+First main header
+
+Field	Length	Contents
+ckID	4	Chunk ID: RIFF
+cksize	4	Chunk size: 4+n
+WAVEID	4	WAVE ID: WAVE
+WAVE chunks	n	Wave chunks containing format information and sampled data
+fmt Chunk
+
+Than chunk header
+
+Field	Length	Contents
+ckID	4	Chunk ID: fmt
+cksize	4	Chunk size: 16, 18 or 40
+wFormatTag	2	Format code
+nChannels	2	Number of interleaved channels
+nSamplesPerSec	4	Sampling rate (blocks per second)
+nAvgBytesPerSec	4	Data rate
+nBlockAlign	2	Data block size (bytes)
+wBitsPerSample	2	Bits per sample
+cbSize	2	Size of the extension (0 or 22)
+wValidBitsPerSample	2	Number of valid bits
+dwChannelMask	4	Speaker position mask
+SubFormat	16	GUID, including the data format code
+ */
+
+
+
 #import "WavManager.h"
 
 
@@ -40,6 +73,7 @@
     fileProperties.sampleRate = (long)samplingRate;
     fileProperties.numOfChannels = (unsigned int)numberOfChannels;
     fileProperties.compressionType = WAVE_FORMAT_IEEE_FLOAT;
+    fileProperties.bitsPerSample = 32;
     self.fileURL = urlToFile ;
     totalAudioLen = 0;
     totalDataLen = totalAudioLen + 44;
@@ -222,6 +256,18 @@
     newFileProperties.sampleRate = tempHeaderParameter;
     
     
+    //28-31 4B nAvgBytesPerSec	Data rate (ex. for 1 ch 16bit @ 44100 = 88200)
+    //32-33 2B nBlockAlign		Data block size (bytes)
+    //34-35 2B wBitsPerSample	Bits per sample
+    
+    //bits per sample
+    tempHeaderParameter = 0;
+    tempHeaderParameter = allBytes[35];
+    tempHeaderParameter = tempHeaderParameter<<8;
+    tempHeaderParameter = tempHeaderParameter | allBytes[34];
+    newFileProperties.bitsPerSample = tempHeaderParameter;
+    
+    
     //Total audio length
     tempHeaderParameter = 0;
     tempNumber = allBytes[43];
@@ -254,13 +300,39 @@
         NSLog(@"Failed to open the wav file");
         return 0;
     }
-    UInt32 numberOfBytesToRead = thisNumChannels*thisNumFrames*4;
-    [_fileHandle seekToFileOffset: currentPositionDuringRead];
-    NSData *headerData =[_fileHandle readDataOfLength:numberOfBytesToRead];
-    UInt32 numberOfBytes = [headerData length];
-    memcpy(buffer, [headerData bytes], numberOfBytes);
-    currentPositionDuringRead +=numberOfBytes;
-    return numberOfBytes/(fileProperties.numOfChannels*4);
+    long tempDataSample;
+    if(fileProperties.compressionType == WAVE_FORMAT_IEEE_FLOAT)
+    {
+        UInt32 numberOfBytesToRead = thisNumChannels*thisNumFrames*4;
+        [_fileHandle seekToFileOffset: currentPositionDuringRead];
+        NSData *headerData =[_fileHandle readDataOfLength:numberOfBytesToRead];
+        UInt32 numberOfBytes = [headerData length];
+        memcpy(buffer, [headerData bytes], numberOfBytes);
+        currentPositionDuringRead +=numberOfBytes;
+        return numberOfBytes/(fileProperties.numOfChannels*4);
+    }
+    else
+    {
+        int numbOfBytesInSample = fileProperties.bitsPerSample/8;
+        UInt32 numberOfBytesToRead = thisNumChannels*thisNumFrames*numbOfBytesInSample;
+        [_fileHandle seekToFileOffset: currentPositionDuringRead];
+        NSData *headerData =[_fileHandle readDataOfLength:numberOfBytesToRead];
+        UInt32 numberOfBytes = [headerData length];
+        
+        long sampleIndex = 0;
+
+        const void * bytes = [headerData bytes];
+        int16_t elem;
+        for (NSUInteger i = 0; i < [headerData length]; i += sizeof(int16_t)) {
+            elem = OSReadLittleInt16(bytes, i);
+            buffer[sampleIndex++] = elem/32768.0f;
+            
+        }
+        
+        currentPositionDuringRead +=numberOfBytes;
+        return numberOfBytes/(fileProperties.numOfChannels*numbOfBytesInSample);
+    
+    }
 }
 
 
@@ -273,13 +345,38 @@
         NSLog(@"Failed to open the wav file");
         return 0;
     }
-    UInt32 numberOfBytesToRead = thisNumChannels*thisNumFrames*4;
-    UInt32 positionToSeek = thisNumChannels*position*4+44;
+    long tempDataSample;
+    if(fileProperties.compressionType == WAVE_FORMAT_IEEE_FLOAT)
+    {
+            UInt32 numberOfBytesToRead = thisNumChannels*thisNumFrames*4;
+            UInt32 positionToSeek = thisNumChannels*position*4+44;
+            
+            [_fileHandle seekToFileOffset: positionToSeek];
+            NSData *headerData =[_fileHandle readDataOfLength:numberOfBytesToRead];
+            memcpy(buffer, [headerData bytes], [headerData length]);
+            return [headerData length]/(fileProperties.numOfChannels*4);
+    }
+    else
+    {
+        int numbOfBytesInSample = fileProperties.bitsPerSample/8;
+        UInt32 numberOfBytesToRead = thisNumChannels*thisNumFrames*numbOfBytesInSample;
+        UInt32 positionToSeek = thisNumChannels*position*numbOfBytesInSample+44;
+        
+        [_fileHandle seekToFileOffset: positionToSeek];
+        NSData *headerData =[_fileHandle readDataOfLength:numberOfBytesToRead];
+        long sampleIndex = 0;
+        
+        const void * bytes = [headerData bytes];
+        int16_t elem;
+        for (NSUInteger i = 0; i < [headerData length]; i += sizeof(int16_t)) {
+            elem = OSReadLittleInt16(bytes, i);
+            buffer[sampleIndex++] = elem/32768.0f;
+            
+        }
+       
+        return [headerData length]/(fileProperties.numOfChannels*numbOfBytesInSample);
     
-    [_fileHandle seekToFileOffset: positionToSeek];
-    NSData *headerData =[_fileHandle readDataOfLength:numberOfBytesToRead];
-    memcpy(buffer, [headerData bytes], [headerData length]);
-    return [headerData length]/(fileProperties.numOfChannels*4);
+    }
 }
 
 
@@ -298,13 +395,13 @@
 
 -(float) getCurrentTime
 {
-    return ((float)(currentPositionDuringRead-44))/((float)(4*fileProperties.numOfChannels*fileProperties.sampleRate));
+    return ((float)(currentPositionDuringRead-44))/((float)((fileProperties.bitsPerSample/8)*fileProperties.numOfChannels*fileProperties.sampleRate));
 }
 
 -(void) setCurrentTime:(float) newTime
 {
-    UInt32 numberOfBytes = newTime*fileProperties.numOfChannels * fileProperties.sampleRate * 4;
-    numberOfBytes = numberOfBytes - (numberOfBytes%(fileProperties.numOfChannels*4));//position it on begining of frame
+    UInt32 numberOfBytes = newTime*fileProperties.numOfChannels * fileProperties.sampleRate * (fileProperties.bitsPerSample/8);
+    numberOfBytes = numberOfBytes - (numberOfBytes%(fileProperties.numOfChannels*(fileProperties.bitsPerSample/8)));//position it on begining of frame
     currentPositionDuringRead = 44 + numberOfBytes;
 }
 
