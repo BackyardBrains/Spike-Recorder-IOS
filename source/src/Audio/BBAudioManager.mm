@@ -1440,12 +1440,15 @@ static BBAudioManager *bbAudioManager = nil;
 - (float)fileDuration
 {
     
-    if (fileReader) {
+    if (recording) {
+        return fileWriter.duration;
+        
+    }
+    else
+    {
         return fileReader.duration;
     }
-    if (fileWriter) {
-        return fileWriter.duration;
-    }
+
     
     return 0;
     
