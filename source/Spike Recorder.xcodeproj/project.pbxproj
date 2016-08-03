@@ -128,8 +128,6 @@
 		2418FFD11A8406A600662547 /* Screenshot-750x1334.png in Resources */ = {isa = PBXBuildFile; fileRef = 2418FFC91A8406A600662547 /* Screenshot-750x1334.png */; };
 		2418FFD21A8406A600662547 /* Screenshot-1242x2208.png in Resources */ = {isa = PBXBuildFile; fileRef = 2418FFCA1A8406A600662547 /* Screenshot-1242x2208.png */; };
 		2418FFD31A8406A600662547 /* Screenshot@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2418FFCB1A8406A600662547 /* Screenshot@2x.png */; };
-		2418FFD51A85047F00662547 /* DropboxSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2418FFD41A85047F00662547 /* DropboxSDK.framework */; };
-		2418FFD71A8504AB00662547 /* SensibleTableView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2418FFD61A8504AB00662547 /* SensibleTableView.framework */; };
 		241C8AF41B31EEEA00CEFCEE /* tinyxml2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 241C8AF21B31EEEA00CEFCEE /* tinyxml2.mm */; };
 		241C8AF71B3201B800CEFCEE /* template.xml in Resources */ = {isa = PBXBuildFile; fileRef = 241C8AF61B3201B800CEFCEE /* template.xml */; };
 		242631B419C2042A00225E44 /* ECGViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 242631B219C2042A00225E44 /* ECGViewController.xib */; };
@@ -596,8 +594,6 @@
 		2418FFC91A8406A600662547 /* Screenshot-750x1334.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Screenshot-750x1334.png"; sourceTree = "<group>"; };
 		2418FFCA1A8406A600662547 /* Screenshot-1242x2208.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Screenshot-1242x2208.png"; sourceTree = "<group>"; };
 		2418FFCB1A8406A600662547 /* Screenshot@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Screenshot@2x.png"; sourceTree = "<group>"; };
-		2418FFD41A85047F00662547 /* DropboxSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DropboxSDK.framework; path = libs/DropboxSDK.framework; sourceTree = "<group>"; };
-		2418FFD61A8504AB00662547 /* SensibleTableView.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SensibleTableView.framework; path = libs/SensibleTableView.framework; sourceTree = "<group>"; };
 		241C8AF21B31EEEA00CEFCEE /* tinyxml2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = tinyxml2.mm; sourceTree = "<group>"; };
 		241C8AF31B31EEEA00CEFCEE /* tinyxml2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tinyxml2.h; sourceTree = "<group>"; };
 		241C8AF61B3201B800CEFCEE /* template.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = template.xml; sourceTree = "<group>"; };
