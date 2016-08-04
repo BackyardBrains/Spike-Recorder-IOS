@@ -168,7 +168,7 @@
             
             UIButton *button1 = [[[UIButton alloc] init] autorelease];
             button1.frame=CGRectMake(0,0,25,25);
-            [button1 setBackgroundImage:[UIImage imageNamed: @"dropbox.png.png"] forState:UIControlStateNormal];
+            [button1 setBackgroundImage:[UIImage imageNamed: @"dropbox.png"] forState:UIControlStateNormal];
             [button1 addTarget:self action:@selector(dbButtonPressed) forControlEvents:UIControlEventTouchUpInside];
             
             self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:button1];
