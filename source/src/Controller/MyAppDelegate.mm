@@ -17,8 +17,8 @@
 
 #define kViewRecordTabBarIndex 0
 #define kThresholdTabBarIndex 1
-#define kFFTTabBarIndex 2
-#define kRecordingsTabBarIndex 3
+#define kFFTTabBarIndex 3
+#define kRecordingsTabBarIndex 2
 
 @implementation MyAppDelegate
 @synthesize tabBarController;

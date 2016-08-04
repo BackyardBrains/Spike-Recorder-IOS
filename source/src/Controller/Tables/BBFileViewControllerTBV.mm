@@ -193,9 +193,9 @@
     {
         if ([self.allFiles count] > 0)
         {
-            NSIndexPath* ipath = [NSIndexPath indexPathForRow: [self.allFiles count]-1 inSection: 0];
+            NSIndexPath* ipath = [NSIndexPath indexPathForRow: 0 inSection: 0];
             [theTableView scrollToRowAtIndexPath: ipath atScrollPosition: UITableViewScrollPositionTop animated: YES];
-            [self openActionViewWithFile:[self.allFiles objectAtIndex:[self.allFiles count]-1]];
+            [self openActionViewWithFile:[self.allFiles objectAtIndex:0]];
         }
         [appDelegate sharedFileIsOpened];
     }
@@ -236,9 +236,9 @@
         
         if ([self.allFiles count] > 0)
         {
-            NSIndexPath* ipath = [NSIndexPath indexPathForRow: [self.allFiles count]-1 inSection: 0];
+            NSIndexPath* ipath = [NSIndexPath indexPathForRow: 0 inSection: 0];
             [theTableView scrollToRowAtIndexPath: ipath atScrollPosition: UITableViewScrollPositionTop animated: YES];
-            [self openActionViewWithFile:[self.allFiles objectAtIndex:[self.allFiles count]-1]];
+            [self openActionViewWithFile:[self.allFiles objectAtIndex:0]];
         }
         MyAppDelegate * appDelegate = (MyAppDelegate*)[[UIApplication sharedApplication] delegate];
         [appDelegate sharedFileIsOpened];
