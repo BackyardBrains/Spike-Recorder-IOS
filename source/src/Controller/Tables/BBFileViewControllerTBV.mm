@@ -165,9 +165,24 @@
         //                            autorelease];
         
         if (self.navigationItem.rightBarButtonItem==nil) {
-            UIImage *dbImage = [UIImage imageNamed:@"dropbox.png"];
+            
+            UIButton *button1 = [[[UIButton alloc] init] autorelease];
+            button1.frame=CGRectMake(0,0,25,25);
+            [button1 setBackgroundImage:[UIImage imageNamed: @"dropbox.png.png"] forState:UIControlStateNormal];
+            [button1 addTarget:self action:@selector(dbButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+            
+            self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]initWithCustomView:button1];
+            self.navigationItem.rightBarButtonItem.width = 25;
+            
+            
+            
+            
+            
+            
+            
+           /* UIImage *dbImage = [UIImage imageNamed:@"dropbox.png"];
             self.navigationItem.rightBarButtonItem = [[[UIBarButtonItem alloc] initWithImage:dbImage style:UIBarButtonItemStylePlain target:self action:@selector(dbButtonPressed)] autorelease];
-            self.navigationItem.rightBarButtonItem.width = dbImage.size.width;
+            self.navigationItem.rightBarButtonItem.width = dbImage.size.width;*/
         }
     
     self.allFiles = [NSMutableArray arrayWithArray:[BBFile allObjects]];
