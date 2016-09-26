@@ -35,7 +35,9 @@ static float _pointsPerInch;
                                                   @"iPad2,1", @"iPad2,2", @"iPad2,3", @"iPad2,4",  // iPad 2
                                                   @"iPad3,1", @"iPad3,2", @"iPad3,3",              // iPad 3
                                                   @"iPad3,4", @"iPad3,5", @"iPad3,6",              // iPad 4
-                                                  @"iPad4,1", @"iPad4,2"],                         // iPad Air
+                                                  @"iPad4,1",                                      // ipad Air
+                                                  @"iPad4,2",                                      // iPad Air
+                                                  @"iPad4,3"],                                     // iPad Air
                                 @"pointsPerCentimeter":  @52.0f,
                                 @"pointsPerInch":       @132.0f},
                               
@@ -49,23 +51,57 @@ static float _pointsPerInch;
                                                   @"iPhone5,3", @"iPhone5,4",                      // iPhone 5C
                                                   @"iPhone6,1", @"iPhone6,2",                      // iPhone 5S
                                                   @"iPhone7,2",                                    // iPhone 6
-                                                  @"iPad2,5", @"iPad2,6", @"iPad2,7",              // iPad Mini
-                                                  @"iPad4,4", @"iPad4,5",                          // iPad Mini Retina
+                                                  @"iPhone8,1",                                    // iPhone 6S
+                                                  @"iPhone8,4",                                    // iPhone SE
+                                                  @"iPhone9,1",                                    // iPhone 7 (CDMA)
+                                                  @"iPhone9,3",                                    // iPhone 7 (GSM)
+                                                  
+                                                  @"iPad2,5",                                      // iPad mini 1 gen
+                                                  @"iPad2,6",                                      // iPad Mini 1 gen
+                                                  @"iPad2,7",                                      // iPad Mini 1 gen
+                                                  @"iPad4,4",                                      // iPad Mini 2 retina 2 gen
+                                                  @"iPad4,5",                                      // iPad Mini 2 retina sec gen
+                                                  @"iPad4,6",                                      // iPad Mini 2 Retina sec gen
+                                                  @"iPad4,7",                                      // iPad Mini 3
+                                                  @"iPad4,8",                                      // iPad Mini 3
+                                                  @"iPad4,9",                                      // iPad Mini 3
+                                                  @"iPad5,1",                                      // iPad Mini 4
+                                                  @"iPad5,2",                                      // iPad Mini 4
+                                                  @"iPad6,7",                                      // iPad Pro
+                                                  @"iPad6,8",                                      // iPad Pro
+                                                  @"iPad5,3",                                      // iPad Air 2
+                                                  @"iPad5,4",                                      // iPad Air 2
                                                   @"i386", @"x86_64"],                             // iOS simulator (assuming iPad Mini simulator)
                                 @"pointsPerCentimeter":  @64.0f,
                                 @"pointsPerInch":       @163.0f},
                               
-                              @{@"identifiers": @[@"iPhone7,1"],                             // iPhone 6 Plus
+                              @{@"identifiers": @[@"iPhone7,1",                                    // iPhone 6 Plus
+                                                  @"iPhone8,2",                                    // iPhone 6s plus
+                                                  @"iPhone9,2",                                    // iPhone 7 plus
+                                                  @"iPhone9,4"],                                   // iPhone7 plus
                                 @"pointsPerCentimeter":  @78.724f,
                                 @"pointsPerInch":       @200.5f}];
         
+       
+        bool foundDevice = NO;
         for (id deviceClass in iDevices)
+        {
             for (NSString *deviceId in [deviceClass objectForKey:@"identifiers"])
+            {
                 if ([identifier isEqualToString:deviceId]) {
+                    foundDevice = YES;
                     _pointsPerCentimeter = [[deviceClass objectForKey:@"pointsPerCentimeter"] floatValue];
                     _pointsPerInch       = [[deviceClass objectForKey:@"pointsPerInch"] floatValue];
                     break;
                 }
+            }
+        }
+        if(!foundDevice)
+        {
+            _pointsPerCentimeter = 64.0f;
+            _pointsPerInch = 163.0f;
+        }
+        
     }
     
     NSAssert(_pointsPerCentimeter > 0.0f || _pointsPerInch > 0.0f, @"Unknown device: %s", sysinfo.machine);

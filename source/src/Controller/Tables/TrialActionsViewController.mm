@@ -41,7 +41,7 @@
                          ACTION_GRAPH,
                          ACTION_PLAY,
                          ACTION_SORT,
-                         ACTION_SHARE,
+                        // ACTION_SHARE,
                          ACTION_DELETE, nil] retain];
     }
     return self;

@@ -31,17 +31,15 @@
         self.date = [NSDate date];
         self.distance = 0.09;
         self.numberOfTrialsPerPair = 5;
-        self.delayBetweenTrials = 40.0;
+        self.delayBetweenTrials = 25.0;
         self.file = nil;
         self.contrast = 100;//percentage
         self.typeOfStimulus = 1;//Type of stimulus 1 - circle, 2 - ?
         _velocities = [[NSMutableArray alloc] initWithCapacity:0];
-        [_velocities addObject:[NSNumber numberWithFloat:-3.0f]];
         [_velocities addObject:[NSNumber numberWithFloat:-2.0f]];
-        [_velocities addObject:[NSNumber numberWithFloat:-4.0f]];
+        [_velocities addObject:[NSNumber numberWithFloat:-6.0f]];
+        [_velocities addObject:[NSNumber numberWithFloat:-10.0f]];
         _sizes = [[NSMutableArray alloc] initWithCapacity:0];
-        [_sizes addObject:[NSNumber numberWithFloat:0.06f]];
-        [_sizes addObject:[NSNumber numberWithFloat:0.1f]];
         [_sizes addObject:[NSNumber numberWithFloat:0.14f]];
         _trials = [[NSMutableArray alloc] initWithCapacity:0];
         _color =  [[NSMutableArray alloc] initWithCapacity:0];
@@ -116,10 +114,10 @@
     
     NSDictionary * returnDict = [NSDictionary dictionaryWithObjectsAndKeys:name,@"name",
                                   comment, @"comment",
-                                  [NSNumber numberWithFloat:distance], @"distance",
+                                  [NSNumber numberWithFloat:distance], @"displayDistance",
                                   [tempTrials copy], @"trials",
                                   [_velocities copy], @"velocities",
-                                  [_sizes copy], @"sizes",
+                                  [_sizes copy], @"objectSizes",
                                   _file.filename, @"filename",
                                   [NSNumber numberWithInt:numberOfTrialsPerPair], @"trialsPerPair",
                                   [NSNumber numberWithFloat:delayBetweenTrials], @"delayBetweenTrials",
@@ -130,11 +128,14 @@
     BBChannel * tempChannel = (BBChannel *)[tempFile.allChannels objectAtIndex:0];
     BBSpikeTrain * tempSpikestrain = (BBSpikeTrain *)[[tempChannel spikeTrains] objectAtIndex:0];
     NSMutableArray * tempSpikeTimestamps = [[NSMutableArray alloc] initWithArray:[tempSpikestrain makeArrayOfTimestampsWithOffset:0]];
-    
+
+    NSDictionary * timestampsDict = [NSDictionary dictionaryWithObjectsAndKeys:tempSpikeTimestamps,@"allSpikesTimestamps",
+                                 nil] ;
+
     [retDic addEntriesFromDictionary:returnDict];
     [retDic setValue:JSON_VERSION forKey:@"jsonversion"];
     [retDic setValue:[tempFile filename] forKey:@"filename"];
-    [retDic setValue:tempSpikeTimestamps forKey: @"allSpikeTimestamps"];
+    [retDic setValue:timestampsDict forKey: @"timestamps"];
     return [NSDictionary dictionaryWithDictionary:retDic];
 }
 

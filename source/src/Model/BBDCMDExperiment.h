@@ -9,7 +9,7 @@
 #import "SQLitePersistentObject.h"
 #import "BBFile.h"
 
-#define JSON_VERSION @"5"
+#define JSON_VERSION @"6"
 
 @interface BBDCMDExperiment : SQLitePersistentObject
 {

@@ -10,7 +10,7 @@
 #import "BBDCMDExperiment.h"
 #import "TrialActionsViewController.h"
 
-@interface TrialsDCMDTableViewController : UIViewController<UITableViewDataSource, UITableViewDelegate, UIActionSheetDelegate,TrialActionsDelegate>
+@interface TrialsDCMDTableViewController : UIViewController<UITableViewDataSource, UITableViewDelegate, UIActionSheetDelegate,TrialActionsDelegate,UIAlertViewDelegate>
 
 @property (retain, nonatomic) IBOutlet UITableView *tableView;
 @property (nonatomic, retain) BBDCMDExperiment * experiment;

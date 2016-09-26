@@ -710,6 +710,9 @@ NSMutableArray *checkedTables;
 		
 		for (NSString *propName in props)
 		{
+            
+            NSLog(@"Saving property %@", propName);
+            
 			NSString *propType = [props objectForKey:propName];
 			//int colIndex = sqlite3_bind_parameter_index(stmt, [[propName stringAsSQLColumnName] UTF8String]);
 			id theProperty = [self valueForKey:propName];
@@ -789,6 +792,7 @@ NSMutableArray *checkedTables;
 		
 		for (NSString *propName in props)
 		{
+            NSLog(@"Saving property %@", propName);
 			if ([theTransients containsObject:propName]) continue;
 			
 			NSString *propType = [props objectForKey:propName];
@@ -815,6 +819,7 @@ NSMutableArray *checkedTables;
 			
 			for (NSString *propName in props)
 			{
+                NSLog(@"Saving property %@", propName);
 				if ([theTransients containsObject:propName]) continue;
 				
 				NSString *propType = [props objectForKey:propName];
@@ -1049,6 +1054,7 @@ NSMutableArray *checkedTables;
 		
 		for (NSString *propName in props)
 		{
+            NSLog(@"Saving property %@", propName);
 			NSString *propType = [props objectForKey:propName];
 			//int colIndex = sqlite3_bind_parameter_index(stmt, [[propName stringAsSQLColumnName] UTF8String]);
 			id theProperty = [self valueForKey:propName];
@@ -1128,6 +1134,7 @@ NSMutableArray *checkedTables;
 		
 		for (NSString *propName in props)
 		{
+            NSLog(@"Saving property %@", propName);
 			if ([theTransients containsObject:propName]) continue;
 			
 			NSString *propType = [props objectForKey:propName];
@@ -1154,6 +1161,7 @@ NSMutableArray *checkedTables;
 			
 			for (NSString *propName in props)
 			{
+                NSLog(@"Saving property %@", propName);
 				if ([theTransients containsObject:propName]) continue;
 				
 				NSString *propType = [props objectForKey:propName];

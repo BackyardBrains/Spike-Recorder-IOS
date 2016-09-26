@@ -14,6 +14,8 @@
 #import "BBAnalysisManager.h"
 #import "GraphDCMDExperimentViewController.h"
 
+#define SHARE_FILE_TAG 1
+
 @interface TrialsDCMDTableViewController ()
 {
     UIBarButtonItem *saveButton ;
@@ -56,7 +58,7 @@
         saveButton = [[UIBarButtonItem alloc]
                                        initWithBarButtonSystemItem:UIBarButtonSystemItemAction
                                        target:self
-                                       action:@selector(exportExperiment:)];
+                                       action:@selector(shareClicked:)];
         saveButton.style = UIBarButtonItemStyleBordered;
         [buttons addObject:saveButton];
         [saveButton release];
@@ -93,14 +95,39 @@
 
 
 #pragma mark - Export experiment
+-(void) shareClicked:(id) sender
+{
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Add raw recording?" message:@"Do you want to add raw recording file along with metadata?"
+                                                   delegate:self cancelButtonTitle:@"No" otherButtonTitles: @"Yes", nil];
+    alert.tag = SHARE_FILE_TAG;
+    [alert show];
+    [alert release];
+}
 
--(void) exportExperiment:(id) sender
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 1)
+    {
+       // if(alertView.tag == SHARE_FILE_TAG)
+        //{
+        [self exportExperiment:true];
+        //}
+    }
+    else
+    {
+        [self exportExperiment:false];
+    }
+}
+
+
+
+-(void) exportExperiment:(bool) withFile
 {
     MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     hud.labelText = @"Packing...";
     
     dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-        NSString * pathToZip = [self packExperiment];
+        NSString * pathToZip = [self packExperiment:withFile];
         dispatch_async(dispatch_get_main_queue(), ^{
             
             [MBProgressHUD hideHUDForView:self.view animated:YES];
@@ -137,7 +164,7 @@
 }
 
 
--(NSString *) packExperiment
+-(NSString *) packExperiment:(bool) withFile
 {
 
     NSError *writeError = nil;
@@ -150,9 +177,12 @@
     [jsonString release];
     NSMutableArray * arrayOfFiles = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
     [arrayOfFiles addObject:pathToFile];
-    for(int i=0;i<[_experiment.trials count];i++)
+    if(withFile)
     {
-        [arrayOfFiles addObject:[[[((BBDCMDTrial *)[_experiment.trials objectAtIndex:i]) file] fileURL] path]];
+        for(int i=0;i<[_experiment.trials count];i++)
+        {
+            [arrayOfFiles addObject:[[[((BBDCMDTrial *)[_experiment.trials objectAtIndex:i]) file] fileURL] path]];
+        }
     }
 
     NSString * pathToReturn =  [self createZipArchiveWithFiles:arrayOfFiles andName:[NSString stringWithFormat:@"%@.zip",_experiment.name ]] ;
