@@ -32,6 +32,8 @@ typedef enum {
     gl::Texture mColorScale;
     Font mFont;
     gl::TextureFontRef mScaleFont;
+    Font currentTimeFont;
+    gl::TextureFontRef currentTimeTextureFont;
 
     id <MultichannelGLViewDelegate> dataSourceDelegate;
     PolyLine2f* displayVectors;

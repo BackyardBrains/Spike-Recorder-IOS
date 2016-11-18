@@ -107,6 +107,9 @@
     mFont = Font("Helvetica", 18);
     mScaleFont = gl::TextureFont::create( mFont );
     
+    currentTimeFont = Font("Helvetica", 13);
+    currentTimeTextureFont = gl::TextureFont::create( currentTimeFont );
+    
     lastUserInteraction = [[NSDate date] timeIntervalSince1970];
     handlesShouldBeVisible = NO;
     offsetPositionOfHandles = 0;
@@ -677,6 +680,8 @@
             // Draw scale on the screen
             [self drawScaleText];
         }
+        
+        [self drawCurrentTime];
     }
     //glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
 }
@@ -1325,19 +1330,60 @@
     xScaleTextPosition.x = (self.frame.size.width - xScaleTextSize.x)/2.0;
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         
-        xScaleTextPosition.y =0.88*self.frame.size.height + (mScaleFont->getAscent() / 2.0f);
+        //xScaleTextPosition.y =0.88*self.frame.size.height + (mScaleFont->getAscent() / 2.0f);
+        xScaleTextPosition.y =self.frame.size.height - (mScaleFont->getAscent() / 2.0f)-3;
     }
     else
     {
-        xScaleTextPosition.y =0.95*self.frame.size.height + (mScaleFont->getAscent() / 2.0f);
+        
+        xScaleTextPosition.y =self.frame.size.height - (mScaleFont->getAscent() / 2.0f)-3;//0.95*self.frame.size.height + (mScaleFont->getAscent() / 2.0f);
     }
     mScaleFont->drawString(xStringStream.str(), xScaleTextPosition);
     
-
+    
     gl::enableDepthRead();
     
 }
 
+
+-(void) drawCurrentTime
+{
+    //show current time label if we are in playback mode
+    if(self.mode == MultichannelGLViewModePlayback)
+    {
+        
+        gl::disableDepthRead();
+        gl::setMatricesWindow( Vec2i(self.frame.size.width, self.frame.size.height) );
+        gl::enableAlphaBlending();
+        glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+        //make a string for current time in the file
+        std::stringstream currentTimeStringStream;
+        
+        
+        if(([[BBAudioManager bbAudioManager] currentFileTime]/60)<10)
+        {
+            currentTimeStringStream<<"0";
+        }
+        currentTimeStringStream<<(int)([[BBAudioManager bbAudioManager] currentFileTime]/60);
+        
+        currentTimeStringStream<<":";
+        
+        if((((int)[[BBAudioManager bbAudioManager] currentFileTime])%60)<10)
+        {
+            currentTimeStringStream<<"0";
+        }
+        
+        currentTimeStringStream<<((int)[[BBAudioManager bbAudioManager] currentFileTime])%60;
+        
+        Vec2f currentTimeTextSize = currentTimeTextureFont->measureString(currentTimeStringStream.str());
+        Vec2f currentTimeTextPosition = Vec2f(0.,0.);
+        currentTimeTextPosition.x = self.frame.size.width - 45 ;
+        currentTimeTextPosition.y = self.frame.size.height - 45 - (currentTimeTextureFont->getAscent() / 2.0f);
+        currentTimeTextureFont->drawString(currentTimeStringStream.str(), currentTimeTextPosition);
+        gl::enableDepthRead();
+    }
+
+}
 
 
 
@@ -1347,12 +1393,15 @@
     //draw line for x-axis
     float left, top, right, bottom, near, far;
     mCam.getFrustum(&left, &top, &right, &bottom, &near, &far);
-    float height = top - bottom;
+    //float height = top - bottom;
     float width = right - left;
     float middleX = (right - left)/2.0f + left;
 
     float lineLength = 0.5*width;
-    float lineY = height*0.1 + bottom;
+
+    
+    
+    float lineY = scaleXY.y*(55) + bottom;//height*0.1 + bottom;
     Vec2f leftPoint = Vec2f(middleX - lineLength / 2.0f, lineY);
     Vec2f rightPoint = Vec2f(middleX + lineLength / 2.0f, lineY);
     glColor4f(0.8, 0.8, 0.8, 1.0);
@@ -1915,11 +1964,11 @@
     
     float windowHeight = self.frame.size.height;
     float windowWidth = self.frame.size.width;
-    if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] && [[UIScreen mainScreen] scale]==2.0)
+    if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] )
     {
-        //if it is retina
-        windowHeight += windowHeight;
-        windowWidth += windowWidth;
+        float screenScale = 2.0;//[[UIScreen mainScreen] nativeScale];
+        windowHeight *=  screenScale;
+        windowWidth *= screenScale;
     }
     
     float worldLeft, worldTop, worldRight, worldBottom, worldNear, worldFar;
@@ -1949,11 +1998,11 @@
     float windowHeight = self.frame.size.height;
     float windowWidth = self.frame.size.width;
     
-    if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] && [[UIScreen mainScreen] scale]==2.0)
+    if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] )
     {
-        //if it is retina
-        windowHeight += windowHeight;
-        windowWidth += windowWidth;
+        float screenScale = 2.0;
+        windowHeight *=  screenScale;
+        windowWidth *= screenScale;
     }
     
     float worldLeft, worldTop, worldRight, worldBottom, worldNear, worldFar;

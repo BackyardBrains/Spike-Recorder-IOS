@@ -524,11 +524,11 @@
     
     float windowHeight = self.frame.size.height;
     float windowWidth = self.frame.size.width;
-    if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] && [[UIScreen mainScreen] scale]==2.0)
+    if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] )
     {
-        //if it is retina
-        windowHeight += windowHeight;
-        windowWidth += windowWidth;
+        float screenScale = 2.0;
+        windowHeight *=  screenScale;
+        windowWidth *= screenScale;
     }
     
     float worldLeft, worldTop, worldRight, worldBottom, worldNear, worldFar;
@@ -558,11 +558,11 @@
     float windowHeight = self.frame.size.height;
     float windowWidth = self.frame.size.width;
     
-    if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] && [[UIScreen mainScreen] scale]==2.0)
+    if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] )
     {
-        //if it is retina
-        windowHeight += windowHeight;
-        windowWidth += windowWidth;
+        float screenScale = 2.0;
+        windowHeight *=  screenScale;
+        windowWidth *= screenScale;
     }
     
     float worldLeft, worldTop, worldRight, worldBottom, worldNear, worldFar;
