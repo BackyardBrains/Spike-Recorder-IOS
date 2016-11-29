@@ -13,7 +13,7 @@
 
 @interface PlaybackViewController : CCGLTouchViewController <MultichannelGLViewDelegate>
 {
-    MultichannelCindeGLView *glView;
+    
 }
 
 - (void)setGLView:(CCGLTouchView *)view;
@@ -23,6 +23,8 @@
 
 @property (retain, nonatomic) IBOutlet UIButton *playPauseButton;
 @property (retain, nonatomic) IBOutlet UISlider *timeSlider;
+
+@property (retain, nonatomic) MultichannelCindeGLView *glView;
 
 - (IBAction)backBtnClick:(id)sender;
 

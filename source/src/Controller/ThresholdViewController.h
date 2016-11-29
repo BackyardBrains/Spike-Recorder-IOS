@@ -4,10 +4,11 @@
 #import "MultichannelCindeGLView.h"
 
 @interface ThresholdViewController : CCGLTouchViewController <MultichannelGLViewDelegate> {
-    MultichannelCindeGLView *glView;
+    
 }
 
 @property (retain, nonatomic) IBOutlet UILabel *triggerHistoryLabel;
+@property (retain, nonatomic) MultichannelCindeGLView *glView;
 - (void)setGLView:(MultichannelCindeGLView *)view;
 - (IBAction)updateNumTriggersInThresholdHistory:(id)sender;
 

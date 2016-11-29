@@ -26,6 +26,7 @@
 @synthesize playPauseButton;
 @synthesize bbfile;
 @synthesize showNavigationBar;
+@synthesize glView;
 
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
@@ -78,9 +79,6 @@
     if(glView)
     {
         [glView stopAnimation];
-        [glView removeFromSuperview];
-        [glView release];
-        glView = nil;
     }
     
     if([[BBAudioManager bbAudioManager] btOn])
@@ -90,11 +88,15 @@
     
     
     // our CCGLTouchView being added as a subview
-    glView = [[MultichannelCindeGLView alloc] initWithFrame:self.view.frame];
+    if(glView == nil)
+    {
+        glView = [[MultichannelCindeGLView alloc] initWithFrame:self.view.frame];
+        [self.view addSubview:glView];
+        [self.view sendSubviewToBack:glView];
+    }
 
     glView.mode = MultichannelGLViewModePlayback;
-	[self.view addSubview:glView];
-    [self.view sendSubviewToBack:glView];
+	
     
     // set our view controller's prop that will hold a pointer to our newly created CCGLTouchView
     [self setGLView:glView];
@@ -145,7 +147,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
     
-    
+    [glView startAnimation];
     [super viewWillAppear:animated];
 }
 
@@ -176,9 +178,7 @@
     [self restoreAudioOutputRouteToDefault];
     dispatch_suspend(callbackTimer);
     
-    [glView removeFromSuperview];
-    [glView release];
-    glView = nil;
+    
     
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillTerminateNotification object:nil];

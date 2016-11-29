@@ -30,6 +30,7 @@
 @synthesize recordButton;
 @synthesize bufferStateIndicator;
 @synthesize cancelRTViewButton;
+@synthesize glView;
 
 - (void)viewWillAppear:(BOOL)animated
 {
@@ -44,11 +45,13 @@
     if(glView)
     {
         [glView stopAnimation];
-        [glView removeFromSuperview];
-        [glView release];
-        glView = nil;
     }
-    glView = [[MultichannelCindeGLView alloc] initWithFrame:self.view.frame];
+    else
+    {
+        glView = [[MultichannelCindeGLView alloc] initWithFrame:self.view.frame];
+        [self.view addSubview:glView];
+        [self.view sendSubviewToBack:glView];
+    }
     [self setGLView:glView];
     glView.mode = MultichannelGLViewModeView;
     
@@ -57,8 +60,7 @@
     
     [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels ] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
     
-	[self.view addSubview:glView];
-    [self.view sendSubviewToBack:glView];
+
     NSLog(@"ViewAndRecord - start animation");
 	[glView startAnimation];
     
@@ -100,6 +102,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
     
+    [glView startAnimation];
+    
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -116,9 +120,7 @@
     NSLog(@"Stopping regular view");
     [glView saveSettings:FALSE]; // save non-threshold settings
 
-    //[glView removeFromSuperview];
-    //[glView release];
-    //glView = nil;
+
 
    [[NSNotificationCenter defaultCenter] removeObserver:self name:RESETUP_SCREEN_NOTIFICATION object:nil];
 
@@ -373,9 +375,6 @@
         if(glView)
         {
             [glView stopAnimation];
-            [glView removeFromSuperview];
-            [glView release];
-            glView = nil;
         }
 
         [[BBAudioManager bbAudioManager] closeBluetooth];
@@ -394,17 +393,18 @@
     if(glView)
     {
         [glView stopAnimation];
-        [glView removeFromSuperview];
-        [glView release];
-        glView = nil;
+
     }
-    
-    glView = [[MultichannelCindeGLView alloc] initWithFrame:self.view.frame];
+    else
+    {
+        glView = [[MultichannelCindeGLView alloc] initWithFrame:self.view.frame];
+        [self.view addSubview:glView];
+        [self.view sendSubviewToBack:glView];
+    }
 
     [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
     glView.mode = MultichannelGLViewModeView;
-    [self.view addSubview:glView];
-    [self.view sendSubviewToBack:glView];
+
     
     UITapGestureRecognizer *doubleTap = [[[UITapGestureRecognizer alloc] initWithTarget: self action:@selector(autorangeView)] autorelease];
     doubleTap.numberOfTapsRequired = 2;
@@ -490,52 +490,7 @@
 
 -(void) foundBTConnection
 {
-  /*  NSLog(@"foundConnection view function. Remove the Spinner");
-    SAFE_ARC_RELEASE(channelPopover); channelPopover=nil;
-    
-    int tempSampleRate = [[BBBTManager btManager] maxSampleRateForDevice]/[[BBBTManager btManager] maxNumberOfChannelsForDevice];
-
-    [self.btButton setImage:[UIImage imageNamed:@"inputicon.png"] forState:UIControlStateNormal];
-    [self.bufferStateIndicator setHidden:NO];
-    
-    if(glView)
-    {
-        [glView stopAnimation];
-        [glView removeFromSuperview];
-        [glView release];
-        glView = nil;
-    }
-    
-    
-    
-    
-    
-    //Make configuration for channels so that all available channels are present
-    UInt8 configurationOfChannels = 0;
-    int tempMask = 1;
-    for(int i=0;i<[[BBBTManager btManager] maxNumberOfChannelsForDevice];i++)
-    {
-        configurationOfChannels = (tempMask<<i) | configurationOfChannels;
-    }
-    [[BBAudioManager bbAudioManager] switchToBluetoothWithChannels:configurationOfChannels andSampleRate:tempSampleRate];
-    
-    
-    
-    
-    
-    glView = [[MultichannelCindeGLView alloc] initWithFrame:self.view.frame];
-    glView.channelsConfiguration = configurationOfChannels;
-    [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels ] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
-    glView.mode = MultichannelGLViewModeView;
-    [self.view addSubview:glView];
-    [self.view sendSubviewToBack:glView];
-
-    UITapGestureRecognizer *doubleTap = [[[UITapGestureRecognizer alloc] initWithTarget: self action:@selector(autorangeView)] autorelease];
-    doubleTap.numberOfTapsRequired = 2;
-    [glView addGestureRecognizer:doubleTap];
-    
-    // set our view controller's prop that will hold a pointer to our newly created CCGLTouchView
-    [self setGLView:glView];*/
+  
 }
 
 //
@@ -559,79 +514,13 @@
 -(void) removeBTChannel:(int) indexOfChannel
 {
 
-   /* int tempActiveChannels = [[BBBTManager btManager] activeChannels];
-    int tempMask = 1;
-    tempMask = tempMask<<indexOfChannel;
-    tempActiveChannels = tempActiveChannels & (~tempMask);
-    float * tempChannelsOffset = [glView getChannelOffsets];
-    int tempSampleRate = [[BBBTManager btManager] maxSampleRateForDevice]/[self countNumberOfChannels:tempActiveChannels];
-    [self.bufferStateIndicator setHidden:NO];
-    [self.btButton setImage:[UIImage imageNamed:@"inputicon.png"] forState:UIControlStateNormal];
-    
-    if(glView)
-    {
-        [glView stopAnimation];
-        [glView removeFromSuperview];
-        [glView release];
-        glView = nil;
-    }
-    [[BBAudioManager bbAudioManager] switchToBluetoothWithChannels:tempActiveChannels andSampleRate:tempSampleRate];
-    glView = [[MultichannelCindeGLView alloc] initWithFrame:self.view.frame];
-    glView.channelsConfiguration = tempActiveChannels;
-
-    [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels ] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
-    [glView setChannelOffsets:tempChannelsOffset];
-    glView.mode = MultichannelGLViewModeView;
-    [self.view addSubview:glView];
-    [self.view sendSubviewToBack:glView];
-    
-    UITapGestureRecognizer *doubleTap = [[[UITapGestureRecognizer alloc] initWithTarget: self action:@selector(autorangeView)] autorelease];
-    doubleTap.numberOfTapsRequired = 2;
-    [glView addGestureRecognizer:doubleTap];
-    
-    // set our view controller's prop that will hold a pointer to our newly created CCGLTouchView
-    [self setGLView:glView];*/
-
+   
 }
 
 
 -(void) addBTChannel:(int) indexOfChannel
 {
-  /*  int tempActiveChannels = [[BBBTManager btManager] activeChannels];
-    int tempMask = 1;
-    tempMask = tempMask<<indexOfChannel;
-    tempActiveChannels = tempActiveChannels | tempMask;
-    
-    float * tempChannelsOffset = [glView getChannelOffsets];
-    int tempSampleRate = [[BBBTManager btManager] maxSampleRateForDevice]/[self countNumberOfChannels:tempActiveChannels];
-    
-    [self.bufferStateIndicator setHidden:NO];
-    [self.btButton setImage:[UIImage imageNamed:@"inputicon.png"] forState:UIControlStateNormal];
-    
-    if(glView)
-    {
-        [glView stopAnimation];
-        [glView removeFromSuperview];
-        [glView release];
-        glView = nil;
-    }
-    [[BBAudioManager bbAudioManager] switchToBluetoothWithChannels:tempActiveChannels andSampleRate:tempSampleRate];
-    glView = [[MultichannelCindeGLView alloc] initWithFrame:self.view.frame];
-    glView.channelsConfiguration = tempActiveChannels;
-
-    [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels ] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
-    [glView setChannelOffsets:tempChannelsOffset];
-    glView.mode = MultichannelGLViewModeView;
-    [self.view addSubview:glView];
-    [self.view sendSubviewToBack:glView];
-    
-    UITapGestureRecognizer *doubleTap = [[[UITapGestureRecognizer alloc] initWithTarget: self action:@selector(autorangeView)] autorelease];
-    doubleTap.numberOfTapsRequired = 2;
-    [glView addGestureRecognizer:doubleTap];
-    
-    // set our view controller's prop that will hold a pointer to our newly created CCGLTouchView
-    [self setGLView:glView];*/
-
+  
 }
 
 
@@ -651,57 +540,7 @@
 {
     
     NSLog(@"Depricated function called");
-   /* rawSelected = YES;
-    [channelPopover dismissPopoverAnimated:YES];
-    int tempSampleRate = 1000;
-    int tempNumOfChannels = 1;
-    switch (rowIndex) {
-        case 0:
-            tempNumOfChannels = 1;
-            tempSampleRate = 4000;
-            break;
-        case 1:
-            tempNumOfChannels = 2;
-            tempSampleRate = 2000;
-            break;
-        case 2:
-            tempNumOfChannels = 3;
-            tempSampleRate = 1333;
-            break;
-        case 3:
-            tempNumOfChannels = 4;
-            tempSampleRate = 1000;
-            break;
-        case 4:
-            tempNumOfChannels = 5;
-            tempSampleRate = 1000;
-            break;
-        case 5:
-            tempNumOfChannels = 6;
-            tempSampleRate = 1000;
-            break;
-        default:
-            break;
-    }
-    [self.btButton setImage:[UIImage imageNamed:@"inputicon.png"] forState:UIControlStateNormal];
 
-    if(glView)
-    {
-        [glView stopAnimation];
-        [glView removeFromSuperview];
-        [glView release];
-        glView = nil;
-    }
-    [[BBAudioManager bbAudioManager] switchToBluetoothWithNumOfChannels:tempNumOfChannels andSampleRate:tempSampleRate];
-    glView = [[MultichannelCindeGLView alloc] initWithFrame:self.view.frame];
-    
-    [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels ] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
-    glView.mode = MultichannelGLViewModeView;
-	[self.view addSubview:glView];
-    [self.view sendSubviewToBack:glView];
-	
-    // set our view controller's prop that will hold a pointer to our newly created CCGLTouchView
-    [self setGLView:glView]; */
 
 }
 -(NSMutableArray *) getAllRows

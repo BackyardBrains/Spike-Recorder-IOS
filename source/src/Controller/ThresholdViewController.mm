@@ -10,6 +10,7 @@
 
 @implementation ThresholdViewController
 @synthesize triggerHistoryLabel;
+@synthesize glView;
 
 - (void)viewWillAppear:(BOOL)animated
 {
@@ -19,20 +20,20 @@
     if(glView)
     {
         [glView stopAnimation];
-        [glView removeFromSuperview];
-        [glView release];
-        glView = nil;
     }
 
     
     
-    
-    glView = [[MultichannelCindeGLView alloc] initWithFrame:self.view.frame];
+    if(glView == nil)
+    {
+        glView = [[MultichannelCindeGLView alloc] initWithFrame:self.view.frame];
+        [self.view addSubview:glView];
+        [self.view sendSubviewToBack:glView];
+    }
     glView.mode = MultichannelGLViewModeThresholding;
     [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels ] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
     [[BBAudioManager bbAudioManager] startThresholding:8192];
-	[self.view addSubview:glView];
-    [self.view sendSubviewToBack:glView];
+
 	
     // set our view controller's prop that will hold a pointer to our newly created CCGLTouchView
     [self setGLView:glView];
@@ -47,6 +48,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reSetupScreen) name:RESETUP_SCREEN_NOTIFICATION object:nil];
+    
+    [glView startAnimation];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -65,9 +68,7 @@
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
     
-    [glView removeFromSuperview];
-    [glView release];
-    glView = nil;
+
    // [super viewWillDisappear:<#animated#>];
 }
 
@@ -156,20 +157,20 @@
     if(glView)
     {
         [glView stopAnimation];
-        [glView removeFromSuperview];
-        [glView release];
-        glView = nil;
     }
     
     
    
-    
-    glView = [[MultichannelCindeGLView alloc] initWithFrame:self.view.frame];
+    if(glView == nil)
+    {
+        glView = [[MultichannelCindeGLView alloc] initWithFrame:self.view.frame];
+        [self.view addSubview:glView];
+        [self.view sendSubviewToBack:glView];
+    }
     glView.mode = MultichannelGLViewModeThresholding;
     [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels ] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
     [[BBAudioManager bbAudioManager] startThresholding:8192];
-    [self.view addSubview:glView];
-    [self.view sendSubviewToBack:glView];
+
     
     // set our view controller's prop that will hold a pointer to our newly created CCGLTouchView
     [self setGLView:glView];

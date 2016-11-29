@@ -22,7 +22,7 @@
 //#import <CoreBluetooth/CoreBluetooth.h>
 
 @interface ViewAndRecordViewController : CCGLTouchViewController <MultichannelGLViewDelegate, FPPopoverControllerDelegate, BBSelectionTableDelegateProtocol>{
-    MultichannelCindeGLView *glView;
+    
     FPPopoverController * channelPopover;
     FPPopoverController * devicesPopover;
 }
@@ -38,6 +38,8 @@
 
 @property (retain, nonatomic) IBOutlet RTSpikeSortingButton *rtSpikeViewButton;
 @property (retain, nonatomic) IBOutlet RTCancelButton *cancelRTViewButton;
+
+@property (retain, nonatomic) MultichannelCindeGLView *glView;
 
 - (IBAction)stopRecording:(id)sender;
 - (IBAction)startRecording:(id)sender;
