@@ -343,7 +343,18 @@ using namespace tinyxml2;
 //
 -(void) renameIfNeeded
 {
-    NSString * newNameFromShortName = [NSString stringWithFormat:@"%@.%@", [self shortname], [[self fileURL] pathExtension]];
+    //NSString * newShortString = [[self shortname] stringByReplacingOccurrencesOfString:@"/" withString:@"_"];
+    //newShortString = [[self shortname] stringByReplacingOccurrencesOfString:@"\\" withString:@"_"];
+    
+    NSString * newShortString =  [[[self shortname]  componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]] componentsJoinedByString:@"-"];
+     newShortString =  [[newShortString componentsSeparatedByCharactersInSet:[NSCharacterSet illegalCharacterSet]] componentsJoinedByString:@"-"];
+     newShortString =  [[newShortString componentsSeparatedByCharactersInSet:[NSCharacterSet controlCharacterSet]] componentsJoinedByString:@"-"];
+    newShortString =  [[newShortString componentsSeparatedByString:@":"] componentsJoinedByString:@"-"];
+    newShortString =  [[newShortString componentsSeparatedByString:@"/"] componentsJoinedByString:@"-"];
+    newShortString =  [[newShortString componentsSeparatedByString:@"\\"] componentsJoinedByString:@"-"];
+   
+    
+    NSString * newNameFromShortName = [NSString stringWithFormat:@"%@.%@", newShortString, [[self fileURL] pathExtension]];
     //check if name of the file is different than shortname
     //if yes than make it same
     if(![newNameFromShortName isEqualToString:[[self filename] stringByDeletingPathExtension]])
@@ -363,7 +374,7 @@ using namespace tinyxml2;
             if(isThereAFileAlready)
             {
                 NSLog(@"There's a file already");
-                newNameFromShortName = [NSString stringWithFormat:@"%@ %d.%@", [self shortname], i, [[self fileURL] pathExtension]];
+                newNameFromShortName = [NSString stringWithFormat:@"%@ %d.%@", newShortString, i, [[self fileURL] pathExtension]];
                 i++;
             }
         }
