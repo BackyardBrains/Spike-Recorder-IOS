@@ -313,7 +313,7 @@
     
     // Draw the y-axis scale text
     
-    mScaleFont->drawString(yStringStream.str(), yScaleTextPosition);
+   // mScaleFont->drawString(yStringStream.str(), yScaleTextPosition);
     
 
     //If we are not measuring draw x-scale text

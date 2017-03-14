@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1CBD16121E72E6DC00F59AEF /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CBD16101E72E6DC00F59AEF /* Crashlytics.framework */; };
+		1CBD16131E72E6DC00F59AEF /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CBD16111E72E6DC00F59AEF /* Fabric.framework */; };
 		1CD05B9A1CFCEB1E00A83727 /* libCorePlot-CocoaTouch.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CD05B991CFCEB1E00A83727 /* libCorePlot-CocoaTouch.a */; };
 		1CD05B9D1CFCFEF700A83727 /* BBFileDetailsTableViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1CD05B9C1CFCFEF700A83727 /* BBFileDetailsTableViewController.mm */; };
 		1CD05BA41CFD02EE00A83727 /* BBFileDetailsViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CD05BA21CFD02EE00A83727 /* BBFileDetailsViewCell.m */; };
@@ -245,6 +247,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1CBD16101E72E6DC00F59AEF /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
+		1CBD16111E72E6DC00F59AEF /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
 		1CD05B991CFCEB1E00A83727 /* libCorePlot-CocoaTouch.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libCorePlot-CocoaTouch.a"; sourceTree = "<group>"; };
 		1CD05B9B1CFCFEF700A83727 /* BBFileDetailsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BBFileDetailsTableViewController.h; sourceTree = "<group>"; };
 		1CD05B9C1CFCFEF700A83727 /* BBFileDetailsTableViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BBFileDetailsTableViewController.mm; sourceTree = "<group>"; };
@@ -693,6 +697,7 @@
 				FADF26551596362F006C87BA /* UIKit.framework in Frameworks */,
 				FADF26571596362F006C87BA /* Foundation.framework in Frameworks */,
 				FADF26591596362F006C87BA /* CoreGraphics.framework in Frameworks */,
+				1CBD16121E72E6DC00F59AEF /* Crashlytics.framework in Frameworks */,
 				FADF265B1596362F006C87BA /* QuartzCore.framework in Frameworks */,
 				FADF265D1596362F006C87BA /* OpenGLES.framework in Frameworks */,
 				FADF26611596362F006C87BA /* CoreVideo.framework in Frameworks */,
@@ -700,6 +705,7 @@
 				FADF26651596362F006C87BA /* CoreMedia.framework in Frameworks */,
 				FADF26671596362F006C87BA /* CoreText.framework in Frameworks */,
 				1CD05B9A1CFCEB1E00A83727 /* libCorePlot-CocoaTouch.a in Frameworks */,
+				1CBD16131E72E6DC00F59AEF /* Fabric.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1334,6 +1340,8 @@
 		FADF26531596362F006C87BA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1CBD16101E72E6DC00F59AEF /* Crashlytics.framework */,
+				1CBD16111E72E6DC00F59AEF /* Fabric.framework */,
 				249737411CDFC2CE007A73FA /* DropboxSDK.framework */,
 				2490D73A1A927C1B00E1D5E9 /* HealthKit.framework */,
 				2418FDA11A83F14700662547 /* libs */,
@@ -1431,6 +1439,7 @@
 				FADF264C1596362F006C87BA /* Sources */,
 				FADF264D1596362F006C87BA /* Frameworks */,
 				FADF264E1596362F006C87BA /* Resources */,
+				1CBD16141E72E71400F59AEF /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -1597,6 +1606,22 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		1CBD16141E72E71400F59AEF /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PROJECT_DIR}/Fabric.framework/run\" 03339903a5ebeb0ce572431bcfc3c9dd25e5b2cc 12af8aa46a61c6e8a0c88262775a28d224d8c0560648e612ae2c03218190e162";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		FADF264C1596362F006C87BA /* Sources */ = {
@@ -1790,6 +1815,7 @@
 					"$(inherited)",
 					"$(SRCROOT)",
 					"$(PROJECT_DIR)/libs",
+					"$(PROJECT_DIR)",
 				);
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -1837,7 +1863,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_OBJC_ARC = NO;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Backyard Brains (MLGRKD657P)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = MLGRKD657P;
@@ -1847,6 +1873,7 @@
 					"$(inherited)",
 					"$(SRCROOT)",
 					"$(PROJECT_DIR)/libs",
+					"$(PROJECT_DIR)",
 				);
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -1877,7 +1904,7 @@
 				);
 				PRODUCT_NAME = "Spike Recorder";
 				PROVISIONING_PROFILE = "";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "1da4f27f-d20b-4f11-aff7-1baa6d16fe58";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = iphoneos9.3;

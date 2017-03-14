@@ -36,7 +36,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.9.2</string>
+	<string>3.0.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -49,13 +49,31 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>2.9.4</string>
+	<string>3.0.8</string>
+	<key>Fabric</key>
+	<dict>
+		<key>APIKey</key>
+		<string>03339903a5ebeb0ce572431bcfc3c9dd25e5b2cc</string>
+		<key>Kits</key>
+		<array>
+			<dict>
+				<key>KitInfo</key>
+				<dict/>
+				<key>KitName</key>
+				<string>Crashlytics</string>
+			</dict>
+		</array>
+	</dict>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>We don't need camera.</string>
 	<key>NSMainNibFile</key>
 	<string>MainWindow</string>
 	<key>NSMainNibFile~ipad</key>
 	<string>MainWindow-iPad</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Used to record spikes</string>
 	<key>UIApplicationExitsOnSuspend</key>
 	<false/>
 	<key>UIPrerenderedIcon</key>

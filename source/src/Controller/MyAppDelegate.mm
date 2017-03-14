@@ -13,7 +13,8 @@
 #import <DropboxSDK/DropboxSDK.h>
 #import "BBAudioFileReader.h"
 //#import "BBBTManager.h"
-
+#import <Fabric/Fabric.h>
+#import <Crashlytics/Crashlytics.h>
 
 #define kViewRecordTabBarIndex 0
 #define kThresholdTabBarIndex 1
@@ -40,6 +41,8 @@
     
     
    // [self redirectConsoleLogToDocumentFolder];
+    
+    [Fabric with:@[[Crashlytics class]]];
     
     window.rootViewController = tabBarController;
     tabBarController.delegate = self;
