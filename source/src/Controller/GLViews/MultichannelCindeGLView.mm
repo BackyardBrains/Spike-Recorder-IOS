@@ -104,10 +104,10 @@
   
     
    
-    mFont = Font("Helvetica", 18);
+    mFont = Font("Helvetica", 18);//36/retinaScaling);
     mScaleFont = gl::TextureFont::create( mFont );
     
-    currentTimeFont = Font("Helvetica", 13);
+    currentTimeFont = Font("Helvetica", 13);//26/retinaScaling);
     currentTimeTextureFont = gl::TextureFont::create( currentTimeFont );
     
     lastUserInteraction = [[NSDate date] timeIntervalSince1970];
@@ -1966,7 +1966,15 @@
     float windowWidth = self.frame.size.width;
     if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] )
     {
-        float screenScale = 2.0;//[[UIScreen mainScreen] nativeScale];
+        float screenScale = [[UIScreen mainScreen] nativeScale];//2.0;
+        float screenNONScale = [[UIScreen mainScreen] scale];//2.0;
+        CGRect nativerect = [[UIScreen mainScreen] nativeBounds];
+        CGRect nonrect = [[UIScreen mainScreen] bounds];
+      /*  if(screenScale>2)
+        {
+            screenScale = 2;
+        }*/
+
         windowHeight *=  screenScale;
         windowWidth *= screenScale;
     }
@@ -2000,7 +2008,16 @@
     
     if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] )
     {
-        float screenScale = 2.0;
+        CGRect nativerect = [[UIScreen mainScreen] nativeBounds];
+        CGRect nonrect = [[UIScreen mainScreen] bounds];
+        
+        float screenScale = [[UIScreen mainScreen] nativeScale];//2.0;
+        float screenNONScale = [[UIScreen mainScreen] nativeScale];//2.0;
+        /*if(screenScale>2)
+        {
+            screenScale = 2;
+        }*/
+
         windowHeight *=  screenScale;
         windowWidth *= screenScale;
     }
