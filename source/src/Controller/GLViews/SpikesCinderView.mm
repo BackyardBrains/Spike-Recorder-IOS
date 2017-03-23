@@ -8,6 +8,7 @@
 
 #import "SpikesCinderView.h"
 #import "BBSpike.h"
+#define HANDLE_RADIUS 10
 
 @interface SpikesCinderView ()
 {
@@ -15,6 +16,8 @@
     float destNumSecondsVisible; // used for short animations of scaling the plot
     float touchStartTime;
     BOOL weAreDrawingSelection;
+    //precalculated constants
+    Vec2f scaleXY;//relationship between pixels and GL world (pixels x scaleXY = GL units)
 }
 
 - (Vec2f)calculateTouchDistanceChange:(std::vector<ci::app::TouchEvent::Touch>)touches;
@@ -66,6 +69,12 @@
     
     // Set up our font, which we'll use to display the unit scales
     mScaleFont = gl::TextureFont::create( Font("Helvetica", 18) );
+    
+    
+    scaleXY = [self screenToWorld:Vec2f(1.0f,1.0f)];
+    Vec2f scaleXYZero = [self screenToWorld:Vec2f(0.0f,0.0f)];
+    scaleXY.x = fabsf(scaleXY.x - scaleXYZero.x);
+    scaleXY.y = fabsf(scaleXY.y - scaleXYZero.y);
     
     [self getAllSpikes];
 }
@@ -159,7 +168,7 @@
     float tenPixX =refSizeW.x+numSecondsMin;
     float tenPixY =refSizeW.y;*/
     
-    Vec2f scaleXY = [self screenToWorld:Vec2f(1.0f,1.0f)];
+    scaleXY = [self screenToWorld:Vec2f(1.0f,1.0f)];
     Vec2f scaleXYZero = [self screenToWorld:Vec2f(0.0f,0.0f)];
     scaleXY.x = fabsf(scaleXY.x - scaleXYZero.x);
     scaleXY.y = fabsf(scaleXY.y - scaleXYZero.y);
@@ -221,10 +230,10 @@
     
 
     
-    float leftxcenterHandle = -numSecondsMin-20*scaleXY.x;
-    float rightxcenterHandle = -numSecondsVisible+20*scaleXY.x;
-    float radiusXAxis = 20*scaleXY.x;
-    float radiusYAxis = 20*scaleXY.y;
+    float leftxcenterHandle = -numSecondsMin-retinaScaling* HANDLE_RADIUS*scaleXY.x;
+    float rightxcenterHandle = -numSecondsVisible+retinaScaling*HANDLE_RADIUS*scaleXY.x;
+    float radiusXAxis = retinaScaling*HANDLE_RADIUS*scaleXY.x;
+    float radiusYAxis = retinaScaling*HANDLE_RADIUS*scaleXY.y;
     
    
     [self setGLColor:[BYBGLView getSpikeTrainColorWithIndex:[[BBAnalysisManager bbAnalysisManager] currentSpikeTrain] transparency:1.0f]];
@@ -286,11 +295,11 @@
     
     float xScale = 1000.0*(xMiddle.x - xFarLeft.x);
     float yScale = yScaleWorldPosition.y;
-    if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] && [[UIScreen mainScreen] scale]==2.0)
+    if([[UIScreen mainScreen] respondsToSelector:@selector(scale)])
     {//if it is retina correct scale
         //TODO: This should be tested with calibration voltage source
-        xScale *= 2.0f;
-        yScale /=2.0f;
+        xScale *= [[UIScreen mainScreen] scale];
+        yScale /= [[UIScreen mainScreen] scale];
     }
     
     
@@ -324,12 +333,13 @@
     xScaleTextPosition.x = (self.frame.size.width - xScaleTextSize.x)/2.0;
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         
-        xScaleTextPosition.y =0.88*self.frame.size.height + (mScaleFont->getAscent() / 2.0f);
+        xScaleTextPosition.y =self.frame.size.height - (mScaleFont->getAscent() / 2.0f)-3;
     }
     else
     {
-        xScaleTextPosition.y =0.95*self.frame.size.height + (mScaleFont->getAscent() / 2.0f);
+        xScaleTextPosition.y =self.frame.size.height - (mScaleFont->getAscent() / 2.0f)-3;
     }
+    
     mScaleFont->drawString(xStringStream.str(), xScaleTextPosition);
     gl::enableDepthRead();
 }
@@ -346,7 +356,8 @@
     //draw line for x-axis if we are not displaying time interval measure
     if (!weAreDrawingSelection) {
         float lineLength = 0.5*width;
-        float lineY = height*0.1 + bottom;
+        //float lineY = height*0.1 + bottom;
+        float lineY = scaleXY.y*(27*retinaScaling) + bottom;
         Vec2f leftPoint = Vec2f(middleX - lineLength / 2.0f, lineY);
         Vec2f rightPoint = Vec2f(middleX + lineLength / 2.0f, lineY);
         glColor4f(0.8, 0.8, 0.8, 1.0);
@@ -532,10 +543,7 @@
     if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] )
     {
         float screenScale = [[UIScreen mainScreen] nativeScale];//2.0;
-      /*  if(screenScale>2)
-        {
-            screenScale = 2;
-        }*/
+
         
         windowHeight *= screenScale;
         windowWidth *= screenScale;
@@ -570,11 +578,7 @@
     {
         //if it is retina
         float screenScale = [[UIScreen mainScreen] nativeScale];//2.0;
-       /* if(screenScale>2)
-        {
-            screenScale = 2;
-        }
-*/
+
         windowHeight *= screenScale;
         windowWidth *= screenScale;
     }

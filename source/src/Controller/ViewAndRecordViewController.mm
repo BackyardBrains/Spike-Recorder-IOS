@@ -114,6 +114,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated
 {
+   
     NSLog(@"\n\nviewWillDisappear\n\n");
     [glView stopAnimation];
    // [self tapOnCancelRTButton];

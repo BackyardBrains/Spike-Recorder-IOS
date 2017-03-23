@@ -526,7 +526,7 @@
     float windowWidth = self.frame.size.width;
     if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] )
     {
-        float screenScale = 2.0;
+        float screenScale = [[UIScreen mainScreen] scale];
         windowHeight *=  screenScale;
         windowWidth *= screenScale;
     }
@@ -560,7 +560,7 @@
     
     if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] )
     {
-        float screenScale = 2.0;
+        float screenScale = [[UIScreen mainScreen] scale];
         windowHeight *=  screenScale;
         windowWidth *= screenScale;
     }

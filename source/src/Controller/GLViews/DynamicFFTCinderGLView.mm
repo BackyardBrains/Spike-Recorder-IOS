@@ -45,7 +45,7 @@
     retinaCorrection = 1.0f;
     if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] && [[UIScreen mainScreen] scale]==2.0)
     {//if it is retina correct scale
-        retinaCorrection = 0.5f;
+        retinaCorrection = 1/((float)[[UIScreen mainScreen] scale]);
     }
 }
 
@@ -604,7 +604,7 @@ float blue( float gray ) {
     float windowWidth = self.frame.size.width;
     if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] )
     {
-        float screenScale = 2.0;
+        float screenScale = [[UIScreen mainScreen] scale];
         windowHeight *=  screenScale;
         windowWidth *= screenScale;
     }
@@ -638,7 +638,7 @@ float blue( float gray ) {
     
     if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] )
     {
-        float screenScale = 2.0;
+        float screenScale = [[UIScreen mainScreen] scale];
         windowHeight *=  screenScale;
         windowWidth *= screenScale;
     }

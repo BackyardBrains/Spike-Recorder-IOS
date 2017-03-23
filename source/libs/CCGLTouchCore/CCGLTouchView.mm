@@ -77,7 +77,7 @@
         if ([[UIScreen mainScreen] respondsToSelector:@selector(displayLinkWithTarget:selector:)] &&
             ([UIScreen mainScreen].scale > 1.0)) {
             // Retina display
-            retinaScaling = 2;//[UIScreen mainScreen].scale;//2;
+            retinaScaling = [UIScreen mainScreen].scale;//2;
         } else {
             // non-Retina display
             retinaScaling = 1;

@@ -13,7 +13,7 @@
 #import "BBChannel.h"
 //#import "BBBTManager.h"
 #import "BBAudioManager.h"
-#define HANDLE_RADIUS 20
+#define HANDLE_RADIUS 10
 
 #define MAX_THRESHOLD_VISIBLE_TIME 1.5
 #define HIDE_HANDLES_AFTER_SECONDS 4.0
@@ -696,10 +696,10 @@
         // Draw a line from left to right at the voltage threshold value.
         float threshval = yOffsets[selectedChannel]+[dataSourceDelegate threshold]*zoom;
 
-        float centerOfCircleX = -20*scaleXY.x;
+        float centerOfCircleX = -(float)retinaScaling*HANDLE_RADIUS*scaleXY.x;
         
-        float radiusXAxis = HANDLE_RADIUS*scaleXY.x;
-        float radiusYAxis = HANDLE_RADIUS*scaleXY.y;
+        float radiusXAxis = retinaScaling* HANDLE_RADIUS*scaleXY.x;
+        float radiusYAxis = retinaScaling* HANDLE_RADIUS*scaleXY.y;
         
         //draw all handles
 
@@ -959,8 +959,8 @@
 {
     float centerOfCircleX = -maxTimeSpan+20*scaleXY.x;
 
-    float radiusXAxis = HANDLE_RADIUS*scaleXY.x;
-    float radiusYAxis = HANDLE_RADIUS*scaleXY.y;
+    float radiusXAxis = retinaScaling * HANDLE_RADIUS*scaleXY.x;
+    float radiusYAxis = retinaScaling * HANDLE_RADIUS*scaleXY.y;
     float transparencyForAxis = 1.0f;
     
     //hide/show animation of handles
@@ -1401,7 +1401,7 @@
 
     
     
-    float lineY = scaleXY.y*(55) + bottom;//height*0.1 + bottom;
+    float lineY = scaleXY.y*(27*retinaScaling) + bottom;//height*0.1 + bottom;
     Vec2f leftPoint = Vec2f(middleX - lineLength / 2.0f, lineY);
     Vec2f rightPoint = Vec2f(middleX + lineLength / 2.0f, lineY);
     glColor4f(0.8, 0.8, 0.8, 1.0);
@@ -1603,7 +1603,7 @@
             yOffsets[grabbedHandleIndex] = glWorldTouchPos.y;
             
             //if we drag handle outside the screen return it back
-            float upperBoundary =(maxVoltsSpan*0.5 - HANDLE_RADIUS*scaleXY.y);
+            float upperBoundary =(maxVoltsSpan*0.5 - HANDLE_RADIUS*HANDLE_RADIUS*scaleXY.y);
             if(yOffsets[grabbedHandleIndex]>upperBoundary)
             {
                 yOffsets[grabbedHandleIndex] = upperBoundary;
@@ -1769,9 +1769,9 @@
                 {
                     //playerWasPlayingWhenStoped = [BBAudioManager]
                     float windowWidth = self.frame.size.width;
-                    if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] && [[UIScreen mainScreen] scale]==2.0)
+                    if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] )
                     {
-                        windowWidth += windowWidth;
+                        windowWidth *= [[UIScreen mainScreen] scale];
                     }
                     float diffPix = touches[0].getPos().x - touches[0].getPrevPos().x;
                     float timeDiff = -diffPix*(numSamplesVisible/windowWidth)*(1/[[BBAudioManager bbAudioManager] sourceSamplingRate]);
@@ -1966,14 +1966,7 @@
     float windowWidth = self.frame.size.width;
     if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] )
     {
-        float screenScale = [[UIScreen mainScreen] nativeScale];//2.0;
-        float screenNONScale = [[UIScreen mainScreen] scale];//2.0;
-        CGRect nativerect = [[UIScreen mainScreen] nativeBounds];
-        CGRect nonrect = [[UIScreen mainScreen] bounds];
-      /*  if(screenScale>2)
-        {
-            screenScale = 2;
-        }*/
+        float screenScale = [[UIScreen mainScreen] scale];//2.0;
 
         windowHeight *=  screenScale;
         windowWidth *= screenScale;
@@ -2008,15 +2001,9 @@
     
     if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] )
     {
-        CGRect nativerect = [[UIScreen mainScreen] nativeBounds];
-        CGRect nonrect = [[UIScreen mainScreen] bounds];
         
-        float screenScale = [[UIScreen mainScreen] nativeScale];//2.0;
-        float screenNONScale = [[UIScreen mainScreen] nativeScale];//2.0;
-        /*if(screenScale>2)
-        {
-            screenScale = 2;
-        }*/
+        
+        float screenScale = [[UIScreen mainScreen] scale];//2.0;
 
         windowHeight *=  screenScale;
         windowWidth *= screenScale;

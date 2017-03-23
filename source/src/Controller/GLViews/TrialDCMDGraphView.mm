@@ -38,9 +38,9 @@
     mScaleFont = gl::TextureFont::create( Font("Helvetica", 12) );
     
     retinaCorrection = 1.0f;
-    if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] && [[UIScreen mainScreen] scale]==2.0)
+    if([[UIScreen mainScreen] respondsToSelector:@selector(scale)])
     {//if it is retina correct scale
-        retinaCorrection = 0.5f;
+        retinaCorrection = 1/((float) [[UIScreen mainScreen] scale]);
     }
 }
 
@@ -454,11 +454,12 @@
     
     float windowHeight = self.frame.size.height;
     float windowWidth = self.frame.size.width;
-    if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] && [[UIScreen mainScreen] scale]==2.0)
+    if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] )
     {
+        float screenScale = [[UIScreen mainScreen] scale];
         //if it is retina
-        windowHeight += windowHeight;
-        windowWidth += windowWidth;
+        windowHeight *=screenScale;
+        windowWidth *=screenScale;
     }
     
     float worldLeft, worldTop, worldRight, worldBottom, worldNear, worldFar;
@@ -488,11 +489,12 @@
     float windowHeight = self.frame.size.height;
     float windowWidth = self.frame.size.width;
     
-    if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] && [[UIScreen mainScreen] scale]==2.0)
+    if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] )
     {
+        float screenScale = [[UIScreen mainScreen] scale];
         //if it is retina
-        windowHeight += windowHeight;
-        windowWidth += windowWidth;
+        windowHeight *= screenScale;
+        windowWidth *= screenScale;
     }
     
     float worldLeft, worldTop, worldRight, worldBottom, worldNear, worldFar;

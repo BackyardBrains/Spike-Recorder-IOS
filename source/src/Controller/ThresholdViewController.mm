@@ -54,6 +54,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated
 {
+
     [glView saveSettings:TRUE];
     [[BBAudioManager bbAudioManager] saveSettingsToUserDefaults];
     [[BBAudioManager bbAudioManager] stopThresholding];

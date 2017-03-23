@@ -99,9 +99,9 @@
     //[self enableAntiAliasing:YES];
     [self calculateScale];
     retinaPonder = 1.0f;
-    if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] && [[UIScreen mainScreen] scale]==2.0)
+    if([[UIScreen mainScreen] respondsToSelector:@selector(scale)])
     {
-        retinaPonder = 0.5;
+        retinaPonder = 1/((float)[[UIScreen mainScreen] scale]);
     }
     
     [self calculateSizesForEllipseForTrial:currentTrial];
@@ -347,7 +347,7 @@
     float windowWidth = self.frame.size.width;
     if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] )
     {
-        float screenScale = 2.0;
+        float screenScale = [[UIScreen mainScreen] scale];
         windowHeight *=  screenScale;
         windowWidth *= screenScale;
     }
@@ -381,7 +381,7 @@
     
     if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] )
     {
-        float screenScale = 2.0;
+        float screenScale = [[UIScreen mainScreen] scale];
         windowHeight *=  screenScale;
         windowWidth *= screenScale;
     }
