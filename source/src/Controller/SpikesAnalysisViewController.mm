@@ -336,4 +336,15 @@
 - (IBAction)backBtnClick:(id)sender {
         [self.navigationController popViewControllerAnimated:YES];
 }
+
+- (void)didReceiveMemoryWarning {
+    
+    
+    NSLog(@"\n\n!Memory Warning! Spike Analysis\n\n");
+    
+    // Releases the view if it doesn't have a superview
+    [super didReceiveMemoryWarning];
+}
+
+
 @end

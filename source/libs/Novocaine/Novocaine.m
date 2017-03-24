@@ -61,6 +61,8 @@ static Novocaine *audioManager = nil;
 @property (nonatomic, assign, readwrite) float *inData;
 @property (nonatomic, assign, readwrite) float *outData;
 
+
+
 #if defined (USING_OSX)
 @property (nonatomic, assign) AudioDeviceID *deviceIDs;
 @property (nonatomic, strong) NSMutableArray *deviceNames;
@@ -78,6 +80,8 @@ static Novocaine *audioManager = nil;
 - (NSString *)applicationDocumentsDirectory;
 
 - (void)freeBuffers;
+
+
 
 @end
 

@@ -374,10 +374,17 @@ static BBAudioManager *bbAudioManager = nil;
 
 -(void) stopAllInputOutput
 {
-    NSLog(@"stopAllInputOutput\n");
+    NSLog(@"stopAllInputOutput %p\n", audioManager);
     //[[BBBTManager btManager] setInputBlock:nil];
-    audioManager.inputBlock = nil;
+    //audioManager.inputBlock = nil;
+    
     audioManager.outputBlock = nil;
+    [audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
+        
+        
+        
+    }];
+   // audioManager.inputBlock = nil;
 }
 
 -(void) getChannelsConfig
@@ -432,7 +439,7 @@ static BBAudioManager *bbAudioManager = nil;
 
 -(void) makeInputOutput
 {
-     NSLog(@"makeInputOutput\n");
+     NSLog(@"makeInputOutput %p\n",audioManager);
    // [self resetBuffers];
     
     if(btOn)
@@ -458,6 +465,11 @@ static BBAudioManager *bbAudioManager = nil;
         // Replace the input block with the old input block, where we just save an in-memory copy of the audio.
         [audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
            
+            if(ringBuffer == NULL)
+            {
+                NSLog(@"/n/n ERROR in Input block %p", self);
+                return;
+            }
             [self additionalProcessingOfInputData:data forNumOfFrames:numFrames andNumChannels:numChannels];
             
             ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
@@ -678,6 +690,7 @@ static BBAudioManager *bbAudioManager = nil;
 - (void)stopThresholding
 {
     thresholding = false;
+    NSLog(@"Stop thresholding");
 }
 
 

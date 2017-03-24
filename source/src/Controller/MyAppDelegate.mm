@@ -157,6 +157,11 @@
     
 }
 
+- (void)applicationDidReceiveMemoryWarning:(UIApplication *)application
+{
+    NSLog(@"\n\nApp received memory warning! APP delagate\n\n");
+}
+
 - (void)applicationWillResignActive:(UIApplication *)application
 {
     NSLog(@"\n\nApp will resign.\n\n");

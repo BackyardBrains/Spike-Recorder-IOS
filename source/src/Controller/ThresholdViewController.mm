@@ -269,7 +269,7 @@
 
 
 - (void)dealloc {
-    [triggerHistoryLabel release]; 
+    [triggerHistoryLabel release];
     [super dealloc];
 }
 
@@ -279,4 +279,16 @@
     [self setTriggerHistoryLabel:nil];
     [super viewDidUnload];
 }
+
+- (void)didReceiveMemoryWarning {
+    
+    
+    NSLog(@"\n\n!Memory Warning! Threshold\n\n");
+
+    // Releases the view if it doesn't have a superview
+    [super didReceiveMemoryWarning];
+}
+
+
+
 @end

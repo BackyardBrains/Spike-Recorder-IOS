@@ -32,6 +32,12 @@
 @synthesize cancelRTViewButton;
 @synthesize glView;
 
+
+
+
+
+
+
 - (void)viewWillAppear:(BOOL)animated
 {
     
@@ -673,4 +679,39 @@
     [self setStopButton:nil];
     [super viewDidUnload];
 }
+
+
+
+- (void)didReceiveMemoryWarning {
+    
+    
+    NSLog(@"\n\n!Memory Warning! View And Record\n\n");
+    // Release anything that's not essential, such as cached data (meaning
+    // instance variables, and what else...?)
+    
+    // Obviously can't access local variables such as defined in method
+    // loadView, so can't release them here We can set some instance variables
+    // as nil, rather than call the release method on them, if we have defined
+    // setters that retain nil and release their old values (such as through use
+    // of @synthesize). This can be a better approach than using the release
+    // method, because this prevents a variable from pointing to random remnant
+    // data.  Note in contrast, that setting a variable directly (using "=" and
+    // not using the setter), would result in a memory leak.
+    //self.myStringB = nil;
+    //self.myStringD = nil;
+    //[myStringA release];// No setter defined - must release it this way
+    //[myStringC release];// No setter defined - must release it this way
+    
+    /* 3. MUST CONFIRM: NOT necessary to release outlets here - See override of
+     setView instead.
+     self.labelA = nil;
+     self.imageViewA = nil;
+     self.subViewA = nil;
+     */
+    // Releases the view if it doesn't have a superview
+    [super didReceiveMemoryWarning];
+}
+
+
+
 @end

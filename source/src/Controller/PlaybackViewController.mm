@@ -462,7 +462,19 @@
                                  &audioRouteOverride);
     }
     
+   
+    
+    
 }
 
+
+- (void)didReceiveMemoryWarning {
+    
+    
+    NSLog(@"\n\n!Memory Warning! Playback\n\n");
+    
+    // Releases the view if it doesn't have a superview
+    [super didReceiveMemoryWarning];
+}
 
 @end
