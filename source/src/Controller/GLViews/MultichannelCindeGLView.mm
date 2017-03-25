@@ -1485,8 +1485,18 @@
 //
 - (void)updateActiveTouches
 {
+    if(!animating)
+    {
+        return;
+    }
+    
     [super updateActiveTouches];
     //NSLog(@"Num volts visible: %f", numVoltsVisible[0]);
+    
+    
+    //we added this in case someone touch/pinch screen while unplugging/plugging headphones or similar
+    //since display vector will be released and we are accessing diplay vector here from another gesture
+    //created thread
     
     std::vector<ci::app::TouchEvent::Touch> touches = [self getActiveTouches];
     

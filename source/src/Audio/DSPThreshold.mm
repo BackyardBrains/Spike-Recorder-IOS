@@ -261,7 +261,12 @@ void DSPThreshold :: SetSelectedChannel(int newSelectedChannel)
 void DSPThreshold :: GetCenteredTriggeredData(float *outData, UInt32 numFrames, UInt32 whichChannel, UInt32 stride)
 {
     
-    
+    if(numFrames>kNumPointsInTriggerBuffer)
+    {
+        numFrames =kNumPointsInTriggerBuffer;
+        NSLog(@"\n\n Wrong length of data in GetCenteredTriggeredData\n\n");
+        
+    }
     
 	TriggeredSegmentHistory *th = &triggeredSegmentHistory[_selectedChannel];
 	
