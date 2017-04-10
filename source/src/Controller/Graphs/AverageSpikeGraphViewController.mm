@@ -66,6 +66,13 @@
     [glView createGraphForFile:currentFile andChannelIndex:indexOfChannel];
     [self.view addSubview:glView];
     [self.view sendSubviewToBack:glView];
+    
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
+    
+    
+    
     [glView startAnimation];
     
     
@@ -129,6 +136,21 @@
     [super viewDidAppear:animated];
 }
 
+
+-(void) applicationDidBecomeActive:(UIApplication *)application {
+    NSLog(@"\n\nApp will become active - AverageGraph\n\n");
+    if(glView)
+    {
+        [glView startAnimation];
+    }
+}
+
+-(void) applicationWillResignActive:(UIApplication *)application {
+    NSLog(@"\n\nResign active - AverageGraph\n\n");
+    [glView stopAnimation];
+}
+
+
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
@@ -136,6 +158,11 @@
     [self.navigationController.navigationBar setBarTintColor:nil];
     self.navigationController.navigationBar.translucent = YES;
     [self.navigationController.navigationBar setTintColor:nil];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillResignActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
+    
+    
     [glView stopAnimation];
     [glView removeFromSuperview];
     [glView release];

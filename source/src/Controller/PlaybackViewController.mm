@@ -68,6 +68,7 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    NSLog(@"\n\nviewWillAppear Playback View Controller\n\n");
     if(showNavigationBar)
     {
         [self.navigationController setNavigationBarHidden:NO animated:NO];
@@ -221,7 +222,7 @@
 -(void) applicationWillResignActive:(UIApplication *)application {
     NSLog(@"\n\nResign active - Playback\n\n");
     [glView stopAnimation];
-    // [glView stopAnimation];
+    
 }
 
 

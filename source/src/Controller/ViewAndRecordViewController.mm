@@ -174,15 +174,14 @@
 
 -(void) applicationWillResignActive:(UIApplication *)application {
     NSLog(@"\n\nResign active - ViewRecord\n\n");
-   [glView stopAnimation];
-    // [glView stopAnimation];
+     [glView stopAnimation];
 }
 
 
 - (void)applicationWillTerminate:(UIApplication *)application {
     NSLog(@"Terminating...");
     [glView saveSettings:FALSE];
-   // [glView stopAnimation];
+    [glView stopAnimation];
 }
 
 - (void)setGLView:(MultichannelCindeGLView *)view
@@ -396,7 +395,7 @@
 
 -(void) reSetupScreen
 {
-    NSLog(@"Resetup screen");
+    NSLog(@"Resetup screen - View And Record View Controller");
     if(glView)
     {
         [glView stopAnimation];

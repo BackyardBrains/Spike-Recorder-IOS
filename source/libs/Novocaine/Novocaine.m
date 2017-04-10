@@ -936,7 +936,7 @@ void sessionPropertyListener(void *                  inClientData,
         [sm pause];
         [sm initNovocaine];
         [sm play];
-        [sm sendNotificationToUpdateBuffersInMainApp];
+        //[sm sendNotificationToUpdateBuffersInMainApp];
         
         
     }

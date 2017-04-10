@@ -405,7 +405,7 @@ static BBAudioManager *bbAudioManager = nil;
 
 -(void) resetupAudioInputs
 {
-    NSLog(@"resetupAudioInputs\n");
+    NSLog(@"resetupAudioInputs - BBAudioManager\n");
     if(!playing && audioManager)
     {
         [self stopAllInputOutput];

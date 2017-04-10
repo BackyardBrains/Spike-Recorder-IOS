@@ -28,7 +28,7 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    NSLog(@"Starting Spikes Analysis view");
+    NSLog(@"\nStarting Spikes Analysis view\n");
     [self.navigationController setNavigationBarHidden:YES animated:NO];
     [super viewWillAppear:animated];
     // Set the slider to have the bounds of the audio file's duraiton
@@ -53,6 +53,12 @@
     {
         [self recalculateSpikes];
     }
+    
+    
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
+    
 }
 
 -(void) recalculateSpikes
@@ -122,6 +128,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated
 {
+    NSLog(@"\n\nviewWillDisappear - SpikesAnalysis view\n");
     [self saveAll];
     [glView removeFromSuperview];
     [glView saveSettings];
@@ -129,8 +136,30 @@
     [glView release];
     glView = nil;
     [self.navigationController setNavigationBarHidden:NO animated:YES];
+    
+   
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillResignActiveNotification object:nil];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
+    
+    
     [super viewWillDisappear:animated];
 }
+
+
+-(void) applicationDidBecomeActive:(UIApplication *)application {
+    NSLog(@"\n\nApp will become active - SpikeAnalysis\n\n");
+    if(glView)
+    {
+        [glView startAnimation];
+    }
+}
+
+-(void) applicationWillResignActive:(UIApplication *)application {
+    NSLog(@"\n\nResign active - SpikeAnalysis\n\n");
+    [glView stopAnimation];
+}
+
 
 - (void)viewDidLoad
 {
