@@ -1439,6 +1439,7 @@
 				TargetAttributes = {
 					FADF264F1596362F006C87BA = {
 						DevelopmentTeam = MLGRKD657P;
+						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.HealthKit = {
 								enabled = 0;
@@ -1771,6 +1772,7 @@
 				CLANG_ENABLE_OBJC_ARC = NO;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = MLGRKD657P;
 				DEVICE_FAMILY = iPhone/iPad;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1806,6 +1808,7 @@
 				);
 				PRODUCT_NAME = "Spike Recorder";
 				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = iphoneos9.3;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1826,8 +1829,9 @@
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = NO;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Backyard Brains (MLGRKD657P)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = MLGRKD657P;
 				DEVICE_FAMILY = iPhone/iPad;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1864,7 +1868,8 @@
 				);
 				PRODUCT_NAME = "Spike Recorder";
 				PROVISIONING_PROFILE = "";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "1da4f27f-d20b-4f11-aff7-1baa6d16fe58";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = iphoneos9.3;
 				TARGETED_DEVICE_FAMILY = "1,2";

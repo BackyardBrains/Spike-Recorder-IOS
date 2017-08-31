@@ -208,6 +208,29 @@ static BBAudioManager *bbAudioManager = nil;
         
         [self filterParametersChanged];
         
+        
+        amDetectionNotchFilter = [[NVNotchFilter alloc] initWithSamplingRate:_sourceSamplingRate];
+        amDetectionNotchFilter.centerFrequency = AM_CARRIER_FREQUENCY;
+        amDetectionNotchFilter.q = 1.0  ;
+        
+        filterAMStage1= [[NVLowpassFilter alloc] initWithSamplingRate:_sourceSamplingRate];
+        filterAMStage1.cornerFrequency = AM_DEMODULATION_CUTOFF;
+        filterAMStage1.Q = 0.8f;
+        
+        filterAMStage2= [[NVLowpassFilter alloc] initWithSamplingRate:_sourceSamplingRate];
+        filterAMStage2.cornerFrequency = AM_DEMODULATION_CUTOFF;
+        filterAMStage2.Q = 0.8f;
+        
+        filterAMStage3= [[NVLowpassFilter alloc] initWithSamplingRate:_sourceSamplingRate];
+        filterAMStage3.cornerFrequency = AM_DEMODULATION_CUTOFF;
+        filterAMStage3.Q = 0.8f;
+        
+        rmsOfOriginalSignal = 0;
+        rmsOfNotchedSignal = 0;
+        
+        
+        
+        
         [audioManager play];
     }
     
@@ -472,6 +495,8 @@ static BBAudioManager *bbAudioManager = nil;
 -(void) additionalProcessingOfInputData:(float *) data forNumOfFrames:(UInt32) numFrames andNumChannels:(UInt32) numChannels
 {
     
+    [self amDemodulationOfData:data numFrames:numFrames numChannels:numChannels];
+    
     if (recording)
     {
         [fileWriter writeNewAudio:data numFrames:numFrames numChannels:numChannels];
@@ -506,6 +531,44 @@ static BBAudioManager *bbAudioManager = nil;
         [[BBAnalysisManager bbAnalysisManager] findSpikesInRTForData:data numberOfFrames:numFrames numberOfChannel:numChannels selectedChannel:_selectedChannel];
     }
     
+}
+
+
+-(void) amDemodulationOfData:(float *)newData numFrames:(UInt32) thisNumFrames numChannels:(UInt32) thisNumChannels
+{
+
+    if(thisNumChannels<3)
+    {
+        
+        //calculate RMS for original signal
+        float rms;
+        vDSP_rmsqv(newData,thisNumChannels,&rms,thisNumFrames);
+        rmsOfOriginalSignal = rmsOfOriginalSignal*0.9+rms*0.1;
+            
+        float zero = 0.0f;
+        //get first channel
+        vDSP_vsadd(newData,
+                   thisNumChannels,
+                   &zero,
+                   tempResamplingBuffer,
+                   1,
+                   thisNumFrames);
+       [amDetectionNotchFilter filterData:tempResamplingBuffer numFrames:thisNumFrames numChannels:1];
+        //calculate RMS after Notch filter
+       vDSP_rmsqv(tempResamplingBuffer,1,&rms,thisNumFrames);
+       rmsOfNotchedSignal = rmsOfNotchedSignal*0.9 + rms*0.1;
+        
+        NSLog(@"a/b: %f",rmsOfOriginalSignal/rmsOfNotchedSignal);
+        if(rmsOfNotchedSignal*3<rmsOfOriginalSignal)
+        {
+        
+            vDSP_vabs(newData, 1, newData, 1, thisNumChannels*thisNumFrames);
+            [filterAMStage1 filterData:newData numFrames:thisNumFrames numChannels:thisNumChannels];
+            [filterAMStage2 filterData:newData numFrames:thisNumFrames numChannels:thisNumChannels];
+            [filterAMStage3 filterData:newData numFrames:thisNumFrames numChannels:thisNumChannels];
+
+        }
+    }
 }
 
 -(void) filterData:(float *)newData numFrames:(UInt32)thisNumFrames numChannels:(UInt32)thisNumChannels

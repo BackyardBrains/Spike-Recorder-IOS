@@ -102,7 +102,7 @@
     currentSize = currentTrial.size;
     
     
-    frameRate = 200;
+    frameRate = 120;
     [super setup];//this calls [self startAnimation]
     
     // Setup the camera

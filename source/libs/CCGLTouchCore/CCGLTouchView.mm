@@ -93,7 +93,7 @@
 
         // Animation
         animating = NO;
-        frameRate = 30;
+        frameRate = 120;
         frameCount = 0;
 		displayLink = nil;
         startTime = ::CFAbsoluteTimeGetCurrent();
@@ -506,7 +506,7 @@
 	[self glParams];
     
     // calculate the animation's frame interval here so that the user can set it in setup
-    animationFrameInterval = 60/frameRate;
+    animationFrameInterval = 120/frameRate;
     
     // confirm that setup has been executed
 	appSetupCalled = YES;
