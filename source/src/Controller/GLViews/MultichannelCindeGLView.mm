@@ -1273,14 +1273,11 @@
     
     float xScale = 0.5*numSamplesVisible*(1/samplingRate)*1000;//1000.0*(xMiddle.x - xFarLeft.x);
 
-    /*if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] && [[UIScreen mainScreen] scale]==2.0)
-    {//if it is retina correct scale
-        //TODO: This should be tested with calibration voltage source
-        xScale *= 2.0f;
-        yScale /=2.0f;
-    }*/
     
     std::stringstream xStringStream;
+    
+    
+//-------------------------- Stan commented below for debug
     xStringStream.precision(1);
     if (xScale >= 1000) {
         xScale /= 1000.0;
@@ -1291,6 +1288,9 @@
        // xStringStream.precision(2);
         xStringStream << fixed << xScale << " msec";
     }
+    
+   // xStringStream << [[BBAudioManager bbAudioManager] amOffset];
+    
     
     //==================================================
     //Debug code for BT sample rate

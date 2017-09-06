@@ -22,6 +22,9 @@
 #define FILTER_PARAMETERS_CHANGED @"filterParametersChanged"
 #define MAX_NUMBER_OF_FFT_SEC 6.0f
 
+#define AM_CARRIER_FREQUENCY 5000.0
+#define AM_DEMODULATION_CUTOFF 500.0
+
 @class BBFile;
 
 
@@ -44,6 +47,16 @@
     NVLowpassFilter * LPFilter;
     NVNotchFilter * NotchFilter;
     BOOL notchIsOn;
+    
+    
+    NVNotchFilter * amDetectionNotchFilter;
+    NVLowpassFilter * filterAMStage1;
+    NVLowpassFilter * filterAMStage2;
+    NVLowpassFilter * filterAMStage3;
+    
+    float rmsOfOriginalSignal;
+    float rmsOfNotchedSignal;
+    
 }
 
 @property (getter=samplingRate, readonly) float samplingRate;
@@ -62,7 +75,7 @@
 @property float currentFileTime;
 @property (readonly) float fileDuration;
 
-
+@property float amOffset;
 //Basic stats properties
 @property float currSTD;
 @property float currMax;
