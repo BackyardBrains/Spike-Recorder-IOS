@@ -228,6 +228,10 @@ static BBAudioManager *bbAudioManager = nil;
         filterAMStage3.cornerFrequency = AM_DEMODULATION_CUTOFF;
         filterAMStage3.Q = 0.8f;
         
+        amDCLevelRemovalCh1 = 0.231;
+        amDCLevelRemovalCh2 = 0.231;
+
+        
         rmsOfOriginalSignal = 0;
         rmsOfNotchedSignal = 0;
         amOffset = 0;
@@ -570,18 +574,16 @@ static BBAudioManager *bbAudioManager = nil;
         //calculate RMS after Notch filter
        vDSP_rmsqv(tempResamplingBuffer,1,&rms,thisNumFrames);
        rmsOfNotchedSignal = rmsOfNotchedSignal*0.9 + rms*0.1;
-        float offset = -0.231;
+        
         //NSLog(@"a/b: %f",rmsOfOriginalSignal/rmsOfNotchedSignal);
         if(rmsOfNotchedSignal*3<rmsOfOriginalSignal)
         {
     
+            
+            
+            
                 vDSP_vabs(newData, 1, newData, 1, thisNumChannels*thisNumFrames);
-                vDSP_vsadd(newData,
-                       1,
-                       &offset,
-                       newData,
-                       1,
-                       thisNumChannels*thisNumFrames);
+            
             
             
             
@@ -589,7 +591,57 @@ static BBAudioManager *bbAudioManager = nil;
                 [filterAMStage2 filterData:newData numFrames:thisNumFrames numChannels:thisNumChannels];
                 [filterAMStage3 filterData:newData numFrames:thisNumFrames numChannels:thisNumChannels];
             
-            amOffset = newData[0];
+            float sum = 0;
+            float offset = 0;
+            
+            
+            if(thisNumChannels==1)
+            {
+                
+                vDSP_sve(newData, 1, &sum, thisNumFrames);
+                sum = sum/(float)thisNumFrames;
+                amDCLevelRemovalCh1 = 0.99*amDCLevelRemovalCh1 + 0.01*sum;
+                offset = - amDCLevelRemovalCh1;
+                vDSP_vsadd(newData,
+                           1,
+                           &offset,
+                           newData,
+                           1,
+                           thisNumFrames);
+            }
+            else if(thisNumChannels==2)
+            {
+                
+                vDSP_sve(newData, 2, &sum, thisNumFrames);
+                sum = sum/(float)thisNumFrames;
+                amDCLevelRemovalCh1 = 0.99*amDCLevelRemovalCh1 + 0.01*sum;
+                offset = - amDCLevelRemovalCh1;
+                vDSP_vsadd(newData,
+                           2,
+                           &offset,
+                           newData,
+                           2,
+                           thisNumFrames);
+                
+                sum = 0;
+                
+                vDSP_sve((float *)&newData[1], 2, &sum, thisNumFrames);
+                sum = sum/(float)thisNumFrames;
+                amDCLevelRemovalCh2 = 0.99*amDCLevelRemovalCh2 + 0.01*sum;
+                offset = - amDCLevelRemovalCh2;
+                vDSP_vsadd((float *)&newData[1],
+                           2,
+                           &offset,
+                           (float *)&newData[1],
+                           2,
+                           thisNumFrames);
+ 
+            }
+            
+            vDSP_vneg(newData,1, newData, 1, thisNumChannels*thisNumFrames);
+           
+            
+            //amOffset = newData[0];
         }
     }
 }

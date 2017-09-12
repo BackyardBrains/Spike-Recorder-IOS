@@ -54,6 +54,9 @@
     NVLowpassFilter * filterAMStage2;
     NVLowpassFilter * filterAMStage3;
     
+
+    float amDCLevelRemovalCh1;
+    float amDCLevelRemovalCh2;
     float rmsOfOriginalSignal;
     float rmsOfNotchedSignal;
     
