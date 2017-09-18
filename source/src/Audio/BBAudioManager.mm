@@ -638,7 +638,7 @@ static BBAudioManager *bbAudioManager = nil;
  
             }
             
-            vDSP_vneg(newData,1, newData, 1, thisNumChannels*thisNumFrames);
+            //vDSP_vneg(newData,1, newData, 1, thisNumChannels*thisNumFrames);
            
             
             //amOffset = newData[0];
