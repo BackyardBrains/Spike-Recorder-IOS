@@ -524,7 +524,10 @@ static BBAudioManager *bbAudioManager = nil;
         [fileWriter writeNewAudio:data numFrames:numFrames numChannels:numChannels];
     }
     
-    [self filterData:data numFrames:numFrames numChannels:numChannels];
+    if(self.amDemodulationIsON)
+    {
+        [self filterData:data numFrames:numFrames numChannels:numChannels];
+    }
     
     
     [self updateBasicStatsOnData:data numFrames:numFrames numChannels:numChannels];
