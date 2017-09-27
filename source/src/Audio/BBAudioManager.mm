@@ -103,6 +103,8 @@ static BBAudioManager *bbAudioManager = nil;
 @synthesize ECGOn;
 @synthesize rtSpikeSorting;
 @synthesize amOffset;
+@synthesize amDemodulationIsON;
+@synthesize currentFilterSettings;
 
 
 #pragma mark - Singleton Methods
@@ -236,7 +238,9 @@ static BBAudioManager *bbAudioManager = nil;
         rmsOfNotchedSignal = 0;
         amOffset = 0;
         
-        
+        currentFilterSettings = FILTER_SETTINGS_RAW;
+        lpFilterCutoff = FILTER_LP_OFF;
+        hpFilterCutoff = FILTER_HP_OFF;
         [audioManager play];
     }
     
@@ -246,7 +250,7 @@ static BBAudioManager *bbAudioManager = nil;
 
 -(void) filterParametersChanged
 {
-    NSDictionary *defaultsDict = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"SettingsDefaults" ofType:@"plist"]];
+  /*  NSDictionary *defaultsDict = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"SettingsDefaults" ofType:@"plist"]];
     [[NSUserDefaults standardUserDefaults] registerDefaults:defaultsDict];
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
@@ -329,7 +333,7 @@ static BBAudioManager *bbAudioManager = nil;
     NotchFilter = [[NVNotchFilter alloc] initWithSamplingRate:_sourceSamplingRate];
     NotchFilter.centerFrequency = 60.0f;
     NotchFilter.q = 1.0  ;
-    //[NotchFilter logCoefficients];
+    //[NotchFilter logCoefficients];*/
 }
 
 
@@ -520,7 +524,9 @@ static BBAudioManager *bbAudioManager = nil;
         [fileWriter writeNewAudio:data numFrames:numFrames numChannels:numChannels];
     }
     
-   // [self filterData:data numFrames:numFrames numChannels:numChannels];
+    [self filterData:data numFrames:numFrames numChannels:numChannels];
+    
+    
     [self updateBasicStatsOnData:data numFrames:numFrames numChannels:numChannels];
    
     if (thresholding)
@@ -579,7 +585,7 @@ static BBAudioManager *bbAudioManager = nil;
         if(rmsOfNotchedSignal*3<rmsOfOriginalSignal)
         {
     
-            
+             self.amDemodulationIsON = true;
             
             
                 vDSP_vabs(newData, 1, newData, 1, thisNumChannels*thisNumFrames);
@@ -643,56 +649,150 @@ static BBAudioManager *bbAudioManager = nil;
             
             //amOffset = newData[0];
         }
+        else
+        {
+            self.amDemodulationIsON = false;
+        }
     }
 }
 
 
 -(void) filterData:(float *)newData numFrames:(UInt32)thisNumFrames numChannels:(UInt32)thisNumChannels
 {
-    int i;
-    if(thisNumChannels>2)
+    
+    if(LPFilter || HPFilter)
     {
-        for(i=0;i<_sourceNumberOfChannels;i++)
-        {
-            float zero = 0.0f;
-            //get selected channel
-            vDSP_vsadd((float *)&newData[i],
-                       thisNumChannels,
-                       &zero,
-                       tempResamplingBuffer,
-                       1,
-                       thisNumFrames);
-            //
-            if(HPFilter)
+            int i;
+            if(thisNumChannels>2)
             {
-                [HPFilter filterData:tempResamplingBuffer numFrames:thisNumFrames numChannels:1];
+                for(i=0;i<_sourceNumberOfChannels;i++)
+                {
+                    float zero = 0.0f;
+                    //get selected channel
+                    vDSP_vsadd((float *)&newData[i],
+                               thisNumChannels,
+                               &zero,
+                               tempResamplingBuffer,
+                               1,
+                               thisNumFrames);
+                    //
+                    if(HPFilter)
+                    {
+                        [HPFilter filterData:tempResamplingBuffer numFrames:thisNumFrames numChannels:1];
+                    }
+                    if(LPFilter)
+                    {
+                        [LPFilter filterData:tempResamplingBuffer numFrames:thisNumFrames numChannels:1];
+                    }
+                    if(notchIsOn)
+                    {
+                        [NotchFilter filterData:tempResamplingBuffer numFrames:thisNumFrames numChannels:1];
+                    }
+                    
+                    vDSP_vsadd(tempResamplingBuffer,
+                               1,
+                               &zero,
+                               (float *)&newData[i],
+                               thisNumChannels,
+                               thisNumFrames);
+                }
             }
-            [LPFilter filterData:tempResamplingBuffer numFrames:thisNumFrames numChannels:1];
-            if(notchIsOn)
+            else
             {
-                [NotchFilter filterData:tempResamplingBuffer numFrames:thisNumFrames numChannels:1];
+                if(HPFilter)
+                {
+                    [HPFilter filterData:newData numFrames:thisNumFrames numChannels:thisNumChannels];
+                }
+                if(LPFilter)
+                {
+                    [LPFilter filterData:newData numFrames:thisNumFrames numChannels:thisNumChannels];
+                }
+                if(notchIsOn)
+                {
+                    [NotchFilter filterData:newData numFrames:thisNumFrames numChannels:thisNumChannels];
+                }
             }
-            
-            vDSP_vsadd(tempResamplingBuffer,
-                       1,
-                       &zero,
-                       (float *)&newData[i],
-                       thisNumChannels,
-                       thisNumFrames);
-        }
+    }
+}
+
+
+-(void) setFilterSettings:(int) newFilterSettings
+{
+    
+    
+    switch (newFilterSettings) {
+        case FILTER_SETTINGS_RAW:
+            [self setFilterLPCutoff:FILTER_LP_OFF hpCutoff:FILTER_HP_OFF];
+            break;
+        case FILTER_SETTINGS_EKG:
+            [self setFilterLPCutoff:11 hpCutoff:1];
+            break;
+        case FILTER_SETTINGS_EEG:
+            [self setFilterLPCutoff:40 hpCutoff:1];
+            break;
+        case FILTER_SETTINGS_PLANT:
+            [self setFilterLPCutoff:8 hpCutoff:FILTER_HP_OFF];
+            break;
+        case FILTER_SETTINGS_CUSTOM:
+            if(currentFilterSettings != FILTER_SETTINGS_CUSTOM)
+            {
+                [self setFilterLPCutoff:FILTER_LP_OFF hpCutoff:FILTER_HP_OFF];
+            }
+            break;
+        default:
+            break;
+    }
+    currentFilterSettings = newFilterSettings;
+}
+
+-(int) getLPFilterCutoff {return lpFilterCutoff;}
+-(int) getHPFilterCutoff {return hpFilterCutoff;}
+
+
+-(void) setFilterLPCutoff:(int) newLPCuttof hpCutoff:(int)newHPCutoff
+{
+    
+    lpFilterCutoff = newLPCuttof;
+    hpFilterCutoff = newHPCutoff;
+
+    
+    if(lpFilterCutoff != FILTER_LP_OFF)
+    {
+        LPFilter= [[NVLowpassFilter alloc] initWithSamplingRate:_sourceSamplingRate];
+        LPFilter.cornerFrequency = lpFilterCutoff;
+        LPFilter.Q = 0.8f;
     }
     else
     {
-        if(HPFilter)
-        {
-            [HPFilter filterData:newData numFrames:thisNumFrames numChannels:thisNumChannels];
-        }
-        [LPFilter filterData:newData numFrames:thisNumFrames numChannels:thisNumChannels];
-        if(notchIsOn)
-        {
-            [NotchFilter filterData:newData numFrames:thisNumFrames numChannels:thisNumChannels];
-        }
+        LPFilter = nil;
     }
+    
+    if(hpFilterCutoff != FILTER_HP_OFF)
+    {
+        float tempFilterValue = newHPCutoff;
+        
+        if(newHPCutoff==2)
+        {
+            tempFilterValue = 2.2f;
+        }
+        if(newHPCutoff == 6)
+        {
+            tempFilterValue = 6.2;
+        }
+        if(newHPCutoff == 9)
+        {
+            tempFilterValue = 9.2;
+        }
+
+        HPFilter = [[NVHighpassFilter alloc] initWithSamplingRate:_sourceSamplingRate];
+        HPFilter.cornerFrequency = tempFilterValue;
+        HPFilter.Q = 0.51f;
+    }
+    else
+    {
+        HPFilter = nil;
+    }
+
 }
 
 

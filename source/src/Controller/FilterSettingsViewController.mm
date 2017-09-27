@@ -11,6 +11,11 @@
 @interface FilterSettingsViewController ()
 {
     UITextField * activeField;
+    double SLIDER_VALUE_MAX;
+    double SLIDER_VALUE_MIN;
+    double REAL_VALUE_MAX;
+    double REAL_VALUE_MIN;
+    double ZERRO_NEGATIVE_OFFSET;
 }
 
 @end
@@ -20,10 +25,58 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    self.lowSlider.continuous = YES;
-    self.highSlider.continuous = YES;
     self.lowTI.delegate = self;
     self.highTI.delegate = self;
+    
+    ZERRO_NEGATIVE_OFFSET = 0.1;
+    
+  
+    for (id current in self.rangeSlider.subviews)
+    {
+        if ([current isKindOfClass:[UISlider class]])
+        {
+            UISlider *volumeSlider = (UISlider *)current;
+            volumeSlider.minimumTrackTintColor = [UIColor redColor];
+            volumeSlider.maximumTrackTintColor = [UIColor lightGrayColor];
+        }
+    }
+  
+    REAL_VALUE_MIN = 1;
+    REAL_VALUE_MAX = (int)([[BBAudioManager bbAudioManager] sourceSamplingRate]*0.29999999);
+    
+    SLIDER_VALUE_MIN = log(REAL_VALUE_MIN);
+    SLIDER_VALUE_MAX = log(REAL_VALUE_MAX);//[[BBAudioManager bbAudioManager] sourceSamplingRate]*0.29999999;
+    self.rangeSlider.minimumValue = SLIDER_VALUE_MIN-ZERRO_NEGATIVE_OFFSET;
+    self.rangeSlider.maximumValue = SLIDER_VALUE_MAX;
+    self.rangeSlider.minimumRange = 0;//between handles
+    self.rangeSlider.stepValueContinuously = YES;
+    self.rangeSlider.continuous = YES;
+    
+    if([[BBAudioManager bbAudioManager] getLPFilterCutoff]<1)
+    {
+        self.rangeSlider.upperValue = self.rangeSlider.minimumValue;
+    }
+    else
+    {
+        self.rangeSlider.upperValue = log([[BBAudioManager bbAudioManager] getLPFilterCutoff]);
+    }
+    
+    
+    if([[BBAudioManager bbAudioManager] getHPFilterCutoff]<1)
+    {
+        self.rangeSlider.lowerValue = self.rangeSlider.minimumValue;
+    }
+    else
+    {
+        float value =[[BBAudioManager bbAudioManager] getHPFilterCutoff] ;
+        float logValue = log(value);
+        self.rangeSlider.lowerValue = logValue;//log([[BBAudioManager bbAudioManager] getHPFilterCutoff]);
+    }
+    
+    
+
+    [self rangeSliderValueChanged:nil];
+    
     
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(makeKeyboardDisapear)];
     // prevents the scroll view from swallowing up the touch event of child buttons
@@ -41,7 +94,7 @@
 -(void) viewWillAppear:(BOOL)animated
 {
     
-   /* if (self.navigationItem.rightBarButtonItem==nil)
+    if (self.navigationItem.rightBarButtonItem==nil)
     {
         
         // create an array for the buttons
@@ -60,10 +113,38 @@
         self.navigationItem.rightBarButtonItems = buttons;
         [buttons release];
         
-    }*/
+    }
     
-    [self loadSettings];
+    //[self loadSettings];
     [self addDoneButton];
+    
+    
+    
+    UIImage* image = nil;
+    
+    /*
+     image = [UIImage imageNamed:@"slider-metal-trackBackground"];
+     image = [image resizableImageWithCapInsets:UIEdgeInsetsMake(0.0, 5.0, 0.0, 5.0)];
+     slider.trackBackgroundImage = image;
+     */
+    
+     image = [UIImage imageNamed:@"slider-metal-track"];
+     image = [image resizableImageWithCapInsets:UIEdgeInsetsMake(0.0, 7.0, 0.0, 7.0)];
+     //self.rangeSlider.trackImage = image;
+    
+    /*
+     image = [UIImage imageNamed:@"slider-metal-handle"];
+     image = [image imageWithAlignmentRectInsets:UIEdgeInsetsMake(-1, 2, 1, 2)];
+     slider.lowerHandleImageNormal = image;
+     slider.upperHandleImageNormal = image;
+     
+     image = [UIImage imageNamed:@"slider-metal-handle-highlighted"];
+     image = [image imageWithAlignmentRectInsets:UIEdgeInsetsMake(-1, 2, 1, 2)];
+     slider.lowerHandleImageHighlighted = image;
+     slider.upperHandleImageHighlighted = image;
+     */
+    
+
     
     [super viewWillAppear:animated];
 }
@@ -71,7 +152,7 @@
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
-    [self saveSettings];
+  //  [self saveSettings];
 }
 
 - (void)addDoneButton {
@@ -96,7 +177,7 @@
 - (void)loadSettings
 {
     
-    NSDictionary *defaultsDict = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"SettingsDefaults" ofType:@"plist"]];
+  /*  NSDictionary *defaultsDict = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"SettingsDefaults" ofType:@"plist"]];
     [[NSUserDefaults standardUserDefaults] registerDefaults:defaultsDict];
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
@@ -134,12 +215,12 @@
     self.highTI.text = [NSString stringWithFormat:@"%d",(int)highFilterValue];
     
     BOOL notchIsOn = [[defaults valueForKey:@"notchFilterOn"] boolValue];
-    [self.notchFilterSwitch setOn:notchIsOn];
+    [self.notchFilterSwitch setOn:notchIsOn];*/
 }
 
 - (void)saveSettings
 {
-    NSDictionary *defaultsDict = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"SettingsDefaults" ofType:@"plist"]];
+  /*  NSDictionary *defaultsDict = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"SettingsDefaults" ofType:@"plist"]];
     [[NSUserDefaults standardUserDefaults] registerDefaults:defaultsDict];
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 
@@ -149,9 +230,10 @@
     
     [defaults synchronize];
     [[NSNotificationCenter defaultCenter] postNotificationName:FILTER_PARAMETERS_CHANGED object:self];
+   */
 }
 
-
+/*
 - (IBAction)lowSliderValueChanged:(UISlider *)sender {
     //float tempFloat = self.lowSlider.value;
     self.lowTI.text = [NSString stringWithFormat:@"%d",(int)self.lowSlider.value];
@@ -160,14 +242,21 @@
 - (IBAction)highSliderValueChanged:(UISlider *)sender {
     self.highTI.text = [NSString stringWithFormat:@"%d",(int)self.highSlider.value];
 }
-
+*/
 -(BOOL) setSliderValuesFromTI
 {
     NSNumber * tempNumber = [[[NSNumber alloc] initWithFloat:0.0f] autorelease];
     if([self stringIsNumeric:self.lowTI.text andNumber:&tempNumber] && ([tempNumber floatValue] >= 0.0f) && ([tempNumber floatValue]<=[[BBAudioManager bbAudioManager] sourceSamplingRate]*0.3))
     {
         
-        [self.lowSlider setValue:[tempNumber floatValue]];
+       if([tempNumber floatValue]<1.0)
+       {
+           self.rangeSlider.lowerValue =  SLIDER_VALUE_MIN-ZERRO_NEGATIVE_OFFSET;
+       }
+       else
+       {
+           self.rangeSlider.lowerValue = log([tempNumber floatValue]);
+       }
     }
     else
     {
@@ -179,7 +268,14 @@
     if([self stringIsNumeric:self.highTI.text andNumber:&tempNumber]  && ([tempNumber floatValue] >= 0.0f) && ([tempNumber floatValue]<=[[BBAudioManager bbAudioManager] sourceSamplingRate]*0.3))
     {
         
-        [self.highSlider setValue:[tempNumber floatValue]];
+        if([tempNumber floatValue]<1.0)
+        {
+            self.rangeSlider.upperValue =  SLIDER_VALUE_MIN-ZERRO_NEGATIVE_OFFSET;
+        }
+        else
+        {
+            self.rangeSlider.upperValue = log([tempNumber floatValue]);
+        }
     }
     else
     {
@@ -291,13 +387,62 @@
 
 
 
+
+
+
+
+
+
+
+
 - (void)dealloc {
     [_lowTI release];
-    [_lowSlider release];
+   // [_lowSlider release];
     [_highTI release];
-    [_highSlider release];
-    [_notchFilterSwitch release];
+   // [_highSlider release];
+   // [_notchFilterSwitch release];
+    [_rangeSlider release];
     [super dealloc];
 }
 
+- (IBAction)rangeSliderValueChanged:(id)sender {
+    
+    
+    if(self.rangeSlider.lowerValue<0.0)
+    {
+        self.lowTI.text = [NSString stringWithFormat:@"%d",0];
+    }
+    else
+    {
+        self.lowTI.text =  [NSString stringWithFormat:@"%d",(int)exp(self.rangeSlider.lowerValue)];
+    }
+    
+    if(self.rangeSlider.upperValue<0.0)
+    {
+        self.highTI.text = [NSString stringWithFormat:@"%d",0];
+    }
+    else
+    {
+        self.highTI.text =  [NSString stringWithFormat:@"%d",(int)exp(self.rangeSlider.upperValue)];
+    }
+}
+
+- (IBAction)doneButtonClick:(id)sender {
+    [self.masterDelegate finishedWithConfiguration];
+    int lowValue = (int)exp(self.rangeSlider.lowerValue);
+    int upperValue = (int)exp(self.rangeSlider.upperValue);
+    if(upperValue>=REAL_VALUE_MAX-1)
+    {
+        upperValue = FILTER_LP_OFF;
+    }
+    
+    if(lowValue <1)
+    {
+        lowValue = FILTER_HP_OFF;
+    }
+    
+    
+    [[BBAudioManager bbAudioManager] setFilterLPCutoff:upperValue hpCutoff:lowValue];
+    
+}
 @end

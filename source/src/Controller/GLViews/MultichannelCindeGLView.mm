@@ -590,7 +590,10 @@
         currentUserInteractionTime = [[NSDate date] timeIntervalSince1970];
         handlesShouldBeVisible = (currentUserInteractionTime-lastUserInteraction)<HIDE_HANDLES_AFTER_SECONDS;
         
-
+        if([dataSourceDelegate respondsToSelector:@selector(setVisibilityForConfigButton:)])
+        {
+            [dataSourceDelegate setVisibilityForConfigButton:[[BBAudioManager bbAudioManager] amDemodulationIsON]];
+        }
 
         // this pair of lines is the standard way to clear the screen in OpenGL
         gl::clear( Color( 0.0f, 0.0f, 0.0f ), true );

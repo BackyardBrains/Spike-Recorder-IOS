@@ -7,26 +7,28 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "NMRangeSlider.h"
 @protocol BBFilterConfigDelegate;
 
 @interface FilterSettingsViewController : UIViewController <UITextFieldDelegate,UITextViewDelegate>
 @property (retain, nonatomic) IBOutlet UITextField *lowTI;
-@property (retain, nonatomic) IBOutlet UISlider *lowSlider;
 @property (retain, nonatomic) IBOutlet UITextField *highTI;
-@property (retain, nonatomic) IBOutlet UISlider *highSlider;
-@property (retain, nonatomic) IBOutlet UISwitch *notchFilterSwitch;
 
 @property (nonatomic, assign) id <BBFilterConfigDelegate> masterDelegate;
 
-- (IBAction)lowSliderValueChanged:(id)sender;
-- (IBAction)highSliderValueChanged:(id)sender;
 
+@property (retain, nonatomic) IBOutlet NMRangeSlider *rangeSlider;
 
+- (IBAction)rangeSliderValueChanged:(id)sender;
+- (IBAction)doneButtonClick:(id)sender;
 
 @end
 
 @protocol BBFilterConfigDelegate <NSObject>
 
 -(void) finishedWithConfiguration;
+
+-(double) sliderValueForWpm: (double) wpm;
+-(double) wpmForSliderValue: (double) sliderValue;
 
 @end

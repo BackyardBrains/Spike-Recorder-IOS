@@ -15,6 +15,7 @@
 
 
 
+
 @interface ViewAndRecordViewController() {
     dispatch_source_t callbackTimer;
     BBFile *aFile;
@@ -31,6 +32,7 @@
 @synthesize bufferStateIndicator;
 @synthesize cancelRTViewButton;
 @synthesize glView;
+@synthesize configButton;
 
 
 
@@ -329,6 +331,142 @@
 }
 
 
+#pragma mark - Config button stuff
+
+-(void) setVisibilityForConfigButton:(BOOL) setVisible
+{
+    self.configButton.hidden = !setVisible;
+    //self.configButton.hidden  = NO;
+}
+
+- (IBAction)configButtonPressed:(id)sender {
+    // grab the view controller we want to show
+    //UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    //UIViewController *controller = [storyboard instantiateViewControllerWithIdentifier:@"Pop"];
+    ChooseFilterTypeViewController *controller = [[ChooseFilterTypeViewController alloc] initWithNibName:@"ChooseFilterTypeViewController" bundle:nil];
+    // present the controller
+    // on iPad, this will be a Popover
+    // on iPhone, this will be an action sheet
+    controller.modalPresentationStyle = UIModalPresentationPopover;
+    controller.preferredContentSize = CGSizeMake(200, 275);
+    controller.delegate = self;
+    
+    
+    // configure the Popover presentation controller
+    popController = [controller popoverPresentationController];
+    
+    popController.delegate = self;
+    
+    popController.sourceView = self.configButton;
+    if (UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation) && (!( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )))
+    {
+        popController.permittedArrowDirections = UIPopoverArrowDirectionLeft;
+        
+        popController.sourceRect =  CGRectMake(self.configButton.bounds.origin.x, 0, configButton.bounds.size.width, configButton.bounds.size.height);
+    }
+    else
+    {
+        popController.permittedArrowDirections = UIPopoverArrowDirectionUp;
+        popController.sourceRect =  CGRectMake(self.configButton.bounds.origin.x, self.configButton.bounds.origin.y, configButton.bounds.size.width, configButton.bounds.size.height);
+    }
+    
+    
+    // in case we don't have a bar button as reference
+    
+    [self presentViewController:controller animated:YES completion:nil];
+}
+
+
+- (void)popoverPresentationController:(UIPopoverPresentationController *)popoverPresentationController
+          willRepositionPopoverToRect:(inout CGRect *)rect
+                               inView:(inout UIView * _Nonnull *)view
+{
+
+    if(popoverPresentationController == popController)
+    {
+            if (UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation) && (!( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )))
+            {
+                popController.permittedArrowDirections = UIPopoverArrowDirectionLeft;
+                
+                popController.sourceRect =  CGRectMake(self.configButton.bounds.origin.x, 0, configButton.bounds.size.width, configButton.bounds.size.height);
+                
+            }
+            else
+            {
+                popController.permittedArrowDirections = UIPopoverArrowDirectionUp;
+                popController.sourceRect =  CGRectMake(self.configButton.bounds.origin.x, self.configButton.bounds.origin.y, configButton.bounds.size.width, configButton.bounds.size.height);
+            }
+    }
+
+
+}
+
+
+- (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+    if(popControllerIpad)
+    {
+        if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
+        {
+            CGRect sourceRect = CGRectZero;
+            sourceRect.origin.x = CGRectGetMidX(self.view.bounds)-self.view.frame.origin.x/2.0;
+            sourceRect.origin.y = CGRectGetMidY(self.view.bounds)-self.view.frame.origin.y/2.0;
+            popControllerIpad.sourceRect =  sourceRect;
+        }
+    }
+}
+
+
+
+ - (UIModalPresentationStyle)adaptivePresentationStyleForPresentationController:(UIPresentationController *)controller
+ {
+     return UIModalPresentationNone;
+ }
+ 
+
+
+- (void)endSelectionOfFilters:(int) filterType
+{
+    [self dismissViewControllerAnimated:YES completion:^void () {
+    
+    
+        if(filterType == FILTER_SETTINGS_CUSTOM)
+        {
+            if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
+            {
+                FilterSettingsViewController *controller = [[FilterSettingsViewController alloc] initWithNibName:@"FilterSettingsViewController" bundle:nil];
+                controller.masterDelegate = self;
+                controller.modalPresentationStyle = UIModalPresentationPopover;
+                controller.preferredContentSize = CGSizeMake(600, 250);
+                controller.masterDelegate = self;
+                
+                // configure the Popover presentation controller
+                 popControllerIpad = [controller popoverPresentationController];
+                
+                popControllerIpad.delegate = self;
+                popControllerIpad.permittedArrowDirections = 0;
+                CGRect sourceRect = CGRectZero;
+                sourceRect.origin.x = CGRectGetMidX(self.view.bounds)-self.view.frame.origin.x/2.0;
+                sourceRect.origin.y = CGRectGetMidY(self.view.bounds)-self.view.frame.origin.y/2.0;
+                popControllerIpad.sourceRect =  sourceRect;
+                popControllerIpad.sourceView = self.view;
+                [self presentViewController:controller animated:YES completion:nil];
+                
+            }
+            else
+            {
+                   FilterSettingsViewController *controller = [[FilterSettingsViewController alloc] initWithNibName:@"FilterSettingsViewController" bundle:nil];
+                    controller.masterDelegate = self;
+                    [self presentViewController:controller animated:YES completion:nil];
+            }
+        }
+    }];
+    
+
+}
+
+
+
 #pragma mark - BT stuff
 
 /*- (void)detectBluetooth
@@ -391,6 +529,7 @@
     }
      
 }
+
 
 
 -(void) reSetupScreen
@@ -458,6 +597,7 @@
     
     //the controller we want to present as a popover
     BBBTChooserViewController *deviceChooserVC = [[BBBTChooserViewController alloc] initWithNibName:@"BBBTChooserViewController" bundle:nil];
+    
     //deviceChooserVC.masterDelegate = self;
     
     devicesPopover = [[FPPopoverController alloc] initWithViewController:deviceChooserVC];
@@ -669,6 +809,7 @@
     [_rtSpikeViewButton release];
     [bufferStateIndicator release];
     [cancelRTViewButton release];
+    [configButton release];
     [super dealloc];
 }
 

@@ -25,6 +25,15 @@
 #define AM_CARRIER_FREQUENCY 5000.0
 #define AM_DEMODULATION_CUTOFF 500.0
 
+#define FILTER_SETTINGS_RAW 0
+#define FILTER_SETTINGS_EKG 1
+#define FILTER_SETTINGS_EEG 2
+#define FILTER_SETTINGS_PLANT 3
+#define FILTER_SETTINGS_CUSTOM 4
+
+#define FILTER_LP_OFF 10000000
+#define FILTER_HP_OFF 0
+
 @class BBFile;
 
 
@@ -59,6 +68,9 @@
     float amDCLevelRemovalCh2;
     float rmsOfOriginalSignal;
     float rmsOfNotchedSignal;
+    
+    int lpFilterCutoff;
+    int hpFilterCutoff;
     
 }
 
@@ -96,9 +108,12 @@
 @property (readonly) BOOL ECGOn;
 @property (readonly) BOOL rtSpikeSorting;
 @property BOOL seeking;
+@property BOOL amDemodulationIsON;
 
+@property int currentFilterSettings;
 
-
+-(int) getLPFilterCutoff;
+-(int) getHPFilterCutoff; 
 
 + (BBAudioManager *) bbAudioManager;
 -(void) quitAllFunctions;
@@ -127,6 +142,8 @@
 -(float) getTimeForSpikes;
 - (void)saveSettingsToUserDefaults;
 -(void) clearWaveform;
+
+
 
 //Bluetooth
 -(void) switchToBluetoothWithChannels:(int) channelConfiguration andSampleRate:(int) inSampleRate;
@@ -159,5 +176,10 @@
 @property (readonly) float heartRate;
 @property (readonly) BOOL heartBeatPresent;
 @property (nonatomic) float ecgThreshold;
+
+
+-(void) setFilterSettings:(int) newFilterSettings;
+
+-(void) setFilterLPCutoff:(int) newLPCuttof hpCutoff:(int)newHPCutoff;
 
 @end

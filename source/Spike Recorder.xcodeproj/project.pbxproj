@@ -15,6 +15,27 @@
 		1CD05BA51CFD02EE00A83727 /* BBFileDetailsViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1CD05BA31CFD02EE00A83727 /* BBFileDetailsViewCell.xib */; };
 		1CD05BA91CFD398400A83727 /* BBCommentDetailsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CD05BA71CFD398400A83727 /* BBCommentDetailsCell.m */; };
 		1CD05BAA1CFD398400A83727 /* BBCommentDetailsCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1CD05BA81CFD398400A83727 /* BBCommentDetailsCell.xib */; };
+		1CE5E02A1F742E730016E7D9 /* configIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CE5E0281F742E730016E7D9 /* configIcon.png */; };
+		1CE5E02B1F742E730016E7D9 /* configIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CE5E0291F742E730016E7D9 /* configIcon@2x.png */; };
+		1CE5E0361F7453080016E7D9 /* ChooseFilterTypeViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1CE5E0341F7453080016E7D9 /* ChooseFilterTypeViewController.mm */; };
+		1CE5E0371F7453080016E7D9 /* ChooseFilterTypeViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1CE5E0351F7453080016E7D9 /* ChooseFilterTypeViewController.xib */; };
+		1CF7DB2E1F7988DF008F303E /* slider-default7-handle.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CF7DB111F7988DF008F303E /* slider-default7-handle.png */; };
+		1CF7DB2F1F7988DF008F303E /* slider-default7-handle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CF7DB121F7988DF008F303E /* slider-default7-handle@2x.png */; };
+		1CF7DB301F7988DF008F303E /* slider-default7-track.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CF7DB131F7988DF008F303E /* slider-default7-track.png */; };
+		1CF7DB311F7988DF008F303E /* slider-default7-track@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CF7DB141F7988DF008F303E /* slider-default7-track@2x.png */; };
+		1CF7DB321F7988DF008F303E /* slider-default7-trackBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CF7DB151F7988DF008F303E /* slider-default7-trackBackground.png */; };
+		1CF7DB331F7988DF008F303E /* slider-default7-trackBackground@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CF7DB161F7988DF008F303E /* slider-default7-trackBackground@2x.png */; };
+		1CF7DB341F7988DF008F303E /* slider-default7-trackCrossedOver.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CF7DB171F7988DF008F303E /* slider-default7-trackCrossedOver.png */; };
+		1CF7DB351F7988DF008F303E /* slider-default7-trackCrossedOver@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CF7DB181F7988DF008F303E /* slider-default7-trackCrossedOver@2x.png */; };
+		1CF7DB361F7988DF008F303E /* slider-metal-handle-highlighted.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CF7DB1A1F7988DF008F303E /* slider-metal-handle-highlighted.png */; };
+		1CF7DB371F7988DF008F303E /* slider-metal-handle-highlighted@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CF7DB1B1F7988DF008F303E /* slider-metal-handle-highlighted@2x.png */; };
+		1CF7DB381F7988DF008F303E /* slider-metal-handle.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CF7DB1C1F7988DF008F303E /* slider-metal-handle.png */; };
+		1CF7DB391F7988DF008F303E /* slider-metal-handle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CF7DB1D1F7988DF008F303E /* slider-metal-handle@2x.png */; };
+		1CF7DB3A1F7988DF008F303E /* slider-metal-track.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CF7DB1E1F7988DF008F303E /* slider-metal-track.png */; };
+		1CF7DB3B1F7988DF008F303E /* slider-metal-track@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CF7DB1F1F7988DF008F303E /* slider-metal-track@2x.png */; };
+		1CF7DB3C1F7988DF008F303E /* slider-metal-trackBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CF7DB201F7988DF008F303E /* slider-metal-trackBackground.png */; };
+		1CF7DB3D1F7988DF008F303E /* slider-metal-trackBackground@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CF7DB211F7988DF008F303E /* slider-metal-trackBackground@2x.png */; };
+		1CF7DB3E1F7988DF008F303E /* NMRangeSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CF7DB231F7988DF008F303E /* NMRangeSlider.m */; };
 		2407C4381AE573FD005D671B /* OBSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 2407C4371AE573FD005D671B /* OBSlider.m */; };
 		240D8067190E98F6009F9AEA /* CrossCorrViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 240D8065190E98F6009F9AEA /* CrossCorrViewController.xib */; };
 		241453CF1AB87B33001B5D92 /* RTSpikeSortingButton.mm in Sources */ = {isa = PBXBuildFile; fileRef = 241453CE1AB87B33001B5D92 /* RTSpikeSortingButton.mm */; };
@@ -258,6 +279,29 @@
 		1CD05BA61CFD398400A83727 /* BBCommentDetailsCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BBCommentDetailsCell.h; sourceTree = "<group>"; };
 		1CD05BA71CFD398400A83727 /* BBCommentDetailsCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BBCommentDetailsCell.m; sourceTree = "<group>"; };
 		1CD05BA81CFD398400A83727 /* BBCommentDetailsCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BBCommentDetailsCell.xib; sourceTree = "<group>"; };
+		1CE5E0281F742E730016E7D9 /* configIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = configIcon.png; sourceTree = "<group>"; };
+		1CE5E0291F742E730016E7D9 /* configIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "configIcon@2x.png"; sourceTree = "<group>"; };
+		1CE5E0331F7453080016E7D9 /* ChooseFilterTypeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChooseFilterTypeViewController.h; sourceTree = "<group>"; };
+		1CE5E0341F7453080016E7D9 /* ChooseFilterTypeViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ChooseFilterTypeViewController.mm; sourceTree = "<group>"; };
+		1CE5E0351F7453080016E7D9 /* ChooseFilterTypeViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ChooseFilterTypeViewController.xib; path = Controller/ChooseFilterTypeViewController.xib; sourceTree = "<group>"; };
+		1CF7DB111F7988DF008F303E /* slider-default7-handle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "slider-default7-handle.png"; sourceTree = "<group>"; };
+		1CF7DB121F7988DF008F303E /* slider-default7-handle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "slider-default7-handle@2x.png"; sourceTree = "<group>"; };
+		1CF7DB131F7988DF008F303E /* slider-default7-track.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "slider-default7-track.png"; sourceTree = "<group>"; };
+		1CF7DB141F7988DF008F303E /* slider-default7-track@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "slider-default7-track@2x.png"; sourceTree = "<group>"; };
+		1CF7DB151F7988DF008F303E /* slider-default7-trackBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "slider-default7-trackBackground.png"; sourceTree = "<group>"; };
+		1CF7DB161F7988DF008F303E /* slider-default7-trackBackground@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "slider-default7-trackBackground@2x.png"; sourceTree = "<group>"; };
+		1CF7DB171F7988DF008F303E /* slider-default7-trackCrossedOver.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "slider-default7-trackCrossedOver.png"; sourceTree = "<group>"; };
+		1CF7DB181F7988DF008F303E /* slider-default7-trackCrossedOver@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "slider-default7-trackCrossedOver@2x.png"; sourceTree = "<group>"; };
+		1CF7DB1A1F7988DF008F303E /* slider-metal-handle-highlighted.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "slider-metal-handle-highlighted.png"; sourceTree = "<group>"; };
+		1CF7DB1B1F7988DF008F303E /* slider-metal-handle-highlighted@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "slider-metal-handle-highlighted@2x.png"; sourceTree = "<group>"; };
+		1CF7DB1C1F7988DF008F303E /* slider-metal-handle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "slider-metal-handle.png"; sourceTree = "<group>"; };
+		1CF7DB1D1F7988DF008F303E /* slider-metal-handle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "slider-metal-handle@2x.png"; sourceTree = "<group>"; };
+		1CF7DB1E1F7988DF008F303E /* slider-metal-track.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "slider-metal-track.png"; sourceTree = "<group>"; };
+		1CF7DB1F1F7988DF008F303E /* slider-metal-track@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "slider-metal-track@2x.png"; sourceTree = "<group>"; };
+		1CF7DB201F7988DF008F303E /* slider-metal-trackBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "slider-metal-trackBackground.png"; sourceTree = "<group>"; };
+		1CF7DB211F7988DF008F303E /* slider-metal-trackBackground@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "slider-metal-trackBackground@2x.png"; sourceTree = "<group>"; };
+		1CF7DB221F7988DF008F303E /* NMRangeSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NMRangeSlider.h; sourceTree = "<group>"; };
+		1CF7DB231F7988DF008F303E /* NMRangeSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMRangeSlider.m; sourceTree = "<group>"; };
 		2407C4361AE573FD005D671B /* OBSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OBSlider.h; sourceTree = "<group>"; };
 		2407C4371AE573FD005D671B /* OBSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OBSlider.m; sourceTree = "<group>"; };
 		240D8065190E98F6009F9AEA /* CrossCorrViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CrossCorrViewController.xib; sourceTree = "<group>"; };
@@ -712,6 +756,47 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1CF7DB041F7988DF008F303E /* NMRangeSlider */ = {
+			isa = PBXGroup;
+			children = (
+				1CF7DB101F7988DF008F303E /* DefaultTheme7 */,
+				1CF7DB191F7988DF008F303E /* MetalTheme */,
+				1CF7DB221F7988DF008F303E /* NMRangeSlider.h */,
+				1CF7DB231F7988DF008F303E /* NMRangeSlider.m */,
+			);
+			path = NMRangeSlider;
+			sourceTree = "<group>";
+		};
+		1CF7DB101F7988DF008F303E /* DefaultTheme7 */ = {
+			isa = PBXGroup;
+			children = (
+				1CF7DB111F7988DF008F303E /* slider-default7-handle.png */,
+				1CF7DB121F7988DF008F303E /* slider-default7-handle@2x.png */,
+				1CF7DB131F7988DF008F303E /* slider-default7-track.png */,
+				1CF7DB141F7988DF008F303E /* slider-default7-track@2x.png */,
+				1CF7DB151F7988DF008F303E /* slider-default7-trackBackground.png */,
+				1CF7DB161F7988DF008F303E /* slider-default7-trackBackground@2x.png */,
+				1CF7DB171F7988DF008F303E /* slider-default7-trackCrossedOver.png */,
+				1CF7DB181F7988DF008F303E /* slider-default7-trackCrossedOver@2x.png */,
+			);
+			path = DefaultTheme7;
+			sourceTree = "<group>";
+		};
+		1CF7DB191F7988DF008F303E /* MetalTheme */ = {
+			isa = PBXGroup;
+			children = (
+				1CF7DB1A1F7988DF008F303E /* slider-metal-handle-highlighted.png */,
+				1CF7DB1B1F7988DF008F303E /* slider-metal-handle-highlighted@2x.png */,
+				1CF7DB1C1F7988DF008F303E /* slider-metal-handle.png */,
+				1CF7DB1D1F7988DF008F303E /* slider-metal-handle@2x.png */,
+				1CF7DB1E1F7988DF008F303E /* slider-metal-track.png */,
+				1CF7DB1F1F7988DF008F303E /* slider-metal-track@2x.png */,
+				1CF7DB201F7988DF008F303E /* slider-metal-trackBackground.png */,
+				1CF7DB211F7988DF008F303E /* slider-metal-trackBackground@2x.png */,
+			);
+			path = MetalTheme;
+			sourceTree = "<group>";
+		};
 		2407C4351AE573FD005D671B /* OBSlider */ = {
 			isa = PBXGroup;
 			children = (
@@ -1083,6 +1168,8 @@
 				2418FEA01A83F5D700662547 /* Pause@2x.png */,
 				2418FEA11A83F5D700662547 /* Play.png */,
 				2418FEA21A83F5D700662547 /* Play@2x.png */,
+				1CE5E0281F742E730016E7D9 /* configIcon.png */,
+				1CE5E0291F742E730016E7D9 /* configIcon@2x.png */,
 				2418FEA31A83F5D700662547 /* Record.png */,
 				2418FEA41A83F5D700662547 /* Record@2x.png */,
 				2418FEA51A83F5D700662547 /* RecordButton.png */,
@@ -1186,6 +1273,8 @@
 				2418FF2E1A83FD3700662547 /* ThresholdViewController.mm */,
 				2418FF2F1A83FD3700662547 /* ViewAndRecordViewController.h */,
 				2418FF301A83FD3700662547 /* ViewAndRecordViewController.mm */,
+				1CE5E0331F7453080016E7D9 /* ChooseFilterTypeViewController.h */,
+				1CE5E0341F7453080016E7D9 /* ChooseFilterTypeViewController.mm */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -1193,6 +1282,7 @@
 		2418FF3C1A83FD6700662547 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				1CF7DB041F7988DF008F303E /* NMRangeSlider */,
 				2418FF3D1A83FD6700662547 /* BYBHandleButton.h */,
 				2418FF3E1A83FD6700662547 /* BYBHandleButton.mm */,
 				249C24491A9E272500B81B1A /* BufferStateIndicator.h */,
@@ -1401,6 +1491,7 @@
 			children = (
 				FA9A665015BA3DC000CF1697 /* iPad */,
 				24DBA928197709DF00AEDE86 /* FFTViewController.xib */,
+				1CE5E0351F7453080016E7D9 /* ChooseFilterTypeViewController.xib */,
 				24E6D8A71A011EE0006C8CED /* FilterSettingsViewController.xib */,
 				245E26F819EAC01100EE298E /* BBBTChooserViewController.xib */,
 				242631B219C2042A00225E44 /* ECGViewController.xib */,
@@ -1498,6 +1589,7 @@
 			files = (
 				2418FEDB1A83F5D700662547 /* Stimulate@2x.png in Resources */,
 				247087CA1A851774004C6B9B /* Icon@2x.png in Resources */,
+				1CF7DB2E1F7988DF008F303E /* slider-default7-handle.png in Resources */,
 				24D697BA1A6FF3EB00108D78 /* Images.xcassets in Resources */,
 				2418FED31A83F5D700662547 /* RecordButton.png in Resources */,
 				FADF266D1596362F006C87BA /* InfoPlist.strings in Resources */,
@@ -1511,6 +1603,7 @@
 				249A246319058465005F5F03 /* AutocorrelationGraphViewController.xib in Resources */,
 				247087BF1A851774004C6B9B /* Icon-76.png in Resources */,
 				2418FED91A83F5D700662547 /* StimSettings@2x.png in Resources */,
+				1CF7DB381F7988DF008F303E /* slider-metal-handle.png in Resources */,
 				2418FED21A83F5D700662547 /* Record@2x.png in Resources */,
 				247087CB1A851774004C6B9B /* iTunesArtwork@2x.png in Resources */,
 				2418FEC61A83F5D700662547 /* FileNeuron@2x.png in Resources */,
@@ -1525,6 +1618,7 @@
 				249A24681906AC59005F5F03 /* ISIHistogramViewController.xib in Resources */,
 				24EBC1B31997DD21001D3392 /* TrialActionsViewController.xib in Resources */,
 				2418FEC31A83F5D700662547 /* ecg.png in Resources */,
+				1CF7DB361F7988DF008F303E /* slider-metal-handle-highlighted.png in Resources */,
 				241C8AF71B3201B800CEFCEE /* template.xml in Resources */,
 				FA35CEFF15ABBADC0082FBC3 /* PlaybackViewController.xib in Resources */,
 				247087C61A851774004C6B9B /* Icon-Small.png in Resources */,
@@ -1532,20 +1626,26 @@
 				247087BA1A851774004C6B9B /* Icon-60.png in Resources */,
 				24BB8365199E7D0C00C12932 /* GraphDCMDTrialViewController.xib in Resources */,
 				247087C01A851774004C6B9B /* Icon-76@2x.png in Resources */,
+				1CF7DB3C1F7988DF008F303E /* slider-metal-trackBackground.png in Resources */,
 				2418FFCC1A8406A600662547 /* Default-Landcape.png in Resources */,
+				1CE5E02B1F742E730016E7D9 /* configIcon@2x.png in Resources */,
 				2474366B18F6DBFF0044E11D /* SpikesViewController.xib in Resources */,
 				2418FEB81A83F5D700662547 /* again@2x.png in Resources */,
 				FAA27C1E15AD01CA00DCC60B /* ThresholdViewController.xib in Resources */,
+				1CF7DB371F7988DF008F303E /* slider-metal-handle-highlighted@2x.png in Resources */,
 				2418FFD31A8406A600662547 /* Screenshot@2x.png in Resources */,
 				247087BB1A851774004C6B9B /* Icon-60@2x.png in Resources */,
 				FA9A665215BA3DC100CF1697 /* MainWindow-iPad.xib in Resources */,
 				2418FEC41A83F5D700662547 /* ecg@2x.png in Resources */,
 				24E6D8A91A011EE0006C8CED /* FilterSettingsViewController.xib in Resources */,
 				FA9A665B15BB19B000CF1697 /* SettingsDefaults.plist in Resources */,
+				1CF7DB341F7988DF008F303E /* slider-default7-trackCrossedOver.png in Resources */,
 				2418FE5F1A83F4C600662547 /* beep.wav in Resources */,
 				247087C41A851774004C6B9B /* Icon-Small-50.png in Resources */,
 				2418FEDD1A83F5D700662547 /* ThresholdImage@2x.png in Resources */,
 				2418FEBC1A83F5D700662547 /* bluetooth@2x.png in Resources */,
+				1CF7DB331F7988DF008F303E /* slider-default7-trackBackground@2x.png in Resources */,
+				1CE5E0371F7453080016E7D9 /* ChooseFilterTypeViewController.xib in Resources */,
 				2418FFD11A8406A600662547 /* Screenshot-750x1334.png in Resources */,
 				2418FEBF1A83F5D700662547 /* checkmark.png in Resources */,
 				1CD05BA51CFD02EE00A83727 /* BBFileDetailsViewCell.xib in Resources */,
@@ -1556,9 +1656,11 @@
 				2418FEBB1A83F5D700662547 /* bluetooth.png in Resources */,
 				242631B419C2042A00225E44 /* ECGViewController.xib in Resources */,
 				247087C51A851774004C6B9B /* Icon-Small-50@2x.png in Resources */,
+				1CF7DB321F7988DF008F303E /* slider-default7-trackBackground.png in Resources */,
 				247087C91A851774004C6B9B /* Icon.png in Resources */,
 				2418FEE01A83F5D700662547 /* trash.png in Resources */,
 				2418FEDF1A83F5D700662547 /* TickMarksBig.png in Resources */,
+				1CF7DB2F1F7988DF008F303E /* slider-default7-handle@2x.png in Resources */,
 				2418FECE1A83F5D700662547 /* Pause@2x.png in Resources */,
 				2418FED01A83F5D700662547 /* Play@2x.png in Resources */,
 				247087C81A851774004C6B9B /* Icon-Small@3x.png in Resources */,
@@ -1566,6 +1668,7 @@
 				247087BE1A851774004C6B9B /* Icon-72@2x.png in Resources */,
 				247087C11A851774004C6B9B /* Icon-Small-40.png in Resources */,
 				1CD05BAA1CFD398400A83727 /* BBCommentDetailsCell.xib in Resources */,
+				1CF7DB311F7988DF008F303E /* slider-default7-track@2x.png in Resources */,
 				2418FFCE1A8406A600662547 /* Default-Portrait.png in Resources */,
 				2418FEE31A83F5D700662547 /* WaveImage.png in Resources */,
 				2418FEE41A83F5D700662547 /* WaveImage@2x.png in Resources */,
@@ -1575,6 +1678,9 @@
 				2418FEB71A83F5D700662547 /* again.png in Resources */,
 				247087BD1A851774004C6B9B /* Icon-72.png in Resources */,
 				2418FEC71A83F5D700662547 /* hasbeat.png in Resources */,
+				1CF7DB301F7988DF008F303E /* slider-default7-track.png in Resources */,
+				1CF7DB3D1F7988DF008F303E /* slider-metal-trackBackground@2x.png in Resources */,
+				1CE5E02A1F742E730016E7D9 /* configIcon.png in Resources */,
 				2418FEC91A83F5D700662547 /* inputicon.png in Resources */,
 				FA49A7B015D9C352002A78EC /* BBFileViewControllerTBV.plist in Resources */,
 				2418FEC21A83F5D700662547 /* dropbox@2x.png in Resources */,
@@ -1584,8 +1690,10 @@
 				2418FECF1A83F5D700662547 /* Play.png in Resources */,
 				2418FEBE1A83F5D700662547 /* charticon@2x.png in Resources */,
 				2489D8201992284500C00A9C /* ExperimentSetupViewController.xib in Resources */,
+				1CF7DB351F7988DF008F303E /* slider-default7-trackCrossedOver@2x.png in Resources */,
 				2418FECB1A83F5D700662547 /* nobeat.png in Resources */,
 				2418FEC81A83F5D700662547 /* hasbeat@2x.png in Resources */,
+				1CF7DB3B1F7988DF008F303E /* slider-metal-track@2x.png in Resources */,
 				2454D8B219AE18D50056B71B /* AverageSpikeGraphViewController.xib in Resources */,
 				2418FEE21A83F5D700662547 /* unselected.png in Resources */,
 				245B1842199135ED00943684 /* ExperimentsMenuTableViewCell.xib in Resources */,
@@ -1597,10 +1705,12 @@
 				245E26FA19EAC01100EE298E /* BBBTChooserViewController.xib in Resources */,
 				2489D8251993ABCA00C00A9C /* DCMDExperimentViewController.xib in Resources */,
 				2418FED41A83F5D700662547 /* settings.png in Resources */,
+				1CF7DB391F7988DF008F303E /* slider-metal-handle@2x.png in Resources */,
 				24EBC1AE1997852D001D3392 /* TrialsDCMDTableViewController.xib in Resources */,
 				2418FECA1A83F5D700662547 /* inputicon@2x.png in Resources */,
 				247087C71A851774004C6B9B /* Icon-Small@2x.png in Resources */,
 				24507B53196C333C00E27BD2 /* AutoGraphViewController.xib in Resources */,
+				1CF7DB3A1F7988DF008F303E /* slider-metal-track.png in Resources */,
 				2418FED71A83F5D700662547 /* spectrum@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1690,6 +1800,7 @@
 				2470878A1A85104D004C6B9B /* NSString-NumberStuff.m in Sources */,
 				2470878C1A85104D004C6B9B /* NSString-SQLiteColumnName.m in Sources */,
 				2470878E1A85104D004C6B9B /* NSString-SQLitePersistence.m in Sources */,
+				1CE5E0361F7453080016E7D9 /* ChooseFilterTypeViewController.mm in Sources */,
 				247087901A85104D004C6B9B /* NSString-UppercaseFirst.m in Sources */,
 				247087921A85104D004C6B9B /* SQLiteInstanceManager.m in Sources */,
 				247087941A85104D004C6B9B /* SQLitePersistentObject.m in Sources */,
@@ -1736,6 +1847,7 @@
 				2418FF151A83F79200662547 /* DSPAnalysis.mm in Sources */,
 				2418FF141A83F79200662547 /* BBECGAnalysis.mm in Sources */,
 				2418FF111A83F79200662547 /* BBAudioFileWriter.m in Sources */,
+				1CF7DB3E1F7988DF008F303E /* NMRangeSlider.m in Sources */,
 				2418FF981A83FE1200662547 /* BYBGLView.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

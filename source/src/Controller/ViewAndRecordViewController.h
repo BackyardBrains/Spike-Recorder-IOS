@@ -19,16 +19,21 @@
 #import "RTSpikeSortingButton.h"
 #import "BufferStateIndicator.h"
 #import "RTCancelButton.h"
+#import "ChooseFilterTypeViewController.h"
+#import "FilterSettingsViewController.h"
 //#import <CoreBluetooth/CoreBluetooth.h>
 
-@interface ViewAndRecordViewController : CCGLTouchViewController <MultichannelGLViewDelegate, FPPopoverControllerDelegate, BBSelectionTableDelegateProtocol>{
+@interface ViewAndRecordViewController : CCGLTouchViewController <MultichannelGLViewDelegate, FPPopoverControllerDelegate, BBSelectionTableDelegateProtocol, UIPopoverPresentationControllerDelegate, ChooseFilterTypeDelegateProtocol, BBFilterConfigDelegate>{
     
     FPPopoverController * channelPopover;
     FPPopoverController * devicesPopover;
+    UIPopoverPresentationController *popController;
+    UIPopoverPresentationController * popControllerIpad;
 }
 
 - (void)setGLView:(MultichannelCindeGLView *)view;
 
+@property (retain, nonatomic) IBOutlet UIButton *configButton;
 
 @property (retain, nonatomic) IBOutlet UISlider *slider;
 @property (retain, nonatomic) IBOutlet UIButton *recordButton;
@@ -44,11 +49,18 @@
 - (IBAction)stopRecording:(id)sender;
 - (IBAction)startRecording:(id)sender;
 - (IBAction)btButtonPressed:(id)sender;
+- (IBAction)configButtonPressed:(id)sender;
 
 //BT popover delegate function
 - (void)rowSelected:(NSInteger) rowIndex;
 -(NSMutableArray *) getAllRows;
 -(void) selectChannel:(int) selectedChannel;
 -(void) updateBTBufferIndicator;
+
+-(void) setVisibilityForConfigButton:(BOOL) setVisible;
+
+- (void)endSelectionOfFilters:(int) filterType;
+
+-(void) finishedWithConfiguration;//delegate for custom filter
 
 @end
