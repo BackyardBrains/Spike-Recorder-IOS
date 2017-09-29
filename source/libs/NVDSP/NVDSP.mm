@@ -75,10 +75,14 @@
     memcpy(&(tInputBuffer[2]), data, numFrames * sizeof(float));
     
     // Do the processing
-    vDSP_deq22(tInputBuffer, 1, coefficients, tOutputBuffer, 1, numFrames);
-    
+    //vDSP_deq22(tInputBuffer, 1, coefficients, tOutputBuffer, 1, numFrames);
+    int n;
+    for(n=2;n<numFrames+2;n++)
+    {
+        tOutputBuffer[n] = tInputBuffer[n]*coefficients[0]+ tInputBuffer[n-1]*coefficients[1]+tInputBuffer[n-2]*coefficients[2] - tOutputBuffer[n-1]*coefficients[3]- tOutputBuffer[n-2]*coefficients[4];
+    }
     // Copy the data
-    memcpy(data, tOutputBuffer, numFrames * sizeof(float));
+    memcpy(data, &(tOutputBuffer[2]), numFrames * sizeof(float));
     memcpy(gInputKeepBuffer[channel], &(tInputBuffer[numFrames]), 2 * sizeof(float));
     memcpy(gOutputKeepBuffer[channel], &(tOutputBuffer[numFrames]), 2 * sizeof(float));
     
@@ -133,7 +137,7 @@
 }
 
 - (void) intermediateVariables: (float)Fc Q: (float)Q {
-    omega = 2*M_PI*Fc/samplingRate;
+    omega = 2.0*M_PI*Fc/(float)samplingRate;
     omegaS = sin(omega);
     omegaC = cos(omega);
     alpha = omegaS / (2*Q);

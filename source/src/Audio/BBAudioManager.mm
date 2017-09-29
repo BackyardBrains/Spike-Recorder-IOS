@@ -728,13 +728,13 @@ static BBAudioManager *bbAudioManager = nil;
             [self setFilterLPCutoff:FILTER_LP_OFF hpCutoff:FILTER_HP_OFF];
             break;
         case FILTER_SETTINGS_EKG:
-            [self setFilterLPCutoff:11 hpCutoff:1];
+            [self setFilterLPCutoff:50 hpCutoff:FILTER_HP_OFF];
             break;
         case FILTER_SETTINGS_EEG:
-            [self setFilterLPCutoff:40 hpCutoff:1];
+            [self setFilterLPCutoff:100 hpCutoff:FILTER_HP_OFF];
             break;
         case FILTER_SETTINGS_PLANT:
-            [self setFilterLPCutoff:8 hpCutoff:FILTER_HP_OFF];
+            [self setFilterLPCutoff:5 hpCutoff:FILTER_HP_OFF];
             break;
         case FILTER_SETTINGS_CUSTOM:
             if(currentFilterSettings != FILTER_SETTINGS_CUSTOM)
@@ -763,7 +763,7 @@ static BBAudioManager *bbAudioManager = nil;
     {
         LPFilter= [[NVLowpassFilter alloc] initWithSamplingRate:_sourceSamplingRate];
         LPFilter.cornerFrequency = lpFilterCutoff;
-        LPFilter.Q = 0.8f;
+        LPFilter.Q = 0.4f;
     }
     else
     {
@@ -773,23 +773,10 @@ static BBAudioManager *bbAudioManager = nil;
     if(hpFilterCutoff != FILTER_HP_OFF)
     {
         float tempFilterValue = newHPCutoff;
-        
-        if(newHPCutoff==2)
-        {
-            tempFilterValue = 2.2f;
-        }
-        if(newHPCutoff == 6)
-        {
-            tempFilterValue = 6.2;
-        }
-        if(newHPCutoff == 9)
-        {
-            tempFilterValue = 9.2;
-        }
 
         HPFilter = [[NVHighpassFilter alloc] initWithSamplingRate:_sourceSamplingRate];
         HPFilter.cornerFrequency = tempFilterValue;
-        HPFilter.Q = 0.51f;
+        HPFilter.Q = 0.40f;
     }
     else
     {

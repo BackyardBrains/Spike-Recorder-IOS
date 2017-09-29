@@ -117,33 +117,6 @@
     
     //[self loadSettings];
     [self addDoneButton];
-    
-    
-    
-    UIImage* image = nil;
-    
-    /*
-     image = [UIImage imageNamed:@"slider-metal-trackBackground"];
-     image = [image resizableImageWithCapInsets:UIEdgeInsetsMake(0.0, 5.0, 0.0, 5.0)];
-     slider.trackBackgroundImage = image;
-     */
-    
-     image = [UIImage imageNamed:@"slider-metal-track"];
-     image = [image resizableImageWithCapInsets:UIEdgeInsetsMake(0.0, 7.0, 0.0, 7.0)];
-     //self.rangeSlider.trackImage = image;
-    
-    /*
-     image = [UIImage imageNamed:@"slider-metal-handle"];
-     image = [image imageWithAlignmentRectInsets:UIEdgeInsetsMake(-1, 2, 1, 2)];
-     slider.lowerHandleImageNormal = image;
-     slider.upperHandleImageNormal = image;
-     
-     image = [UIImage imageNamed:@"slider-metal-handle-highlighted"];
-     image = [image imageWithAlignmentRectInsets:UIEdgeInsetsMake(-1, 2, 1, 2)];
-     slider.lowerHandleImageHighlighted = image;
-     slider.upperHandleImageHighlighted = image;
-     */
-    
 
     
     [super viewWillAppear:animated];
@@ -177,72 +150,15 @@
 - (void)loadSettings
 {
     
-  /*  NSDictionary *defaultsDict = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"SettingsDefaults" ofType:@"plist"]];
-    [[NSUserDefaults standardUserDefaults] registerDefaults:defaultsDict];
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    
-    float lowFilterValue = [[defaults valueForKey:@"lowFilterFreq"] floatValue];
-    
-    // Set the slider to have the bounds of the audio file's duraiton
-    self.lowSlider.minimumValue = 0;
-    self.lowSlider.maximumValue = [[BBAudioManager bbAudioManager] sourceSamplingRate]*0.29999999;
-
-    if(lowFilterValue<0)
-    {
-        lowFilterValue = 0.0f;
-    }else if(lowFilterValue>self.lowSlider.maximumValue)
-    {
-        lowFilterValue = self.lowSlider.maximumValue;
-    }
-    
-    [self.lowSlider setValue:lowFilterValue];
-    
-    self.lowTI.text = [NSString stringWithFormat:@"%d",(int)lowFilterValue];
-    
-    float highFilterValue = [[defaults valueForKey:@"highFilterFreq"] floatValue];
-    self.highSlider.minimumValue = 0;
-    self.highSlider.maximumValue = [[BBAudioManager bbAudioManager] sourceSamplingRate]*0.29999999;
-    
-    if(highFilterValue<0)
-    {
-        highFilterValue = 0.0f;
-    }else if(highFilterValue>self.lowSlider.maximumValue)
-    {
-        highFilterValue = self.lowSlider.maximumValue;
-    }
-    
-    [self.highSlider setValue:highFilterValue];
-    self.highTI.text = [NSString stringWithFormat:@"%d",(int)highFilterValue];
-    
-    BOOL notchIsOn = [[defaults valueForKey:@"notchFilterOn"] boolValue];
-    [self.notchFilterSwitch setOn:notchIsOn];*/
+  
 }
 
 - (void)saveSettings
 {
-  /*  NSDictionary *defaultsDict = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"SettingsDefaults" ofType:@"plist"]];
-    [[NSUserDefaults standardUserDefaults] registerDefaults:defaultsDict];
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-
-    [defaults setValue:[NSNumber numberWithFloat:self.lowSlider.value] forKey:@"lowFilterFreq"];
-    [defaults setValue:[NSNumber numberWithFloat:self.highSlider.value] forKey:@"highFilterFreq"];
-    [defaults setValue:[NSNumber numberWithBool: self.notchFilterSwitch.on] forKey:@"notchFilterOn"];
-    
-    [defaults synchronize];
-    [[NSNotificationCenter defaultCenter] postNotificationName:FILTER_PARAMETERS_CHANGED object:self];
-   */
+  
 }
 
-/*
-- (IBAction)lowSliderValueChanged:(UISlider *)sender {
-    //float tempFloat = self.lowSlider.value;
-    self.lowTI.text = [NSString stringWithFormat:@"%d",(int)self.lowSlider.value];
-}
 
-- (IBAction)highSliderValueChanged:(UISlider *)sender {
-    self.highTI.text = [NSString stringWithFormat:@"%d",(int)self.highSlider.value];
-}
-*/
 -(BOOL) setSliderValuesFromTI
 {
     NSNumber * tempNumber = [[[NSNumber alloc] initWithFloat:0.0f] autorelease];
@@ -327,55 +243,6 @@
 
 
 
-
-/*
-// Call this method somewhere in your view controller setup code.
-- (void)registerForKeyboardNotifications
-{
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWasShown:)
-                                                 name:UIKeyboardDidShowNotification object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWillBeHidden:)
-                                                 name:UIKeyboardWillHideNotification object:nil];
-    
-}
-
-// Called when the UIKeyboardDidShowNotification is sent.
-- (void)keyboardWasShown:(NSNotification*)aNotification
-{
-    NSDictionary* info = [aNotification userInfo];
-    // CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
-    CGRect rawKeyboardRect = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue];
-    CGRect kbSize = [self.view.window convertRect:rawKeyboardRect toView:self.view.window.rootViewController.view];
-    
-    
-    UIEdgeInsets contentInsets = UIEdgeInsetsMake(0.0, 0.0, kbSize.size.height, 0.0);
-    self.scroller.contentInset = contentInsets;
-    self.scroller.scrollIndicatorInsets = contentInsets;
-    
-    // If active text field is hidden by keyboard, scroll it so it's visible
-    // Your app might not need or want this behavior.
-    CGRect aRect = self.view.frame;
-    aRect.size.height -= kbSize.size.height;
-    if (!CGRectContainsPoint(aRect, activeField.frame.origin) ) {
-        [self.scroller scrollRectToVisible:activeField.frame animated:YES];
-    }
-    if (!CGRectContainsPoint(aRect, activeView.frame.origin) ) {
-        [self.scroller scrollRectToVisible:activeField.frame animated:YES];
-    }
-}
-
-// Called when the UIKeyboardWillHideNotification is sent
-- (void)keyboardWillBeHidden:(NSNotification*)aNotification
-{
-    UIEdgeInsets contentInsets = UIEdgeInsetsZero;
-    self.scroller.contentInset = contentInsets;
-    self.scroller.scrollIndicatorInsets = contentInsets;
-}
-
-*/
 -(void) makeKeyboardDisapear
 {
     [self.lowTI resignFirstResponder];
@@ -384,23 +251,9 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 - (void)dealloc {
     [_lowTI release];
-   // [_lowSlider release];
     [_highTI release];
-   // [_highSlider release];
-   // [_notchFilterSwitch release];
     [_rangeSlider release];
     [super dealloc];
 }
