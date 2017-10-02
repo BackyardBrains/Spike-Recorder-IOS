@@ -59,6 +59,7 @@
     
     
     NVNotchFilter * amDetectionNotchFilter;
+    NVLowpassFilter * amDetectionLPFilter;
     NVLowpassFilter * filterAMStage1;
     NVLowpassFilter * filterAMStage2;
     NVLowpassFilter * filterAMStage3;

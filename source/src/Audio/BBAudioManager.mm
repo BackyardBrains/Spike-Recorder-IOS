@@ -218,6 +218,11 @@ static BBAudioManager *bbAudioManager = nil;
         amDetectionNotchFilter.centerFrequency = AM_CARRIER_FREQUENCY;
         amDetectionNotchFilter.q = 1.0  ;
         
+        amDetectionLPFilter= [[NVLowpassFilter alloc] initWithSamplingRate:_sourceSamplingRate];
+        amDetectionLPFilter.cornerFrequency = 6000;
+        amDetectionLPFilter.Q = 0.8f;
+        
+        
         filterAMStage1= [[NVLowpassFilter alloc] initWithSamplingRate:_sourceSamplingRate];
         filterAMStage1.cornerFrequency = AM_DEMODULATION_CUTOFF;
         filterAMStage1.Q = 0.8f;
@@ -519,15 +524,17 @@ static BBAudioManager *bbAudioManager = nil;
     
     [self amDemodulationOfData:data numFrames:numFrames numChannels:numChannels];
     
+    if(self.amDemodulationIsON)
+    {
+        [self filterData:data numFrames:numFrames numChannels:numChannels];
+    }
+    
     if (recording)
     {
         [fileWriter writeNewAudio:data numFrames:numFrames numChannels:numChannels];
     }
     
-    if(self.amDemodulationIsON)
-    {
-        [self filterData:data numFrames:numFrames numChannels:numChannels];
-    }
+    
     
     
     [self updateBasicStatsOnData:data numFrames:numFrames numChannels:numChannels];
@@ -567,9 +574,7 @@ static BBAudioManager *bbAudioManager = nil;
     {
     
         //calculate RMS for original signal
-        float rms;
-        vDSP_rmsqv(newData,thisNumChannels,&rms,thisNumFrames);
-        rmsOfOriginalSignal = rmsOfOriginalSignal*0.9+rms*0.1;
+        
 
         float zero = 0.0f;
         //get first channel
@@ -579,6 +584,13 @@ static BBAudioManager *bbAudioManager = nil;
                    tempResamplingBuffer,
                    1,
                    thisNumFrames);
+        [amDetectionLPFilter filterData:tempResamplingBuffer numFrames:thisNumFrames numChannels:1];
+        
+        float rms;
+        vDSP_rmsqv(tempResamplingBuffer,1,&rms,thisNumFrames);
+        rmsOfOriginalSignal = rmsOfOriginalSignal*0.9+rms*0.1;
+        
+        
        [amDetectionNotchFilter filterData:tempResamplingBuffer numFrames:thisNumFrames numChannels:1];
         //calculate RMS after Notch filter
        vDSP_rmsqv(tempResamplingBuffer,1,&rms,thisNumFrames);
@@ -611,6 +623,7 @@ static BBAudioManager *bbAudioManager = nil;
                 sum = sum/(float)thisNumFrames;
                 amDCLevelRemovalCh1 = 0.99*amDCLevelRemovalCh1 + 0.01*sum;
                 offset = - amDCLevelRemovalCh1;
+                NSLog(@"NF: %d - sum: %f - DC: %f\n",thisNumFrames, sum, amDCLevelRemovalCh1);
                 vDSP_vsadd(newData,
                            1,
                            &offset,

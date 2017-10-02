@@ -20,7 +20,7 @@
     
     double omega, omegaS, omegaC, alpha;
     
-    float coefficients[5];
+    double coefficients[5];
     
     double a0, a1, a2, b0, b1, b2;
 }
