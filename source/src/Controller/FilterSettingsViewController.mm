@@ -42,7 +42,7 @@
     }
   
     REAL_VALUE_MIN = 1;
-    REAL_VALUE_MAX = (int)([[BBAudioManager bbAudioManager] sourceSamplingRate]*0.29999999);
+    REAL_VALUE_MAX = 500;
     
     SLIDER_VALUE_MIN = log(REAL_VALUE_MIN);
     SLIDER_VALUE_MAX = log(REAL_VALUE_MAX);//[[BBAudioManager bbAudioManager] sourceSamplingRate]*0.29999999;
