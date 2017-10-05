@@ -177,7 +177,7 @@
 @property (readonly) float heartRate;
 @property (readonly) BOOL heartBeatPresent;
 @property (nonatomic) float ecgThreshold;
-
+@property float maxVoltageVisible;
 
 -(void) setFilterSettings:(int) newFilterSettings;
 

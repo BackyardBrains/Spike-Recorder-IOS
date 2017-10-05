@@ -62,7 +62,7 @@ static BBAudioManager *bbAudioManager = nil;
     float _currentMin;
     float _currentMean;
     
-    
+   
     //ECG
     BBECGAnalysis * ecgAnalysis;
     
@@ -105,6 +105,7 @@ static BBAudioManager *bbAudioManager = nil;
 @synthesize amOffset;
 @synthesize amDemodulationIsON;
 @synthesize currentFilterSettings;
+@synthesize maxVoltageVisible;
 
 
 #pragma mark - Singleton Methods
@@ -161,7 +162,7 @@ static BBAudioManager *bbAudioManager = nil;
         
         
         audioManager = [Novocaine audioManager];
-    
+        maxVoltageVisible = -100;//this negative voltage is sign that it is not set at all
         _sourceSamplingRate =  audioManager.samplingRate;
          NSLog(@"Init sampling rate: %f", _sourceSamplingRate);
         _sourceNumberOfChannels = audioManager.numInputChannels;

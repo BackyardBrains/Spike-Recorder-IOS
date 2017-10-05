@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #include "RingBuffer.h"
 
-#define kNumPointsInVertexBuffer 65536
+#define kNumPointsInVertexBuffer 105840//65536
 #define kNumPointsInTriggerBuffer kNumPointsInVertexBuffer
 #define kNumSegmentsInTriggerAverage 100
 

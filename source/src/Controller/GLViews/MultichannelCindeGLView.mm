@@ -15,7 +15,7 @@
 #import "BBAudioManager.h"
 #define HANDLE_RADIUS 10
 
-#define MAX_THRESHOLD_VISIBLE_TIME 1.5
+#define MAX_THRESHOLD_VISIBLE_TIME 2.4
 #define HIDE_HANDLES_AFTER_SECONDS 4.0
 #define MAXIMUM_POSITION_OF_HANDLES -5.6
 
@@ -326,7 +326,7 @@
     // Initialize parameters
     if (useThresholdSettings) {
         NSLog(@"Setting threshold defaults");
-        numSamplesMax = [[defaults valueForKey:@"numSamplesMaxThreshold"] floatValue];
+        numSamplesMax = [[defaults valueForKey:@"numSamplesMaxThresholdNew"] floatValue];
         numSamplesMin = [[defaults valueForKey:@"numSamplesMin"] floatValue];
         numSamplesVisible = [[defaults valueForKey:@"numSamplesVisibleThreshold"] floatValue];
         if(numSamplesVisible>MAX_THRESHOLD_VISIBLE_TIME*samplingRate)
@@ -338,7 +338,15 @@
        
         for(int i=0;i<maxNumberOfChannels;i++)
         {
-            numVoltsVisible[i] = [[defaults valueForKey:@"numVoltsVisibleThreshold"] floatValue];
+            //numVoltsVisible[i] = [[defaults valueForKey:@"numVoltsVisibleThreshold"] floatValue];
+            numVoltsVisible[i] = [[defaults valueForKey:@"numVoltsVisible"] floatValue];
+            
+            //override settings if it is not app startup. Use from BBAudioManager
+            //made so that threshold and real time screen can share vertical scale
+            if(!([[BBAudioManager bbAudioManager] maxVoltageVisible]<0))
+            {
+                numVoltsVisible[i] = [[BBAudioManager bbAudioManager] maxVoltageVisible];
+            }
             NSLog(@"Max volts visible: %f", numVoltsVisible[i]);
             if(numVoltsVisible[i] < 0.001)
             {
@@ -361,6 +369,12 @@
         for(int i=0;i<maxNumberOfChannels;i++)
         {
             numVoltsVisible[i] = [[defaults valueForKey:@"numVoltsVisible"] floatValue];
+            //override settings if it is not app startup. Use from BBAudioManager
+            //made so that threshold and real time screen can share vertical scale
+            if(!([[BBAudioManager bbAudioManager] maxVoltageVisible]<0))
+            {
+                numVoltsVisible[i] = [[BBAudioManager bbAudioManager] maxVoltageVisible];
+            }
              NSLog(@"Max volts visible: %f", numVoltsVisible[i]);
             if(numVoltsVisible[i]>numVoltsMax)
             {
@@ -400,7 +414,7 @@
     // Save parameters
     // Initialize parameters
     if (useThresholdSettings) {
-        [defaults setValue:[NSNumber numberWithFloat:numSamplesMax] forKey:@"numSamplesMaxThreshold"];
+        [defaults setValue:[NSNumber numberWithFloat:numSamplesMax] forKey:@"numSamplesMaxThresholdNew"];
         [defaults setValue:[NSNumber numberWithFloat:numSamplesMin] forKey:@"numSamplesMin"];
         [defaults setValue:[NSNumber numberWithFloat:numSamplesVisible] forKey:@"numSamplesVisibleThreshold"];
         [defaults setValue:[NSNumber numberWithFloat:numVoltsMin] forKey:@"numVoltsMinThreshold"];
@@ -410,7 +424,8 @@
         {
             numVoltsVisible[0] = numVoltsMax;
         }
-        [defaults setValue:[NSNumber numberWithFloat:numVoltsVisible[0]] forKey:@"numVoltsVisibleThreshold"];
+        //[defaults setValue:[NSNumber numberWithFloat:numVoltsVisible[0]] forKey:@"numVoltsVisibleThreshold"];
+        [defaults setValue:[NSNumber numberWithFloat:numVoltsVisible[0]] forKey:@"numVoltsVisible"];
     }
     else {
         [defaults setValue:[NSNumber numberWithFloat:numSamplesMax] forKey:@"numSamplesMaxExt"];
@@ -685,6 +700,11 @@
         }
         
         [self drawCurrentTime];
+        
+        //updates Y axis scale on Audio Manager so that we can transfere
+        //it on another screen when user changes the screen
+        [[BBAudioManager bbAudioManager] setMaxVoltageVisible:numVoltsVisible[0]];
+        
     }
     //glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
 }
@@ -697,6 +717,7 @@
         glLineWidth(1.0f);
         float zoom = maxVoltsSpan/ numVoltsVisible[selectedChannel];
         // Draw a line from left to right at the voltage threshold value.
+        float thresholdValue = [dataSourceDelegate threshold];
         float threshval = yOffsets[selectedChannel]+[dataSourceDelegate threshold]*zoom;
 
         float centerOfCircleX = -(float)retinaScaling*HANDLE_RADIUS*scaleXY.x;
@@ -704,29 +725,48 @@
         float radiusXAxis = retinaScaling* HANDLE_RADIUS*scaleXY.x;
         float radiusYAxis = retinaScaling* HANDLE_RADIUS*scaleXY.y;
         
-        //draw all handles
+        //If threshold is out of screen - up
+        if([dataSourceDelegate threshold]>(numVoltsVisible[selectedChannel]*0.4999))
+        {
+            float positionOfHandleCenterY = 0.5*numVoltsVisible[selectedChannel]*zoom - 1.6*radiusYAxis;
+            gl::drawSolidEllipse( Vec2f(centerOfCircleX, positionOfHandleCenterY), radiusXAxis, radiusYAxis, 100 );
+            gl::drawSolidTriangle(
+                                  Vec2f(centerOfCircleX+radiusXAxis*0.97, positionOfHandleCenterY+0.35*radiusYAxis),
+                                  Vec2f(centerOfCircleX, positionOfHandleCenterY+1.6*radiusYAxis),
+                                  Vec2f(centerOfCircleX-radiusXAxis*0.97, positionOfHandleCenterY+0.35*radiusYAxis)
+                                  );
+        
+        }//if threshold is out of screen - down
+        else if([dataSourceDelegate threshold]<-(numVoltsVisible[selectedChannel]*0.4999))
+        {
+            float positionOfHandleCenterY = -0.5*numVoltsVisible[selectedChannel]*zoom + 1.6*radiusYAxis;
+            gl::drawSolidEllipse( Vec2f(centerOfCircleX, positionOfHandleCenterY), radiusXAxis, radiusYAxis, 100 );
+            gl::drawSolidTriangle(
+                                  Vec2f(centerOfCircleX+radiusXAxis*0.97, positionOfHandleCenterY-0.35*radiusYAxis),
+                                  Vec2f(centerOfCircleX, positionOfHandleCenterY-1.6*radiusYAxis),
+                                  Vec2f(centerOfCircleX-radiusXAxis*0.97, positionOfHandleCenterY-0.35*radiusYAxis)
+                                  );
 
-        gl::drawSolidEllipse( Vec2f(centerOfCircleX, threshval), radiusXAxis, radiusYAxis, 100 );
-        gl::drawSolidTriangle(
-                              Vec2f(centerOfCircleX-0.35*radiusXAxis, threshval+radiusYAxis*0.97),
-                              Vec2f(centerOfCircleX-1.6*radiusXAxis, threshval),
-                              Vec2f(centerOfCircleX-0.35*radiusXAxis, threshval-radiusYAxis*0.97)
-                              );
         
-        glLineWidth(2.0f);
-        float linePart = radiusXAxis*0.7;
-        for(float pos=-maxTimeSpan;pos<-linePart; pos+=linePart+linePart)
+        }//if threshold is in the screen draw normal line with handle
+        else
         {
-            gl::drawLine(Vec2f(pos, threshval), Vec2f(pos+linePart, threshval));
+            //draw handle
+            gl::drawSolidEllipse( Vec2f(centerOfCircleX, threshval), radiusXAxis, radiusYAxis, 100 );
+            gl::drawSolidTriangle(
+                                  Vec2f(centerOfCircleX-0.35*radiusXAxis, threshval+radiusYAxis*0.97),
+                                  Vec2f(centerOfCircleX-1.6*radiusXAxis, threshval),
+                                  Vec2f(centerOfCircleX-0.35*radiusXAxis, threshval-radiusYAxis*0.97)
+                                  );
+            
+            //draw dashed line
+            glLineWidth(2.0f);
+            float linePart = radiusXAxis*0.7;
+            for(float pos=-maxTimeSpan;pos<-linePart; pos+=linePart+linePart)
+            {
+                gl::drawLine(Vec2f(pos, threshval), Vec2f(pos+linePart, threshval));
+            }
         }
-        
-       /* if(numberOfChannels==1)
-        {
-            [self setColorWithIndex:0 transparency:1.0f];
-            gl::drawLine(Vec2f(-maxTimeSpan, yOffsets[selectedChannel]), Vec2f(0, yOffsets[selectedChannel]));
-        }*/
-        
-        //gl::drawLine(Vec2f(centerOfCircleX, threshval), Vec2f(-maxTimeSpan, threshval));
         glLineWidth(1.0f);
     }
 }
@@ -1709,11 +1749,26 @@
             BOOL changingThreshold;
             changingThreshold = false;
             
-            //thresholding
+            //--------------------------------------------------------
+            //                  thresholding
+            //--------------------------------------------------------
             if (self.mode == MultichannelGLViewModeThresholding && ![dataSourceDelegate selecting]) {
 
                 float zoom = maxVoltsSpan/ numVoltsVisible[selectedChannel];
                 float currentThreshold = [dataSourceDelegate threshold]*zoom;
+
+                
+                //if threshold is outside the screen we have to react on small handle on top or bottom of the screen
+                if([dataSourceDelegate threshold]>(0.4999 *numVoltsVisible[selectedChannel]))
+                {
+                    //if it is above top set that value is top
+                    currentThreshold = 0.4999 *numVoltsVisible[selectedChannel]*zoom;
+                }
+                else if([dataSourceDelegate threshold]<-(0.4999 *numVoltsVisible[selectedChannel]))
+                {
+                    //if it is below bottom set that value is bottom
+                    currentThreshold = -0.4999 *numVoltsVisible[selectedChannel]*zoom;
+                }
 
                 float intersectionDistanceX = 16000*scaleXY.x*scaleXY.x;
                 float intersectionDistanceY = 18000*scaleXY.y*scaleXY.y;
