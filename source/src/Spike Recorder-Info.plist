@@ -42,14 +42,16 @@
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
+			<key>CFBundleURLName</key>
+			<string></string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>db-ce7f9ip8scc9xyb</string>
+				<string>db-r3clmvcekkjiams</string>
 			</array>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>2.9.23</string>
+	<string>2.9.26</string>
 	<key>Fabric</key>
 	<dict>
 		<key>APIKey</key>
@@ -64,6 +66,11 @@
 			</dict>
 		</array>
 	</dict>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>dbapi-8-emm</string>
+		<string>dbapi-2</string>
+	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>

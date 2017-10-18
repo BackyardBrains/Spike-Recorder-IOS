@@ -10,12 +10,12 @@
 //
 
 #import "MyAppDelegate.h"
-#import <DropboxSDK/DropboxSDK.h>
+//#import <DropboxSDK/DropboxSDK.h>
 #import "BBAudioFileReader.h"
 //#import "BBBTManager.h"
 #import <Fabric/Fabric.h>
 #import <Crashlytics/Crashlytics.h>
-
+#import <ObjectiveDropboxOfficial/ObjectiveDropboxOfficial.h>
 #define kViewRecordTabBarIndex 0
 #define kThresholdTabBarIndex 1
 #define kFFTTabBarIndex 3
@@ -61,13 +61,23 @@
     }
     [window makeKeyAndVisible];
 
+    
+    //DropBox V2
+    
+    [DBClientsManager setupWithAppKey:@"r3clmvcekkjiams"];
+    
+    
+    
+    
+    
+    
     //dropbox session
-    DBSession *dbSession = [[[DBSession alloc]
+   /* DBSession *dbSession = [[[DBSession alloc]
                             initWithAppKey:@"ce7f9ip8scc9xyb"
                             appSecret:@"jbvj3k3xchx7qig"
                             root:kDBRootAppFolder] autorelease];
 
-    [DBSession setSharedSession:dbSession];
+    [DBSession setSharedSession:dbSession];*/
     
     
    /* [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(btSlowConnection) name:BT_SLOW_CONNECTION object:nil];
@@ -170,8 +180,72 @@
  
 }
 
-- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
-    //dropbox session
+
+- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url
+            options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
+    DBOAuthResult *authResult = [DBClientsManager handleRedirectURL:url];
+    if (authResult != nil) {
+        if ([authResult isSuccess]) {
+            NSLog(@"Success! User is logged into Dropbox.");
+            return YES;
+        } else if ([authResult isCancel]) {
+            NSLog(@"Authorization flow was manually canceled by user!");
+            return YES;
+        } else if ([authResult isError]) {
+            NSLog(@"Error: %@", authResult);
+            return YES;
+        }
+        
+    }
+    
+    
+    
+    if (url) {
+        NSLog(@"Scheme: %@", url.scheme);
+        if (url.scheme && [url.scheme isEqualToString:@"file"]) {
+            
+            //TODO: Find some better place to save file
+            
+            BBFile * aFile = [[BBFile alloc] initWithUrl:url];
+            if ( [[NSFileManager defaultManager] isReadableFileAtPath:[url path]] )
+            {
+                
+                NSURL * newUrl = [aFile fileURL];
+                [[NSFileManager defaultManager] copyItemAtURL:url toURL:newUrl error:nil];
+                BBAudioFileReader * fileReader = [[BBAudioFileReader alloc]
+                                                  initWithAudioFileURL:[aFile fileURL]
+                                                  samplingRate:aFile.samplingrate
+                                                  numChannels:1];
+                
+                aFile.filelength = fileReader.duration;
+                [fileReader release];
+                [aFile save];
+                //Flag that indicate that we should open shared file
+                //and show it to user
+                sharedFileIsWaiting = YES;
+                NSLog(@"Shared file notification in openURL");
+                //open list of files to show new file at the end of the list
+                tabBarController.selectedIndex = kRecordingsTabBarIndex;
+                //Post notification
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"FileReceivedViaShare" object:self];
+                
+            }
+            [aFile release];
+            return YES;
+        }
+    }
+    
+    
+    return NO;
+    
+    
+}
+
+
+
+
+/*- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
+    //V1 dropbox session
     if ([[DBSession sharedSession] handleOpenURL:url]) {
         if ([[DBSession sharedSession] isLinked]) {
             NSLog(@"App linked successfully!");
@@ -182,7 +256,7 @@
     // Add whatever other url handling code your app requires here
     return NO;
 }
-
+*/
 //Patch. TODO: Fix this on some other place
 - (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController
 {
@@ -197,53 +271,11 @@
     return YES;
 }
 
-- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
+/*- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
 {
-    if ([[DBSession sharedSession] handleOpenURL:url]) {
-        if ([[DBSession sharedSession] isLinked]) {
-            NSLog(@"App linked successfully!");
-            // At this point you can start making API calls
-        }
-        return YES;
-    }
 
-    //Audio file handling. Used for sharing.
-    if (url) {
-        NSLog(@"Scheme: %@", url.scheme);
-        if (url.scheme && [url.scheme isEqualToString:@"file"]) {
-            
-            //TODO: Find some better place to save file
-            
-            BBFile * aFile = [[BBFile alloc] initWithUrl:url];
-            if ( [[NSFileManager defaultManager] isReadableFileAtPath:[url path]] )
-            {
-
-                NSURL * newUrl = [aFile fileURL];
-                [[NSFileManager defaultManager] copyItemAtURL:url toURL:newUrl error:nil];
-                BBAudioFileReader * fileReader = [[BBAudioFileReader alloc]
-                              initWithAudioFileURL:[aFile fileURL]
-                              samplingRate:aFile.samplingrate
-                              numChannels:1];
-                
-                aFile.filelength = fileReader.duration;
-                [fileReader release];
-                [aFile save];
-                //Flag that indicate that we should open shared file
-                //and show it to user
-                sharedFileIsWaiting = YES;
-                NSLog(@"Shared file notification in openURL");
-                //open list of files to show new file at the end of the list
-                tabBarController.selectedIndex = kRecordingsTabBarIndex;
-                //Post notification
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"FileReceivedViaShare" object:self];
-
-            }
-            [aFile release];
-        }
-    }
-
-    return YES;
-}
+   
+}*/
 
 //Flag that indicate that we should open shared file
 //and show it to user

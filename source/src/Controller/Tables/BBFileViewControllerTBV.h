@@ -11,13 +11,16 @@
 #import "BBFile.h"
 #import "BBFileTableCell.h"
 #import "BBFileActionViewControllerTBV.h"
-#import <DropboxSDK/DropboxSDK.h>
+//#import <DropboxSDK/DropboxSDK.h>
 
 
 @class BBFileViewControllerTBV;
 
-@interface BBFileViewControllerTBV: UITableViewController <UIActionSheetDelegate, BBFileTableCellDelegate, DBRestClientDelegate, BBFileActionViewControllerDelegate>
+@interface BBFileViewControllerTBV: UITableViewController <UIActionSheetDelegate, BBFileTableCellDelegate, BBFileActionViewControllerDelegate>
+{
+    NSMutableArray* filePathsOnDropBox;
 
+}
 @property (nonatomic, assign) IBOutlet UISplitViewController *splitViewController;
 
 @property (nonatomic, retain) UIPopoverController *popoverController;

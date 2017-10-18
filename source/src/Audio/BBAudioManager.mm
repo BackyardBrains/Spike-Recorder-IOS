@@ -961,6 +961,18 @@ static BBAudioManager *bbAudioManager = nil;
     }
 }
 
+-(BOOL) isThresholdTriggered
+{
+    if(dspThresholder)
+    {
+        dspThresholder->GetIsTriggered();
+    }
+    else
+    {
+        return NO;
+    }
+}
+
 #pragma mark - Recording
 
 - (void)startRecording:(NSURL *)urlToFile
