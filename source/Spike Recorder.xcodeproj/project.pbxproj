@@ -283,7 +283,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		1CB126561F86C8E900247389 /* ObjectiveDropboxOfficial.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ObjectiveDropboxOfficial.framework; path = Carthage/Build/iOS/ObjectiveDropboxOfficial.framework; sourceTree = "<group>"; };
 		1CB1265B1F87DDFF00247389 /* ObjectiveDropboxOfficial.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ObjectiveDropboxOfficial.framework; path = Carthage/Build/iOS/ObjectiveDropboxOfficial.framework; sourceTree = "<group>"; };
 		1CBD16101E72E6DC00F59AEF /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		1CBD16111E72E6DC00F59AEF /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
@@ -1428,7 +1427,6 @@
 		FADF26451596362E006C87BA = {
 			isa = PBXGroup;
 			children = (
-				1CB1265B1F87DDFF00247389 /* ObjectiveDropboxOfficial.framework */,
 				2418FE5C1A83F4C600662547 /* Asset */,
 				FADF26681596362F006C87BA /* src */,
 				FADF26531596362F006C87BA /* Frameworks */,
@@ -1447,7 +1445,7 @@
 		FADF26531596362F006C87BA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				1CB126561F86C8E900247389 /* ObjectiveDropboxOfficial.framework */,
+				1CB1265B1F87DDFF00247389 /* ObjectiveDropboxOfficial.framework */,
 				1CBD16101E72E6DC00F59AEF /* Crashlytics.framework */,
 				1CBD16111E72E6DC00F59AEF /* Fabric.framework */,
 				2490D73A1A927C1B00E1D5E9 /* HealthKit.framework */,
