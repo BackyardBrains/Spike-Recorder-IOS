@@ -85,6 +85,8 @@
 
 @property float threshold;
 @property BBThresholdType thresholdDirection;
+-(BOOL) isThresholdTriggered;
+
 
 @property (readonly) float rmsOfSelection;
 

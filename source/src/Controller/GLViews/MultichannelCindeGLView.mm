@@ -725,6 +725,17 @@
         float radiusXAxis = retinaScaling* HANDLE_RADIUS*scaleXY.x;
         float radiusYAxis = retinaScaling* HANDLE_RADIUS*scaleXY.y;
         
+        
+        if(![[BBAudioManager bbAudioManager] isThresholdTriggered])
+        {
+            //draw small mark so that user knows where is zero
+            glColor4f(0.9, 0.9, 0.9, 1.0);
+             gl::drawLine(Vec2f(-maxTimeSpan, 0), Vec2f(-maxTimeSpan+2*HANDLE_RADIUS*scaleXY.x, 0));
+            glColor4f(1.0, 0.0, 0.0, 1.0);
+        }
+        
+        
+        
         //If threshold is out of screen - up
         if([dataSourceDelegate threshold]>(numVoltsVisible[selectedChannel]*0.4999))
         {
