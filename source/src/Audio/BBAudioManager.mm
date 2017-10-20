@@ -15,7 +15,7 @@
 #import "BBECGAnalysis.h"
 
 //#define RING_BUFFER_SIZE 524288
-
+#define LENGTH_OF_EKG_BEEP_IN_SAMPLES 4851//0.11*44100
 static BBAudioManager *bbAudioManager = nil;
 
 @interface BBAudioManager ()
@@ -65,6 +65,7 @@ static BBAudioManager *bbAudioManager = nil;
    
     //ECG
     BBECGAnalysis * ecgAnalysis;
+   // float * ekgBeepBuffer;
     
     //======bt thing
    /* EAAccessory *_accessory;
@@ -243,6 +244,31 @@ static BBAudioManager *bbAudioManager = nil;
         rmsOfOriginalSignal = 0;
         rmsOfNotchedSignal = 0;
         amOffset = 0;
+        
+        ecgAnalysis = [[BBECGAnalysis alloc] init];
+        [ecgAnalysis initECGAnalysisWithSamplingRate:_sourceSamplingRate numOfChannels:_sourceNumberOfChannels];
+        
+      /*  ekgBeepBuffer = (float *)calloc(LENGTH_OF_EKG_BEEP_IN_SAMPLES, sizeof(float));
+        int i;
+        int silentIndex = 44100*0.01;
+        float frequencyOfBeep =2000.0;
+        float periodInSamples = 44100.0/frequencyOfBeep;
+        float angleIncrement = (2.0f*M_PI)/(float)periodInSamples;
+        float angleForSin = 0;
+        for(i=0;i<LENGTH_OF_EKG_BEEP_IN_SAMPLES;i++)
+        {
+            if(i<silentIndex)
+            {
+                ekgBeepBuffer[i] = 0.0f;
+            }
+            else
+            {
+                
+                ekgBeepBuffer[i] = 100.1f*sinf(angleForSin);
+                angleForSin += angleIncrement;
+            }
+        }*/
+
         
         currentFilterSettings = FILTER_SETTINGS_RAW;
         lpFilterCutoff = FILTER_LP_OFF;
@@ -478,42 +504,57 @@ static BBAudioManager *bbAudioManager = nil;
 -(void) makeInputOutput
 {
      NSLog(@"makeInputOutput %p\n",audioManager);
-   // [self resetBuffers];
+
+   /* playEKGBeep = NO;
+    counterForEKGBeep = 0;
+
     
-    if(btOn)
-    {
-        //Get the data
-      /*  [[BBBTManager btManager] setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
+    [audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
+        
+        if(playEKGBeep)
         {
-             [self additionalProcessingOfInputData:data forNumOfFrames:numFrames andNumChannels:numChannels];
-            
-             ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
-        }];
-        
-        //Trigger data collection on precise timing
-        [audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
-            [[BBBTManager btManager] needData:((float)numFrames)/((float)audioManager.samplingRate) ];
             memset(data, 0, numChannels*numFrames*sizeof(float));
-        }];
-        
-        */
-    }
-    else
-    {
-        // Replace the input block with the old input block, where we just save an in-memory copy of the audio.
-        [audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
-           
-            if(ringBuffer == NULL)
-            {
-                NSLog(@"/n/n ERROR in Input block %p", self);
-                return;
-            }
-            [self additionalProcessingOfInputData:data forNumOfFrames:numFrames andNumChannels:numChannels];
             
-            ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
-           
-        }];
-    }
+            int lengthToCopy = numFrames;
+            if(lengthToCopy> (LENGTH_OF_EKG_BEEP_IN_SAMPLES- counterForEKGBeep))
+            {
+                lengthToCopy = (LENGTH_OF_EKG_BEEP_IN_SAMPLES- counterForEKGBeep);
+            }
+            memcpy(data, &(ekgBeepBuffer[counterForEKGBeep]), lengthToCopy);
+            counterForEKGBeep+=lengthToCopy;
+            if(counterForEKGBeep>=LENGTH_OF_EKG_BEEP_IN_SAMPLES)
+            {
+                playEKGBeep = NO;
+            }
+            
+            NSLog(@"sound");
+        }
+        else
+        {
+            memset(data, 0, numChannels*numFrames*sizeof(float));
+            return;
+        }
+        
+            
+    } ];
+   
+        */
+
+
+    // Replace the input block with the old input block, where we just save an in-memory copy of the audio.
+    [audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
+       
+        if(ringBuffer == NULL)
+        {
+            NSLog(@"/n/n ERROR in Input block %p", self);
+            return;
+        }
+        [self additionalProcessingOfInputData:data forNumOfFrames:numFrames andNumChannels:numChannels];
+        
+        ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
+       
+    }];
+    
 }
 
 
@@ -543,6 +584,8 @@ static BBAudioManager *bbAudioManager = nil;
     if (thresholding)
     {
         dspThresholder->ProcessNewAudio(data, numFrames);
+        [ecgAnalysis updateECGData:data withNumberOfFrames:numFrames numberOfChannels: numChannels andThreshold:dspThresholder->GetThreshold()];
+       // NSLog(@"%d",(int)[self heartRate]);
     }
     
     if(playing)
@@ -553,12 +596,6 @@ static BBAudioManager *bbAudioManager = nil;
     if(FFTOn)
     {
         dspAnalizer->CalculateDynamicFFT(data, numFrames, _selectedChannel);
-    }
-    
-    if(ECGOn)
-    {
-         [ecgAnalysis calculateECGWithThreshold:data numberOfFrames:numFrames selectedChannel:_selectedChannel];
-       // [ecgAnalysis calculateECGAnalysis:data numberOfFrames:numFrames selectedChannel:_selectedChannel];
     }
     
     if(rtSpikeSorting)
@@ -624,7 +661,7 @@ static BBAudioManager *bbAudioManager = nil;
                 sum = sum/(float)thisNumFrames;
                 amDCLevelRemovalCh1 = 0.99*amDCLevelRemovalCh1 + 0.01*sum;
                 offset = - amDCLevelRemovalCh1;
-                NSLog(@"NF: %d - sum: %f - DC: %f\n",thisNumFrames, sum, amDCLevelRemovalCh1);
+                //NSLog(@"NF: %d - sum: %f - DC: %f\n",thisNumFrames, sum, amDCLevelRemovalCh1);
                 vDSP_vsadd(newData,
                            1,
                            &offset,
@@ -743,6 +780,7 @@ static BBAudioManager *bbAudioManager = nil;
             break;
         case FILTER_SETTINGS_EKG:
             [self setFilterLPCutoff:50 hpCutoff:FILTER_HP_OFF];
+           // [self overrideAudioOutput];
             break;
         case FILTER_SETTINGS_EEG:
             [self setFilterLPCutoff:100 hpCutoff:FILTER_HP_OFF];
@@ -760,6 +798,24 @@ static BBAudioManager *bbAudioManager = nil;
             break;
     }
     currentFilterSettings = newFilterSettings;
+}
+
+-(void) overrideAudioOutput
+{
+    //https://stackoverflow.com/questions/2175082/force-iphone-to-output-through-the-speaker-while-recording-from-headphone-mic?noredirect=1&lq=1
+    //https://stackoverflow.com/questions/5931799/redirecting-audio-output-to-phone-speaker-and-mic-input-to-headphones
+    //https://stackoverflow.com/questions/1064846/iphone-audio-playback-force-through-internal-speaker
+  /*  audioManager.ignoreHandler = YES;
+    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayAndRecord error:nil];
+    UInt32 audioRouteOverride = kAudioSessionOverrideAudioRoute_Speaker;  // 1
+    AudioSessionSetProperty (kAudioSessionProperty_OverrideAudioRoute,sizeof (audioRouteOverride), &audioRouteOverride);
+    
+    // Force audio to come out of speaker
+  //  [[AVAudioSession sharedInstance] overrideOutputAudioPort:AVAudioSessionPortOverrideSpeaker error:nil];
+    
+    */
+    
+
 }
 
 -(int) getLPFilterCutoff {return lpFilterCutoff;}
@@ -913,7 +969,7 @@ static BBAudioManager *bbAudioManager = nil;
     
     NSLog(@"Select threshold channel from BB audio init");
     dspThresholder->SetSelectedChannel(_selectedChannel);
-    
+    [ecgAnalysis reset];
     thresholding = true;
 }
 
@@ -1065,26 +1121,6 @@ static BBAudioManager *bbAudioManager = nil;
 
 #pragma mark - ECG code
 
--(void) startECG
-{
-    [self quitAllFunctions];
-    [self getChannelsConfig];
-    [self makeInputOutput];
-    
-    if(ecgAnalysis)
-    {
-        [ecgAnalysis release];
-    }
-    ecgAnalysis = [[BBECGAnalysis alloc] init];
-    [ecgAnalysis initECGAnalysisWithSamplingRate:_sourceSamplingRate numOfChannels:_sourceNumberOfChannels];
-    ECGOn = true;
-}
-
--(void) stopECG
-{
-
-    ECGOn = false;
-}
 
 
 -(float) heartRate
@@ -1092,20 +1128,12 @@ static BBAudioManager *bbAudioManager = nil;
     return [ecgAnalysis heartRate];
 }
 
--(BOOL) heartBeatPresent
+/*-(void) playBeep
 {
-    return [ecgAnalysis heartBeatPresent];
-}
+    playEKGBeep = YES;
+    counterForEKGBeep = 0;
+}*/
 
--(float) ecgThreshold
-{
-    return [ecgAnalysis extThreshold];
-}
-
--(void) setEcgThreshold:(float) inEcgThreshold
-{
-    [ecgAnalysis setExtThreshold:inEcgThreshold];
-}
 
 #pragma mark - Playback
 

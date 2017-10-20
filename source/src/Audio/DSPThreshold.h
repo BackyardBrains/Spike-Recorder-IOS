@@ -60,6 +60,7 @@ class DSPThreshold {
 		void SetThresholdDirection(BBThresholdType newDirection) { mThresholdDirection = newDirection; }
         void SetNumTriggersInHistory(UInt32 numTriggersInHistory);
         void SetSelectedChannel(int newSelectedChannel);
+        int GetCrossingIndex(void);
 	
 	private:
 	
@@ -68,6 +69,7 @@ class DSPThreshold {
         UInt32 mLastFreshSample;//last fresh samples in buffers (triggeredSegments[][mLastFreshSample])
         UInt32 mNumFramesLastUsedForDisplay;
         UInt32 mNumTriggersInHistory;
+        int crossingIndex;
     
         bool isTriggered;
         bool haveAllAudio;

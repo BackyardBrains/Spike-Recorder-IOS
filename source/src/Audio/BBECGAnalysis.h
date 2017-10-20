@@ -8,42 +8,34 @@
 
 #import <Foundation/Foundation.h>
 #import "NVDSP.h"
-#import "NVHighpassFilter.h"
-#import "NVLowpassFilter.h"
 #import <Accelerate/Accelerate.h>
 #define HEART_BEAT_NOTIFICATION @"heartBeatNotification"
+
+#define NUMBER_OF_BEATS_TO_REMEMBER 100
+#define NUMBER_OF_SEC_TO_AVERAGE 6
 
 
 @interface BBECGAnalysis : NSObject
 {
-    NVHighpassFilter * HPF;
-    NVLowpassFilter * LPF;
-    NVLowpassFilter * LPF2;
     
-    float * singleChannelBuffer;
+    float * beatTimestamps;
     UInt32 numberOfChannels;
     float channelSamplingRate;
-    float maxValueForECG;
-    float currentTimeECG;
-    float threshold;
-    int numberOfPeaksDetected;
-    float lastSampleECG;
-    
-    float lastTimePeak;
-    float secondLastTimePeak;
-    float thirdLastTimePeak;
-    float * bufferForDiff;
-    float valueToKeepForDiff;
+    UInt32 updateECGWithNumberOfFrames;
+    int currentBeatIndex;
+    int beatsCollected;
+    float lastTime;
 }
 
 @property (readonly) float heartRate;
-@property (readonly) BOOL heartBeatPresent;
-@property (nonatomic) float extThreshold;
+
+
+
+-(void) reset;
 
 
 -(void) initECGAnalysisWithSamplingRate:(float) samplingRate numOfChannels:(UInt32) numOfChannels;
--(void) calculateECGAnalysis:(float *) newData numberOfFrames:(UInt32) numOfFrames selectedChannel:(UInt32) selectedChannel;
--(void) calculateECGWithThreshold:(float *) newData numberOfFrames:(UInt32) numOfFrames selectedChannel:(UInt32) selectedChannel;
+-(void) updateECGData:(float * ) data withNumberOfFrames:(UInt32) numberOfFrames numberOfChannels: (int)numOfChannels andThreshold:(float) threshold;
 @end
 
 

@@ -394,7 +394,7 @@
     AudioSessionGetProperty(kAudioSessionProperty_AudioRoute, &propertySize, &route);
     
     NSString* routeStr = (NSString*)route;
-    NSLog(@"AudioRoute: %@", routeStr);
+    NSLog(@"AudioRoute -: %@", routeStr);
     
     /* Known values of route:
      * "Headset"

@@ -8,6 +8,7 @@
  */
 
 #include "DSPThreshold.h"
+#include <iostream>
 
 DSPThreshold :: ~DSPThreshold()
 {
@@ -65,16 +66,18 @@ void DSPThreshold:: SetNumberOfChannels(UInt32 newNumOfChannels)
 
 int DSPThreshold:: FindThresholdCrossing(const float *data, UInt32 inNumberFrames,UInt32 selectedChannel, UInt32 stride)
 {
+    
+    crossingIndex =-1;
 	// If we're looking for an upward threshold crossing
 	if (mThresholdDirection == BBThresholdTypeCrossingUp) {
 		for (int i=selectedChannel+stride; i < inNumberFrames;i+=stride) {
 			// if a sample is above the threshold
 			if (data[i] > mThresholdValue) {
 				// and the last sample isn't...
-				if (data[i-1] < mThresholdValue){
+				if (data[i-1] <= mThresholdValue){
 					// then we've found an upwards threshold crossing.
-                    
-					return i/stride;
+                    crossingIndex = i/stride;
+					return crossingIndex;
 				}
 			}
 		}
@@ -85,18 +88,27 @@ int DSPThreshold:: FindThresholdCrossing(const float *data, UInt32 inNumberFrame
 			// if a sample is below the threshold...
 			if (data[i] < mThresholdValue) {
 				// and the previous sample is...
-				if (data[i-stride] > mThresholdValue){
+				if (data[i-stride] >= mThresholdValue){
 					// then we've found a downward threshold crossing.
-					return i/stride;
+                    crossingIndex = i/stride;
+					return crossingIndex;
 				}
 			}
 		}
 	}
 	// If we haven't returned anything by now, we haven't found anything.
 	// So, we return -1.
-	return -1;
+    
+	return crossingIndex;
 	
 }
+
+
+int DSPThreshold::GetCrossingIndex(void)
+{
+    return crossingIndex;
+}
+
 
 void DSPThreshold :: ProcessNewAudio(float *incomingAudio, UInt32 numFrames)
 {

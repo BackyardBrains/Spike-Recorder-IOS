@@ -922,6 +922,7 @@ void sessionPropertyListener(void *                  inClientData,
 							 UInt32                  inDataSize,
 							 const void *            inData){
 	
+    
     // Determines the reason for the route change, to ensure that it is not
     //      because of a category change.
     CFNumberRef routeChangeReasonRef = (CFNumberRef)CFDictionaryGetValue ((CFDictionaryRef)inData, CFSTR (kAudioSession_AudioRouteChangeKey_Reason) );
@@ -931,7 +932,7 @@ void sessionPropertyListener(void *                  inClientData,
     if (inID == kAudioSessionProperty_AudioRouteChange && routeChangeReason != kAudioSessionRouteChangeReason_CategoryChange)
     {
         Novocaine *sm = (__bridge Novocaine *)inClientData;
-        
+       
        // [sm checkSessionProperties];
         [sm pause];
         [sm initNovocaine];

@@ -1,9 +1,12 @@
 
 #import "ThresholdViewController.h"
 //#import "BBBTManager.h"
+#import "BBECGAnalysis.h"
 
 @interface ThresholdViewController() {
     dispatch_source_t callbackTimer;
+    
+    AVAudioPlayer * beepSound;
 }
 
 @end
@@ -48,6 +51,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reSetupScreen) name:RESETUP_SCREEN_NOTIFICATION object:nil];
+     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(beatTheHeart) name:HEART_BEAT_NOTIFICATION object:nil];
     
     [glView startAnimation];
 }
@@ -68,7 +72,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillResignActiveNotification object:nil];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
-    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:HEART_BEAT_NOTIFICATION object:nil];
 
    // [super viewWillDisappear:<#animated#>];
 }
@@ -77,9 +81,24 @@
 {
     [super viewDidLoad];
     
+    beepSound = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSBundle.mainBundle URLForResource:@"beep" withExtension:@"wav"] error:NULL];
+    beepSound.volume = 0.5;
+
+
+}
+
+
+-(void) beatTheHeart
+{
     
-
-
+    //Maybe it is possible to override audio output
+    //https://stackoverflow.com/questions/1064846/iphone-audio-playback-force-through-internal-speaker
+    
+   /* if([[BBAudioManager bbAudioManager] currentFilterSettings]==FILTER_SETTINGS_EKG && [[BBAudioManager bbAudioManager] amDemodulationIsON])
+    {*/
+       // [[BBAudioManager bbAudioManager] playBeep];
+       // NSLog(@"Beep!");
+    //}
 }
 
 
