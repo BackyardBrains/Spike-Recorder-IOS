@@ -80,12 +80,12 @@
         
         lastTime = beatTimestamps[currentBeatIndex];
         currentBeatIndex++;
-        if(currentBeatIndex>NUMBER_OF_BEATS_TO_REMEMBER)
+        if(currentBeatIndex>=NUMBER_OF_BEATS_TO_REMEMBER)
         {
             currentBeatIndex = 0;
         }
         beatsCollected++;
-        if(beatsCollected>NUMBER_OF_BEATS_TO_REMEMBER)
+        if(beatsCollected>=NUMBER_OF_BEATS_TO_REMEMBER)
         {
             beatsCollected = NUMBER_OF_BEATS_TO_REMEMBER;
         }
@@ -96,7 +96,7 @@
         
         if(indexOfLastSummed <0)
         {
-            indexOfLastSummed = NUMBER_OF_BEATS_TO_REMEMBER;
+            indexOfLastSummed = NUMBER_OF_BEATS_TO_REMEMBER-1;
         }
         int indexOfPrevious;
         //calculate the average beat rate in last NUMBER_OF_SEC_TO_AVERAGE sec
@@ -105,7 +105,7 @@
             indexOfPrevious = indexOfLastSummed-1;
             if(indexOfPrevious<0)
             {
-                indexOfPrevious = NUMBER_OF_BEATS_TO_REMEMBER;
+                indexOfPrevious = NUMBER_OF_BEATS_TO_REMEMBER-1;
             }
             float timeDiff = ((float)(beatTimestamps[indexOfLastSummed] - beatTimestamps[indexOfPrevious]));
             if(timeDiff>2.5)
