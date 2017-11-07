@@ -779,11 +779,11 @@ static BBAudioManager *bbAudioManager = nil;
             [self setFilterLPCutoff:FILTER_LP_OFF hpCutoff:FILTER_HP_OFF];
             break;
         case FILTER_SETTINGS_EKG:
-            [self setFilterLPCutoff:50 hpCutoff:FILTER_HP_OFF];
+            [self setFilterLPCutoff:50 hpCutoff:1];
            // [self overrideAudioOutput];
             break;
         case FILTER_SETTINGS_EEG:
-            [self setFilterLPCutoff:100 hpCutoff:FILTER_HP_OFF];
+            [self setFilterLPCutoff:100 hpCutoff:1];
             break;
         case FILTER_SETTINGS_PLANT:
             [self setFilterLPCutoff:5 hpCutoff:FILTER_HP_OFF];
@@ -1133,6 +1133,11 @@ static BBAudioManager *bbAudioManager = nil;
     playEKGBeep = YES;
     counterForEKGBeep = 0;
 }*/
+
+-(BOOL) heartBeatPresent
+{
+    return [ecgAnalysis heartBeatPresent];
+}
 
 
 #pragma mark - Playback

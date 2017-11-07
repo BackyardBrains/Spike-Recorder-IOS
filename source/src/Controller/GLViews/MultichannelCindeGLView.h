@@ -97,9 +97,11 @@ typedef enum {
 -(float) rmsOfSelection;
 -(NSMutableArray * ) spikesCount;
 -(void) updateBTBufferIndicator;
+-(void) changeHeartActive:(BOOL) active;
 
 -(BOOL) thresholding;
 -(float) threshold;
 - (void)setThreshold:(float)newThreshold;
+-(void) setPositionOfHeartX:(float)xPosition Y:(float) yPosition;
 
 @end

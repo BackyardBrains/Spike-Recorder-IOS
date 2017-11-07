@@ -181,6 +181,7 @@
 //ECG
 -(float) heartRate;
 //-(void) playBeep;
+@property (readonly) BOOL heartBeatPresent;
 
 @property float maxVoltageVisible;
 

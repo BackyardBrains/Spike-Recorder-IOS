@@ -686,6 +686,7 @@
         {
             // Draw a threshold line, if we're thresholding
             [self drawThreshold];
+             [dataSourceDelegate changeHeartActive:[[BBAudioManager bbAudioManager] heartBeatPresent]];
         }
         
 
@@ -1351,7 +1352,12 @@
         gl::color( ColorA( 1.0, 1.0f, 1.0f, 1.0f ) );
         heartBeatTextureFont->drawString(hearRateText.str(), heartTextPosition);
         
+        [dataSourceDelegate setPositionOfHeartX:centerx-3*heartTextSize.y Y:heartTextPosition.y-1.1*heartTextSize.y];
+        
     }
+    
+    
+    
     
     //[[BBAudioManager bbAudioManager] currentFilterSettings]
     

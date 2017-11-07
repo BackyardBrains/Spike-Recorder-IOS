@@ -29,7 +29,7 @@
 
 @property (readonly) float heartRate;
 
-
+@property (readonly) BOOL heartBeatPresent;
 
 -(void) reset;
 

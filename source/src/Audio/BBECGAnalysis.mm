@@ -10,7 +10,7 @@
 
 @implementation BBECGAnalysis
 @synthesize heartRate;
-
+@synthesize heartBeatPresent;
 
 
 -(void) initECGAnalysisWithSamplingRate:(float) samplingRate numOfChannels:(UInt32) numOfChannels
@@ -22,6 +22,7 @@
     currentBeatIndex = 0;
     beatsCollected = 0;
     lastTime = 0;
+    heartBeatPresent = NO;
      beatTimestamps = (float *)calloc(NUMBER_OF_BEATS_TO_REMEMBER, sizeof(float));
     
 }
@@ -122,6 +123,8 @@
         {
             averageTime = howMuchHistoryWeIncluded/(float)numberOfBeatsSummed;
         
+            heartBeatPresent = YES;
+            
             if((60*(1.0f/averageTime))>300)
             {
                 heartRate = 300;
@@ -135,6 +138,7 @@
         else
         {
             heartRate = 0;
+            heartBeatPresent = NO;
         }
         
     }
@@ -146,6 +150,7 @@
         {
             heartRate = 0;
             updateECGWithNumberOfFrames = 3*channelSamplingRate; //Prevent overflow
+            heartBeatPresent = NO;
         }
     }
     
