@@ -73,6 +73,9 @@
     int lpFilterCutoff;
     int hpFilterCutoff;
     
+    bool playEKGBeep;
+    int counterForEKGBeep;
+    
 }
 
 @property (getter=samplingRate, readonly) float samplingRate;
@@ -170,15 +173,16 @@
 -(float *) rtSpikeValues;
 -(float *) rtSpikeIndexes;
 -(int) numberOfRTSpikes;
+
+
 @property float rtThresholdFirst;
 @property float rtThresholdSecond;
 
 //ECG
--(void) startECG;
--(void) stopECG;
-@property (readonly) float heartRate;
+-(float) heartRate;
+//-(void) playBeep;
 @property (readonly) BOOL heartBeatPresent;
-@property (nonatomic) float ecgThreshold;
+
 @property float maxVoltageVisible;
 
 -(void) setFilterSettings:(int) newFilterSettings;

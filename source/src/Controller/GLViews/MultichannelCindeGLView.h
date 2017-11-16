@@ -34,6 +34,10 @@ typedef enum {
     gl::TextureFontRef mScaleFont;
     Font currentTimeFont;
     gl::TextureFontRef currentTimeTextureFont;
+    Font heartBeatFont;
+    gl::TextureFontRef heartBeatTextureFont;
+    
+    
 
     id <MultichannelGLViewDelegate> dataSourceDelegate;
     PolyLine2f* displayVectors;
@@ -93,9 +97,11 @@ typedef enum {
 -(float) rmsOfSelection;
 -(NSMutableArray * ) spikesCount;
 -(void) updateBTBufferIndicator;
+-(void) changeHeartActive:(BOOL) active;
 
 -(BOOL) thresholding;
 -(float) threshold;
 - (void)setThreshold:(float)newThreshold;
+-(void) setPositionOfHeartX:(float)xPosition Y:(float) yPosition;
 
 @end

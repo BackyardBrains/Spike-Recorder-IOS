@@ -106,7 +106,6 @@
 		2418FF171A83F79200662547 /* WavManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FF0E1A83F79200662547 /* WavManager.mm */; };
 		2418FF311A83FD3700662547 /* BBBTChooserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2418FF1C1A83FD3700662547 /* BBBTChooserViewController.m */; };
 		2418FF321A83FD3700662547 /* DCMDExperimentViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FF1E1A83FD3700662547 /* DCMDExperimentViewController.mm */; };
-		2418FF331A83FD3700662547 /* ECGViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FF201A83FD3700662547 /* ECGViewController.mm */; };
 		2418FF341A83FD3700662547 /* FFTViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FF221A83FD3700662547 /* FFTViewController.mm */; };
 		2418FF351A83FD3700662547 /* FilterSettingsViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FF241A83FD3700662547 /* FilterSettingsViewController.mm */; };
 		2418FF361A83FD3700662547 /* MyAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FF261A83FD3700662547 /* MyAppDelegate.mm */; };
@@ -140,7 +139,6 @@
 		2418FF981A83FE1200662547 /* BYBGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FF881A83FE1200662547 /* BYBGLView.mm */; };
 		2418FF991A83FE1200662547 /* DCMDGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FF8A1A83FE1200662547 /* DCMDGLView.mm */; };
 		2418FF9A1A83FE1200662547 /* DynamicFFTCinderGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FF8C1A83FE1200662547 /* DynamicFFTCinderGLView.mm */; };
-		2418FF9B1A83FE1200662547 /* ECGGraphView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FF8E1A83FE1200662547 /* ECGGraphView.mm */; };
 		2418FF9C1A83FE1200662547 /* ExperimentDCMDGraphView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FF901A83FE1200662547 /* ExperimentDCMDGraphView.mm */; };
 		2418FF9D1A83FE1200662547 /* MultichannelCindeGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FF921A83FE1200662547 /* MultichannelCindeGLView.mm */; };
 		2418FF9E1A83FE1200662547 /* SpikesCinderView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FF941A83FE1200662547 /* SpikesCinderView.mm */; };
@@ -572,8 +570,6 @@
 		2418FF1C1A83FD3700662547 /* BBBTChooserViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BBBTChooserViewController.m; sourceTree = "<group>"; };
 		2418FF1D1A83FD3700662547 /* DCMDExperimentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMDExperimentViewController.h; sourceTree = "<group>"; };
 		2418FF1E1A83FD3700662547 /* DCMDExperimentViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DCMDExperimentViewController.mm; sourceTree = "<group>"; };
-		2418FF1F1A83FD3700662547 /* ECGViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ECGViewController.h; sourceTree = "<group>"; };
-		2418FF201A83FD3700662547 /* ECGViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ECGViewController.mm; sourceTree = "<group>"; };
 		2418FF211A83FD3700662547 /* FFTViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFTViewController.h; sourceTree = "<group>"; };
 		2418FF221A83FD3700662547 /* FFTViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FFTViewController.mm; sourceTree = "<group>"; };
 		2418FF231A83FD3700662547 /* FilterSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FilterSettingsViewController.h; sourceTree = "<group>"; };
@@ -640,8 +636,6 @@
 		2418FF8A1A83FE1200662547 /* DCMDGLView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DCMDGLView.mm; sourceTree = "<group>"; };
 		2418FF8B1A83FE1200662547 /* DynamicFFTCinderGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DynamicFFTCinderGLView.h; sourceTree = "<group>"; };
 		2418FF8C1A83FE1200662547 /* DynamicFFTCinderGLView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DynamicFFTCinderGLView.mm; sourceTree = "<group>"; };
-		2418FF8D1A83FE1200662547 /* ECGGraphView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ECGGraphView.h; sourceTree = "<group>"; };
-		2418FF8E1A83FE1200662547 /* ECGGraphView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ECGGraphView.mm; sourceTree = "<group>"; };
 		2418FF8F1A83FE1200662547 /* ExperimentDCMDGraphView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExperimentDCMDGraphView.h; sourceTree = "<group>"; };
 		2418FF901A83FE1200662547 /* ExperimentDCMDGraphView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ExperimentDCMDGraphView.mm; sourceTree = "<group>"; };
 		2418FF911A83FE1200662547 /* MultichannelCindeGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MultichannelCindeGLView.h; sourceTree = "<group>"; };
@@ -1272,8 +1266,6 @@
 				2418FF1C1A83FD3700662547 /* BBBTChooserViewController.m */,
 				2418FF1D1A83FD3700662547 /* DCMDExperimentViewController.h */,
 				2418FF1E1A83FD3700662547 /* DCMDExperimentViewController.mm */,
-				2418FF1F1A83FD3700662547 /* ECGViewController.h */,
-				2418FF201A83FD3700662547 /* ECGViewController.mm */,
 				2418FF211A83FD3700662547 /* FFTViewController.h */,
 				2418FF221A83FD3700662547 /* FFTViewController.mm */,
 				2418FF231A83FD3700662547 /* FilterSettingsViewController.h */,
@@ -1385,8 +1377,6 @@
 				2418FF8A1A83FE1200662547 /* DCMDGLView.mm */,
 				2418FF8B1A83FE1200662547 /* DynamicFFTCinderGLView.h */,
 				2418FF8C1A83FE1200662547 /* DynamicFFTCinderGLView.mm */,
-				2418FF8D1A83FE1200662547 /* ECGGraphView.h */,
-				2418FF8E1A83FE1200662547 /* ECGGraphView.mm */,
 				2418FF8F1A83FE1200662547 /* ExperimentDCMDGraphView.h */,
 				2418FF901A83FE1200662547 /* ExperimentDCMDGraphView.mm */,
 				2418FF911A83FE1200662547 /* MultichannelCindeGLView.h */,
@@ -1826,8 +1816,6 @@
 				2418FF7F1A83FDD500662547 /* ExperimentSetupViewController.mm in Sources */,
 				2418FF641A83FDA100662547 /* RowHeaderColectionViewCell.m in Sources */,
 				2418FEFA1A83F6C800662547 /* BBSpikeTrain.m in Sources */,
-				2418FF331A83FD3700662547 /* ECGViewController.mm in Sources */,
-				2418FF9B1A83FE1200662547 /* ECGGraphView.mm in Sources */,
 				1CD05BA91CFD398400A83727 /* BBCommentDetailsCell.m in Sources */,
 				2470877A1A85104D004C6B9B /* NSData-SQLitePersistence.m in Sources */,
 				2470877C1A85104D004C6B9B /* NSDate-SQLitePersistence.m in Sources */,

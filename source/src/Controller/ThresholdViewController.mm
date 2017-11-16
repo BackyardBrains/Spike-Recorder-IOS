@@ -1,9 +1,13 @@
 
 #import "ThresholdViewController.h"
 //#import "BBBTManager.h"
+#import "BBECGAnalysis.h"
 
 @interface ThresholdViewController() {
     dispatch_source_t callbackTimer;
+    
+    AVAudioPlayer * beepSound;
+    BOOL lastHearRateActive;
 }
 
 @end
@@ -11,12 +15,25 @@
 @implementation ThresholdViewController
 @synthesize triggerHistoryLabel;
 @synthesize glView;
+@synthesize activeHeartImg;
 
 - (void)viewWillAppear:(BOOL)animated
 {
     NSLog(@"Starting threshold view");
     [super viewWillAppear:animated];
     // our CCGLTouchView being added as a subview
+    self.activeHeartImg.image = [UIImage imageNamed:@"nobeat.png"];
+    
+    if([[BBAudioManager bbAudioManager] currentFilterSettings]==FILTER_SETTINGS_EKG && [[BBAudioManager bbAudioManager] amDemodulationIsON])
+    {
+        self.activeHeartImg.hidden = NO;
+    }
+    else
+    {
+        self.activeHeartImg.hidden = YES;
+    }
+    
+    lastHearRateActive = NO;
     if(glView)
     {
         [glView stopAnimation];
@@ -48,6 +65,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reSetupScreen) name:RESETUP_SCREEN_NOTIFICATION object:nil];
+     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(beatTheHeart) name:HEART_BEAT_NOTIFICATION object:nil];
     
     [glView startAnimation];
 }
@@ -68,7 +86,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillResignActiveNotification object:nil];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
-    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:HEART_BEAT_NOTIFICATION object:nil];
 
    // [super viewWillDisappear:<#animated#>];
 }
@@ -77,9 +95,95 @@
 {
     [super viewDidLoad];
     
+    beepSound = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSBundle.mainBundle URLForResource:@"beep" withExtension:@"wav"] error:NULL];
+    beepSound.volume = 0.5;
+
+
+}
+
+
+-(void) beatTheHeart
+{
+    if([[BBAudioManager bbAudioManager] currentFilterSettings]==FILTER_SETTINGS_EKG && [[BBAudioManager bbAudioManager] amDemodulationIsON])
+    {
+        self.activeHeartImg.hidden = NO;
+    }
+    else
+    {
+        self.activeHeartImg.hidden = YES;
+    }
     
+    //Maybe it is possible to override audio output
+    //https://stackoverflow.com/questions/1064846/iphone-audio-playback-force-through-internal-speaker
+    
+   /* if([[BBAudioManager bbAudioManager] currentFilterSettings]==FILTER_SETTINGS_EKG && [[BBAudioManager bbAudioManager] amDemodulationIsON])
+    {*/
+       // [[BBAudioManager bbAudioManager] playBeep];
+       // NSLog(@"Beep!");
+    //}
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+        
+        self.activeHeartImg.alpha = 0.2;
+        [UIView animateWithDuration:0.2 animations:^(void) {
+            self.activeHeartImg.alpha = 1.0;
+        }
+                         completion:^ (BOOL finished)
+         {
+             if (finished) {
+                 [UIView animateWithDuration:0.3 animations:^(void){
+                     // Revert image view to original.
+                     self.activeHeartImg.alpha = 0.2;
+                     [self.activeHeartImg.layer removeAllAnimations];
+                     [self.activeHeartImg setNeedsDisplay];
+                 }];
+             }
+         }
+         
+         
+         ];
+        
+    });
+    
+}
 
 
+
+-(void) changeHeartActive:(BOOL) active
+{
+    if([[BBAudioManager bbAudioManager] currentFilterSettings]==FILTER_SETTINGS_EKG && [[BBAudioManager bbAudioManager] amDemodulationIsON])
+    {
+        self.activeHeartImg.hidden = NO;
+    }
+    else
+    {
+        self.activeHeartImg.hidden = YES;
+    }
+    
+    
+    if(lastHearRateActive!=active)
+    {
+        lastHearRateActive= active;
+        if(active)
+        {
+            self.activeHeartImg.image = [UIImage imageNamed:@"hasbeat.png"];
+        }
+        else
+        {
+            self.activeHeartImg.image = [UIImage imageNamed:@"nobeat.png"];
+            self.activeHeartImg.alpha = 0.8;
+        }
+    }
+}
+
+
+
+-(void) setPositionOfHeartX:(float) xPosition Y:(float) yPosition
+{
+   // activityImageView.frame = CGRectMake(280, 5, 34, 34);
+    float widthOfImage = self.activeHeartImg.frame.size.width;
+    self.activeHeartImg.frame = CGRectMake(xPosition- widthOfImage-10,yPosition, widthOfImage,  self.activeHeartImg.frame.size.height);
 }
 
 
@@ -270,6 +374,7 @@
 
 - (void)dealloc {
     [triggerHistoryLabel release];
+    [activeHeartImg release];
     [super dealloc];
 }
 

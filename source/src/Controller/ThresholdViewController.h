@@ -26,5 +26,8 @@
 -(void) endSelection;
 -(BOOL) selecting;
 -(float) rmsOfSelection;
+@property (retain, nonatomic) IBOutlet UIImageView *activeHeartImg;
+-(void) changeHeartActive:(BOOL) active;
+-(void) setPositionOfHeartX:(float) xPosition Y:(float) yPosition;
 
 @end

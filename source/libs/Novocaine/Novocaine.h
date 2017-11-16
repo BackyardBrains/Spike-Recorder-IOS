@@ -112,6 +112,9 @@ typedef void (^NovocaineInputBlock)(float *data, UInt32 numFrames, UInt32 numCha
 @property (nonatomic, assign)   BOOL forceOutputToSpeaker;
 #endif
 
+
+
+
 // Explicitly declaring the block setters will create the correct block signature for auto-complete.
 // These will map to the setters for the block properties below.
 - (void)setInputBlock:(NovocaineInputBlock)block;

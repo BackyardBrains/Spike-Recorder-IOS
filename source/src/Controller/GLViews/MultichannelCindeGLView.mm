@@ -110,6 +110,9 @@
     currentTimeFont = Font("Helvetica", 13);//26/retinaScaling);
     currentTimeTextureFont = gl::TextureFont::create( currentTimeFont );
     
+    heartBeatFont = Font("Helvetica", 24);//36/retinaScaling);
+    heartBeatTextureFont = gl::TextureFont::create( heartBeatFont );
+    
     lastUserInteraction = [[NSDate date] timeIntervalSince1970];
     handlesShouldBeVisible = NO;
     offsetPositionOfHandles = 0;
@@ -683,6 +686,7 @@
         {
             // Draw a threshold line, if we're thresholding
             [self drawThreshold];
+             [dataSourceDelegate changeHeartActive:[[BBAudioManager bbAudioManager] heartBeatPresent]];
         }
         
 
@@ -856,6 +860,7 @@
     
     //draw background rectangle
     gl::enableDepthRead();
+
     gl::drawSolidRect(Rectf(centerx-3*xScaleTextSize.y,xScaleTextPosition.y-1.1*xScaleTextSize.y,centerx+3*xScaleTextSize.y,xScaleTextPosition.y+0.4*xScaleTextSize.y));
     gl::disableDepthRead();
     gl::color( ColorA( 1.0, 1.0f, 1.0f, 1.0f ) );
@@ -1324,14 +1329,49 @@
     gl::disableDepthRead();
     gl::setMatricesWindow( Vec2i(self.frame.size.width, self.frame.size.height) );
 	gl::enableAlphaBlending();
+
+    
+    if(mode == MultichannelGLViewModeThresholding && [[BBAudioManager bbAudioManager] currentFilterSettings]==FILTER_SETTINGS_EKG && [[BBAudioManager bbAudioManager] amDemodulationIsON])
+    {
+        
+        std::stringstream hearRateText;
+        hearRateText << (int)[[BBAudioManager bbAudioManager] heartRate] << "BPM";
+        
+        Vec2f heartTextSize = heartBeatTextureFont->measureString(hearRateText.str());
+        Vec2f heartTextPosition = Vec2f(0.,0.);
+        heartTextPosition.x = (self.frame.size.width - heartTextSize.x)/2.0;
+        heartTextPosition.y =self.frame.size.height - (mScaleFont->getAscent()* 2.0f)-15;
+        
+        gl::color( ColorA( 1.0, 0.0f, 0.0f, 1.0f ) );
+        gl::enableDepthRead();
+        float centerx = self.frame.size.width/2;
+        gl::drawSolidRect(Rectf(centerx-3*heartTextSize.y,heartTextPosition.y-1.1*heartTextSize.y,centerx+3*heartTextSize.y,heartTextPosition.y+0.4*heartTextSize.y));
+        gl::disableDepthRead();
+        
+        
+        gl::color( ColorA( 1.0, 1.0f, 1.0f, 1.0f ) );
+        heartBeatTextureFont->drawString(hearRateText.str(), heartTextPosition);
+        
+        [dataSourceDelegate setPositionOfHeartX:centerx-3*heartTextSize.y Y:heartTextPosition.y-1.1*heartTextSize.y];
+        
+    }
+    
+    
+    
+    
+    //[[BBAudioManager bbAudioManager] currentFilterSettings]
+    
+    
+    
+    
+    
+    
+    
     
     float xScale = 0.5*numSamplesVisible*(1/samplingRate)*1000;//1000.0*(xMiddle.x - xFarLeft.x);
 
-    
     std::stringstream xStringStream;
-    
-    
-//-------------------------- Stan commented below for debug
+
     xStringStream.precision(1);
     if (xScale >= 1000) {
         xScale /= 1000.0;
@@ -1343,35 +1383,7 @@
         xStringStream << fixed << xScale << " msec";
     }
     
-   // xStringStream << [[BBAudioManager bbAudioManager] amOffset];
     
-    
-    //==================================================
-    //Debug code for BT sample rate
-    /* float br = [[BBBTManager btManager] currentBaudRate];
-     if (br >= 1000) {
-     br /= 1000.0;
-     xStringStream << fixed << br << " KBps";
-     }
-     else {
-     xStringStream << fixed << br << " Bps";
-     }*/
-    //==================================================
-    
-    
-    //==================================================
-    //Debug code for BT buffer size
-    if([[BBAudioManager bbAudioManager] btOn])
-    {
-        //xStringStream.str("");
-        //xStringStream << [[BBBTManager btManager] numberOfFramesBuffered] << " Samp.";
-        if([dataSourceDelegate respondsToSelector:@selector(updateBTBufferIndicator)])
-        {
-            [dataSourceDelegate updateBTBufferIndicator];
-        }
-        
-    }
-    //==================================================
     
 	gl::color( ColorA( 1.0, 1.0f, 1.0f, 1.0f ) );
 
