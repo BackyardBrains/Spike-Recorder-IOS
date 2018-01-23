@@ -1355,19 +1355,9 @@
         [dataSourceDelegate setPositionOfHeartX:centerx-3*heartTextSize.y Y:heartTextPosition.y-1.1*heartTextSize.y];
         
     }
-    
-    
-    
-    
+
     //[[BBAudioManager bbAudioManager] currentFilterSettings]
-    
-    
-    
-    
-    
-    
-    
-    
+
     float xScale = 0.5*numSamplesVisible*(1/samplingRate)*1000;//1000.0*(xMiddle.x - xFarLeft.x);
 
     std::stringstream xStringStream;
