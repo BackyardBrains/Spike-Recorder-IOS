@@ -7,6 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1C3882BF2018844E00B0388B /* icon83-5@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C3882BE2018844E00B0388B /* icon83-5@2x.png */; };
+		1C3882C12018863400B0388B /* landscape-1024-768.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C3882C02018863400B0388B /* landscape-1024-768.png */; };
+		1C3882C32018879400B0388B /* portrait-768-1024.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C3882C22018879400B0388B /* portrait-768-1024.png */; };
+		1C3882C52018890300B0388B /* landscape-2048-1536.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C3882C42018890300B0388B /* landscape-2048-1536.png */; };
+		1C3882C720188A4C00B0388B /* portrait-1536-2048.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C3882C620188A4C00B0388B /* portrait-1536-2048.png */; };
+		1C3882C92018AB5900B0388B /* Screenshot@2x-1.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C3882C82018AB5900B0388B /* Screenshot@2x-1.png */; };
+		1C3882CD2018AF8B00B0388B /* portrait-1125-2436.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C3882CA2018AF8B00B0388B /* portrait-1125-2436.png */; };
+		1C3882CE2018AF8B00B0388B /* landcape-2208-1242.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C3882CB2018AF8B00B0388B /* landcape-2208-1242.png */; };
+		1C3882CF2018AF8B00B0388B /* landcape-2436-1125.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C3882CC2018AF8B00B0388B /* landcape-2436-1125.png */; };
 		1CB1265C1F87DDFF00247389 /* ObjectiveDropboxOfficial.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CB1265B1F87DDFF00247389 /* ObjectiveDropboxOfficial.framework */; };
 		1CB1265D1F87DDFF00247389 /* ObjectiveDropboxOfficial.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1CB1265B1F87DDFF00247389 /* ObjectiveDropboxOfficial.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1CBD16121E72E6DC00F59AEF /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CBD16101E72E6DC00F59AEF /* Crashlytics.framework */; };
@@ -281,6 +290,15 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1C3882BE2018844E00B0388B /* icon83-5@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon83-5@2x.png"; sourceTree = "<group>"; };
+		1C3882C02018863400B0388B /* landscape-1024-768.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "landscape-1024-768.png"; sourceTree = "<group>"; };
+		1C3882C22018879400B0388B /* portrait-768-1024.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "portrait-768-1024.png"; sourceTree = "<group>"; };
+		1C3882C42018890300B0388B /* landscape-2048-1536.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "landscape-2048-1536.png"; sourceTree = "<group>"; };
+		1C3882C620188A4C00B0388B /* portrait-1536-2048.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "portrait-1536-2048.png"; sourceTree = "<group>"; };
+		1C3882C82018AB5900B0388B /* Screenshot@2x-1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Screenshot@2x-1.png"; sourceTree = "<group>"; };
+		1C3882CA2018AF8B00B0388B /* portrait-1125-2436.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "portrait-1125-2436.png"; sourceTree = "<group>"; };
+		1C3882CB2018AF8B00B0388B /* landcape-2208-1242.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "landcape-2208-1242.png"; sourceTree = "<group>"; };
+		1C3882CC2018AF8B00B0388B /* landcape-2436-1125.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "landcape-2436-1125.png"; sourceTree = "<group>"; };
 		1CB1265B1F87DDFF00247389 /* ObjectiveDropboxOfficial.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ObjectiveDropboxOfficial.framework; path = Carthage/Build/iOS/ObjectiveDropboxOfficial.framework; sourceTree = "<group>"; };
 		1CBD16101E72E6DC00F59AEF /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		1CBD16111E72E6DC00F59AEF /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
@@ -1125,6 +1143,7 @@
 				247087B31A851774004C6B9B /* Icon-Small-50@2x.png */,
 				247087B41A851774004C6B9B /* Icon-Small.png */,
 				247087B51A851774004C6B9B /* Icon-Small@2x.png */,
+				1C3882BE2018844E00B0388B /* icon83-5@2x.png */,
 				247087B61A851774004C6B9B /* Icon-Small@3x.png */,
 				247087B71A851774004C6B9B /* Icon.png */,
 				247087B81A851774004C6B9B /* Icon@2x.png */,
@@ -1141,7 +1160,15 @@
 				2418FFC61A8406A600662547 /* Default-Portrait.png */,
 				2418FFC71A8406A600662547 /* Default-Portrait@2x.png */,
 				2418FFC81A8406A600662547 /* Screenshot-568h.png */,
+				1C3882C22018879400B0388B /* portrait-768-1024.png */,
+				1C3882CB2018AF8B00B0388B /* landcape-2208-1242.png */,
+				1C3882CC2018AF8B00B0388B /* landcape-2436-1125.png */,
+				1C3882CA2018AF8B00B0388B /* portrait-1125-2436.png */,
+				1C3882C42018890300B0388B /* landscape-2048-1536.png */,
+				1C3882C620188A4C00B0388B /* portrait-1536-2048.png */,
+				1C3882C02018863400B0388B /* landscape-1024-768.png */,
 				2418FFC91A8406A600662547 /* Screenshot-750x1334.png */,
+				1C3882C82018AB5900B0388B /* Screenshot@2x-1.png */,
 				2418FFCA1A8406A600662547 /* Screenshot-1242x2208.png */,
 				2418FFCB1A8406A600662547 /* Screenshot@2x.png */,
 			);
@@ -1555,8 +1582,8 @@
 		FADF26471596362E006C87BA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0500;
-				ORGANIZATIONNAME = "Datta Lab, Harvard University";
+				LastUpgradeCheck = 0920;
+				ORGANIZATIONNAME = BackyardBrains;
 				TargetAttributes = {
 					FADF264F1596362F006C87BA = {
 						DevelopmentTeam = MLGRKD657P;
@@ -1607,6 +1634,7 @@
 				2418FED81A83F5D700662547 /* StimSettings.png in Resources */,
 				247087C31A851774004C6B9B /* Icon-Small-40@3x.png in Resources */,
 				FADF268715963630006C87BA /* MainWindow.xib in Resources */,
+				1C3882CD2018AF8B00B0388B /* portrait-1125-2436.png in Resources */,
 				FADF268915963630006C87BA /* ViewAndRecordViewController.xib in Resources */,
 				249A246319058465005F5F03 /* AutocorrelationGraphViewController.xib in Resources */,
 				247087BF1A851774004C6B9B /* Icon-76.png in Resources */,
@@ -1626,9 +1654,13 @@
 				249A24681906AC59005F5F03 /* ISIHistogramViewController.xib in Resources */,
 				24EBC1B31997DD21001D3392 /* TrialActionsViewController.xib in Resources */,
 				2418FEC31A83F5D700662547 /* ecg.png in Resources */,
+				1C3882C52018890300B0388B /* landscape-2048-1536.png in Resources */,
+				1C3882CE2018AF8B00B0388B /* landcape-2208-1242.png in Resources */,
 				1CF7DB361F7988DF008F303E /* slider-metal-handle-highlighted.png in Resources */,
+				1C3882C92018AB5900B0388B /* Screenshot@2x-1.png in Resources */,
 				241C8AF71B3201B800CEFCEE /* template.xml in Resources */,
 				FA35CEFF15ABBADC0082FBC3 /* PlaybackViewController.xib in Resources */,
+				1C3882C12018863400B0388B /* landscape-1024-768.png in Resources */,
 				247087C61A851774004C6B9B /* Icon-Small.png in Resources */,
 				245B1847199172D200943684 /* ExperimentsViewController.xib in Resources */,
 				247087BA1A851774004C6B9B /* Icon-60.png in Resources */,
@@ -1661,6 +1693,7 @@
 				24DBA92A197709DF00AEDE86 /* FFTViewController.xib in Resources */,
 				240D8067190E98F6009F9AEA /* CrossCorrViewController.xib in Resources */,
 				247087C21A851774004C6B9B /* Icon-Small-40@2x.png in Resources */,
+				1C3882C32018879400B0388B /* portrait-768-1024.png in Resources */,
 				2418FEBB1A83F5D700662547 /* bluetooth.png in Resources */,
 				242631B419C2042A00225E44 /* ECGViewController.xib in Resources */,
 				247087C51A851774004C6B9B /* Icon-Small-50@2x.png in Resources */,
@@ -1681,6 +1714,7 @@
 				2418FEE31A83F5D700662547 /* WaveImage.png in Resources */,
 				2418FEE41A83F5D700662547 /* WaveImage@2x.png in Resources */,
 				2418FECD1A83F5D700662547 /* Pause.png in Resources */,
+				1C3882BF2018844E00B0388B /* icon83-5@2x.png in Resources */,
 				2418FFCF1A8406A600662547 /* Default-Portrait@2x.png in Resources */,
 				249013A4196AB45200E5EF91 /* ISIGraphViewController.xib in Resources */,
 				2418FEB71A83F5D700662547 /* again.png in Resources */,
@@ -1711,11 +1745,13 @@
 				2418FEC51A83F5D700662547 /* FileNeuron.png in Resources */,
 				2418FEBA1A83F5D700662547 /* backbtn@2x.png in Resources */,
 				245E26FA19EAC01100EE298E /* BBBTChooserViewController.xib in Resources */,
+				1C3882CF2018AF8B00B0388B /* landcape-2436-1125.png in Resources */,
 				2489D8251993ABCA00C00A9C /* DCMDExperimentViewController.xib in Resources */,
 				2418FED41A83F5D700662547 /* settings.png in Resources */,
 				1CF7DB391F7988DF008F303E /* slider-metal-handle@2x.png in Resources */,
 				24EBC1AE1997852D001D3392 /* TrialsDCMDTableViewController.xib in Resources */,
 				2418FECA1A83F5D700662547 /* inputicon@2x.png in Resources */,
+				1C3882C720188A4C00B0388B /* portrait-1536-2048.png in Resources */,
 				247087C71A851774004C6B9B /* Icon-Small@2x.png in Resources */,
 				24507B53196C333C00E27BD2 /* AutoGraphViewController.xib in Resources */,
 				1CF7DB3A1F7988DF008F303E /* slider-metal-track.png in Resources */,
@@ -1905,6 +1941,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -1917,7 +1954,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 			};
@@ -1934,7 +1971,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
@@ -1946,7 +1983,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-1";
 				CINDER_PATH = /Users/stanislavmircic/Desktop/Projects/Backup/Libraries/cinder_0.8.6_mac;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -1974,7 +2011,7 @@
 					"$(CINDER_PATH)/boost",
 				);
 				INFOPLIST_FILE = "src/Spike Recorder-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(CINDER_PATH)/lib",
@@ -1990,10 +2027,11 @@
 					"-ObjC",
 					"$(CINDER_PATH)/lib/libcinder-iphone-sim_d.a",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.backyardbrains.Backyard-Brains";
 				PRODUCT_NAME = "Spike Recorder";
 				PROVISIONING_PROFILE = "";
 				RUN_CLANG_STATIC_ANALYZER = YES;
-				SDKROOT = iphoneos9.3;
+				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "$(CINDER_PATH)/include";
 				VALID_ARCHS = "armv7 arm64 armv7s ";
@@ -2005,7 +2043,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-1";
 				CINDER_PATH = /Users/stanislavmircic/Desktop/Projects/Backup/Libraries/cinder_0.8.6_mac;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -2035,7 +2073,7 @@
 					"$(CINDER_PATH)/boost",
 				);
 				INFOPLIST_FILE = "src/Spike Recorder-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(CINDER_PATH)/lib",
@@ -2051,12 +2089,13 @@
 					"$(CINDER_PATH)/lib/libcinder-iphone.a",
 					"-ObjC",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.backyardbrains.Backyard-Brains";
 				PRODUCT_NAME = "Spike Recorder";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				RUN_CLANG_STATIC_ANALYZER = YES;
-				SDKROOT = iphoneos9.3;
+				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "$(CINDER_PATH)/include";
 				VALID_ARCHS = "armv7 arm64 armv7s ";

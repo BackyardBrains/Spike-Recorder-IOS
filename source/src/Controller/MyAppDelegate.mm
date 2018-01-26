@@ -59,6 +59,10 @@
         int selectThisIndex = [[defaults valueForKey:@"tabIndex"] intValue];
         tabBarController.selectedIndex = selectThisIndex;
     }
+  
+    
+    
+    
     [window makeKeyAndVisible];
 
     

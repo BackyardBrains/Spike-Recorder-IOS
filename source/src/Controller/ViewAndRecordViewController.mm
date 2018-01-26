@@ -162,6 +162,22 @@
     [cancelFingerTap release];
     [super viewDidLoad];
     
+   /*  if (@available(iOS 11.0, *)) {
+     
+     [NSLayoutConstraint activateConstraints:@[
+     [self.view.topAnchor constraintEqualToSystemSpacingBelowAnchor:self.view.safeAreaLayoutGuide.topAnchor multiplier:1],
+     [self.view.bottomAnchor constraintEqualToSystemSpacingBelowAnchor:self.view.safeAreaLayoutGuide.bottomAnchor multiplier:1]
+     ]
+     ];
+     
+     
+     
+     
+     
+     } else {
+     // Fallback on earlier versions
+     }*/
+    
  
 }
 
