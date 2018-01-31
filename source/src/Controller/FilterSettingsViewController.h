@@ -25,10 +25,5 @@
 @end
 
 @protocol BBFilterConfigDelegate <NSObject>
-
 -(void) finishedWithConfiguration;
-
--(double) sliderValueForWpm: (double) wpm;
--(double) wpmForSliderValue: (double) sliderValue;
-
 @end

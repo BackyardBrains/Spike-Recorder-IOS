@@ -44,7 +44,7 @@
     
     [Fabric with:@[[Crashlytics class]]];
     
-    window.rootViewController = tabBarController;
+   // window.rootViewController = tabBarController;
     tabBarController.delegate = self;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     if(sharedFileIsWaiting)
@@ -63,7 +63,7 @@
     
     
     
-    [window makeKeyAndVisible];
+   // [window makeKeyAndVisible];
 
     
     //DropBox V2

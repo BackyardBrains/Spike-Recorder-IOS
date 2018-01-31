@@ -75,14 +75,14 @@
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>We don't need camera.</string>
-	<key>NSMainNibFile</key>
-	<string>MainWindow</string>
 	<key>NSMainNibFile~ipad</key>
 	<string>MainWindow-iPad</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Application is using microphone and microphone jack to connect to SpikerBox product</string>
 	<key>UIApplicationExitsOnSuspend</key>
 	<false/>
+	<key>UIMainStoryboardFile</key>
+	<string>MainStoryboard</string>
 	<key>UIPrerenderedIcon</key>
 	<true/>
 	<key>UIRequiresFullScreen</key>

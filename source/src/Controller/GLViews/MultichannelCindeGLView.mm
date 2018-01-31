@@ -243,7 +243,7 @@
         {
             channelsConfiguration = channelsConfiguration | (tempMask<<k);
         }
-     NSLog([[NSString alloc] initWithFormat:@"Channel configuration: %d", channelsConfiguration ]);
+    
     
     for(int i=0;i<maxNumberOfChannels;i++)
     {
@@ -1069,7 +1069,7 @@
 
              //draw handle for active channels
             [self setColorWithIndex:indexOfChannel transparency:1.0f];
-            if((self.mode == MultichannelGLViewModeView || [self channelActive:indexOfChannel]) && !self.rtConfigurationActive)
+            if(self.mode == MultichannelGLViewModeView || [self channelActive:indexOfChannel])
             {
                 gl::drawSolidEllipse( Vec2f(centerOfCircleX, yOffsets[indexOfChannel]), radiusXAxis, radiusYAxis, 1000 );
                 gl::drawSolidTriangle(
@@ -1121,44 +1121,7 @@
     }//if multichannel
     
     
-    //If configuration of rt spike sorting is active
-    if(self.rtConfigurationActive)
-    {
-        //draw RT handle on selected channe;
-        if(self.mode == MultichannelGLViewModeView && [[BBAudioManager bbAudioManager] rtSpikeSorting])
-        {
-            float zoom = maxVoltsSpan/ numVoltsVisible[selectedChannel];
-         
-         //draw first RT threshold line
-            float xPositionOfThresholdFirst = -radiusXAxis;
-            float yPositionOfThresholdFirst = yOffsets[selectedChannel]+[[BBAudioManager bbAudioManager] rtThresholdFirst]*zoom;
-            [self setColorWithIndex:selectedChannel+1 transparency:1.0];
-            gl::drawSolidEllipse( Vec2f(xPositionOfThresholdFirst, yPositionOfThresholdFirst), radiusXAxis, radiusYAxis, 1000 );
-            gl::drawSolidTriangle(
-                                  Vec2f(xPositionOfThresholdFirst-0.35*radiusXAxis, yPositionOfThresholdFirst+radiusYAxis*0.97),
-                                  Vec2f(xPositionOfThresholdFirst-1.6*radiusXAxis, yPositionOfThresholdFirst),
-                                  Vec2f(xPositionOfThresholdFirst-0.35*radiusXAxis, yPositionOfThresholdFirst-radiusYAxis*0.97)
-                                  );
-            gl::drawLine(Vec2f(-maxTimeSpan, yPositionOfThresholdFirst), Vec2f(0.0f, yPositionOfThresholdFirst));
-            
-            
-            
-        //draw second RT threshold line
-            float xPositionOfThresholdSecond = -maxTimeSpan+radiusXAxis;
-            float yPositionOfThresholdSecond = yOffsets[selectedChannel]+[[BBAudioManager bbAudioManager] rtThresholdSecond]*zoom;
-
-            gl::drawSolidEllipse( Vec2f(xPositionOfThresholdSecond, yPositionOfThresholdSecond), radiusXAxis, radiusYAxis, 1000 );
-            gl::drawSolidTriangle(
-                                  Vec2f(xPositionOfThresholdSecond+0.35*radiusXAxis, yPositionOfThresholdSecond+radiusYAxis*0.97),
-                                  Vec2f(xPositionOfThresholdSecond+1.6*radiusXAxis, yPositionOfThresholdSecond),
-                                  Vec2f(xPositionOfThresholdSecond+0.35*radiusXAxis, yPositionOfThresholdSecond-radiusYAxis*0.97)
-                                  );
-            
-            
-            gl::drawLine(Vec2f(-maxTimeSpan, yPositionOfThresholdSecond), Vec2f(0.0f, yPositionOfThresholdSecond));
-        }
-    }
-    
+   
     gl::enableDepthRead();
 }
 
@@ -1721,31 +1684,7 @@
         
         }
         
-        //RT spike sorting line
-        if(self.mode == MultichannelGLViewModeView && [[BBAudioManager bbAudioManager] rtSpikeSorting] && self.rtConfigurationActive)
-        {
-            float zoom = maxVoltsSpan/ numVoltsVisible[selectedChannel];
-            
-            Vec2f screenThresholdPos1 = [self worldToScreen:Vec2f(0.0f, [[BBAudioManager bbAudioManager] rtThresholdFirst]*zoom + yOffsets[selectedChannel])];
-            
-            float distance1 = (touchPos.y - screenThresholdPos1.y)*(touchPos.y - screenThresholdPos1.y)+(touchPos.x - screenThresholdPos1.x)*(touchPos.x - screenThresholdPos1.x);
-            
-            if (distance1 < 8500) // set via experimentation
-            {
-                [[BBAudioManager bbAudioManager] setRtThresholdFirst:(glWorldTouchPos.y-yOffsets[selectedChannel])/zoom];
-                return;
-            }
-            
-            Vec2f screenThresholdPos2 = [self worldToScreen:Vec2f(0.0f, [[BBAudioManager bbAudioManager] rtThresholdSecond]*zoom + yOffsets[selectedChannel])];
-            
-            float distance2 = (touchPos.y - screenThresholdPos2.y)*(touchPos.y - screenThresholdPos2.y)+(touchPos.x - -maxTimeSpan)*(touchPos.x - -maxTimeSpan);
-            
-            if (distance2 < 8500) // set via experimentation
-            {
-                [[BBAudioManager bbAudioManager] setRtThresholdSecond:(glWorldTouchPos.y-yOffsets[selectedChannel])/zoom];
-                return;
-            }
-        }
+       
         
         //Remove channel X button
         if([self checkIntesectionWithRemoveButton:glWorldTouchPos])
@@ -1916,7 +1855,7 @@
 //
 -(int) checkIntersectionWithHandles:(Vec2f) touchPos
 {
-    if(!multichannel || self.rtConfigurationActive)
+    if(!multichannel)
     {
         return -1;
     }

@@ -1,66 +1,44 @@
 //
-//  MyViewController.h
-//  CCGLTouchBasic example
+// BackyardBrains
 //
-//  Created by Matthieu Savary on 09/09/11.
-//  Copyright (c) 2011 SMALLAB.ORG. All rights reserved.
+// ViewAndRecordViewController.h
 //
-//  More info on the CCGLTouch project >> http://www.smallab.org/code/ccgl-touch/
-//  License & disclaimer >> see license.txt file included in the distribution package
+// View and Record controller used for real time view and recording
 //
 
 #import "CCGLTouchViewController.h"
 #import "BBAudioManager.h"
 #import "BBFile.h"
-
 #import "MultichannelCindeGLView.h"
-#import "FPPopoverController.h"
-#import "BBChannelSelectionTableViewController.h"
-#import "RTSpikeSortingButton.h"
-#import "BufferStateIndicator.h"
-#import "RTCancelButton.h"
 #import "ChooseFilterTypeViewController.h"
 #import "FilterSettingsViewController.h"
-//#import <CoreBluetooth/CoreBluetooth.h>
 
-@interface ViewAndRecordViewController : CCGLTouchViewController <MultichannelGLViewDelegate, FPPopoverControllerDelegate, BBSelectionTableDelegateProtocol, UIPopoverPresentationControllerDelegate, ChooseFilterTypeDelegateProtocol, BBFilterConfigDelegate>{
-    
-    FPPopoverController * channelPopover;
-    FPPopoverController * devicesPopover;
+
+@interface ViewAndRecordViewController : CCGLTouchViewController <MultichannelGLViewDelegate, UIPopoverPresentationControllerDelegate, ChooseFilterTypeDelegateProtocol, BBFilterConfigDelegate>
+{
     UIPopoverPresentationController *popController;
     UIPopoverPresentationController * popControllerIpad;
 }
 
-- (void)setGLView:(MultichannelCindeGLView *)view;
-
 @property (retain, nonatomic) IBOutlet UIButton *configButton;
-
-@property (retain, nonatomic) IBOutlet UISlider *slider;
 @property (retain, nonatomic) IBOutlet UIButton *recordButton;
 @property (retain, nonatomic) IBOutlet UIButton *stopButton;
-@property (retain, nonatomic) IBOutlet UIButton *btButton;
-@property (retain, nonatomic) IBOutlet BufferStateIndicator *bufferStateIndicator;
 
-@property (retain, nonatomic) IBOutlet RTSpikeSortingButton *rtSpikeViewButton;
-@property (retain, nonatomic) IBOutlet RTCancelButton *cancelRTViewButton;
-
-@property (retain, nonatomic) MultichannelCindeGLView *glView;
-
+// view handlers
 - (IBAction)stopRecording:(id)sender;
 - (IBAction)startRecording:(id)sender;
-- (IBAction)btButtonPressed:(id)sender;
 - (IBAction)configButtonPressed:(id)sender;
 
-//BT popover delegate function
-- (void)rowSelected:(NSInteger) rowIndex;
--(NSMutableArray *) getAllRows;
+//GL view stuff
+@property (retain, nonatomic) MultichannelCindeGLView *glView;
+- (void)setGLView:(MultichannelCindeGLView *)view;
+
+//MultichannelGLViewDelegate stuff
 -(void) selectChannel:(int) selectedChannel;
--(void) updateBTBufferIndicator;
 
+//Config popup stuff
 -(void) setVisibilityForConfigButton:(BOOL) setVisible;
-
-- (void)endSelectionOfFilters:(int) filterType;
-
+-(void) endSelectionOfFilters:(int) filterType;
 -(void) finishedWithConfiguration;//delegate for custom filter
 
 @end

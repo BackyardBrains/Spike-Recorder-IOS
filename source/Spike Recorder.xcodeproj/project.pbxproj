@@ -16,6 +16,7 @@
 		1C3882CD2018AF8B00B0388B /* portrait-1125-2436.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C3882CA2018AF8B00B0388B /* portrait-1125-2436.png */; };
 		1C3882CE2018AF8B00B0388B /* landcape-2208-1242.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C3882CB2018AF8B00B0388B /* landcape-2208-1242.png */; };
 		1C3882CF2018AF8B00B0388B /* landcape-2436-1125.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C3882CC2018AF8B00B0388B /* landcape-2436-1125.png */; };
+		1C3882F6201B58D500B0388B /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1C3882F5201B58D500B0388B /* MainStoryboard.storyboard */; };
 		1CB1265C1F87DDFF00247389 /* ObjectiveDropboxOfficial.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CB1265B1F87DDFF00247389 /* ObjectiveDropboxOfficial.framework */; };
 		1CB1265D1F87DDFF00247389 /* ObjectiveDropboxOfficial.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1CB1265B1F87DDFF00247389 /* ObjectiveDropboxOfficial.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1CBD16121E72E6DC00F59AEF /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CBD16101E72E6DC00F59AEF /* Crashlytics.framework */; };
@@ -270,9 +271,8 @@
 		FADF26651596362F006C87BA /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FADF26641596362F006C87BA /* CoreMedia.framework */; };
 		FADF26671596362F006C87BA /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FADF26661596362F006C87BA /* CoreText.framework */; };
 		FADF266D1596362F006C87BA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = FADF266B1596362F006C87BA /* InfoPlist.strings */; };
-		FADF266F1596362F006C87BA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FADF266E1596362F006C87BA /* main.m */; };
+		FADF266F1596362F006C87BA /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = FADF266E1596362F006C87BA /* main.mm */; };
 		FADF268715963630006C87BA /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = FADF268615963630006C87BA /* MainWindow.xib */; };
-		FADF268915963630006C87BA /* ViewAndRecordViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FADF268815963630006C87BA /* ViewAndRecordViewController.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -299,6 +299,7 @@
 		1C3882CA2018AF8B00B0388B /* portrait-1125-2436.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "portrait-1125-2436.png"; sourceTree = "<group>"; };
 		1C3882CB2018AF8B00B0388B /* landcape-2208-1242.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "landcape-2208-1242.png"; sourceTree = "<group>"; };
 		1C3882CC2018AF8B00B0388B /* landcape-2436-1125.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "landcape-2436-1125.png"; sourceTree = "<group>"; };
+		1C3882F5201B58D500B0388B /* MainStoryboard.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MainStoryboard.storyboard; sourceTree = "<group>"; };
 		1CB1265B1F87DDFF00247389 /* ObjectiveDropboxOfficial.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ObjectiveDropboxOfficial.framework; path = Carthage/Build/iOS/ObjectiveDropboxOfficial.framework; sourceTree = "<group>"; };
 		1CBD16101E72E6DC00F59AEF /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		1CBD16111E72E6DC00F59AEF /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
@@ -744,10 +745,9 @@
 		FADF26661596362F006C87BA /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 		FADF266A1596362F006C87BA /* Spike Recorder-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Spike Recorder-Info.plist"; sourceTree = "<group>"; };
 		FADF266C1596362F006C87BA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		FADF266E1596362F006C87BA /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		FADF266E1596362F006C87BA /* main.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
 		FADF26701596362F006C87BA /* Spike Recorder-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Spike Recorder-Prefix.pch"; sourceTree = "<group>"; };
 		FADF268615963630006C87BA /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
-		FADF268815963630006C87BA /* ViewAndRecordViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ViewAndRecordViewController.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1510,7 +1510,7 @@
 				2459174219D316ED001CF8B4 /* Backyard Brains.entitlements */,
 				FADF266A1596362F006C87BA /* Spike Recorder-Info.plist */,
 				FADF266B1596362F006C87BA /* InfoPlist.strings */,
-				FADF266E1596362F006C87BA /* main.m */,
+				FADF266E1596362F006C87BA /* main.mm */,
 				FADF26701596362F006C87BA /* Spike Recorder-Prefix.pch */,
 				24E1430B1B61407B00DA32B9 /* Log.h */,
 				24E1430C1B61407B00DA32B9 /* Log.m */,
@@ -1547,7 +1547,7 @@
 				FA35CEFD15ABBADB0082FBC3 /* PlaybackViewController.xib */,
 				FAA27C1D15AD01CA00DCC60B /* ThresholdViewController.xib */,
 				2474366A18F6DBFF0044E11D /* SpikesViewController.xib */,
-				FADF268815963630006C87BA /* ViewAndRecordViewController.xib */,
+				1C3882F5201B58D500B0388B /* MainStoryboard.storyboard */,
 			);
 			name = Boards;
 			sourceTree = "<group>";
@@ -1635,7 +1635,6 @@
 				247087C31A851774004C6B9B /* Icon-Small-40@3x.png in Resources */,
 				FADF268715963630006C87BA /* MainWindow.xib in Resources */,
 				1C3882CD2018AF8B00B0388B /* portrait-1125-2436.png in Resources */,
-				FADF268915963630006C87BA /* ViewAndRecordViewController.xib in Resources */,
 				249A246319058465005F5F03 /* AutocorrelationGraphViewController.xib in Resources */,
 				247087BF1A851774004C6B9B /* Icon-76.png in Resources */,
 				2418FED91A83F5D700662547 /* StimSettings@2x.png in Resources */,
@@ -1718,6 +1717,7 @@
 				2418FFCF1A8406A600662547 /* Default-Portrait@2x.png in Resources */,
 				249013A4196AB45200E5EF91 /* ISIGraphViewController.xib in Resources */,
 				2418FEB71A83F5D700662547 /* again.png in Resources */,
+				1C3882F6201B58D500B0388B /* MainStoryboard.storyboard in Resources */,
 				247087BD1A851774004C6B9B /* Icon-72.png in Resources */,
 				2418FEC71A83F5D700662547 /* hasbeat.png in Resources */,
 				1CF7DB301F7988DF008F303E /* slider-default7-track.png in Resources */,
@@ -1838,7 +1838,7 @@
 				2418FF9F1A83FE1200662547 /* TrialDCMDGraphView.mm in Sources */,
 				2418FF991A83FE1200662547 /* DCMDGLView.mm in Sources */,
 				2418FF5E1A83FDA100662547 /* GraphCollectionViewCell.mm in Sources */,
-				FADF266F1596362F006C87BA /* main.m in Sources */,
+				FADF266F1596362F006C87BA /* main.mm in Sources */,
 				2418FEF91A83F6C800662547 /* BBSpike.m in Sources */,
 				2418FF7A1A83FDD500662547 /* BBChannelSelectionTableViewController.m in Sources */,
 				2418FF361A83FD3700662547 /* MyAppDelegate.mm in Sources */,
