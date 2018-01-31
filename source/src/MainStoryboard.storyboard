@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="EBf-gS-bmJ">
-    <device id="retina4_7" orientation="portrait">
+    <device id="retina5_9" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
@@ -15,16 +15,16 @@
         </array>
     </customFonts>
     <scenes>
-        <!--Item-->
+        <!--View / Record-->
         <scene sceneID="Ugf-bq-l7j">
             <objects>
-                <viewController id="pde-FL-esI" customClass="ViewAndRecordViewController" sceneMemberID="viewController">
+                <viewController id="pde-FL-esI" userLabel="View / Record" customClass="ViewAndRecordViewController" sceneMemberID="viewController">
                     <view key="view" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="CWV-Lv-CiB">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="618"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="729"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WnN-vn-xXv">
-                                <rect key="frame" x="311" y="25" width="58" height="58"/>
+                                <rect key="frame" x="311" y="49" width="58" height="58"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                 <state key="normal" image="Record.png">
                                     <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -54,7 +54,7 @@
                                 </connections>
                             </button>
                             <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ndR-rK-Iub">
-                                <rect key="frame" x="6" y="25" width="58" height="58"/>
+                                <rect key="frame" x="6" y="49" width="58" height="58"/>
                                 <state key="normal" image="configIcon.png"/>
                                 <connections>
                                     <action selector="configButtonPressed:" destination="pde-FL-esI" eventType="touchUpInside" id="59q-Z7-TpN"/>
@@ -71,7 +71,7 @@
                         <viewLayoutGuide key="safeArea" id="zLF-zu-TnF"/>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout"/>
-                    <tabBarItem key="tabBarItem" title="Item" id="yK5-2T-tMU"/>
+                    <tabBarItem key="tabBarItem" title="View / Record" image="WaveImage.png" id="yK5-2T-tMU" userLabel="View / Record"/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics" barStyle="black" translucent="NO"/>
                     <connections>
                         <outlet property="configButton" destination="ndR-rK-Iub" id="FM1-Pw-nvH"/>
@@ -95,15 +95,94 @@
                     </tabBar>
                     <connections>
                         <segue destination="pde-FL-esI" kind="relationship" relationship="viewControllers" id="mEL-Cv-mPl"/>
+                        <segue destination="Sxw-iJ-Ele" kind="relationship" relationship="viewControllers" id="H6u-z1-6q2"/>
+                        <segue destination="xDD-4F-CoS" kind="relationship" relationship="viewControllers" id="rhU-zN-E02"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="KiD-ty-X6O" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-4438.3999999999996" y="-3101.649175412294"/>
+            <point key="canvasLocation" x="-4679" y="-2769"/>
+        </scene>
+        <!--Threshold-->
+        <scene sceneID="P9Q-u4-qDX">
+            <objects>
+                <viewController id="Sxw-iJ-Ele" customClass="ThresholdViewController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="s3U-l0-FEo">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="729"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="50" minValue="1" maxValue="100" translatesAutoresizingMaskIntoConstraints="NO" id="DjQ-wv-pfN">
+                                <rect key="frame" x="30" y="54" width="230" height="31"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="226" id="qRg-d3-rJa"/>
+                                </constraints>
+                                <connections>
+                                    <action selector="updateNumTriggersInThresholdHistory:" destination="Sxw-iJ-Ele" eventType="valueChanged" id="Gxt-mh-0lM"/>
+                                </connections>
+                            </slider>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="30x" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="9sC-cc-ghK">
+                                <rect key="frame" x="266" y="59" width="45" height="21"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="45" id="xdA-df-USd"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="NgM-NC-Kob">
+                                <rect key="frame" x="66.666666666666671" y="658" width="42" height="39"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="42" id="ghB-pI-SOe"/>
+                                    <constraint firstAttribute="height" constant="39" id="tya-Yz-bQN"/>
+                                </constraints>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="DjQ-wv-pfN" firstAttribute="top" secondItem="AKA-NP-r1P" secondAttribute="top" constant="10" id="3eM-Qk-HgP"/>
+                            <constraint firstItem="9sC-cc-ghK" firstAttribute="top" secondItem="AKA-NP-r1P" secondAttribute="top" constant="15" id="AfG-4c-RXu"/>
+                            <constraint firstItem="NgM-NC-Kob" firstAttribute="centerX" secondItem="AKA-NP-r1P" secondAttribute="centerX" constant="-100" id="C84-m6-b6L"/>
+                            <constraint firstItem="9sC-cc-ghK" firstAttribute="leading" secondItem="DjQ-wv-pfN" secondAttribute="trailing" constant="8" id="ElS-07-WXN"/>
+                            <constraint firstItem="AKA-NP-r1P" firstAttribute="bottom" secondItem="NgM-NC-Kob" secondAttribute="bottom" constant="32" id="FzS-0N-qoP"/>
+                            <constraint firstItem="DjQ-wv-pfN" firstAttribute="leading" secondItem="AKA-NP-r1P" secondAttribute="leading" constant="32" id="j4g-TQ-XZX"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="AKA-NP-r1P"/>
+                    </view>
+                    <extendedEdge key="edgesForExtendedLayout"/>
+                    <tabBarItem key="tabBarItem" title="Threshold" image="ThresholdImage.png" id="e4F-52-qDS"/>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics" barStyle="black" translucent="NO"/>
+                    <connections>
+                        <outlet property="activeHeartImg" destination="NgM-NC-Kob" id="Ytw-P3-Bqb"/>
+                        <outlet property="triggerHistoryLabel" destination="9sC-cc-ghK" id="WJ8-qr-fwi"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="KDR-jX-5gK" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-3452" y="-3005"/>
+        </scene>
+        <!--Recordings-->
+        <scene sceneID="uLb-W8-sIi">
+            <objects>
+                <viewController id="xDD-4F-CoS" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="UzX-xw-SVt">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <viewLayoutGuide key="safeArea" id="L4s-zc-S3S"/>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Recordings" image="FileNeuron.png" id="RNt-Vf-74O"/>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="4IE-lQ-32j" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-3452" y="-2263"/>
         </scene>
     </scenes>
     <resources>
+        <image name="FileNeuron.png" width="30" height="30"/>
         <image name="Record.png" width="58" height="58"/>
+        <image name="ThresholdImage.png" width="30" height="30"/>
+        <image name="WaveImage.png" width="30" height="30"/>
         <image name="configIcon.png" width="58" height="58"/>
     </resources>
 </document>

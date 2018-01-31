@@ -46,6 +46,18 @@
         glView = [[MultichannelCindeGLView alloc] initWithFrame:self.view.frame];
         [self.view addSubview:glView];
         [self.view sendSubviewToBack:glView];
+        if (@available(iOS 11, *))
+        {
+            glView.translatesAutoresizingMaskIntoConstraints = NO;
+            
+            UILayoutGuide * guide = self.view.safeAreaLayoutGuide;
+            [self.glView.leadingAnchor constraintEqualToAnchor:guide.leadingAnchor].active = YES;
+            [self.glView.trailingAnchor constraintEqualToAnchor:guide.trailingAnchor].active = YES;
+            [self.glView.topAnchor constraintEqualToAnchor:guide.topAnchor].active = YES;
+            [self.glView.bottomAnchor constraintEqualToAnchor:guide.bottomAnchor].active = YES;
+            // Refresh myView and/or main view
+            [self.view layoutIfNeeded];
+        }
     }
     glView.mode = MultichannelGLViewModeThresholding;
     [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels ] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];

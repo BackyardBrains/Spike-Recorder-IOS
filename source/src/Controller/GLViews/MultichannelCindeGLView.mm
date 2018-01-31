@@ -1315,7 +1315,7 @@
         gl::color( ColorA( 1.0, 1.0f, 1.0f, 1.0f ) );
         heartBeatTextureFont->drawString(hearRateText.str(), heartTextPosition);
         
-        [dataSourceDelegate setPositionOfHeartX:centerx-3*heartTextSize.y Y:heartTextPosition.y-1.1*heartTextSize.y];
+      //  [dataSourceDelegate setPositionOfHeartX:centerx-3*heartTextSize.y Y:heartTextPosition.y-1.1*heartTextSize.y];
         
     }
 
