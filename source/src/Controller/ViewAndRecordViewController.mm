@@ -54,15 +54,6 @@
         
         if (@available(iOS 11, *))
         {
-            /*CGRect glViewFrameWithSafeArea = CGRectMake(
-                                               self.view.safeAreaLayoutGuide.layoutFrame.origin.x,
-                                               self.view.safeAreaLayoutGuide.layoutFrame.origin.y,
-                                               self.view.safeAreaLayoutGuide.layoutFrame.size.width,
-                                               self.view.safeAreaLayoutGuide.layoutFrame.size.height
-                                               );
-            
-            */
-            
             glView.translatesAutoresizingMaskIntoConstraints = NO;
             
             UILayoutGuide * guide = self.view.safeAreaLayoutGuide;
@@ -70,22 +61,9 @@
             [self.glView.trailingAnchor constraintEqualToAnchor:guide.trailingAnchor].active = YES;
             [self.glView.topAnchor constraintEqualToAnchor:guide.topAnchor].active = YES;
             [self.glView.bottomAnchor constraintEqualToAnchor:guide.bottomAnchor].active = YES;
-            
             // Refresh myView and/or main view
             [self.view layoutIfNeeded];
-            
-            
-            //glView = [[MultichannelCindeGLView alloc] initWithFrame:glViewFrameWithSafeArea];
         }
-        
-        
-            
-    
-        
-       
-        
-        
-        
     }
     [self setGLView:glView];
     glView.mode = MultichannelGLViewModeView;
@@ -122,7 +100,6 @@
     
     
     CGRect stopButtonRect = CGRectMake(self.stopButton.frame.origin.x, -self.stopButton.frame.size.height, self.stopButton.frame.size.width, self.stopButton.frame.size.height);
-
     [self.stopButton setFrame:stopButtonRect];
     
     [super viewWillAppear:animated];
@@ -385,12 +362,13 @@
     // on iPhone, this will be an action sheet
     controller.modalPresentationStyle = UIModalPresentationPopover;
     controller.preferredContentSize = CGSizeMake(200, 275);
+    
     controller.delegate = self;
     
     
     // configure the Popover presentation controller
     popController = [controller popoverPresentationController];
-    
+    popController.backgroundColor = [UIColor whiteColor];
     popController.delegate = self;
     
     popController.sourceView = self.configButton;

@@ -20,7 +20,7 @@
             <objects>
                 <viewController id="pde-FL-esI" customClass="ViewAndRecordViewController" sceneMemberID="viewController">
                     <view key="view" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="CWV-Lv-CiB">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="618"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WnN-vn-xXv">
@@ -70,7 +70,9 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="zLF-zu-TnF"/>
                     </view>
+                    <extendedEdge key="edgesForExtendedLayout"/>
                     <tabBarItem key="tabBarItem" title="Item" id="yK5-2T-tMU"/>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics" barStyle="black" translucent="NO"/>
                     <connections>
                         <outlet property="configButton" destination="ndR-rK-Iub" id="FM1-Pw-nvH"/>
                         <outlet property="recordButton" destination="WnN-vn-xXv" id="UyH-dS-g5S"/>
