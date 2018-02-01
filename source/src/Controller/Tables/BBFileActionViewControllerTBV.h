@@ -39,11 +39,6 @@
 @property (nonatomic, assign) id <BBFileActionViewControllerDelegate> delegate;
 
 
-- (void)emailFiles;
-- (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error;
-
-- (void)downloadFiles;
-
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex;
 
 

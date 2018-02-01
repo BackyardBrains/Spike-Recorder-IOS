@@ -160,7 +160,7 @@
             </objects>
             <point key="canvasLocation" x="-3452" y="-3005"/>
         </scene>
-        <!--Root View Controller-->
+        <!--Recordings View Controller-->
         <scene sceneID="K0f-Mp-nhw">
             <objects>
                 <tableViewController id="EPP-5Y-3jQ" customClass="BBFileViewControllerTBV" sceneMemberID="viewController">
@@ -183,7 +183,7 @@
                             <outlet property="delegate" destination="EPP-5Y-3jQ" id="eCK-cX-g9X"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Root View Controller" id="AVf-Uz-uML"/>
+                    <navigationItem key="navigationItem" title="Recordings View Controller" id="AVf-Uz-uML"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="f9S-8C-PO4" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

@@ -19,7 +19,6 @@
 @implementation BBFileActionViewControllerTBV
 
 
-//@synthesize theTableView;
 @synthesize actionOptions       = _actionOptions;
 @synthesize fileNamesToShare    = _fileNamesToShare;
 @synthesize files               = _files;
@@ -28,11 +27,12 @@
 
 - (void)dealloc
 {
-    [super dealloc];
+    
     
     [_actionOptions release];
     [_fileNamesToShare release];
     [_files release];
+    [super dealloc];
 }
 
 
@@ -177,8 +177,8 @@
 }
 
 // Customize the number of rows in the table view.
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    //return [allFiles count];
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
     return [self.actionOptions count];
 }
 
@@ -382,74 +382,12 @@
 	
 }
 
-- (void)emailFiles {
-	
-	// If we can't send email right now, let the user know about it
-	if (![MFMailComposeViewController canSendMail]) {
-		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Can't Send Mail" message:@"Can't send mail right now. Double-check that your email client is set up and you have an internet connection"
-													   delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
-		[alert show];    
-		[alert release];
-		
-		return;
-	}
-	
-	MFMailComposeViewController *message = [[MFMailComposeViewController alloc] init];
-	message.mailComposeDelegate = self;
-	
-	[message setSubject:@"A recording from my Backyard Brains app!"];
-    
-    NSString *docPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    for (BBFile *thisFile in self.files)
-    {
-        NSString *fullFilePath = [docPath stringByAppendingPathComponent:thisFile.filename];
-        NSData *attachmentData = [NSData dataWithContentsOfFile:fullFilePath];
-        [message addAttachmentData:attachmentData mimeType:@"audio/wav" fileName:thisFile.filename];
-        // 32kadpcm
-    }
-    
-    NSMutableString *bodyText = [NSMutableString stringWithFormat:@"<p>I recorded these files:"];
-    for (BBFile *thisFile in self.files)
-    {
-        [bodyText appendFormat:@"<p>\"%@,\" ", thisFile.shortname];
-        
-        int minutes = (int)floor(thisFile.filelength / 60.0);
-        int seconds = (int)(thisFile.filelength - minutes*60.0);
-        
-        if (minutes > 0) {
-            [bodyText appendFormat: @"which lasted %d minutes and %d seconds.</p>", minutes, seconds];
-        }
-        else {
-            [bodyText appendFormat:@"which lasted %d seconds.</p>", seconds];
-        }
-        
-        
-        [bodyText appendFormat:@"<p>Some other info about the file: <br>Sampling rate: %0.0f<br>", thisFile.samplingrate];
-        [bodyText appendFormat:@"Gain: %0.0f</p>", thisFile.gain];
-        [bodyText appendFormat:@"<p>%@</p>", thisFile.comment];
-    }
-    
-	[message setMessageBody:bodyText isHTML:YES];
-	
-    [self presentViewController:message animated:YES completion:nil];
-	[message release];
-    
-}
-
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
 {
     return YES;
 }
 
-- (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error
-{
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
 
-- (void)downloadFiles
-{
-
-}
 
 
 

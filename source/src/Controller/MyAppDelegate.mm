@@ -45,11 +45,12 @@
     [Fabric with:@[[Crashlytics class]]];
     
    // window.rootViewController = tabBarController;
+    tabBarController = (UITabBarController *)self.window.rootViewController;
     tabBarController.delegate = self;
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     if(sharedFileIsWaiting)
     {
-        NSLog(@"Shared file notification in lounch");
+        NSLog(@"Shared file notification in launch");
         tabBarController.selectedIndex = kRecordingsTabBarIndex;
         [[NSNotificationCenter defaultCenter] postNotificationName:@"FileReceivedViaShare" object:self];
     }

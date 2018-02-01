@@ -96,7 +96,6 @@
 		2418FEDF1A83F5D700662547 /* TickMarksBig.png in Resources */ = {isa = PBXBuildFile; fileRef = 2418FEB11A83F5D700662547 /* TickMarksBig.png */; };
 		2418FEE01A83F5D700662547 /* trash.png in Resources */ = {isa = PBXBuildFile; fileRef = 2418FEB21A83F5D700662547 /* trash.png */; };
 		2418FEE11A83F5D700662547 /* trash@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2418FEB31A83F5D700662547 /* trash@2x.png */; };
-		2418FEE21A83F5D700662547 /* unselected.png in Resources */ = {isa = PBXBuildFile; fileRef = 2418FEB41A83F5D700662547 /* unselected.png */; };
 		2418FEE31A83F5D700662547 /* WaveImage.png in Resources */ = {isa = PBXBuildFile; fileRef = 2418FEB51A83F5D700662547 /* WaveImage.png */; };
 		2418FEE41A83F5D700662547 /* WaveImage@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2418FEB61A83F5D700662547 /* WaveImage@2x.png */; };
 		2418FEF41A83F6C800662547 /* BBChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2418FEE71A83F6C800662547 /* BBChannel.m */; };
@@ -548,7 +547,6 @@
 		2418FEB11A83F5D700662547 /* TickMarksBig.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TickMarksBig.png; sourceTree = "<group>"; };
 		2418FEB21A83F5D700662547 /* trash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = trash.png; sourceTree = "<group>"; };
 		2418FEB31A83F5D700662547 /* trash@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "trash@2x.png"; sourceTree = "<group>"; };
-		2418FEB41A83F5D700662547 /* unselected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = unselected.png; sourceTree = "<group>"; };
 		2418FEB51A83F5D700662547 /* WaveImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = WaveImage.png; sourceTree = "<group>"; };
 		2418FEB61A83F5D700662547 /* WaveImage@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "WaveImage@2x.png"; sourceTree = "<group>"; };
 		2418FEE61A83F6C800662547 /* BBChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BBChannel.h; sourceTree = "<group>"; };
@@ -1229,7 +1227,6 @@
 				2418FEB11A83F5D700662547 /* TickMarksBig.png */,
 				2418FEB21A83F5D700662547 /* trash.png */,
 				2418FEB31A83F5D700662547 /* trash@2x.png */,
-				2418FEB41A83F5D700662547 /* unselected.png */,
 				2418FEB51A83F5D700662547 /* WaveImage.png */,
 				2418FEB61A83F5D700662547 /* WaveImage@2x.png */,
 			);
@@ -1729,7 +1726,6 @@
 				2418FEC81A83F5D700662547 /* hasbeat@2x.png in Resources */,
 				1CF7DB3B1F7988DF008F303E /* slider-metal-track@2x.png in Resources */,
 				2454D8B219AE18D50056B71B /* AverageSpikeGraphViewController.xib in Resources */,
-				2418FEE21A83F5D700662547 /* unselected.png in Resources */,
 				245B1842199135ED00943684 /* ExperimentsMenuTableViewCell.xib in Resources */,
 				2418FEC01A83F5D700662547 /* checkmark@2x.png in Resources */,
 				2418FED11A83F5D700662547 /* Record.png in Resources */,
