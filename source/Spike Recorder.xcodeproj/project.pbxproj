@@ -114,7 +114,6 @@
 		2418FF151A83F79200662547 /* DSPAnalysis.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FF091A83F79200662547 /* DSPAnalysis.mm */; };
 		2418FF161A83F79200662547 /* DSPThreshold.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FF0B1A83F79200662547 /* DSPThreshold.mm */; };
 		2418FF171A83F79200662547 /* WavManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FF0E1A83F79200662547 /* WavManager.mm */; };
-		2418FF311A83FD3700662547 /* BBBTChooserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2418FF1C1A83FD3700662547 /* BBBTChooserViewController.m */; };
 		2418FF321A83FD3700662547 /* DCMDExperimentViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FF1E1A83FD3700662547 /* DCMDExperimentViewController.mm */; };
 		2418FF341A83FD3700662547 /* FFTViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FF221A83FD3700662547 /* FFTViewController.mm */; };
 		2418FF351A83FD3700662547 /* FilterSettingsViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FF241A83FD3700662547 /* FilterSettingsViewController.mm */; };
@@ -163,13 +162,11 @@
 		2418FFD31A8406A600662547 /* Screenshot@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2418FFCB1A8406A600662547 /* Screenshot@2x.png */; };
 		241C8AF41B31EEEA00CEFCEE /* tinyxml2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 241C8AF21B31EEEA00CEFCEE /* tinyxml2.mm */; };
 		241C8AF71B3201B800CEFCEE /* template.xml in Resources */ = {isa = PBXBuildFile; fileRef = 241C8AF61B3201B800CEFCEE /* template.xml */; };
-		242631B419C2042A00225E44 /* ECGViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 242631B219C2042A00225E44 /* ECGViewController.xib */; };
 		24507B53196C333C00E27BD2 /* AutoGraphViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 24507B51196C333C00E27BD2 /* AutoGraphViewController.xib */; };
 		2454D8AA19AD02010056B71B /* GraphDCMDExperimentViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2454D8A819AD02010056B71B /* GraphDCMDExperimentViewController.xib */; };
 		2454D8B219AE18D50056B71B /* AverageSpikeGraphViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2454D8B019AE18D50056B71B /* AverageSpikeGraphViewController.xib */; };
 		245B1842199135ED00943684 /* ExperimentsMenuTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 245B1840199135ED00943684 /* ExperimentsMenuTableViewCell.xib */; };
 		245B1847199172D200943684 /* ExperimentsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 245B1845199172D200943684 /* ExperimentsViewController.xib */; };
-		245E26FA19EAC01100EE298E /* BBBTChooserViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 245E26F819EAC01100EE298E /* BBBTChooserViewController.xib */; };
 		247087011A850FF6004C6B9B /* CCGLTouchAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FDA41A83F14700662547 /* CCGLTouchAppDelegate.mm */; };
 		247087031A850FF6004C6B9B /* CCGLTouchView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FDA61A83F14700662547 /* CCGLTouchView.mm */; };
 		247087051A850FF6004C6B9B /* CCGLTouchViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FDA81A83F14700662547 /* CCGLTouchViewController.mm */; };
@@ -584,8 +581,6 @@
 		2418FF0B1A83F79200662547 /* DSPThreshold.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DSPThreshold.mm; sourceTree = "<group>"; };
 		2418FF0D1A83F79200662547 /* WavManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WavManager.h; sourceTree = "<group>"; };
 		2418FF0E1A83F79200662547 /* WavManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WavManager.mm; sourceTree = "<group>"; };
-		2418FF1B1A83FD3700662547 /* BBBTChooserViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BBBTChooserViewController.h; sourceTree = "<group>"; };
-		2418FF1C1A83FD3700662547 /* BBBTChooserViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BBBTChooserViewController.m; sourceTree = "<group>"; };
 		2418FF1D1A83FD3700662547 /* DCMDExperimentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMDExperimentViewController.h; sourceTree = "<group>"; };
 		2418FF1E1A83FD3700662547 /* DCMDExperimentViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DCMDExperimentViewController.mm; sourceTree = "<group>"; };
 		2418FF211A83FD3700662547 /* FFTViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFTViewController.h; sourceTree = "<group>"; };
@@ -673,14 +668,12 @@
 		241C8AF21B31EEEA00CEFCEE /* tinyxml2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = tinyxml2.mm; sourceTree = "<group>"; };
 		241C8AF31B31EEEA00CEFCEE /* tinyxml2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tinyxml2.h; sourceTree = "<group>"; };
 		241C8AF61B3201B800CEFCEE /* template.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = template.xml; sourceTree = "<group>"; };
-		242631B219C2042A00225E44 /* ECGViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ECGViewController.xib; sourceTree = "<group>"; };
 		24507B51196C333C00E27BD2 /* AutoGraphViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AutoGraphViewController.xib; sourceTree = "<group>"; };
 		2454D8A819AD02010056B71B /* GraphDCMDExperimentViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GraphDCMDExperimentViewController.xib; sourceTree = "<group>"; };
 		2454D8B019AE18D50056B71B /* AverageSpikeGraphViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AverageSpikeGraphViewController.xib; sourceTree = "<group>"; };
 		2459174219D316ED001CF8B4 /* Backyard Brains.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "Backyard Brains.entitlements"; sourceTree = SOURCE_ROOT; };
 		245B1840199135ED00943684 /* ExperimentsMenuTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ExperimentsMenuTableViewCell.xib; sourceTree = "<group>"; };
 		245B1845199172D200943684 /* ExperimentsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ExperimentsViewController.xib; sourceTree = "<group>"; };
-		245E26F819EAC01100EE298E /* BBBTChooserViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BBBTChooserViewController.xib; sourceTree = "<group>"; };
 		247087A81A851774004C6B9B /* Icon-60.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-60.png"; sourceTree = "<group>"; };
 		247087A91A851774004C6B9B /* Icon-60@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-60@2x.png"; sourceTree = "<group>"; };
 		247087AA1A851774004C6B9B /* Icon-60@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-60@3x.png"; sourceTree = "<group>"; };
@@ -781,6 +774,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1C16E2DE20232E7C004E0C25 /* DCMD */ = {
+			isa = PBXGroup;
+			children = (
+				24EBC1AC1997852D001D3392 /* TrialsDCMDTableViewController.xib */,
+				24BB8363199E7D0C00C12932 /* GraphDCMDTrialViewController.xib */,
+				2454D8A819AD02010056B71B /* GraphDCMDExperimentViewController.xib */,
+				245B1845199172D200943684 /* ExperimentsViewController.xib */,
+				2489D81E1992284500C00A9C /* ExperimentSetupViewController.xib */,
+				245B1840199135ED00943684 /* ExperimentsMenuTableViewCell.xib */,
+				2489D8231993ABCA00C00A9C /* DCMDExperimentViewController.xib */,
+				24EBC1B11997DD21001D3392 /* TrialActionsViewController.xib */,
+			);
+			name = DCMD;
+			sourceTree = "<group>";
+		};
 		1CF7DB041F7988DF008F303E /* NMRangeSlider */ = {
 			isa = PBXGroup;
 			children = (
@@ -1287,8 +1295,6 @@
 				2418FF651A83FDD500662547 /* Tables */,
 				2418FF401A83FDA100662547 /* Graphs */,
 				2418FF3C1A83FD6700662547 /* Components */,
-				2418FF1B1A83FD3700662547 /* BBBTChooserViewController.h */,
-				2418FF1C1A83FD3700662547 /* BBBTChooserViewController.m */,
 				2418FF1D1A83FD3700662547 /* DCMDExperimentViewController.h */,
 				2418FF1E1A83FD3700662547 /* DCMDExperimentViewController.mm */,
 				2418FF211A83FD3700662547 /* FFTViewController.h */,
@@ -1519,21 +1525,12 @@
 		FADF268515963630006C87BA /* Boards */ = {
 			isa = PBXGroup;
 			children = (
+				1C16E2DE20232E7C004E0C25 /* DCMD */,
 				FA9A665015BA3DC000CF1697 /* iPad */,
 				24DBA928197709DF00AEDE86 /* FFTViewController.xib */,
 				1CE5E0351F7453080016E7D9 /* ChooseFilterTypeViewController.xib */,
 				24E6D8A71A011EE0006C8CED /* FilterSettingsViewController.xib */,
-				245E26F819EAC01100EE298E /* BBBTChooserViewController.xib */,
-				242631B219C2042A00225E44 /* ECGViewController.xib */,
 				2454D8B019AE18D50056B71B /* AverageSpikeGraphViewController.xib */,
-				24EBC1AC1997852D001D3392 /* TrialsDCMDTableViewController.xib */,
-				24BB8363199E7D0C00C12932 /* GraphDCMDTrialViewController.xib */,
-				2454D8A819AD02010056B71B /* GraphDCMDExperimentViewController.xib */,
-				245B1845199172D200943684 /* ExperimentsViewController.xib */,
-				2489D81E1992284500C00A9C /* ExperimentSetupViewController.xib */,
-				245B1840199135ED00943684 /* ExperimentsMenuTableViewCell.xib */,
-				2489D8231993ABCA00C00A9C /* DCMDExperimentViewController.xib */,
-				24EBC1B11997DD21001D3392 /* TrialActionsViewController.xib */,
 				24507B51196C333C00E27BD2 /* AutoGraphViewController.xib */,
 				249013A2196AB45200E5EF91 /* ISIGraphViewController.xib */,
 				2490139A1966CD5E00E5EF91 /* GraphMatrixViewController.xib */,
@@ -1690,7 +1687,6 @@
 				247087C21A851774004C6B9B /* Icon-Small-40@2x.png in Resources */,
 				1C3882C32018879400B0388B /* portrait-768-1024.png in Resources */,
 				2418FEBB1A83F5D700662547 /* bluetooth.png in Resources */,
-				242631B419C2042A00225E44 /* ECGViewController.xib in Resources */,
 				247087C51A851774004C6B9B /* Icon-Small-50@2x.png in Resources */,
 				1CF7DB321F7988DF008F303E /* slider-default7-trackBackground.png in Resources */,
 				247087C91A851774004C6B9B /* Icon.png in Resources */,
@@ -1740,7 +1736,6 @@
 				2418FEBD1A83F5D700662547 /* charticon.png in Resources */,
 				2418FEC51A83F5D700662547 /* FileNeuron.png in Resources */,
 				2418FEBA1A83F5D700662547 /* backbtn@2x.png in Resources */,
-				245E26FA19EAC01100EE298E /* BBBTChooserViewController.xib in Resources */,
 				1C3882CF2018AF8B00B0388B /* landcape-2436-1125.png in Resources */,
 				2489D8251993ABCA00C00A9C /* DCMDExperimentViewController.xib in Resources */,
 				2418FED41A83F5D700662547 /* settings.png in Resources */,
@@ -1825,7 +1820,6 @@
 				2418FEF51A83F6C800662547 /* BBDCMDExperiment.mm in Sources */,
 				2407C4381AE573FD005D671B /* OBSlider.m in Sources */,
 				2418FF341A83FD3700662547 /* FFTViewController.mm in Sources */,
-				2418FF311A83FD3700662547 /* BBBTChooserViewController.m in Sources */,
 				2418FF5A1A83FDA100662547 /* AutoGraphViewController.mm in Sources */,
 				2418FF611A83FDA100662547 /* GraphMatrixViewController.mm in Sources */,
 				2418FF9E1A83FE1200662547 /* SpikesCinderView.mm in Sources */,

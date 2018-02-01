@@ -96,7 +96,7 @@
                     <connections>
                         <segue destination="pde-FL-esI" kind="relationship" relationship="viewControllers" id="mEL-Cv-mPl"/>
                         <segue destination="Sxw-iJ-Ele" kind="relationship" relationship="viewControllers" id="H6u-z1-6q2"/>
-                        <segue destination="xDD-4F-CoS" kind="relationship" relationship="viewControllers" id="rhU-zN-E02"/>
+                        <segue destination="lem-Ef-HZt" kind="relationship" relationship="viewControllers" id="uUo-Rh-qg3"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="KiD-ty-X6O" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -160,22 +160,52 @@
             </objects>
             <point key="canvasLocation" x="-3452" y="-3005"/>
         </scene>
-        <!--Recordings-->
-        <scene sceneID="uLb-W8-sIi">
+        <!--Root View Controller-->
+        <scene sceneID="K0f-Mp-nhw">
             <objects>
-                <viewController id="xDD-4F-CoS" customClass="BBFileViewControllerTBV" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="UzX-xw-SVt">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                <tableViewController id="EPP-5Y-3jQ" customClass="BBFileViewControllerTBV" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="oJH-Iw-lWq">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="729"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <viewLayoutGuide key="safeArea" id="L4s-zc-S3S"/>
-                    </view>
-                    <tabBarItem key="tabBarItem" title="Recordings" image="FileNeuron.png" id="RNt-Vf-74O"/>
-                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="4IE-lQ-32j" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="C9Q-lB-B7c">
+                                <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="C9Q-lB-B7c" id="VW0-N5-nXp">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.666666666666664"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="EPP-5Y-3jQ" id="6DR-O3-GcB"/>
+                            <outlet property="delegate" destination="EPP-5Y-3jQ" id="eCK-cX-g9X"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Root View Controller" id="AVf-Uz-uML"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="f9S-8C-PO4" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-3452" y="-2263"/>
+            <point key="canvasLocation" x="-2532" y="-2361"/>
+        </scene>
+        <!--Recordings-->
+        <scene sceneID="A1I-tB-FyA">
+            <objects>
+                <navigationController id="lem-Ef-HZt" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Recordings" image="FileNeuron.png" id="IhA-Ph-7OA"/>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics" barStyle="black" translucent="NO"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="LDM-qF-eYB">
+                        <rect key="frame" x="0.0" y="44" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="EPP-5Y-3jQ" kind="relationship" relationship="rootViewController" id="xA6-Gl-INQ"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Nbo-kn-Jak" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-3486" y="-2361"/>
         </scene>
     </scenes>
     <resources>
