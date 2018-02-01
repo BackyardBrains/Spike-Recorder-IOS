@@ -130,7 +130,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="NgM-NC-Kob">
-                                <rect key="frame" x="66.666666666666671" y="658" width="42" height="39"/>
+                                <rect key="frame" x="67" y="658" width="42" height="39"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="42" id="ghB-pI-SOe"/>
                                     <constraint firstAttribute="height" constant="39" id="tya-Yz-bQN"/>
@@ -163,7 +163,7 @@
         <!--Recordings-->
         <scene sceneID="uLb-W8-sIi">
             <objects>
-                <viewController id="xDD-4F-CoS" sceneMemberID="viewController">
+                <viewController id="xDD-4F-CoS" customClass="BBFileViewControllerTBV" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="UzX-xw-SVt">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

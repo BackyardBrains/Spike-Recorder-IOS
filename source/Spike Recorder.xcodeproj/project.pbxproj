@@ -258,7 +258,6 @@
 		FA905A7C15AA8F370013688B /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA905A7B15AA8F360013688B /* MessageUI.framework */; };
 		FA9A665215BA3DC100CF1697 /* MainWindow-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA9A665115BA3DC100CF1697 /* MainWindow-iPad.xib */; };
 		FA9A665B15BB19B000CF1697 /* SettingsDefaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = FA9A665A15BB19B000CF1697 /* SettingsDefaults.plist */; };
-		FAA27C1E15AD01CA00DCC60B /* ThresholdViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FAA27C1D15AD01CA00DCC60B /* ThresholdViewController.xib */; };
 		FAAC8E7D15A3738D003EB28A /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAAC8E7C15A3738D003EB28A /* Accelerate.framework */; };
 		FADF26551596362F006C87BA /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FADF26541596362F006C87BA /* UIKit.framework */; };
 		FADF26571596362F006C87BA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FADF26561596362F006C87BA /* Foundation.framework */; };
@@ -730,7 +729,6 @@
 		FA905A7B15AA8F360013688B /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		FA9A665115BA3DC100CF1697 /* MainWindow-iPad.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = "MainWindow-iPad.xib"; path = "iPad/MainWindow-iPad.xib"; sourceTree = "<group>"; };
 		FA9A665A15BB19B000CF1697 /* SettingsDefaults.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = SettingsDefaults.plist; sourceTree = "<group>"; };
-		FAA27C1D15AD01CA00DCC60B /* ThresholdViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ThresholdViewController.xib; sourceTree = "<group>"; };
 		FAAC8E7C15A3738D003EB28A /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		FADF26501596362F006C87BA /* Spike Recorder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Spike Recorder.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FADF26541596362F006C87BA /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -1545,7 +1543,6 @@
 				FA905A4B15AA8CF00013688B /* BBFileTableCell.xib */,
 				FADF268615963630006C87BA /* MainWindow.xib */,
 				FA35CEFD15ABBADB0082FBC3 /* PlaybackViewController.xib */,
-				FAA27C1D15AD01CA00DCC60B /* ThresholdViewController.xib */,
 				2474366A18F6DBFF0044E11D /* SpikesViewController.xib */,
 				1C3882F5201B58D500B0388B /* MainStoryboard.storyboard */,
 			);
@@ -1670,7 +1667,6 @@
 				1CE5E02B1F742E730016E7D9 /* configIcon@2x.png in Resources */,
 				2474366B18F6DBFF0044E11D /* SpikesViewController.xib in Resources */,
 				2418FEB81A83F5D700662547 /* again@2x.png in Resources */,
-				FAA27C1E15AD01CA00DCC60B /* ThresholdViewController.xib in Resources */,
 				1CF7DB371F7988DF008F303E /* slider-metal-handle-highlighted@2x.png in Resources */,
 				2418FFD31A8406A600662547 /* Screenshot@2x.png in Resources */,
 				247087BB1A851774004C6B9B /* Icon-60@2x.png in Resources */,
