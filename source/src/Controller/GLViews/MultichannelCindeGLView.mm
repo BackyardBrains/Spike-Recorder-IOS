@@ -721,7 +721,6 @@
         glLineWidth(1.0f);
         float zoom = maxVoltsSpan/ numVoltsVisible[selectedChannel];
         // Draw a line from left to right at the voltage threshold value.
-        float thresholdValue = [dataSourceDelegate threshold];
         float threshval = yOffsets[selectedChannel]+[dataSourceDelegate threshold]*zoom;
 
         float centerOfCircleX = -(float)retinaScaling*HANDLE_RADIUS*scaleXY.x;
@@ -1135,10 +1134,7 @@
     //we use timestamp (timeForSincDrawing) that is taken from audio manager "at the same time"
     //when we took data from circular buffer to display waveform. It is important for sinc of waveform and spike marks
     float currentTime = timeForSincDrawing ;
-    
-    //If we are not playing (we are scrubbing) than take time stamp directly from audio manager
 
-    //float currentTime = [dataSourceDelegate getCurrentTimeForSinc];
     NSMutableArray * allChannels = [dataSourceDelegate getChannels];
     
     
@@ -1315,7 +1311,7 @@
         gl::color( ColorA( 1.0, 1.0f, 1.0f, 1.0f ) );
         heartBeatTextureFont->drawString(hearRateText.str(), heartTextPosition);
         
-      //  [dataSourceDelegate setPositionOfHeartX:centerx-3*heartTextSize.y Y:heartTextPosition.y-1.1*heartTextSize.y];
+   
         
     }
 
@@ -1394,7 +1390,6 @@
         
         currentTimeStringStream<<((int)[[BBAudioManager bbAudioManager] currentFileTime])%60;
         
-        Vec2f currentTimeTextSize = currentTimeTextureFont->measureString(currentTimeStringStream.str());
         Vec2f currentTimeTextPosition = Vec2f(0.,0.);
         currentTimeTextPosition.x = self.frame.size.width - 45 ;
         currentTimeTextPosition.y = self.frame.size.height - 45 - (currentTimeTextureFont->getAscent() / 2.0f);
@@ -1525,10 +1520,6 @@
         Vec2f touchDistanceDelta = [self calculateTouchDistanceChange:touches];
         float oldNumSamplesVisible = numSamplesVisible;
         float oldNumVoltsVisible = numVoltsVisible[selectedChannel];
-        
-        float deltax = fabs(touchDistanceDelta.x-1.0f);
-        float deltay = fabs(touchDistanceDelta.y-1.0f);
-        // NSLog(@"Touch X: %f", deltax/deltay);
      
         //determine pinch type and make zoom mutual exclusive (vertical or horizontal)
         int pinchType = [self determinePinchType:touches];

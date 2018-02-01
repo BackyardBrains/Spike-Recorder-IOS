@@ -1,8 +1,11 @@
 //
+// BackyardBrains
+//
+// ViewAndRecordViewController.mm
+//
 // View and Record controller used for real time view and recording
 //
 //  More info on the CCGLTouch project >> http://www.smallab.org/code/ccgl-touch/
-//  License & disclaimer >> see license.txt file included in the distribution package
 //
 
 #import "ViewAndRecordViewController.h"
@@ -16,6 +19,8 @@
 @end
 
 @implementation ViewAndRecordViewController
+
+#pragma mark - Components and variables
 
 @synthesize recordButton;
 @synthesize glView;
@@ -50,20 +55,8 @@
     {
         glView = [[MultichannelCindeGLView alloc] initWithFrame:self.view.frame];
         [self.view addSubview:glView];
-        [self.view sendSubviewToBack:glView];
-        
-        if (@available(iOS 11, *))
-        {
-            glView.translatesAutoresizingMaskIntoConstraints = NO;
-            
-            UILayoutGuide * guide = self.view.safeAreaLayoutGuide;
-            [self.glView.leadingAnchor constraintEqualToAnchor:guide.leadingAnchor].active = YES;
-            [self.glView.trailingAnchor constraintEqualToAnchor:guide.trailingAnchor].active = YES;
-            [self.glView.topAnchor constraintEqualToAnchor:guide.topAnchor].active = YES;
-            [self.glView.bottomAnchor constraintEqualToAnchor:guide.bottomAnchor].active = YES;
-            // Refresh myView and/or main view
-            [self.view layoutIfNeeded];
-        }
+        [self.view sendSubviewToBack:glView];        
+        [self initConstrainsForGLView];
     }
     [self setGLView:glView];
     glView.mode = MultichannelGLViewModeView;
@@ -73,7 +66,7 @@
     [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels ] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
     
     NSLog(@"ViewAndRecord - start animation");
-	[glView startAnimation];
+	//[glView startAnimation];
     
     UITapGestureRecognizer *doubleTap = [[[UITapGestureRecognizer alloc] initWithTarget: self action:@selector(autorangeView)] autorelease];
     doubleTap.numberOfTapsRequired = 2;
@@ -96,9 +89,6 @@
     
     NSLog(@"ViewAndRecord -add notifications");
 
-    
-    
-    
     CGRect stopButtonRect = CGRectMake(self.stopButton.frame.origin.x, -self.stopButton.frame.size.height, self.stopButton.frame.size.width, self.stopButton.frame.size.height);
     [self.stopButton setFrame:stopButtonRect];
     
@@ -170,6 +160,7 @@
         glView = [[MultichannelCindeGLView alloc] initWithFrame:self.view.frame];
         [self.view addSubview:glView];
         [self.view sendSubviewToBack:glView];
+        [self initConstrainsForGLView];
     }
     
     [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
@@ -204,6 +195,25 @@
 -(void) autorangeView
 {
     [glView autorangeSelectedChannel];
+}
+
+-(void) initConstrainsForGLView
+{
+    if(glView)
+    {
+        if (@available(iOS 11, *))
+        {
+            glView.translatesAutoresizingMaskIntoConstraints = NO;
+            
+            UILayoutGuide * guide = self.view.safeAreaLayoutGuide;
+            [self.glView.leadingAnchor constraintEqualToAnchor:guide.leadingAnchor].active = YES;
+            [self.glView.trailingAnchor constraintEqualToAnchor:guide.trailingAnchor].active = YES;
+            [self.glView.topAnchor constraintEqualToAnchor:guide.topAnchor].active = YES;
+            [self.glView.bottomAnchor constraintEqualToAnchor:guide.bottomAnchor].active = YES;
+            // Refresh myView and/or main view
+            [self.view layoutIfNeeded];
+        }
+    }
 }
 
 
@@ -477,15 +487,17 @@
 
 #pragma mark - Memory management
 
-- (void)dealloc {
-
+- (void)dealloc
+{
     [recordButton release];
     [stopButton release];
     [configButton release];
+    [glView release];
     [super dealloc];
 }
 
-- (void)didReceiveMemoryWarning {
+- (void)didReceiveMemoryWarning
+{
     NSLog(@"\n\n!Memory Warning! View And Record\n\n");
     // Releases the view if it doesn't have a superview
     [super didReceiveMemoryWarning];

@@ -263,10 +263,6 @@
     return [[BBAudioManager bbAudioManager] fetchAudio:data numFrames:numFrames whichChannel:whichChannel stride:1];
 }
 
--(float) getCurrentTimeForSinc
-{
-    return [[BBAudioManager bbAudioManager] getTimeForSpikes];
-}
 
 -(NSMutableArray *) getChannels
 {

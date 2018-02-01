@@ -2021,6 +2021,10 @@
 					"$(PROJECT_DIR)/libs/CorePlot",
 				);
 				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-Wno-inconsistent-missing-override",
+				);
 				OTHER_LDFLAGS = (
 					"-lz",
 					"$(CINDER_PATH)/lib/libcinder-iphone_d.a",
@@ -2083,6 +2087,10 @@
 					"$(PROJECT_DIR)/libs/CorePlot",
 				);
 				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-Wno-inconsistent-missing-override",
+				);
 				OTHER_LDFLAGS = (
 					"-lz",
 					"$(CINDER_PATH)/lib/libcinder-iphone-sim.a",

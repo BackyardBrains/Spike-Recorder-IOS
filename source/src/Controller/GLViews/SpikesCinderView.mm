@@ -350,7 +350,6 @@
     //draw line for x-axis
     float left, top, right, bottom, near, far;
     mCam.getFrustum(&left, &top, &right, &bottom, &near, &far);
-    float height = top - bottom;
     float width = right - left;
     float middleX = (right - left)/2.0f + left;
     //draw line for x-axis if we are not displaying time interval measure

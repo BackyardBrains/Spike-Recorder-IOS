@@ -939,8 +939,8 @@
                                                // This particular file was not uploaded successfully, although the other
                                                // files may have been uploaded successfully. Perhaps implement some retry
                                                // logic here based on `uploadNetworkError` or `uploadSessionFinishError`
-                                               DBRequestError *uploadNetworkError = fileUrlsToRequestErrors[clientSideFileUrl];
-                                               DBFILESUploadSessionFinishError *uploadSessionFinishError = resultEntry.failure;
+                                               //DBRequestError *uploadNetworkError = fileUrlsToRequestErrors[clientSideFileUrl];
+                                               //DBFILESUploadSessionFinishError *uploadSessionFinishError = resultEntry.failure;
                                                
                                                // implement appropriate retry logic
                                                uploadStatus = @"Upload failed (#1)";

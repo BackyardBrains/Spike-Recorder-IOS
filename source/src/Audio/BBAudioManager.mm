@@ -1128,12 +1128,6 @@ static BBAudioManager *bbAudioManager = nil;
     return [ecgAnalysis heartRate];
 }
 
-/*-(void) playBeep
-{
-    playEKGBeep = YES;
-    counterForEKGBeep = 0;
-}*/
-
 -(BOOL) heartBeatPresent
 {
     return [ecgAnalysis heartBeatPresent];

@@ -300,7 +300,7 @@ SubFormat	16	GUID, including the data format code
         NSLog(@"Failed to open the wav file");
         return 0;
     }
-    long tempDataSample;
+    
     if(fileProperties.compressionType == WAVE_FORMAT_IEEE_FLOAT)
     {
         UInt32 numberOfBytesToRead = thisNumChannels*thisNumFrames*4;

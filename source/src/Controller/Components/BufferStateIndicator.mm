@@ -21,7 +21,6 @@
     float topY = self.bounds.origin.y+self.bounds.size.height*0.5 - HEIGHT_OF_INDICATOR*0.5;
    // float bottomY = self.bounds.origin.y+self.bounds.size.height*0.5 + HEIGHT_OF_INDICATOR*0.5;
     
-    BOOL selfHidden = self.hidden;
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextSetLineWidth(context, 1.0);
     CGContextSetStrokeColorWithColor(context, [UIColor blackColor].CGColor);
