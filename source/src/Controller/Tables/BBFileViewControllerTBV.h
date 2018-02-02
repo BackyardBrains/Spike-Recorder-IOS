@@ -17,7 +17,6 @@
     NSMutableArray* filePathsOnDropBox;
 }
 
-@property (nonatomic, retain) NSMutableArray *allFiles;
 @property (nonatomic, retain) UIButton *dbStatusBar;
 
 @end
