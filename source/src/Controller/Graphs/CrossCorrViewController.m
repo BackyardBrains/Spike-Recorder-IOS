@@ -84,21 +84,28 @@
 {
     [super viewDidLoad];
     
-    CGRect frameOfView = CGRectMake(self.view.bounds.origin.x, self.view.bounds.origin.y, self.view.bounds.size.width, self.view.bounds.size.height);
+    CGRect frameOfView = CGRectMake(self.hostingView.bounds.origin.x, self.hostingView.bounds.origin.y, self.hostingView.bounds.size.width, self.hostingView.bounds.size.height);
+
+    
+    
     barChart = [[CPTXYGraph alloc] initWithFrame:frameOfView];
+    
+    
+    
+    
     barChart.backgroundColor = [UIColor blackColor].CGColor;
     barChart.plotAreaFrame.borderLineStyle = nil;
     barChart.plotAreaFrame.cornerRadius = 0.0f;
     
     barChart.paddingLeft = 0.0f;
     barChart.paddingRight = 0.0f;
-    barChart.paddingTop = 40.0f;
+    barChart.paddingTop = 20.0f;
     barChart.paddingBottom = 0.0f;
     
-    barChart.plotAreaFrame.paddingLeft = 60.0;
-    barChart.plotAreaFrame.paddingTop = 40.0;
+    barChart.plotAreaFrame.paddingLeft = 20.0;
+    barChart.plotAreaFrame.paddingTop = 20.0;
     barChart.plotAreaFrame.paddingRight = 20.0;
-    barChart.plotAreaFrame.paddingBottom = 40.0;
+    barChart.plotAreaFrame.paddingBottom = 20.0;
     
     barChart.title = graphTitle;
     

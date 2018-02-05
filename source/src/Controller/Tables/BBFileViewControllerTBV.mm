@@ -8,7 +8,7 @@
 #import "BBFileViewControllerTBV.h"
 #import "MyAppDelegate.h"
 #import <ObjectiveDropboxOfficial/ObjectiveDropboxOfficial.h>
-
+#define SEGUE_PUSH_FILE_DETAILS @"pushFileDetailsSegue"
 
 @interface BBFileViewControllerTBV()
 
@@ -95,14 +95,17 @@
 -(void) openActionViewWithFile:(BBFile *) file
 {
     self.filesSelectedForAction = [(NSArray *)[[NSMutableArray alloc] initWithObjects:file,nil] autorelease];
-    
-    BBFileActionViewControllerTBV *actionViewController = [[BBFileActionViewControllerTBV alloc] init];
-    actionViewController.delegate = self;
-    
-    [self.navigationController pushViewController:actionViewController animated:YES];
-    [actionViewController release];
+    [self performSegueWithIdentifier:SEGUE_PUSH_FILE_DETAILS sender:self];
 }
 
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([[segue identifier] isEqualToString:SEGUE_PUSH_FILE_DETAILS])
+    {
+        BBFileActionViewControllerTBV *actionViewController = (BBFileActionViewControllerTBV*)segue.destinationViewController;
+        actionViewController.delegate = self;
+    }
+}
 
 -(void) addDropBoxButtonToView
 {
@@ -141,11 +144,18 @@
     return 1;
 }
 
+// Customize the number of rows in the table view.
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    if (section == 0) //tk or is it 1?
+    {
+        return [allFiles count];
+    }
+    return 0;
+}
 
 // Customize the appearance of table view cells.
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
     if (indexPath.section == 0)
     {
         static int numcellsmade = 0;
@@ -193,16 +203,6 @@
 }
 
 
-// Customize the number of rows in the table view.
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (section == 0) //tk or is it 1?
-    {
-        return [allFiles count];
-    }
-    return 0;
-}
-
-
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     NSLog(@"=== Cell selected! === ");
@@ -220,6 +220,7 @@
         [self pushActionView:indexPath.row];
     }
 }
+
 
 - (void)cellActionTriggeredFrom:(BBFileTableCell *) cell
 {

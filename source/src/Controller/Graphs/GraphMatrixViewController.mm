@@ -19,11 +19,19 @@
 #define COLUMN_HEADER_GRAPH_CELL_NAME @"columngGraphCell"
 #define ROW_HEADER_GRAPH_CELL_NAME @"rowGraphCell"
 #import "BYBGLView.h"
+
+#define SEGUE_SIGNLE_CROSS_CORRELATION @"singleCrossCorrelationSegue"
+
+
+
 @interface GraphMatrixViewController ()
 {
 
     int numberOfSpikeTrains;
     BOOL refreshLayout;
+    NSArray * valuesForCCGraph;
+    NSString * titleForCCGraph;
+    int colorIndexForCCGraph;
 }
 
 @end
@@ -225,19 +233,29 @@
         
         dispatch_async(dispatch_get_main_queue(), ^{
             [MBProgressHUD hideHUDForView:self.view animated:YES];
-            CrossCorrViewController *avc = [[CrossCorrViewController alloc] initWithNibName:@"CrossCorrViewController" bundle:nil];
-            avc.graphTitle =[ NSString stringWithFormat:@"Cross-correlation Spike %d - Spike %d",(int)((float)indexPath.row/((float)_bbfile.numberOfSpikeTrains+1)),(indexPath.row % (_bbfile.numberOfSpikeTrains+1)) ];
-            avc.values = values;
+            titleForCCGraph =[ NSString stringWithFormat:@"Cross-correlation Spike %d - Spike %d",(int)((float)indexPath.row/((float)_bbfile.numberOfSpikeTrains+1)),(int)(indexPath.row % (_bbfile.numberOfSpikeTrains+1)) ];
+            valuesForCCGraph = values;
+            colorIndexForCCGraph = ((int)((float)indexPath.row/((float)_bbfile.numberOfSpikeTrains+1)) -1);
+             [self performSegueWithIdentifier:SEGUE_SIGNLE_CROSS_CORRELATION sender:self];
             
-            [avc colorOfTheGraph:[BYBGLView getSpikeTrainColorWithIndex:((int)((float)indexPath.row/((float)_bbfile.numberOfSpikeTrains+1)) -1) transparency:1.0f]];
-            
-            [self.navigationController pushViewController:avc animated:YES];
-            [avc release];
         });
         
         
     });
 
+}
+
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([[segue identifier] isEqualToString:SEGUE_SIGNLE_CROSS_CORRELATION])
+    {
+        CrossCorrViewController *avc = (CrossCorrViewController *)segue.destinationViewController;
+        avc.graphTitle = titleForCCGraph;
+        avc.values = valuesForCCGraph;
+        
+        [avc colorOfTheGraph:[BYBGLView getSpikeTrainColorWithIndex:colorIndexForCCGraph transparency:1.0f]];
+    }
 }
 
 - (CGFloat)topOfViewOffset
@@ -262,6 +280,7 @@
 
 - (void)dealloc {
     [_collectionView release];
+    [_bbfile release];
     [super dealloc];
 }
 @end
