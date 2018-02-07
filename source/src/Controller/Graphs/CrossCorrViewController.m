@@ -20,78 +20,15 @@
 @synthesize hostingView;
 @synthesize graphTitle;
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    //self.view.backgroundColor = [UIColor blackColor];
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        graphTitle = @"Cross-correlation";
-    }
-    return self;
-}
-
-#pragma mark - CorePlot data protocol
-
--(NSUInteger)numberOfRecordsForPlot:(CPTPlot *)plot
-{
-    return [_values count];
-}
-
-
--(NSNumber *)numberForPlot:(CPTPlot *)plot
-                     field:(NSUInteger)fieldEnum
-               recordIndex:(NSUInteger)index
-{
-    if(fieldEnum == CPTScatterPlotFieldX)
-    {
-        //x axis data (-0.1, +0.1)
-        return [NSNumber numberWithFloat:-0.1+0.2f*(((float)index)/[_values count])];    }
-    else
-    {
-        
-        return [_values objectAtIndex:index];
-    }
-}
-
--(void) colorOfTheGraph:(UIColor *) theColor
-{
-    graphColor = [theColor copy];
-
-}
-
-#pragma mark - view creation
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    [self.navigationController.navigationBar setBarTintColor:[UIColor blackColor]];
-    self.navigationController.navigationBar.translucent = NO;
-    [self.navigationController.navigationBar setTintColor:[UIColor whiteColor]];
-    [super viewWillAppear:animated];
-
-}
-
-- (void)viewWillDisappear:(BOOL)animated
-{
-    [super viewWillDisappear:animated];
-    NSLog(@"Stopping regular view");
-    [self.navigationController.navigationBar setBarTintColor:nil];
-    self.navigationController.navigationBar.translucent = YES;
-    [self.navigationController.navigationBar setTintColor:nil];
-}
-
+#pragma mark - View management
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
     CGRect frameOfView = CGRectMake(self.hostingView.bounds.origin.x, self.hostingView.bounds.origin.y, self.hostingView.bounds.size.width, self.hostingView.bounds.size.height);
-
-    
     
     barChart = [[CPTXYGraph alloc] initWithFrame:frameOfView];
-    
-    
-    
     
     barChart.backgroundColor = [UIColor blackColor].CGColor;
     barChart.plotAreaFrame.borderLineStyle = nil;
@@ -99,13 +36,13 @@
     
     barChart.paddingLeft = 0.0f;
     barChart.paddingRight = 0.0f;
-    barChart.paddingTop = 20.0f;
+    barChart.paddingTop = 90.0f;
     barChart.paddingBottom = 0.0f;
     
-    barChart.plotAreaFrame.paddingLeft = 20.0;
-    barChart.plotAreaFrame.paddingTop = 20.0;
-    barChart.plotAreaFrame.paddingRight = 20.0;
-    barChart.plotAreaFrame.paddingBottom = 20.0;
+    barChart.plotAreaFrame.paddingLeft = 40.0;
+    barChart.plotAreaFrame.paddingTop = 60.0;
+    barChart.plotAreaFrame.paddingRight = 40.0;
+    barChart.plotAreaFrame.paddingBottom = 40.0;
     
     barChart.title = graphTitle;
     
@@ -114,11 +51,11 @@
     textStyle.fontSize = 16.0f;
     textStyle.textAlignment = CPTTextAlignmentCenter;
     barChart.titleTextStyle = textStyle;  // Error found here
-    barChart.titleDisplacement = CGPointMake(0.0f, 20.0f);
+    barChart.titleDisplacement = CGPointMake(0.0f, -10.0f);
     barChart.titlePlotAreaFrameAnchor = CPTRectAnchorTop;
     
     CPTXYAxisSet *axisSet = (CPTXYAxisSet *)barChart.axisSet;
-
+    
     //set text style to white for axis
     CPTMutableTextStyle *labelTextStyle = [CPTMutableTextStyle textStyle];
     labelTextStyle.color = [CPTColor whiteColor];
@@ -161,7 +98,7 @@
     //put y axis at the left side of graph
     y.orthogonalCoordinateDecimal = CPTDecimalFromDouble(-0.1);
     self.hostingView.hostedGraph = barChart;
-       
+    
     CPTXYPlotSpace *plotSpace = (CPTXYPlotSpace *)barChart.defaultPlotSpace;
     plotSpace.xRange = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromDouble(-0.1) length:CPTDecimalFromDouble(0.1)];
     
@@ -180,11 +117,53 @@
 }
 
 
-
-- (void)didReceiveMemoryWarning
+- (void)viewWillAppear:(BOOL)animated
 {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+    [self.navigationController.navigationBar setBarTintColor:[UIColor blackColor]];
+    self.navigationController.navigationBar.translucent = NO;
+    [self.navigationController.navigationBar setTintColor:[UIColor whiteColor]];
+    [super viewWillAppear:animated];
+    
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    NSLog(@"Stopping regular view");
+    [self.navigationController.navigationBar setBarTintColor:nil];
+    self.navigationController.navigationBar.translucent = YES;
+    [self.navigationController.navigationBar setTintColor:nil];
+}
+
+#pragma mark - CorePlot data protocol
+
+-(NSUInteger)numberOfRecordsForPlot:(CPTPlot *)plot
+{
+    return [_values count];
+}
+
+
+-(NSNumber *)numberForPlot:(CPTPlot *)plot
+                     field:(NSUInteger)fieldEnum
+               recordIndex:(NSUInteger)index
+{
+    if(fieldEnum == CPTScatterPlotFieldX)
+    {
+        //x axis data (-0.1, +0.1)
+        return [NSNumber numberWithFloat:-0.1+0.2f*(((float)index)/[_values count])];    }
+    else
+    {
+        
+        return [_values objectAtIndex:index];
+    }
+}
+
+#pragma mark - Getter/Setters
+
+-(void) colorOfTheGraph:(UIColor *) theColor
+{
+    graphColor = [theColor copy];
+
 }
 
 //Values of histogram
@@ -199,7 +178,19 @@
     return _values;
 }
 
-- (void)dealloc {
+
+#pragma mark - Memory management
+
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
+
+- (void)dealloc
+{
+    [hostingView release];
     [super dealloc];
 }
 @end
