@@ -27,6 +27,7 @@
 
 
 #define SEGUE_CROSS_CORRELATION_MATRIX @"crossCorrMatrixSegue"
+#define SEGUE_AUTOCORRELATION_GRAPH @"autocorrelationGraphSegue"
 
 
 @implementation BBFileActionViewControllerTBV
@@ -140,7 +141,7 @@
     }
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+-(UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     // See if there's an existing cell we can reuse
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"actionCell"];
@@ -157,8 +158,10 @@
     return cell;
 }
 
-
- - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+//
+//
+//
+-(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	 
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
@@ -228,10 +231,7 @@
     }
     else if ([cell.textLabel.text isEqualToString:AUTOCORR_MENU_TEXT])
 	{
-        AutoGraphViewController *autovc = [[AutoGraphViewController alloc] initWithNibName:@"AutoGraphViewController" bundle:nil];
-        [autovc setFileForGraph:(BBFile *)[self.files objectAtIndex:0]];
-        [self.navigationController pushViewController:autovc animated:YES];
-        [autovc release];
+        [self performSegueWithIdentifier:SEGUE_AUTOCORRELATION_GRAPH sender:self];
     }
     else if ([cell.textLabel.text isEqualToString:ISI_MENU_TEXT])
 	{
@@ -323,6 +323,11 @@
     {
         GraphMatrixViewController *actionViewController = (GraphMatrixViewController *)segue.destinationViewController;
         actionViewController.bbfile = (BBFile *)[self.files objectAtIndex:0];;
+    }
+    else if ([[segue identifier] isEqualToString:SEGUE_AUTOCORRELATION_GRAPH])
+    {
+        AutoGraphViewController *autovc = (AutoGraphViewController *)segue.destinationViewController;
+        [autovc setFileForGraph:(BBFile *)[self.files objectAtIndex:0]];
     }
 }
 

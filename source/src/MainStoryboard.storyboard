@@ -208,6 +208,9 @@
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="43.666666666666664"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableViewCellContentView>
+                                <connections>
+                                    <segue destination="p3h-FI-jre" kind="show" identifier="autocorrelationGraphSegue" id="GXQ-qd-A9O"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>
@@ -222,6 +225,85 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rvX-2u-zu0" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-1567" y="-2362"/>
+        </scene>
+        <!--Auto Graph View Controller-->
+        <scene sceneID="aIP-zS-w1B">
+            <objects>
+                <viewController id="p3h-FI-jre" customClass="AutoGraphViewController" sceneMemberID="viewController">
+                    <view key="view" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="J63-Bi-mdy">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="641"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gKe-4X-B0A" customClass="CPTGraphHostingView">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="641"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </view>
+                            <collectionView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" minimumZoomScale="0.0" maximumZoomScale="0.0" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="R9D-Nc-I8f">
+                                <rect key="frame" x="375" y="0.0" width="92" height="641"/>
+                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="92" id="Gje-yM-eQo"/>
+                                </constraints>
+                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="lH1-1h-AJT">
+                                    <size key="itemSize" width="80" height="80"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="10" maxX="0.0" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                                <cells/>
+                                <connections>
+                                    <outlet property="dataSource" destination="p3h-FI-jre" id="cWA-q0-xqK"/>
+                                    <outlet property="delegate" destination="p3h-FI-jre" id="bqv-ow-LvA"/>
+                                </connections>
+                            </collectionView>
+                            <collectionView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceHorizontal="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" minimumZoomScale="0.0" maximumZoomScale="0.0" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="WDR-dY-QZO">
+                                <rect key="frame" x="0.0" y="641" width="375" height="92"/>
+                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="92" id="5B2-is-R8A"/>
+                                </constraints>
+                                <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="10" minimumInteritemSpacing="10" id="lVz-d2-bi9">
+                                    <size key="itemSize" width="80" height="80"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="10" minY="10" maxX="0.0" maxY="10"/>
+                                </collectionViewFlowLayout>
+                                <cells/>
+                                <connections>
+                                    <outlet property="dataSource" destination="p3h-FI-jre" id="C8B-oI-MMT"/>
+                                    <outlet property="delegate" destination="p3h-FI-jre" id="X6W-b8-nvk"/>
+                                </connections>
+                            </collectionView>
+                        </subviews>
+                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="WDR-dY-QZO" firstAttribute="top" secondItem="gKe-4X-B0A" secondAttribute="bottom" id="2SL-92-XTb"/>
+                            <constraint firstItem="gKe-4X-B0A" firstAttribute="trailing" secondItem="e49-4k-ZTE" secondAttribute="trailing" id="993-bg-9qk"/>
+                            <constraint firstItem="gKe-4X-B0A" firstAttribute="top" secondItem="e49-4k-ZTE" secondAttribute="top" id="ED0-LO-WmH"/>
+                            <constraint firstItem="e49-4k-ZTE" firstAttribute="bottom" secondItem="gKe-4X-B0A" secondAttribute="bottom" id="LBz-Hy-xyO"/>
+                            <constraint firstItem="R9D-Nc-I8f" firstAttribute="leading" secondItem="gKe-4X-B0A" secondAttribute="trailing" id="PDQ-nv-BOm"/>
+                            <constraint firstItem="WDR-dY-QZO" firstAttribute="leading" secondItem="e49-4k-ZTE" secondAttribute="leading" id="Va2-Vg-OPs"/>
+                            <constraint firstItem="e49-4k-ZTE" firstAttribute="bottom" secondItem="R9D-Nc-I8f" secondAttribute="bottom" id="Ykx-ae-el4"/>
+                            <constraint firstItem="gKe-4X-B0A" firstAttribute="leading" secondItem="e49-4k-ZTE" secondAttribute="leading" id="eXr-B9-Iol"/>
+                            <constraint firstItem="R9D-Nc-I8f" firstAttribute="top" secondItem="e49-4k-ZTE" secondAttribute="top" id="lW8-mY-kit"/>
+                            <constraint firstItem="e49-4k-ZTE" firstAttribute="trailing" secondItem="WDR-dY-QZO" secondAttribute="trailing" id="tOX-ZB-fsz"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="e49-4k-ZTE"/>
+                    </view>
+                    <extendedEdge key="edgesForExtendedLayout"/>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics" barStyle="black" translucent="NO"/>
+                    <connections>
+                        <outlet property="collectionView" destination="WDR-dY-QZO" id="Vaq-Uu-lkj"/>
+                        <outlet property="collectionViewR" destination="R9D-Nc-I8f" id="NqA-hC-9eI"/>
+                        <outlet property="hostView" destination="gKe-4X-B0A" id="Tu9-MT-Xy8"/>
+                        <outlet property="hostViewBottomConstraint" destination="LBz-Hy-xyO" id="SaG-Ri-YLP"/>
+                        <outlet property="hostViewTrailingConstraint" destination="993-bg-9qk" id="yPx-fS-Ddj"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="8iu-La-4al" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-452" y="-2480.5418719211825"/>
         </scene>
         <!--Graph Matrix View Controller-->
         <scene sceneID="5Mv-bf-dO7">
@@ -259,7 +341,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2NC-E8-o5n" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-535" y="-1833"/>
+            <point key="canvasLocation" x="-444" y="-1780"/>
         </scene>
         <!--Cross Corr View Controller-->
         <scene sceneID="Bsi-Ot-PVq">
@@ -292,7 +374,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="w8e-tk-Rsr" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="557.60000000000002" y="-1833.2512315270938"/>
+            <point key="canvasLocation" x="462" y="-1780"/>
         </scene>
         <!--Recordings-->
         <scene sceneID="A1I-tB-FyA">

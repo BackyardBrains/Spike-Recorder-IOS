@@ -49,7 +49,6 @@
 		1CF7DB3D1F7988DF008F303E /* slider-metal-trackBackground@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CF7DB211F7988DF008F303E /* slider-metal-trackBackground@2x.png */; };
 		1CF7DB3E1F7988DF008F303E /* NMRangeSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CF7DB231F7988DF008F303E /* NMRangeSlider.m */; };
 		2407C4381AE573FD005D671B /* OBSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 2407C4371AE573FD005D671B /* OBSlider.m */; };
-		240D8067190E98F6009F9AEA /* CrossCorrViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 240D8065190E98F6009F9AEA /* CrossCorrViewController.xib */; };
 		241453CF1AB87B33001B5D92 /* RTSpikeSortingButton.mm in Sources */ = {isa = PBXBuildFile; fileRef = 241453CE1AB87B33001B5D92 /* RTSpikeSortingButton.mm */; };
 		241453D21AB88916001B5D92 /* RTCancelButton.mm in Sources */ = {isa = PBXBuildFile; fileRef = 241453D11AB88916001B5D92 /* RTCancelButton.mm */; };
 		2418FE5F1A83F4C600662547 /* beep.wav in Resources */ = {isa = PBXBuildFile; fileRef = 2418FE5E1A83F4C600662547 /* beep.wav */; };
@@ -233,7 +232,6 @@
 		2489D8251993ABCA00C00A9C /* DCMDExperimentViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2489D8231993ABCA00C00A9C /* DCMDExperimentViewController.xib */; };
 		248C8EBF18E5D8FC00307C4C /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 248C8EBE18E5D8FC00307C4C /* MobileCoreServices.framework */; };
 		248C8EC118E5D90500307C4C /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 248C8EC018E5D90500307C4C /* ImageIO.framework */; };
-		2490139C1966CD5E00E5EF91 /* GraphMatrixViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2490139A1966CD5E00E5EF91 /* GraphMatrixViewController.xib */; };
 		249013A4196AB45200E5EF91 /* ISIGraphViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 249013A2196AB45200E5EF91 /* ISIGraphViewController.xib */; };
 		249A246319058465005F5F03 /* AutocorrelationGraphViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 249A246119058465005F5F03 /* AutocorrelationGraphViewController.xib */; };
 		249A24681906AC59005F5F03 /* ISIHistogramViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 249A24661906AC59005F5F03 /* ISIHistogramViewController.xib */; };
@@ -332,7 +330,6 @@
 		1CF7DB231F7988DF008F303E /* NMRangeSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMRangeSlider.m; sourceTree = "<group>"; };
 		2407C4361AE573FD005D671B /* OBSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OBSlider.h; sourceTree = "<group>"; };
 		2407C4371AE573FD005D671B /* OBSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OBSlider.m; sourceTree = "<group>"; };
-		240D8065190E98F6009F9AEA /* CrossCorrViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CrossCorrViewController.xib; sourceTree = "<group>"; };
 		241453CD1AB87B33001B5D92 /* RTSpikeSortingButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTSpikeSortingButton.h; sourceTree = "<group>"; };
 		241453CE1AB87B33001B5D92 /* RTSpikeSortingButton.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RTSpikeSortingButton.mm; sourceTree = "<group>"; };
 		241453D01AB88916001B5D92 /* RTCancelButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTCancelButton.h; sourceTree = "<group>"; };
@@ -696,7 +693,6 @@
 		2489D8231993ABCA00C00A9C /* DCMDExperimentViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DCMDExperimentViewController.xib; sourceTree = "<group>"; };
 		248C8EBE18E5D8FC00307C4C /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		248C8EC018E5D90500307C4C /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
-		2490139A1966CD5E00E5EF91 /* GraphMatrixViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GraphMatrixViewController.xib; sourceTree = "<group>"; };
 		249013A2196AB45200E5EF91 /* ISIGraphViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ISIGraphViewController.xib; sourceTree = "<group>"; };
 		2490D73A1A927C1B00E1D5E9 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
 		249A246119058465005F5F03 /* AutocorrelationGraphViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AutocorrelationGraphViewController.xib; sourceTree = "<group>"; };
@@ -1530,8 +1526,6 @@
 				2454D8B019AE18D50056B71B /* AverageSpikeGraphViewController.xib */,
 				24507B51196C333C00E27BD2 /* AutoGraphViewController.xib */,
 				249013A2196AB45200E5EF91 /* ISIGraphViewController.xib */,
-				2490139A1966CD5E00E5EF91 /* GraphMatrixViewController.xib */,
-				240D8065190E98F6009F9AEA /* CrossCorrViewController.xib */,
 				249A24661906AC59005F5F03 /* ISIHistogramViewController.xib */,
 				249A246119058465005F5F03 /* AutocorrelationGraphViewController.xib */,
 				FA905A4B15AA8CF00013688B /* BBFileTableCell.xib */,
@@ -1680,7 +1674,6 @@
 				1CD05BA51CFD02EE00A83727 /* BBFileDetailsViewCell.xib in Resources */,
 				2418FEDC1A83F5D700662547 /* ThresholdImage.png in Resources */,
 				24DBA92A197709DF00AEDE86 /* FFTViewController.xib in Resources */,
-				240D8067190E98F6009F9AEA /* CrossCorrViewController.xib in Resources */,
 				247087C21A851774004C6B9B /* Icon-Small-40@2x.png in Resources */,
 				1C3882C32018879400B0388B /* portrait-768-1024.png in Resources */,
 				2418FEBB1A83F5D700662547 /* bluetooth.png in Resources */,
@@ -1717,7 +1710,6 @@
 				2418FEC21A83F5D700662547 /* dropbox@2x.png in Resources */,
 				2418FED61A83F5D700662547 /* spectrum.png in Resources */,
 				2418FEB91A83F5D700662547 /* backbtn.png in Resources */,
-				2490139C1966CD5E00E5EF91 /* GraphMatrixViewController.xib in Resources */,
 				2418FECF1A83F5D700662547 /* Play.png in Resources */,
 				2418FEBE1A83F5D700662547 /* charticon@2x.png in Resources */,
 				2489D8201992284500C00A9C /* ExperimentSetupViewController.xib in Resources */,

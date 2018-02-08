@@ -33,6 +33,9 @@
 
 @implementation AutoGraphViewController
 
+@synthesize hostViewBottomConstraint;
+@synthesize hostViewTrailingConstraint;
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -46,6 +49,9 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    dataInitialized = NO;
+    allValues = [[NSMutableArray alloc] initWithCapacity:0];
+    
     self.tabBarController.tabBar.opaque = YES;
     self.tabBarController.tabBar.opaque = NO;
     [_collectionView registerClass:[AutoGraphCollectionViewCell class] forCellWithReuseIdentifier:AUTO_GRAPH_CELL_NAME];
@@ -56,7 +62,7 @@
     self.extendedLayoutIncludesOpaqueBars = NO;
     self.automaticallyAdjustsScrollViewInsets = NO;
     [self colorOfTheGraph:[BYBGLView getSpikeTrainColorWithIndex:0 transparency:1.0f]];
-    [self handleOrientationOnEnd:[[UIApplication sharedApplication] statusBarOrientation]];
+    [self setupGraphsOnScreen];
 }
 
 
@@ -220,97 +226,53 @@
 - (void) handleOrientationOnEnd:(UIInterfaceOrientation) orientation {
     
     [self drawGraph];
-    
-    if (orientation == UIInterfaceOrientationPortrait || orientation == UIInterfaceOrientationPortraitUpsideDown)
-    {
-        NSLog(@"Will rotate");
-        [UIView animateWithDuration:.65 animations:^{
-            _collectionView.frame = CGRectMake(_collectionView.frame.origin.x,
-                                               _collectionView.frame.origin.y-101,
-                                               _collectionView.frame.size.width,
-                                               _collectionView.frame.size.height);
-            _hostView.frame = CGRectMake(_hostView.frame.origin.x,
-                                         _hostView.frame.origin.y,
-                                         _hostView.frame.size.width,
-                                         _hostView.frame.size.height-101);
-            
-
-        } completion:^(BOOL finished){
-            NSLog(@"Bottom finished");
-            
-        }];
-        
-        
-    }
-    else if (orientation == UIInterfaceOrientationLandscapeLeft || orientation == UIInterfaceOrientationLandscapeRight)
-    {
-        NSLog(@"Will rotate");
-        [UIView animateWithDuration:.65 animations:^{
-            _collectionViewR.frame = CGRectMake(_collectionViewR.frame.origin.x-101,
-                                                _collectionViewR.frame.origin.y,
-                                                _collectionViewR.frame.size.width,
-                                                _collectionViewR.frame.size.height);
-            _hostView.frame = CGRectMake(_hostView.frame.origin.x,
-                                         _hostView.frame.origin.y,
-                                         _hostView.frame.size.width-101,
-                                         _hostView.frame.size.height);
-        } completion:^(BOOL finished){
-            NSLog(@"Bottom finished");
-            
-        }];
-        
-    }
 }
 
+-(void) setupGraphsOnScreen
+{
+    if ([[UIApplication sharedApplication] statusBarOrientation] == UIInterfaceOrientationPortrait || [[UIApplication sharedApplication] statusBarOrientation] == UIInterfaceOrientationPortraitUpsideDown)
+    {
+        NSLog(@"Will rotate");
+        [self.view layoutIfNeeded];
+        hostViewTrailingConstraint.constant = 0;
+        hostViewBottomConstraint.constant = 101;
+        [self.view layoutIfNeeded];
+    }
+    else if ([[UIApplication sharedApplication] statusBarOrientation] == UIInterfaceOrientationLandscapeLeft || [[UIApplication sharedApplication] statusBarOrientation] == UIInterfaceOrientationLandscapeRight)
+    {
+        NSLog(@"Will rotate");
+        [self.view layoutIfNeeded];
+        hostViewTrailingConstraint.constant = -101;
+        hostViewBottomConstraint.constant = 0;
+        [self.view layoutIfNeeded];
+    }
+}
 
 -(void) willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
 {
     [self handleOrientationOnStart:[[UIApplication sharedApplication] statusBarOrientation]];
 }
 
-- (void) handleOrientationOnStart:(UIInterfaceOrientation) orientation {
-    
-    CPTBarPlot * plot = (CPTBarPlot*)[barChart plotAtIndex:0];
-    float widthOfBar = self.view.frame.size.height/(0.9*[_values count]);
-    plot.barWidth = CPTDecimalFromFloat(widthOfBar);
-    
+- (void) handleOrientationOnStart:(UIInterfaceOrientation) orientation
+{
     if (orientation == UIInterfaceOrientationPortrait || orientation == UIInterfaceOrientationPortraitUpsideDown)
     {
         NSLog(@"Will rotate");
-        [UIView animateWithDuration:.25 animations:^{
-            _collectionView.frame = CGRectMake(_collectionView.frame.origin.x,
-                                               _collectionView.frame.origin.y+101,
-                                               _collectionView.frame.size.width,
-                                               _collectionView.frame.size.height);
-            _hostView.frame = CGRectMake(_hostView.frame.origin.x,
-                                         _hostView.frame.origin.y,
-                                         _hostView.frame.size.width,
-                                         _hostView.frame.size.height+101);
-            
-        } completion:^(BOOL finished){
-            NSLog(@"Bottom finished");
-            
-        }];
+        [self.view layoutIfNeeded];
+        hostViewTrailingConstraint.constant = -101;
+        hostViewBottomConstraint.constant = 0;
+        [self.view layoutIfNeeded];
     }
     else if (orientation == UIInterfaceOrientationLandscapeLeft || orientation == UIInterfaceOrientationLandscapeRight)
     {
-        [UIView animateWithDuration:.25 animations:^{
-        _collectionViewR.frame = CGRectMake(_collectionViewR.frame.origin.x+101,
-                                            _collectionViewR.frame.origin.y,
-                                            _collectionViewR.frame.size.width,
-                                            _collectionViewR.frame.size.height);
-        _hostView.frame = CGRectMake(_hostView.frame.origin.x,
-                                     _hostView.frame.origin.y,
-                                     _hostView.frame.size.width+101,
-                                     _hostView.frame.size.height);
         
-        } completion:^(BOOL finished){
-            NSLog(@"Bottom finished");
-            
-        }];
+        NSLog(@"Will rotate");
+        [self.view layoutIfNeeded];
+        hostViewTrailingConstraint.constant = 0;
+        hostViewBottomConstraint.constant = 101;
+        [self.view layoutIfNeeded];
     }
 }
-
 
 
 
@@ -360,7 +322,9 @@
 {
     
     [self clearGraph:nil];
+    //CGRect frameOfView = CGRectMake(_hostView.bounds.origin.x, _hostView.bounds.origin.y, _hostView.bounds.size.width, _hostView.bounds.size.height);
     CGRect frameOfView = CGRectMake(_hostView.bounds.origin.x, _hostView.bounds.origin.y, _hostView.bounds.size.width, _hostView.bounds.size.height);
+    
     barChart = [[CPTXYGraph alloc] initWithFrame:frameOfView];
     
     _hostView.userInteractionEnabled = NO;
@@ -478,7 +442,7 @@
 }
 
 
-
+#pragma mark - Memory management
 
 - (void)didReceiveMemoryWarning
 {
@@ -490,6 +454,8 @@
     [_collectionViewR release];
     [_collectionView release];
     [_hostView release];
+    [hostViewTrailingConstraint release];
+    [hostViewBottomConstraint release];
     [super dealloc];
 }
 @end
