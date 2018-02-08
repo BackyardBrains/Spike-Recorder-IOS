@@ -208,9 +208,6 @@
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="43.666666666666664"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableViewCellContentView>
-                                <connections>
-                                    <segue destination="p3h-FI-jre" kind="show" identifier="autocorrelationGraphSegue" id="GXQ-qd-A9O"/>
-                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>
@@ -220,11 +217,91 @@
                     </tableView>
                     <connections>
                         <segue destination="8qG-ET-nKd" kind="show" identifier="crossCorrMatrixSegue" id="omo-WM-OrP"/>
+                        <segue destination="p3h-FI-jre" kind="show" identifier="autocorrelationGraphSegue" id="ZV8-Mc-HrF"/>
+                        <segue destination="P8u-yi-qUz" kind="show" identifier="isiGraphSegue" id="RsU-Vp-hDZ"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rvX-2u-zu0" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-1567" y="-2362"/>
+        </scene>
+        <!--Graph View Controller-->
+        <scene sceneID="pic-vv-rYi">
+            <objects>
+                <viewController id="P8u-yi-qUz" customClass="ISIGraphViewController" sceneMemberID="viewController">
+                    <view key="view" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="ci1-z0-4XM">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="641"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SzW-i5-Ege" customClass="CPTGraphHostingView">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="641"/>
+                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </view>
+                            <collectionView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" minimumZoomScale="0.0" maximumZoomScale="0.0" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="kHe-29-qrL">
+                                <rect key="frame" x="375" y="0.0" width="101" height="641"/>
+                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="101" id="LDM-rC-bb9"/>
+                                </constraints>
+                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="J0y-y5-fpd">
+                                    <size key="itemSize" width="80" height="80"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="10" maxX="0.0" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                                <cells/>
+                                <connections>
+                                    <outlet property="dataSource" destination="P8u-yi-qUz" id="ThT-Di-ab5"/>
+                                    <outlet property="delegate" destination="P8u-yi-qUz" id="tH5-jH-7xW"/>
+                                </connections>
+                            </collectionView>
+                            <collectionView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceHorizontal="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" minimumZoomScale="0.0" maximumZoomScale="0.0" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="yrK-ID-tBJ">
+                                <rect key="frame" x="0.0" y="641" width="375" height="100"/>
+                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="100" id="itE-jH-3s4"/>
+                                </constraints>
+                                <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="10" minimumInteritemSpacing="10" id="moa-Kf-Su2">
+                                    <size key="itemSize" width="80" height="80"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="10" minY="10" maxX="0.0" maxY="10"/>
+                                </collectionViewFlowLayout>
+                                <cells/>
+                                <connections>
+                                    <outlet property="dataSource" destination="P8u-yi-qUz" id="seB-Ri-R8X"/>
+                                    <outlet property="delegate" destination="P8u-yi-qUz" id="fNM-OZ-r6p"/>
+                                </connections>
+                            </collectionView>
+                        </subviews>
+                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="211-dR-CdW" firstAttribute="bottom" secondItem="SzW-i5-Ege" secondAttribute="bottom" id="4qI-Zc-cFb"/>
+                            <constraint firstItem="kHe-29-qrL" firstAttribute="top" secondItem="211-dR-CdW" secondAttribute="top" id="7dU-KX-LYD"/>
+                            <constraint firstItem="211-dR-CdW" firstAttribute="trailing" secondItem="SzW-i5-Ege" secondAttribute="trailing" id="9R7-is-ojU"/>
+                            <constraint firstItem="SzW-i5-Ege" firstAttribute="leading" secondItem="211-dR-CdW" secondAttribute="leading" id="Brw-fk-7fV"/>
+                            <constraint firstItem="yrK-ID-tBJ" firstAttribute="leading" secondItem="211-dR-CdW" secondAttribute="leading" id="J3y-ld-Qpk"/>
+                            <constraint firstItem="yrK-ID-tBJ" firstAttribute="top" secondItem="SzW-i5-Ege" secondAttribute="bottom" id="Jyf-bU-yCP"/>
+                            <constraint firstItem="kHe-29-qrL" firstAttribute="leading" secondItem="SzW-i5-Ege" secondAttribute="trailing" id="PYu-HQ-9cA"/>
+                            <constraint firstItem="SzW-i5-Ege" firstAttribute="top" secondItem="211-dR-CdW" secondAttribute="top" id="g7U-XX-d4R"/>
+                            <constraint firstItem="211-dR-CdW" firstAttribute="bottom" secondItem="kHe-29-qrL" secondAttribute="bottom" id="gGL-hM-VWv"/>
+                            <constraint firstItem="211-dR-CdW" firstAttribute="trailing" secondItem="yrK-ID-tBJ" secondAttribute="trailing" id="vE8-n0-sJD"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="211-dR-CdW"/>
+                    </view>
+                    <extendedEdge key="edgesForExtendedLayout"/>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics" barStyle="black" translucent="NO"/>
+                    <connections>
+                        <outlet property="collectionView" destination="yrK-ID-tBJ" id="qiO-kR-dpa"/>
+                        <outlet property="collectionViewR" destination="kHe-29-qrL" id="IWk-1G-rTw"/>
+                        <outlet property="hostView" destination="SzW-i5-Ege" id="RU9-a5-Bga"/>
+                        <outlet property="hostViewBottomConstrain" destination="4qI-Zc-cFb" id="fu3-vD-DGJ"/>
+                        <outlet property="hostViewTrailingConstrain" destination="9R7-is-ojU" id="roZ-d4-pWD"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="fZM-hm-7rC" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-444" y="-3155.9113300492613"/>
         </scene>
         <!--Auto Graph View Controller-->
         <scene sceneID="aIP-zS-w1B">
@@ -303,7 +380,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8iu-La-4al" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-452" y="-2480.5418719211825"/>
+            <point key="canvasLocation" x="-444" y="-2430"/>
         </scene>
         <!--Graph Matrix View Controller-->
         <scene sceneID="5Mv-bf-dO7">

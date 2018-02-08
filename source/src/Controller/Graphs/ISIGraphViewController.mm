@@ -36,22 +36,16 @@
 
 @implementation ISIGraphViewController
 
-
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        dataInitialized = NO;
-        allValues = [[NSMutableArray alloc] initWithCapacity:0];
-        allLimits = [[NSMutableArray alloc] initWithCapacity:0];
-        
-    }
-    return self;
-}
+@synthesize hostViewBottomConstrain;
+@synthesize hostViewTrailingConstrain;
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    dataInitialized = NO;
+    allValues = [[NSMutableArray alloc] initWithCapacity:0];
+    allLimits = [[NSMutableArray alloc] initWithCapacity:0];
+    
     self.tabBarController.tabBar.opaque = YES;
     self.tabBarController.tabBar.opaque = NO;
     [_collectionView registerClass:[ISIGraphCollectionViewCell class] forCellWithReuseIdentifier:ISI_GRAPH_CELL_NAME];
@@ -62,7 +56,7 @@
     self.extendedLayoutIncludesOpaqueBars = NO;
     self.automaticallyAdjustsScrollViewInsets = NO;
     [self colorOfTheGraph:[BYBGLView getSpikeTrainColorWithIndex:0 transparency:1.0f]];
-    [self handleOrientationOnEnd:[[UIApplication sharedApplication] statusBarOrientation]];
+    [self setupGraphsOnScreen];
     
 }
 
@@ -190,7 +184,7 @@
     
     [cell colorOfTheGraph:[BYBGLView getSpikeTrainColorWithIndex:indexForItem transparency:1.0f]];
     [cell setValues:((NSMutableArray *) [allValues objectAtIndex:indexForItem]) andLimits:((NSMutableArray *) [allLimits objectAtIndex:indexForItem])];
-    //cell.backgroundColor=[UIColor whiteColor];
+
     [cell setTitleOfGraph:[NSString stringWithFormat:@"ST%d",indexForItem+1]];
     return cell;
     
@@ -224,6 +218,27 @@
 #pragma mark - Orientation of view and layout
 
 
+
+-(void) setupGraphsOnScreen
+{
+    if ([[UIApplication sharedApplication] statusBarOrientation] == UIInterfaceOrientationPortrait || [[UIApplication sharedApplication] statusBarOrientation] == UIInterfaceOrientationPortraitUpsideDown)
+    {
+        NSLog(@"Will rotate");
+        [self.view layoutIfNeeded];
+        hostViewTrailingConstrain.constant = 0;
+        hostViewBottomConstrain.constant = 101;
+        [self.view layoutIfNeeded];
+    }
+    else if ([[UIApplication sharedApplication] statusBarOrientation] == UIInterfaceOrientationLandscapeLeft || [[UIApplication sharedApplication] statusBarOrientation] == UIInterfaceOrientationLandscapeRight)
+    {
+        NSLog(@"Will rotate");
+        [self.view layoutIfNeeded];
+        hostViewTrailingConstrain.constant = -101;
+        hostViewBottomConstrain.constant = 0;
+        [self.view layoutIfNeeded];
+    }
+}
+
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
 {
     [self handleOrientationOnEnd:[[UIApplication sharedApplication] statusBarOrientation]];
@@ -232,46 +247,6 @@
 - (void) handleOrientationOnEnd:(UIInterfaceOrientation) orientation {
     
     [self drawGraph];
-    if (orientation == UIInterfaceOrientationPortrait || orientation == UIInterfaceOrientationPortraitUpsideDown)
-    {
-        NSLog(@"Will rotate");
-        [UIView animateWithDuration:.65 animations:^{
-            _collectionView.frame = CGRectMake(_collectionView.frame.origin.x,
-                                                _collectionView.frame.origin.y-101,
-                                                _collectionView.frame.size.width,
-                                                _collectionView.frame.size.height);
-            _hostView.frame = CGRectMake(_hostView.frame.origin.x,
-                                         _hostView.frame.origin.y,
-                                         _hostView.frame.size.width,
-                                         _hostView.frame.size.height-101);
-            
-            
-        } completion:^(BOOL finished){
-            NSLog(@"Bottom finished");
-            
-        }];
-
-        
-    }
-    else if (orientation == UIInterfaceOrientationLandscapeLeft || orientation == UIInterfaceOrientationLandscapeRight)
-    {
-        NSLog(@"Will rotate");
-        [UIView animateWithDuration:.65 animations:^{
-            _collectionViewR.frame = CGRectMake(_collectionViewR.frame.origin.x-101,
-                                                _collectionViewR.frame.origin.y,
-                                                _collectionViewR.frame.size.width,
-                                                _collectionViewR.frame.size.height);
-            _hostView.frame = CGRectMake(_hostView.frame.origin.x,
-                                         _hostView.frame.origin.y,
-                                         _hostView.frame.size.width-101,
-                                         _hostView.frame.size.height);
-            
-        } completion:^(BOOL finished){
-            NSLog(@"Bottom finished");
-            
-        }];
-
-    }
 }
 
 
@@ -280,41 +255,24 @@
     [self handleOrientationOnStart:[[UIApplication sharedApplication] statusBarOrientation]];
 }
 
-- (void) handleOrientationOnStart:(UIInterfaceOrientation) orientation {
-    
+- (void) handleOrientationOnStart:(UIInterfaceOrientation) orientation
+{
     if (orientation == UIInterfaceOrientationPortrait || orientation == UIInterfaceOrientationPortraitUpsideDown)
     {
         NSLog(@"Will rotate");
-        [UIView animateWithDuration:.25 animations:^{
-            _collectionView.frame = CGRectMake(_collectionView.frame.origin.x,
-                                               _collectionView.frame.origin.y+101,
-                                               _collectionView.frame.size.width,
-                                               _collectionView.frame.size.height);
-            _hostView.frame = CGRectMake(_hostView.frame.origin.x,
-                                               _hostView.frame.origin.y,
-                                               _hostView.frame.size.width,
-                                               _hostView.frame.size.height+101);
-            
-        } completion:^(BOOL finished){
-            NSLog(@"Bottom finished");
-            
-        }];
+        [self.view layoutIfNeeded];
+        hostViewTrailingConstrain.constant = 101;
+        hostViewBottomConstrain.constant = 0;
+        [self.view layoutIfNeeded];
     }
     else if (orientation == UIInterfaceOrientationLandscapeLeft || orientation == UIInterfaceOrientationLandscapeRight)
     {
-        [UIView animateWithDuration:.25 animations:^{
-            _collectionViewR.frame = CGRectMake(_collectionViewR.frame.origin.x+101,
-                                                _collectionViewR.frame.origin.y,
-                                                _collectionViewR.frame.size.width,
-                                                _collectionViewR.frame.size.height);
-            _hostView.frame = CGRectMake(_hostView.frame.origin.x,
-                                         _hostView.frame.origin.y,
-                                         _hostView.frame.size.width+101,
-                                         _hostView.frame.size.height);
-        } completion:^(BOOL finished){
-            NSLog(@"Bottom finished");
-            
-        }];
+        
+        NSLog(@"Will rotate");
+        [self.view layoutIfNeeded];
+        hostViewTrailingConstrain.constant = 0;
+        hostViewBottomConstrain.constant = 101;
+        [self.view layoutIfNeeded];
     }
 }
 
@@ -461,6 +419,7 @@
     [barChart.defaultPlotSpace scaleToFitPlots:[barChart allPlots]];
 }
 
+#pragma mark - Memory management
 
 - (void)didReceiveMemoryWarning
 {
@@ -472,6 +431,8 @@
     [_hostView release];
     [_collectionView release];
     [_collectionViewR release];
+    [hostViewTrailingConstrain release];
+    [hostViewBottomConstrain release];
     [super dealloc];
 }
 @end

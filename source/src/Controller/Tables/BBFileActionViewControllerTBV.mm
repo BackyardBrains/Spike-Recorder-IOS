@@ -28,6 +28,7 @@
 
 #define SEGUE_CROSS_CORRELATION_MATRIX @"crossCorrMatrixSegue"
 #define SEGUE_AUTOCORRELATION_GRAPH @"autocorrelationGraphSegue"
+#define SEGUE_ISI_GRAPH @"isiGraphSegue"
 
 
 @implementation BBFileActionViewControllerTBV
@@ -234,13 +235,8 @@
         [self performSegueWithIdentifier:SEGUE_AUTOCORRELATION_GRAPH sender:self];
     }
     else if ([cell.textLabel.text isEqualToString:ISI_MENU_TEXT])
-	{
-
-        ISIGraphViewController *isivc = [[ISIGraphViewController alloc] initWithNibName:@"ISIGraphViewController" bundle:nil];
-        [isivc setFileForGraph:(BBFile *)[self.files objectAtIndex:0]];
-        [self.navigationController pushViewController:isivc animated:YES];
-        [isivc release];
-    
+    {
+        [self performSegueWithIdentifier:SEGUE_ISI_GRAPH sender:self];
     }
     else if ([cell.textLabel.text isEqualToString:CROSS_CORR_MENU_TEXT])
     {
@@ -328,6 +324,11 @@
     {
         AutoGraphViewController *autovc = (AutoGraphViewController *)segue.destinationViewController;
         [autovc setFileForGraph:(BBFile *)[self.files objectAtIndex:0]];
+    }
+    else if ([[segue identifier] isEqualToString:SEGUE_ISI_GRAPH])
+    {
+        ISIGraphViewController *isivc = (ISIGraphViewController *)segue.destinationViewController;
+        [isivc setFileForGraph:(BBFile *)[self.files objectAtIndex:0]];
     }
 }
 

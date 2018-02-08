@@ -16,6 +16,9 @@
 @property (retain, nonatomic) IBOutlet UICollectionView *collectionView;
 @property (retain, nonatomic) IBOutlet UICollectionView *collectionViewR;
 
+@property (retain, nonatomic) IBOutlet NSLayoutConstraint *hostViewTrailingConstrain;
+@property (retain, nonatomic) IBOutlet NSLayoutConstraint *hostViewBottomConstrain;
+
 -(void) setFileForGraph:(BBFile *) file;
 -(void) colorOfTheGraph:(UIColor *) theColor;
 @end

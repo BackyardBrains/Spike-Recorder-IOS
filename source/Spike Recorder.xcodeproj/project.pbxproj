@@ -160,7 +160,6 @@
 		2418FFD31A8406A600662547 /* Screenshot@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2418FFCB1A8406A600662547 /* Screenshot@2x.png */; };
 		241C8AF41B31EEEA00CEFCEE /* tinyxml2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 241C8AF21B31EEEA00CEFCEE /* tinyxml2.mm */; };
 		241C8AF71B3201B800CEFCEE /* template.xml in Resources */ = {isa = PBXBuildFile; fileRef = 241C8AF61B3201B800CEFCEE /* template.xml */; };
-		24507B53196C333C00E27BD2 /* AutoGraphViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 24507B51196C333C00E27BD2 /* AutoGraphViewController.xib */; };
 		2454D8AA19AD02010056B71B /* GraphDCMDExperimentViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2454D8A819AD02010056B71B /* GraphDCMDExperimentViewController.xib */; };
 		2454D8B219AE18D50056B71B /* AverageSpikeGraphViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2454D8B019AE18D50056B71B /* AverageSpikeGraphViewController.xib */; };
 		245B1842199135ED00943684 /* ExperimentsMenuTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 245B1840199135ED00943684 /* ExperimentsMenuTableViewCell.xib */; };
@@ -232,9 +231,6 @@
 		2489D8251993ABCA00C00A9C /* DCMDExperimentViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2489D8231993ABCA00C00A9C /* DCMDExperimentViewController.xib */; };
 		248C8EBF18E5D8FC00307C4C /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 248C8EBE18E5D8FC00307C4C /* MobileCoreServices.framework */; };
 		248C8EC118E5D90500307C4C /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 248C8EC018E5D90500307C4C /* ImageIO.framework */; };
-		249013A4196AB45200E5EF91 /* ISIGraphViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 249013A2196AB45200E5EF91 /* ISIGraphViewController.xib */; };
-		249A246319058465005F5F03 /* AutocorrelationGraphViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 249A246119058465005F5F03 /* AutocorrelationGraphViewController.xib */; };
-		249A24681906AC59005F5F03 /* ISIHistogramViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 249A24661906AC59005F5F03 /* ISIHistogramViewController.xib */; };
 		249C244B1A9E272500B81B1A /* BufferStateIndicator.mm in Sources */ = {isa = PBXBuildFile; fileRef = 249C244A1A9E272500B81B1A /* BufferStateIndicator.mm */; };
 		24BB8365199E7D0C00C12932 /* GraphDCMDTrialViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 24BB8363199E7D0C00C12932 /* GraphDCMDTrialViewController.xib */; };
 		24D697BA1A6FF3EB00108D78 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 24D697B91A6FF3EB00108D78 /* Images.xcassets */; };
@@ -663,7 +659,6 @@
 		241C8AF21B31EEEA00CEFCEE /* tinyxml2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = tinyxml2.mm; sourceTree = "<group>"; };
 		241C8AF31B31EEEA00CEFCEE /* tinyxml2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tinyxml2.h; sourceTree = "<group>"; };
 		241C8AF61B3201B800CEFCEE /* template.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = template.xml; sourceTree = "<group>"; };
-		24507B51196C333C00E27BD2 /* AutoGraphViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AutoGraphViewController.xib; sourceTree = "<group>"; };
 		2454D8A819AD02010056B71B /* GraphDCMDExperimentViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GraphDCMDExperimentViewController.xib; sourceTree = "<group>"; };
 		2454D8B019AE18D50056B71B /* AverageSpikeGraphViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AverageSpikeGraphViewController.xib; sourceTree = "<group>"; };
 		2459174219D316ED001CF8B4 /* Backyard Brains.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "Backyard Brains.entitlements"; sourceTree = SOURCE_ROOT; };
@@ -693,10 +688,7 @@
 		2489D8231993ABCA00C00A9C /* DCMDExperimentViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DCMDExperimentViewController.xib; sourceTree = "<group>"; };
 		248C8EBE18E5D8FC00307C4C /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		248C8EC018E5D90500307C4C /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
-		249013A2196AB45200E5EF91 /* ISIGraphViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ISIGraphViewController.xib; sourceTree = "<group>"; };
 		2490D73A1A927C1B00E1D5E9 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
-		249A246119058465005F5F03 /* AutocorrelationGraphViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AutocorrelationGraphViewController.xib; sourceTree = "<group>"; };
-		249A24661906AC59005F5F03 /* ISIHistogramViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ISIHistogramViewController.xib; sourceTree = "<group>"; };
 		249C24491A9E272500B81B1A /* BufferStateIndicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BufferStateIndicator.h; sourceTree = "<group>"; };
 		249C244A1A9E272500B81B1A /* BufferStateIndicator.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BufferStateIndicator.mm; sourceTree = "<group>"; };
 		24BB8363199E7D0C00C12932 /* GraphDCMDTrialViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GraphDCMDTrialViewController.xib; sourceTree = "<group>"; };
@@ -1524,10 +1516,6 @@
 				1CE5E0351F7453080016E7D9 /* ChooseFilterTypeViewController.xib */,
 				24E6D8A71A011EE0006C8CED /* FilterSettingsViewController.xib */,
 				2454D8B019AE18D50056B71B /* AverageSpikeGraphViewController.xib */,
-				24507B51196C333C00E27BD2 /* AutoGraphViewController.xib */,
-				249013A2196AB45200E5EF91 /* ISIGraphViewController.xib */,
-				249A24661906AC59005F5F03 /* ISIHistogramViewController.xib */,
-				249A246119058465005F5F03 /* AutocorrelationGraphViewController.xib */,
 				FA905A4B15AA8CF00013688B /* BBFileTableCell.xib */,
 				FADF268615963630006C87BA /* MainWindow.xib */,
 				FA35CEFD15ABBADB0082FBC3 /* PlaybackViewController.xib */,
@@ -1620,7 +1608,6 @@
 				247087C31A851774004C6B9B /* Icon-Small-40@3x.png in Resources */,
 				FADF268715963630006C87BA /* MainWindow.xib in Resources */,
 				1C3882CD2018AF8B00B0388B /* portrait-1125-2436.png in Resources */,
-				249A246319058465005F5F03 /* AutocorrelationGraphViewController.xib in Resources */,
 				247087BF1A851774004C6B9B /* Icon-76.png in Resources */,
 				2418FED91A83F5D700662547 /* StimSettings@2x.png in Resources */,
 				1CF7DB381F7988DF008F303E /* slider-metal-handle.png in Resources */,
@@ -1635,7 +1622,6 @@
 				2454D8AA19AD02010056B71B /* GraphDCMDExperimentViewController.xib in Resources */,
 				2418FFCD1A8406A600662547 /* Default-Landcape@2x.png in Resources */,
 				2418FFD21A8406A600662547 /* Screenshot-1242x2208.png in Resources */,
-				249A24681906AC59005F5F03 /* ISIHistogramViewController.xib in Resources */,
 				24EBC1B31997DD21001D3392 /* TrialActionsViewController.xib in Resources */,
 				2418FEC31A83F5D700662547 /* ecg.png in Resources */,
 				1C3882C52018890300B0388B /* landscape-2048-1536.png in Resources */,
@@ -1697,7 +1683,6 @@
 				2418FECD1A83F5D700662547 /* Pause.png in Resources */,
 				1C3882BF2018844E00B0388B /* icon83-5@2x.png in Resources */,
 				2418FFCF1A8406A600662547 /* Default-Portrait@2x.png in Resources */,
-				249013A4196AB45200E5EF91 /* ISIGraphViewController.xib in Resources */,
 				2418FEB71A83F5D700662547 /* again.png in Resources */,
 				1C3882F6201B58D500B0388B /* MainStoryboard.storyboard in Resources */,
 				247087BD1A851774004C6B9B /* Icon-72.png in Resources */,
@@ -1732,7 +1717,6 @@
 				2418FECA1A83F5D700662547 /* inputicon@2x.png in Resources */,
 				1C3882C720188A4C00B0388B /* portrait-1536-2048.png in Resources */,
 				247087C71A851774004C6B9B /* Icon-Small@2x.png in Resources */,
-				24507B53196C333C00E27BD2 /* AutoGraphViewController.xib in Resources */,
 				1CF7DB3A1F7988DF008F303E /* slider-metal-track.png in Resources */,
 				2418FED71A83F5D700662547 /* spectrum@2x.png in Resources */,
 			);

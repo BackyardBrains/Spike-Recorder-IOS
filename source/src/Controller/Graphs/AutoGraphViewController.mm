@@ -36,15 +36,6 @@
 @synthesize hostViewBottomConstraint;
 @synthesize hostViewTrailingConstraint;
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        dataInitialized = NO;
-        allValues = [[NSMutableArray alloc] initWithCapacity:0];
-    }
-    return self; 
-}
 
 - (void)viewDidLoad
 {
@@ -322,7 +313,6 @@
 {
     
     [self clearGraph:nil];
-    //CGRect frameOfView = CGRectMake(_hostView.bounds.origin.x, _hostView.bounds.origin.y, _hostView.bounds.size.width, _hostView.bounds.size.height);
     CGRect frameOfView = CGRectMake(_hostView.bounds.origin.x, _hostView.bounds.origin.y, _hostView.bounds.size.width, _hostView.bounds.size.height);
     
     barChart = [[CPTXYGraph alloc] initWithFrame:frameOfView];
