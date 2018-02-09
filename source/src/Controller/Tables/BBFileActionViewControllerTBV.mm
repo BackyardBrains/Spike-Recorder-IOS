@@ -26,11 +26,13 @@
 #define DELETE_MENU_TEXT        @"Delete"
 
 
-#define SEGUE_CROSS_CORRELATION_MATRIX @"crossCorrMatrixSegue"
-#define SEGUE_AUTOCORRELATION_GRAPH @"autocorrelationGraphSegue"
-#define SEGUE_ISI_GRAPH @"isiGraphSegue"
-#define SEGUE_AVERAGE_SPIKE_GRAPH @"averageSpikeGraphSegue"
-#define SEGUE_PLAYBACK_VIEW @"playbackViewSegue"
+#define SEGUE_CROSS_CORRELATION_MATRIX  @"crossCorrMatrixSegue"
+#define SEGUE_AUTOCORRELATION_GRAPH     @"autocorrelationGraphSegue"
+#define SEGUE_ISI_GRAPH                 @"isiGraphSegue"
+#define SEGUE_AVERAGE_SPIKE_GRAPH       @"averageSpikeGraphSegue"
+#define SEGUE_PLAYBACK_VIEW             @"playbackViewSegue"
+#define SEGUE_SPIKE_ANALYSIS_VIEW       @"spikeAnalysisViewSegue"
+
 
 @implementation BBFileActionViewControllerTBV
 
@@ -172,34 +174,24 @@
 	{
         [self performSegueWithIdentifier:SEGUE_PLAYBACK_VIEW sender:self];
 	}
-     
 	else if ([cell.textLabel.text isEqualToString:FILE_DETAILS_MENU_TEXT])
 	{
         // Launch a detail view here.
         BBFileDetailsTableViewController *bbdvc = [[BBFileDetailsTableViewController alloc] initWithBBFile:[self.files objectAtIndex:0]];
         [self.navigationController pushViewController:bbdvc animated:YES];
         [bbdvc release];
-        
 	}
-     
     else if ([cell.textLabel.text isEqualToString:FIND_SPIKES_MENU_TEXT])
 	{
         BBFile * fileToAnalyze = (BBFile *)[self.files objectAtIndex:0];
-       
         MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
         hud.labelText = @"Analyzing Spikes";
         dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-            
             if([[BBAnalysisManager bbAnalysisManager] findSpikes:fileToAnalyze] != -1)
             {
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    
                     [MBProgressHUD hideHUDForView:self.view animated:YES];
-                    SpikesAnalysisViewController *avc = [[SpikesAnalysisViewController alloc] initWithNibName:@"SpikesViewController" bundle:nil];
-                    avc.bbfile = [self.files objectAtIndex:0];
-                    [self.navigationController pushViewController:avc animated:YES];
-                    [avc release];
-                    
+                    [self performSegueWithIdentifier:SEGUE_SPIKE_ANALYSIS_VIEW sender:self];
                 });
             }
             else
@@ -217,11 +209,8 @@
                     // Present action sheet.
                     [self presentViewController:alertView animated:YES completion:nil];
                 });
-                
             }
-            
         });
-        
     }
     else if ([cell.textLabel.text isEqualToString:AUTOCORR_MENU_TEXT])
 	{
@@ -328,6 +317,11 @@
         PlaybackViewController * playbackController = (PlaybackViewController *) segue.destinationViewController;
         playbackController.showNavigationBar = NO;
         playbackController.bbfile = [self.files objectAtIndex:0];
+    }
+    else if([[segue identifier] isEqualToString:SEGUE_SPIKE_ANALYSIS_VIEW])
+    {
+        SpikesAnalysisViewController *avc =(SpikesAnalysisViewController *) segue.destinationViewController;
+        avc.bbfile = [self.files objectAtIndex:0];
     }
 }
 

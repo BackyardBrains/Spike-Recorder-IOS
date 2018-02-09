@@ -221,6 +221,7 @@
                         <segue destination="P8u-yi-qUz" kind="show" identifier="isiGraphSegue" id="RsU-Vp-hDZ"/>
                         <segue destination="Nxz-nn-Xaz" kind="show" identifier="averageSpikeGraphSegue" id="MkK-ir-uFD"/>
                         <segue destination="4Sr-5t-PRW" kind="show" identifier="playbackViewSegue" id="A9M-oM-haY"/>
+                        <segue destination="fyE-7H-PSK" kind="show" identifier="spikeAnalysisViewSegue" id="ING-47-4UI"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rvX-2u-zu0" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -297,7 +298,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Esa-QZ-Ddj" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-452" y="-4561"/>
+            <point key="canvasLocation" x="-439" y="-5085"/>
         </scene>
         <!--Average Spike Graph View Controller-->
         <scene sceneID="sC9-O2-usu">
@@ -314,7 +315,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="S6l-9O-ORk" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-439" y="-3839"/>
+            <point key="canvasLocation" x="-439" y="-4421"/>
         </scene>
         <!--Graph View Controller-->
         <scene sceneID="pic-vv-rYi">
@@ -392,7 +393,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fZM-hm-7rC" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-444" y="-3155.9113300492613"/>
+            <point key="canvasLocation" x="-439" y="-3749"/>
         </scene>
         <!--Auto Graph View Controller-->
         <scene sceneID="aIP-zS-w1B">
@@ -471,7 +472,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8iu-La-4al" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-444" y="-2430"/>
+            <point key="canvasLocation" x="-439" y="-3078"/>
         </scene>
         <!--Graph Matrix View Controller-->
         <scene sceneID="5Mv-bf-dO7">
@@ -509,7 +510,113 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2NC-E8-o5n" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-444" y="-1780"/>
+            <point key="canvasLocation" x="-452" y="-1773"/>
+        </scene>
+        <!--Spikes Analysis View Controller-->
+        <scene sceneID="VaB-zW-PWN">
+            <objects>
+                <viewController id="fyE-7H-PSK" customClass="SpikesAnalysisViewController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="F7k-hs-KJ0">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="641"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="x0s-Yh-YLH">
+                                <rect key="frame" x="18" y="558" width="339" height="31"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="jz7-3A-XMY"/>
+                                </constraints>
+                                <connections>
+                                    <action selector="timeValueChanged:" destination="fyE-7H-PSK" eventType="valueChanged" id="X6Q-f0-CMe"/>
+                                </connections>
+                            </slider>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dq2-GL-teK">
+                                <rect key="frame" x="101" y="0.0" width="254" height="58"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Sq6-Ns-KHf">
+                                        <rect key="frame" x="20" y="18.666666666666515" width="36" height="25"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal" image="trash.png">
+                                            <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="removeTrainClick:" destination="fyE-7H-PSK" eventType="touchUpInside" id="BGi-pf-5e7"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VeS-WT-6Cg">
+                                        <rect key="frame" x="138" y="-2" width="44" height="59"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="39"/>
+                                        <state key="normal" title="+">
+                                            <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="addTrainClick:" destination="fyE-7H-PSK" eventType="touchUpInside" id="bp1-b0-x7B"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="a78-bc-w2l">
+                                        <rect key="frame" x="199" y="8" width="55" height="45"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="27"/>
+                                        <state key="normal" title="Ch">
+                                            <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="channelClick:" destination="fyE-7H-PSK" eventType="touchUpInside" id="SZL-rz-aoQ"/>
+                                        </connections>
+                                    </button>
+                                    <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="h8E-mI-AfK" customClass="BYBHandleButton">
+                                        <rect key="frame" x="80" y="9" width="40" height="40"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
+                                    </view>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="254" id="bve-CM-TjN"/>
+                                    <constraint firstAttribute="height" constant="58" id="fgM-Kg-KRd"/>
+                                </constraints>
+                            </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FIF-Yl-8aW">
+                                <rect key="frame" x="11" y="16" width="40" height="34"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="34" id="UUi-rs-Uu5"/>
+                                    <constraint firstAttribute="width" constant="40" id="Ujs-4e-9i3"/>
+                                </constraints>
+                                <state key="normal" image="backbtn.png">
+                                    <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="backBtnClick:" destination="fyE-7H-PSK" eventType="touchUpInside" id="hiR-3x-4or"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" cocoaTouchSystemColor="darkTextColor"/>
+                        <constraints>
+                            <constraint firstItem="Qbv-Y9-kb7" firstAttribute="bottom" secondItem="x0s-Yh-YLH" secondAttribute="bottom" constant="53" id="6FP-JU-Oi0"/>
+                            <constraint firstItem="Qbv-Y9-kb7" firstAttribute="trailing" secondItem="x0s-Yh-YLH" secondAttribute="trailing" constant="20" id="chl-yU-Y7V"/>
+                            <constraint firstItem="Qbv-Y9-kb7" firstAttribute="trailing" secondItem="dq2-GL-teK" secondAttribute="trailing" constant="20" id="clr-OY-8ma"/>
+                            <constraint firstItem="x0s-Yh-YLH" firstAttribute="leading" secondItem="Qbv-Y9-kb7" secondAttribute="leading" constant="20" id="e8s-p7-3bI"/>
+                            <constraint firstItem="FIF-Yl-8aW" firstAttribute="leading" secondItem="Qbv-Y9-kb7" secondAttribute="leading" constant="11" id="ePx-8t-bYv"/>
+                            <constraint firstItem="dq2-GL-teK" firstAttribute="top" secondItem="Qbv-Y9-kb7" secondAttribute="top" id="mSg-qO-4Ho"/>
+                            <constraint firstItem="FIF-Yl-8aW" firstAttribute="top" secondItem="Qbv-Y9-kb7" secondAttribute="top" constant="16" id="pke-MG-CAq"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="Qbv-Y9-kb7"/>
+                    </view>
+                    <extendedEdge key="edgesForExtendedLayout"/>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics" barStyle="black" translucent="NO"/>
+                    <connections>
+                        <outlet property="addTrainBtn" destination="VeS-WT-6Cg" id="SUj-vQ-Kj0"/>
+                        <outlet property="channelBtn" destination="a78-bc-w2l" id="uli-Qi-18c"/>
+                        <outlet property="nextBtn" destination="h8E-mI-AfK" id="oWj-JG-yqn"/>
+                        <outlet property="removeTrainButton" destination="Sq6-Ns-KHf" id="HEF-Hu-OQp"/>
+                        <outlet property="timeSlider" destination="x0s-Yh-YLH" id="OhI-Fd-fPU"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="HGd-QI-rJA" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-439.19999999999999" y="-2421.4285714285716"/>
         </scene>
         <!--Cross Corr View Controller-->
         <scene sceneID="Bsi-Ot-PVq">
@@ -542,7 +649,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="w8e-tk-Rsr" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="462" y="-1780"/>
+            <point key="canvasLocation" x="383" y="-1773"/>
         </scene>
         <!--Recordings-->
         <scene sceneID="A1I-tB-FyA">
@@ -571,5 +678,6 @@
         <image name="WaveImage.png" width="30" height="30"/>
         <image name="backbtn.png" width="40" height="40"/>
         <image name="configIcon.png" width="58" height="58"/>
+        <image name="trash.png" width="25" height="25"/>
     </resources>
 </document>
