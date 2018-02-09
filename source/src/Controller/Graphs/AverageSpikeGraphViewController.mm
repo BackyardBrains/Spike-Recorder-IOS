@@ -19,7 +19,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate:) name:UIApplicationWillTerminateNotification object:nil];
 }
 
@@ -171,11 +170,12 @@
     }
     UIBarButtonItem *buttonItem = sender;
     UIView* btnView = [buttonItem valueForKey:@"view"];
-    //On these cases is better to specify the arrow direction
+    //In these cases is better to specify the arrow direction
     [popover setArrowDirection:FPPopoverArrowDirectionUp];
     [popover presentPopoverFromView:btnView];
 }
 
+#pragma mark - BBSelectionTableDelegateProtocol functions
 
 -(NSMutableArray *) getAllRows
 {
@@ -191,11 +191,10 @@
 - (void)rowSelected:(NSInteger) rowIndex
 {
     [glView createGraphForFile:currentFile andChannelIndex:rowIndex];
-    
     [popover dismissPopoverAnimated:YES];
 }
 
-#pragma mark - Destroy view
+#pragma mark - Memory management
 
 - (void)dealloc {
     [super dealloc];

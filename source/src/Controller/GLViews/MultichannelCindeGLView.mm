@@ -3,7 +3,7 @@
 //  Backyard Brains
 //
 //  Created by Stanislav Mircic on 5/28/14.
-//  Copyright (c) 2014 Datta Lab, Harvard University. All rights reserved.
+//  Copyright (c) 2014 Backyard Brains. All rights reserved.
 //
 
 #import "MultichannelCindeGLView.h"
@@ -11,7 +11,6 @@
 #import "BBSpike.h"
 #import "BBSpikeTrain.h"
 #import "BBChannel.h"
-//#import "BBBTManager.h"
 #import "BBAudioManager.h"
 #define HANDLE_RADIUS 10
 
@@ -823,21 +822,13 @@
     
     rmstream.precision(3);
     rmstream <<"RMS: "<< fixed << rmsToDisplay << " mV";
-    
-    
-    
-    
+
     gl::disableDepthRead();
     gl::setMatricesWindow( Vec2i(self.frame.size.width, self.frame.size.height) );
 	gl::enableAlphaBlending();
-    
-  
-    
+
 	gl::color( ColorA( 1.0, 1.0f, 1.0f, 1.0f ) );
-    
- 
-    
-    
+
       //Draw time ---------------------------------------------
     
     //if we are measuring draw measure result at the bottom
@@ -845,15 +836,9 @@
     Vec2f xScaleTextPosition = Vec2f(0.,0.);
     xScaleTextPosition.x = (self.frame.size.width - xScaleTextSize.x)/2.0;
     //if it is iPad put somewhat higher
+
+    xScaleTextPosition.y =self.frame.size.height-23 + (mScaleFont->getAscent() / 2.0f);
     
-    
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        xScaleTextPosition.y =0.85*self.frame.size.height + (mScaleFont->getAscent() / 2.0f);
-    }
-    else
-    {
-        xScaleTextPosition.y =0.923*self.frame.size.height + (mScaleFont->getAscent() / 2.0f);
-    }
     glColor4f(0.0, 0.47843137254901963, 1.0, 1.0);
     float centerx = self.frame.size.width/2;
     
@@ -880,7 +865,8 @@
     float heightOfOneRow = textSize.y * 1.4f;// * scaleXY.y;
     float rowVerticalGap = 4;// * scaleXY.x;
     
-    float xPositionOfBackground = self.frame.size.width-widthOfBackground-paddingOfBackground;
+    //self.frame.size.width
+    float xPositionOfBackground = self.frame.size.width -widthOfBackground-paddingOfBackground;
     float yPositionOfBackground = 100;
     
     

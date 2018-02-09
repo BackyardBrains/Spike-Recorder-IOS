@@ -66,15 +66,12 @@
     [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels ] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
     
     NSLog(@"ViewAndRecord - start animation");
-	//[glView startAnimation];
+	
     
     UITapGestureRecognizer *doubleTap = [[[UITapGestureRecognizer alloc] initWithTarget: self action:@selector(autorangeView)] autorelease];
     doubleTap.numberOfTapsRequired = 2;
     [glView addGestureRecognizer:doubleTap];
-    
-    // set our view controller's prop that will hold a pointer to our newly created CCGLTouchView
-    
-    
+ 
     NSLog(@"ViewAndRecord - set active channels");
         
     //Set all channels to active
@@ -185,8 +182,6 @@
     glView.channelsConfiguration = configurationOfChannels;
 }
 
-
-
 - (void)setGLView:(MultichannelCindeGLView *)view
 {
     glView = view;
@@ -206,6 +201,7 @@
             glView.translatesAutoresizingMaskIntoConstraints = NO;
             
             UILayoutGuide * guide = self.view.safeAreaLayoutGuide;
+            
             [self.glView.leadingAnchor constraintEqualToAnchor:guide.leadingAnchor].active = YES;
             [self.glView.trailingAnchor constraintEqualToAnchor:guide.trailingAnchor].active = YES;
             [self.glView.topAnchor constraintEqualToAnchor:guide.topAnchor].active = YES;

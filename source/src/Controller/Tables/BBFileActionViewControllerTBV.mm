@@ -30,7 +30,7 @@
 #define SEGUE_AUTOCORRELATION_GRAPH @"autocorrelationGraphSegue"
 #define SEGUE_ISI_GRAPH @"isiGraphSegue"
 #define SEGUE_AVERAGE_SPIKE_GRAPH @"averageSpikeGraphSegue"
-
+#define SEGUE_PLAYBACK_VIEW @"playbackViewSegue"
 
 @implementation BBFileActionViewControllerTBV
 
@@ -170,15 +170,7 @@
     
     if ([cell.textLabel.text isEqualToString:PLAY_MENU_TEXT])
 	{
-        if(playbackController==nil)
-        {
-            playbackController = [[[PlaybackViewController alloc] initWithNibName:@"PlaybackViewController" bundle:nil] autorelease];
-        }
-        playbackController.showNavigationBar = NO;
-        playbackController.bbfile = [self.files objectAtIndex:0];
-        [self.navigationController pushViewController:playbackController animated:YES];
-        //[playbackController release];
-
+        [self performSegueWithIdentifier:SEGUE_PLAYBACK_VIEW sender:self];
 	}
      
 	else if ([cell.textLabel.text isEqualToString:FILE_DETAILS_MENU_TEXT])
@@ -330,6 +322,12 @@
     {
         AverageSpikeGraphViewController *avsgvc = (AverageSpikeGraphViewController *)segue.destinationViewController;
         [avsgvc calculateGraphForFile:(BBFile *)[self.files objectAtIndex:0] andChannelIndex:0];
+    }
+    else if ([[segue identifier] isEqualToString:SEGUE_PLAYBACK_VIEW])
+    {
+        PlaybackViewController * playbackController = (PlaybackViewController *) segue.destinationViewController;
+        playbackController.showNavigationBar = NO;
+        playbackController.bbfile = [self.files objectAtIndex:0];
     }
 }
 

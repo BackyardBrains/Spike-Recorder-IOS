@@ -17,7 +17,6 @@
 
 @interface BBFileActionViewControllerTBV : UITableViewController  <UIActionSheetDelegate>
 {
-    PlaybackViewController * playbackController;
 }
 
 @property (nonatomic, assign) id <BBFileActionViewControllerDelegate> delegate;
