@@ -161,7 +161,6 @@
 		241C8AF41B31EEEA00CEFCEE /* tinyxml2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 241C8AF21B31EEEA00CEFCEE /* tinyxml2.mm */; };
 		241C8AF71B3201B800CEFCEE /* template.xml in Resources */ = {isa = PBXBuildFile; fileRef = 241C8AF61B3201B800CEFCEE /* template.xml */; };
 		2454D8AA19AD02010056B71B /* GraphDCMDExperimentViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2454D8A819AD02010056B71B /* GraphDCMDExperimentViewController.xib */; };
-		2454D8B219AE18D50056B71B /* AverageSpikeGraphViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2454D8B019AE18D50056B71B /* AverageSpikeGraphViewController.xib */; };
 		245B1842199135ED00943684 /* ExperimentsMenuTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 245B1840199135ED00943684 /* ExperimentsMenuTableViewCell.xib */; };
 		245B1847199172D200943684 /* ExperimentsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 245B1845199172D200943684 /* ExperimentsViewController.xib */; };
 		247087011A850FF6004C6B9B /* CCGLTouchAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FDA41A83F14700662547 /* CCGLTouchAppDelegate.mm */; };
@@ -660,7 +659,6 @@
 		241C8AF31B31EEEA00CEFCEE /* tinyxml2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tinyxml2.h; sourceTree = "<group>"; };
 		241C8AF61B3201B800CEFCEE /* template.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = template.xml; sourceTree = "<group>"; };
 		2454D8A819AD02010056B71B /* GraphDCMDExperimentViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GraphDCMDExperimentViewController.xib; sourceTree = "<group>"; };
-		2454D8B019AE18D50056B71B /* AverageSpikeGraphViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AverageSpikeGraphViewController.xib; sourceTree = "<group>"; };
 		2459174219D316ED001CF8B4 /* Backyard Brains.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "Backyard Brains.entitlements"; sourceTree = SOURCE_ROOT; };
 		245B1840199135ED00943684 /* ExperimentsMenuTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ExperimentsMenuTableViewCell.xib; sourceTree = "<group>"; };
 		245B1845199172D200943684 /* ExperimentsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ExperimentsViewController.xib; sourceTree = "<group>"; };
@@ -1515,7 +1513,6 @@
 				24DBA928197709DF00AEDE86 /* FFTViewController.xib */,
 				1CE5E0351F7453080016E7D9 /* ChooseFilterTypeViewController.xib */,
 				24E6D8A71A011EE0006C8CED /* FilterSettingsViewController.xib */,
-				2454D8B019AE18D50056B71B /* AverageSpikeGraphViewController.xib */,
 				FA905A4B15AA8CF00013688B /* BBFileTableCell.xib */,
 				FADF268615963630006C87BA /* MainWindow.xib */,
 				FA35CEFD15ABBADB0082FBC3 /* PlaybackViewController.xib */,
@@ -1702,7 +1699,6 @@
 				2418FECB1A83F5D700662547 /* nobeat.png in Resources */,
 				2418FEC81A83F5D700662547 /* hasbeat@2x.png in Resources */,
 				1CF7DB3B1F7988DF008F303E /* slider-metal-track@2x.png in Resources */,
-				2454D8B219AE18D50056B71B /* AverageSpikeGraphViewController.xib in Resources */,
 				245B1842199135ED00943684 /* ExperimentsMenuTableViewCell.xib in Resources */,
 				2418FEC01A83F5D700662547 /* checkmark@2x.png in Resources */,
 				2418FED11A83F5D700662547 /* Record.png in Resources */,

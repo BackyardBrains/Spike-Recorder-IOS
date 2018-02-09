@@ -219,11 +219,29 @@
                         <segue destination="8qG-ET-nKd" kind="show" identifier="crossCorrMatrixSegue" id="omo-WM-OrP"/>
                         <segue destination="p3h-FI-jre" kind="show" identifier="autocorrelationGraphSegue" id="ZV8-Mc-HrF"/>
                         <segue destination="P8u-yi-qUz" kind="show" identifier="isiGraphSegue" id="RsU-Vp-hDZ"/>
+                        <segue destination="Nxz-nn-Xaz" kind="show" identifier="averageSpikeGraphSegue" id="MkK-ir-uFD"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rvX-2u-zu0" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-1567" y="-2362"/>
+        </scene>
+        <!--Average Spike Graph View Controller-->
+        <scene sceneID="sC9-O2-usu">
+            <objects>
+                <viewController id="Nxz-nn-Xaz" customClass="AverageSpikeGraphViewController" sceneMemberID="viewController">
+                    <view key="view" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="ec7-Z8-GXc">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="641"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <viewLayoutGuide key="safeArea" id="Cqq-8g-vt2"/>
+                    </view>
+                    <extendedEdge key="edgesForExtendedLayout"/>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics" barStyle="black" translucent="NO"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="S6l-9O-ORk" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-439" y="-3839"/>
         </scene>
         <!--Graph View Controller-->
         <scene sceneID="pic-vv-rYi">

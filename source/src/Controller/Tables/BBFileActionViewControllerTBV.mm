@@ -29,6 +29,7 @@
 #define SEGUE_CROSS_CORRELATION_MATRIX @"crossCorrMatrixSegue"
 #define SEGUE_AUTOCORRELATION_GRAPH @"autocorrelationGraphSegue"
 #define SEGUE_ISI_GRAPH @"isiGraphSegue"
+#define SEGUE_AVERAGE_SPIKE_GRAPH @"averageSpikeGraphSegue"
 
 
 @implementation BBFileActionViewControllerTBV
@@ -244,12 +245,7 @@
     }
     else if ([cell.textLabel.text isEqualToString:AVERAGE_SPIKE_MENU_TEXT])
     {
-  
-        AverageSpikeGraphViewController *asvc = [[AverageSpikeGraphViewController alloc] initWithNibName:@"AverageSpikeGraphViewController" bundle:nil];
-        [asvc calculateGraphForFile:(BBFile *)[self.files objectAtIndex:0] andChannelIndex:0];
-        [self.navigationController pushViewController:asvc animated:YES];
-        [asvc release];
-        
+        [self performSegueWithIdentifier:SEGUE_AVERAGE_SPIKE_GRAPH sender:self];
     }
 	else if ([cell.textLabel.text isEqualToString:SHARE_MENU_TEXT])
 	{
@@ -329,6 +325,11 @@
     {
         ISIGraphViewController *isivc = (ISIGraphViewController *)segue.destinationViewController;
         [isivc setFileForGraph:(BBFile *)[self.files objectAtIndex:0]];
+    }
+    else if ([[segue identifier] isEqualToString:SEGUE_AVERAGE_SPIKE_GRAPH])
+    {
+        AverageSpikeGraphViewController *avsgvc = (AverageSpikeGraphViewController *)segue.destinationViewController;
+        [avsgvc calculateGraphForFile:(BBFile *)[self.files objectAtIndex:0] andChannelIndex:0];
     }
 }
 

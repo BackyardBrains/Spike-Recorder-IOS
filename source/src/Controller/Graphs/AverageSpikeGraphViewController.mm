@@ -14,10 +14,13 @@
 
 @implementation AverageSpikeGraphViewController
 
--(void) calculateGraphForFile:(BBFile * )newFile andChannelIndex:(int) newChannelIndex
+#pragma mark - View management
+
+- (void)viewDidLoad
 {
-    currentFile = newFile;
-    indexOfChannel = newChannelIndex;
+    [super viewDidLoad];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate:) name:UIApplicationWillTerminateNotification object:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -26,17 +29,16 @@
     [self.navigationController.navigationBar setBarTintColor:[UIColor blackColor]];
     self.navigationController.navigationBar.translucent = NO;
     [self.navigationController.navigationBar setTintColor:[UIColor whiteColor]];
-    if([[currentFile allChannels] count] >1)
+    
+    //add button that enables user to change channel that is displayed
+    if([[currentFile allChannels] count] > 1)
     {
-        if (self.navigationItem.rightBarButtonItem==nil) {
-            
+        if (self.navigationItem.rightBarButtonItem==nil)
+        {
             UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithTitle:@"Channel" style:UIBarButtonItemStylePlain target:self action:@selector(changeChannel:)];
-            
             self.navigationItem.rightBarButtonItem = rightButton;
         }
     }
-    
-    
 
     if ([self respondsToSelector:@selector(edgesForExtendedLayout)]) {
         self.edgesForExtendedLayout = UIRectEdgeNone;
@@ -54,30 +56,95 @@
         [glView release];
         glView = nil;
     }
-    //CGRect tempRec = [self.view.frame copy];
-    //tempRec
-    
-    
-    
-    
+
     glView = [[AverageSpikeGraphView alloc] initWithFrame:CGRectMake(self.view.frame.origin.x, 0.0f , self.view.frame.size.width, self.view.frame.size.height)];
-    
-    NSLog(@"\nfW: %f, \nfH: %f, \nfX: %f, \nfY: %f",self.view.frame.size.width, self.view.frame.size.height, self.view.frame.origin.x, self.view.frame.origin.y);
     [glView createGraphForFile:currentFile andChannelIndex:indexOfChannel];
     [self.view addSubview:glView];
     [self.view sendSubviewToBack:glView];
-    
+    [self initConstrainsForGLView];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
     
-    
-    
     [glView startAnimation];
-    
-    
 }
 
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    NSLog(@"Stopping regular view");
+    [self.navigationController.navigationBar setBarTintColor:nil];
+    self.navigationController.navigationBar.translucent = YES;
+    [self.navigationController.navigationBar setTintColor:nil];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillResignActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
+    
+    
+    [glView stopAnimation];
+    [glView removeFromSuperview];
+    [glView release];
+    glView = nil;
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
+{
+    return YES;
+}
+
+-(void) initConstrainsForGLView
+{
+    if(glView)
+    {
+        if (@available(iOS 11, *))
+        {
+            glView.translatesAutoresizingMaskIntoConstraints = NO;
+            
+            UILayoutGuide * guide = self.view.safeAreaLayoutGuide;
+            [glView.leadingAnchor constraintEqualToAnchor:guide.leadingAnchor].active = YES;
+            [glView.trailingAnchor constraintEqualToAnchor:guide.trailingAnchor].active = YES;
+            [glView.topAnchor constraintEqualToAnchor:guide.topAnchor].active = YES;
+            [glView.bottomAnchor constraintEqualToAnchor:guide.bottomAnchor].active = YES;
+            // Refresh myView and/or main view
+            [self.view layoutIfNeeded];
+        }
+    }
+}
+
+#pragma mark - Application management
+
+-(void) applicationDidBecomeActive:(UIApplication *)application {
+    NSLog(@"\n\nApp will become active - AverageGraph\n\n");
+    if(glView)
+    {
+        [glView startAnimation];
+    }
+}
+
+-(void) applicationWillResignActive:(UIApplication *)application {
+    NSLog(@"\n\nResign active - AverageGraph\n\n");
+    [glView stopAnimation];
+}
+
+- (void)applicationWillTerminate:(UIApplication *)application {
+    NSLog(@"Terminating...");
+    [glView stopAnimation];
+}
+
+
+#pragma mark - Init view's data
+
+-(void) calculateGraphForFile:(BBFile * )newFile andChannelIndex:(int) newChannelIndex
+{
+    currentFile = newFile;
+    indexOfChannel = newChannelIndex;
+}
 
 #pragma mark - Change channel code
 
@@ -128,70 +195,9 @@
     [popover dismissPopoverAnimated:YES];
 }
 
-
-#pragma mark - Rest of view code
-
-- (void)viewDidAppear:(BOOL)animated
-{
-    [super viewDidAppear:animated];
-}
-
-
--(void) applicationDidBecomeActive:(UIApplication *)application {
-    NSLog(@"\n\nApp will become active - AverageGraph\n\n");
-    if(glView)
-    {
-        [glView startAnimation];
-    }
-}
-
--(void) applicationWillResignActive:(UIApplication *)application {
-    NSLog(@"\n\nResign active - AverageGraph\n\n");
-    [glView stopAnimation];
-}
-
-
-- (void)viewWillDisappear:(BOOL)animated
-{
-    [super viewWillDisappear:animated];
-    NSLog(@"Stopping regular view");
-    [self.navigationController.navigationBar setBarTintColor:nil];
-    self.navigationController.navigationBar.translucent = YES;
-    [self.navigationController.navigationBar setTintColor:nil];
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillResignActiveNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
-    
-    
-    [glView stopAnimation];
-    [glView removeFromSuperview];
-    [glView release];
-    glView = nil;}
-
-- (void)viewDidLoad
-{
-    
-    [super viewDidLoad];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate:) name:UIApplicationWillTerminateNotification object:nil];
-    
-}
-
-- (void)applicationWillTerminate:(UIApplication *)application {
-    NSLog(@"Terminating...");
-    [glView stopAnimation];
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
-{
-    return YES;
-}
-
 #pragma mark - Destroy view
 
 - (void)dealloc {
     [super dealloc];
 }
-
-
 @end
