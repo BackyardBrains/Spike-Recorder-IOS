@@ -3,7 +3,7 @@
 //  Backyard Brains
 //
 //  Created by Stanislav Mircic on 4/10/14.
-//  Copyright (c) 2014 Datta Lab, Harvard University. All rights reserved.
+//  Copyright (c) Backyard Brains. All rights reserved.
 //
 
 #import "CCGLTouchViewController.h"
@@ -14,38 +14,41 @@
 #import "BBChannelSelectionTableViewController.h"
 #import "BYBHandleButton.h"
 
-@protocol BBSpikeSortingViewControllerDelegate
-@required
-- (void) spikesSortingFinished;
-@end
+@protocol BBSpikeSortingViewControllerDelegate;
 
 @interface SpikesAnalysisViewController : CCGLTouchViewController <FPPopoverControllerDelegate,BBSelectionTableDelegateProtocol> {
     SpikesCinderView *glView;
     FPPopoverController * popover;
 }
+
 @property (retain, nonatomic) IBOutlet BYBHandleButton *nextBtn;
-
-- (IBAction)backBtnClick:(id)sender;
 @property (retain, nonatomic) IBOutlet UISlider *timeSlider;
-@property (retain, nonatomic) BBFile *bbfile;
-@property (assign, nonatomic) id <BBSpikeSortingViewControllerDelegate> masterDelegate;
-
-
-
-- (void)setGLView:(CCGLTouchView *)view;
-- (IBAction)timeValueChanged:(id)sender;
 @property (retain, nonatomic) IBOutlet UIButton *addTrainBtn;
 @property (retain, nonatomic) IBOutlet UIButton *removeTrainButton;
 @property (retain, nonatomic) IBOutlet UIButton *channelBtn;
 
+//config init view
+@property (retain, nonatomic) BBFile *bbfile;
+@property (assign, nonatomic) id <BBSpikeSortingViewControllerDelegate> masterDelegate;
 
+
+//GL stuff
+- (void)setGLView:(CCGLTouchView *)view;
+
+//View handlers
+- (IBAction)timeValueChanged:(id)sender;
 - (IBAction)channelClick:(id)sender;
-
+- (IBAction)backBtnClick:(id)sender;
 - (IBAction)addTrainClick:(id)sender;
 - (IBAction)removeTrainClick:(id)sender;
 
+//BBSelectionTableDelegateProtocol functions
 - (void)rowSelected:(NSInteger) rowIndex;
--(NSMutableArray *) getAllRows;
+- (NSMutableArray *) getAllRows;
 @end
 
+@protocol BBSpikeSortingViewControllerDelegate
+@required
+- (void) spikesSortingFinished;
+@end
 
