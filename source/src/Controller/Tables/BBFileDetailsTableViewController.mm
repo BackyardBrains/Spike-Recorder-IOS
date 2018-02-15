@@ -11,47 +11,29 @@
 #import "BBCommentDetailsCell.h"
 
 #define COMMENT_ROW 1
-
 #define NORMAL_HEIGHT 44
 #define MINIMAL_COMMENT_HEIGHT 117
 
 @interface BBFileDetailsTableViewController ()
-
 @end
 
 @implementation BBFileDetailsTableViewController
+
 @synthesize bbfile;
 
-
-- (id)initWithBBFile:(BBFile *)theBBFile
-{
-    if (self = [super init]) {
-        self.bbfile = theBBFile;
-    }
-    
-    return self;
-}
+#pragma mark - View management
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
                                                                           action:@selector(dismissKeyboard)];
-    
     [self.view addGestureRecognizer:tap];
-}
-
--(void)dismissKeyboard {
-    [[self view] endEditing:TRUE];
-}
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
+    self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
+    self.navigationController.navigationBar.translucent = NO;
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-    
-
     BBCommentDetailsCell *commentCell = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:COMMENT_ROW inSection:0]];
     NSString * commentstr = commentCell.textTV.text;
     bbfile.comment = commentstr;
@@ -60,9 +42,15 @@
     NSString * namestr = nameCell.textTI.text;
     bbfile.shortname = namestr;
     
-    
     [bbfile saveWithoutArrays];
     [super viewWillDisappear:animated];
+}
+
+#pragma mark - Init/Config view
+
+-(void) setNewFile:(BBFile *)theBBFile
+{
+    self.bbfile = theBBFile;
 }
 
 #pragma mark - Table view data source
@@ -90,11 +78,8 @@
 }
 
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    
-    
-    
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
     if((int)(indexPath.row) == COMMENT_ROW)
     {
         // IF we are in second (comment) cell make custom cell
@@ -109,9 +94,7 @@
         commentCell.textTV.text = self.bbfile.comment;
         return commentCell;
     }
-    
-    
-    
+
     // See if there's an existing cell we can reuse
     BBFileDetailsViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"fileDetailsCell"];
     
@@ -119,7 +102,6 @@
         [tableView registerNib:[UINib nibWithNibName:@"BBFileDetailsViewCell" bundle:nil] forCellReuseIdentifier:@"fileDetailsCell"];
         cell = [tableView dequeueReusableCellWithIdentifier:@"fileDetailsCell"];
     }
-    
     
     // Customize cell
     switch ((int)indexPath.row) {
@@ -159,55 +141,25 @@
             break;
     }
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    
     return cell;
-     
-    
 }
 
+#pragma mark - Edit cell functions
 
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
+-(void)dismissKeyboard {
+    [[self view] endEditing:TRUE];
 }
-*/
 
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
+#pragma mark - Memory management
+
+- (void)dealloc
+{
+    [bbfile release];
+    [super dealloc];
 }
-*/
 
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
 }
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

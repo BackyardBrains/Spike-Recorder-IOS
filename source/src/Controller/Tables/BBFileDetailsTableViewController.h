@@ -13,7 +13,6 @@
 
 @property (nonatomic, retain) BBFile *bbfile;
 
-- (id)initWithBBFile:(BBFile *)theBBFile;
-
+-(void) setNewFile:(BBFile *)theBBFile;
 
 @end

@@ -32,6 +32,7 @@
 #define SEGUE_AVERAGE_SPIKE_GRAPH       @"averageSpikeGraphSegue"
 #define SEGUE_PLAYBACK_VIEW             @"playbackViewSegue"
 #define SEGUE_SPIKE_ANALYSIS_VIEW       @"spikeAnalysisViewSegue"
+#define SEGUE_FILE_DETAILS              @"fileDetailsSegue"
 
 
 @implementation BBFileActionViewControllerTBV
@@ -55,6 +56,8 @@
     [super viewWillAppear:animated];
     
     [[self navigationController] setNavigationBarHidden:NO animated:NO];
+    self.navigationController.navigationBar.barStyle = UIBarStyleDefault;
+    self.navigationController.navigationBar.translucent = NO;
     
     self.files = self.delegate.filesSelectedForAction;
     
@@ -176,10 +179,7 @@
 	}
 	else if ([cell.textLabel.text isEqualToString:FILE_DETAILS_MENU_TEXT])
 	{
-        // Launch a detail view here.
-        BBFileDetailsTableViewController *bbdvc = [[BBFileDetailsTableViewController alloc] initWithBBFile:[self.files objectAtIndex:0]];
-        [self.navigationController pushViewController:bbdvc animated:YES];
-        [bbdvc release];
+        [self performSegueWithIdentifier:SEGUE_FILE_DETAILS sender:self];
 	}
     else if ([cell.textLabel.text isEqualToString:FIND_SPIKES_MENU_TEXT])
 	{
@@ -322,6 +322,11 @@
     {
         SpikesAnalysisViewController *avc =(SpikesAnalysisViewController *) segue.destinationViewController;
         avc.bbfile = [self.files objectAtIndex:0];
+    }
+    else if([[segue identifier] isEqualToString:SEGUE_FILE_DETAILS])
+    {
+        BBFileDetailsTableViewController * fdvc = (BBFileDetailsTableViewController *) segue.destinationViewController;
+        [fdvc setNewFile:[self.files objectAtIndex:0]];
     }
 }
 

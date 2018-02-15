@@ -224,7 +224,6 @@
 		247087C91A851774004C6B9B /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 247087B71A851774004C6B9B /* Icon.png */; };
 		247087CA1A851774004C6B9B /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 247087B81A851774004C6B9B /* Icon@2x.png */; };
 		247087CB1A851774004C6B9B /* iTunesArtwork@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 247087B91A851774004C6B9B /* iTunesArtwork@2x.png */; };
-		2474366B18F6DBFF0044E11D /* SpikesViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2474366A18F6DBFF0044E11D /* SpikesViewController.xib */; };
 		247ED9BE193DEC0800871BAC /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 247ED9BD193DEC0800871BAC /* libz.dylib */; };
 		2489D8201992284500C00A9C /* ExperimentSetupViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2489D81E1992284500C00A9C /* ExperimentSetupViewController.xib */; };
 		2489D8251993ABCA00C00A9C /* DCMDExperimentViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2489D8231993ABCA00C00A9C /* DCMDExperimentViewController.xib */; };
@@ -244,7 +243,6 @@
 		FA905A4C15AA8CF00013688B /* BBFileTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA905A4B15AA8CF00013688B /* BBFileTableCell.xib */; };
 		FA905A7A15AA8F0C0013688B /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA905A7915AA8F0B0013688B /* CFNetwork.framework */; };
 		FA905A7C15AA8F370013688B /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA905A7B15AA8F360013688B /* MessageUI.framework */; };
-		FA9A665215BA3DC100CF1697 /* MainWindow-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA9A665115BA3DC100CF1697 /* MainWindow-iPad.xib */; };
 		FA9A665B15BB19B000CF1697 /* SettingsDefaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = FA9A665A15BB19B000CF1697 /* SettingsDefaults.plist */; };
 		FAAC8E7D15A3738D003EB28A /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAAC8E7C15A3738D003EB28A /* Accelerate.framework */; };
 		FADF26551596362F006C87BA /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FADF26541596362F006C87BA /* UIKit.framework */; };
@@ -259,7 +257,6 @@
 		FADF26671596362F006C87BA /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FADF26661596362F006C87BA /* CoreText.framework */; };
 		FADF266D1596362F006C87BA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = FADF266B1596362F006C87BA /* InfoPlist.strings */; };
 		FADF266F1596362F006C87BA /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = FADF266E1596362F006C87BA /* main.mm */; };
-		FADF268715963630006C87BA /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = FADF268615963630006C87BA /* MainWindow.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -679,7 +676,6 @@
 		247087B71A851774004C6B9B /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		247087B81A851774004C6B9B /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
 		247087B91A851774004C6B9B /* iTunesArtwork@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iTunesArtwork@2x.png"; sourceTree = "<group>"; };
-		2474366A18F6DBFF0044E11D /* SpikesViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SpikesViewController.xib; sourceTree = "<group>"; };
 		247ED9BD193DEC0800871BAC /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		2489D81E1992284500C00A9C /* ExperimentSetupViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ExperimentSetupViewController.xib; sourceTree = "<group>"; };
 		2489D8231993ABCA00C00A9C /* DCMDExperimentViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DCMDExperimentViewController.xib; sourceTree = "<group>"; };
@@ -702,7 +698,6 @@
 		FA905A4B15AA8CF00013688B /* BBFileTableCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BBFileTableCell.xib; sourceTree = "<group>"; };
 		FA905A7915AA8F0B0013688B /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		FA905A7B15AA8F360013688B /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
-		FA9A665115BA3DC100CF1697 /* MainWindow-iPad.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = "MainWindow-iPad.xib"; path = "iPad/MainWindow-iPad.xib"; sourceTree = "<group>"; };
 		FA9A665A15BB19B000CF1697 /* SettingsDefaults.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = SettingsDefaults.plist; sourceTree = "<group>"; };
 		FAAC8E7C15A3738D003EB28A /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		FADF26501596362F006C87BA /* Spike Recorder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Spike Recorder.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -720,7 +715,6 @@
 		FADF266C1596362F006C87BA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		FADF266E1596362F006C87BA /* main.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
 		FADF26701596362F006C87BA /* Spike Recorder-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Spike Recorder-Prefix.pch"; sourceTree = "<group>"; };
-		FADF268615963630006C87BA /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1370,10 +1364,8 @@
 				1CD05B9C1CFCFEF700A83727 /* BBFileDetailsTableViewController.mm */,
 				1CD05BA11CFD02EE00A83727 /* BBFileDetailsViewCell.h */,
 				1CD05BA21CFD02EE00A83727 /* BBFileDetailsViewCell.m */,
-				1CD05BA31CFD02EE00A83727 /* BBFileDetailsViewCell.xib */,
 				1CD05BA61CFD398400A83727 /* BBCommentDetailsCell.h */,
 				1CD05BA71CFD398400A83727 /* BBCommentDetailsCell.m */,
-				1CD05BA81CFD398400A83727 /* BBCommentDetailsCell.xib */,
 			);
 			path = Tables;
 			sourceTree = "<group>";
@@ -1416,14 +1408,6 @@
 				241C8AF61B3201B800CEFCEE /* template.xml */,
 			);
 			path = templates;
-			sourceTree = "<group>";
-		};
-		FA9A665015BA3DC000CF1697 /* iPad */ = {
-			isa = PBXGroup;
-			children = (
-				FA9A665115BA3DC100CF1697 /* MainWindow-iPad.xib */,
-			);
-			name = iPad;
 			sourceTree = "<group>";
 		};
 		FADF26451596362E006C87BA = {
@@ -1507,13 +1491,12 @@
 			isa = PBXGroup;
 			children = (
 				1C16E2DE20232E7C004E0C25 /* DCMD */,
-				FA9A665015BA3DC000CF1697 /* iPad */,
+				1CD05BA81CFD398400A83727 /* BBCommentDetailsCell.xib */,
+				1CD05BA31CFD02EE00A83727 /* BBFileDetailsViewCell.xib */,
 				24DBA928197709DF00AEDE86 /* FFTViewController.xib */,
 				1CE5E0351F7453080016E7D9 /* ChooseFilterTypeViewController.xib */,
 				24E6D8A71A011EE0006C8CED /* FilterSettingsViewController.xib */,
 				FA905A4B15AA8CF00013688B /* BBFileTableCell.xib */,
-				FADF268615963630006C87BA /* MainWindow.xib */,
-				2474366A18F6DBFF0044E11D /* SpikesViewController.xib */,
 				1C3882F5201B58D500B0388B /* MainStoryboard.storyboard */,
 			);
 			name = Boards;
@@ -1600,7 +1583,6 @@
 				247087BC1A851774004C6B9B /* Icon-60@3x.png in Resources */,
 				2418FED81A83F5D700662547 /* StimSettings.png in Resources */,
 				247087C31A851774004C6B9B /* Icon-Small-40@3x.png in Resources */,
-				FADF268715963630006C87BA /* MainWindow.xib in Resources */,
 				1C3882CD2018AF8B00B0388B /* portrait-1125-2436.png in Resources */,
 				247087BF1A851774004C6B9B /* Icon-76.png in Resources */,
 				2418FED91A83F5D700662547 /* StimSettings@2x.png in Resources */,
@@ -1632,12 +1614,10 @@
 				1CF7DB3C1F7988DF008F303E /* slider-metal-trackBackground.png in Resources */,
 				2418FFCC1A8406A600662547 /* Default-Landcape.png in Resources */,
 				1CE5E02B1F742E730016E7D9 /* configIcon@2x.png in Resources */,
-				2474366B18F6DBFF0044E11D /* SpikesViewController.xib in Resources */,
 				2418FEB81A83F5D700662547 /* again@2x.png in Resources */,
 				1CF7DB371F7988DF008F303E /* slider-metal-handle-highlighted@2x.png in Resources */,
 				2418FFD31A8406A600662547 /* Screenshot@2x.png in Resources */,
 				247087BB1A851774004C6B9B /* Icon-60@2x.png in Resources */,
-				FA9A665215BA3DC100CF1697 /* MainWindow-iPad.xib in Resources */,
 				2418FEC41A83F5D700662547 /* ecg@2x.png in Resources */,
 				24E6D8A91A011EE0006C8CED /* FilterSettingsViewController.xib in Resources */,
 				FA9A665B15BB19B000CF1697 /* SettingsDefaults.plist in Resources */,

@@ -88,8 +88,9 @@
             <objects>
                 <tabBarController automaticallyAdjustsScrollViewInsets="NO" id="EBf-gS-bmJ" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" barStyle="black" id="Zby-ir-202">
-                        <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics" barStyle="black" translucent="NO"/>
+                    <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" barStyle="black" translucent="NO" id="Zby-ir-202">
+                        <rect key="frame" x="0.0" y="0.0" width="1000" height="49"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </tabBar>
@@ -187,6 +188,7 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Recordings View Controller" id="AVf-Uz-uML"/>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics" barStyle="black" translucent="NO"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="f9S-8C-PO4" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -215,6 +217,7 @@
                             <outlet property="delegate" destination="yfi-pq-7Qt" id="XW1-k2-j2P"/>
                         </connections>
                     </tableView>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics" barStyle="black" translucent="NO"/>
                     <connections>
                         <segue destination="8qG-ET-nKd" kind="show" identifier="crossCorrMatrixSegue" id="omo-WM-OrP"/>
                         <segue destination="p3h-FI-jre" kind="show" identifier="autocorrelationGraphSegue" id="ZV8-Mc-HrF"/>
@@ -222,11 +225,43 @@
                         <segue destination="Nxz-nn-Xaz" kind="show" identifier="averageSpikeGraphSegue" id="MkK-ir-uFD"/>
                         <segue destination="4Sr-5t-PRW" kind="show" identifier="playbackViewSegue" id="A9M-oM-haY"/>
                         <segue destination="fyE-7H-PSK" kind="show" identifier="spikeAnalysisViewSegue" id="ING-47-4UI"/>
+                        <segue destination="AKA-hY-x0b" kind="show" identifier="fileDetailsSegue" id="Zva-1C-bkx"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rvX-2u-zu0" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-1567" y="-2362"/>
+        </scene>
+        <!--File Details Table View Controller-->
+        <scene sceneID="yeN-ns-DTt">
+            <objects>
+                <tableViewController id="AKA-hY-x0b" customClass="BBFileDetailsTableViewController" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="3Vl-7Z-Xne">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="641"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="t23-8M-PQd">
+                                <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="t23-8M-PQd" id="riz-XQ-pg9">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.666666666666664"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="AKA-hY-x0b" id="bac-Mh-fgH"/>
+                            <outlet property="delegate" destination="AKA-hY-x0b" id="w1j-0W-Sjp"/>
+                        </connections>
+                    </tableView>
+                    <extendedEdge key="edgesForExtendedLayout"/>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" translucent="NO" prompted="NO"/>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics" barStyle="black" translucent="NO"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="BZ5-sP-OHD" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-439" y="-5823"/>
         </scene>
         <!--Playback View Controller-->
         <scene sceneID="Yh2-DT-7zJ">
