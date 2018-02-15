@@ -23,7 +23,6 @@
     MBProgressHUD *hud;
 }
 @property (retain, nonatomic) IBOutlet UITabBarController *tabBarController;
-@property (strong, nonatomic) IBOutlet UIWindow *window;
 //@property (retain, nonatomic) HKHealthStore *healthStore;
 
 -(BOOL) sharedFileShouldBeOpened;

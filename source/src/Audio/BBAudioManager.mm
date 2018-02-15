@@ -504,57 +504,18 @@ static BBAudioManager *bbAudioManager = nil;
 -(void) makeInputOutput
 {
      NSLog(@"makeInputOutput %p\n",audioManager);
-
-   /* playEKGBeep = NO;
-    counterForEKGBeep = 0;
-
     
-    [audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
-        
-        if(playEKGBeep)
-        {
-            memset(data, 0, numChannels*numFrames*sizeof(float));
-            
-            int lengthToCopy = numFrames;
-            if(lengthToCopy> (LENGTH_OF_EKG_BEEP_IN_SAMPLES- counterForEKGBeep))
-            {
-                lengthToCopy = (LENGTH_OF_EKG_BEEP_IN_SAMPLES- counterForEKGBeep);
-            }
-            memcpy(data, &(ekgBeepBuffer[counterForEKGBeep]), lengthToCopy);
-            counterForEKGBeep+=lengthToCopy;
-            if(counterForEKGBeep>=LENGTH_OF_EKG_BEEP_IN_SAMPLES)
-            {
-                playEKGBeep = NO;
-            }
-            
-            NSLog(@"sound");
-        }
-        else
-        {
-            memset(data, 0, numChannels*numFrames*sizeof(float));
-            return;
-        }
-        
-            
-    } ];
-   
-        */
-
-
     // Replace the input block with the old input block, where we just save an in-memory copy of the audio.
-    [audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
-       
+    [audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
+    {
         if(ringBuffer == NULL)
         {
             NSLog(@"/n/n ERROR in Input block %p", self);
             return;
         }
         [self additionalProcessingOfInputData:data forNumOfFrames:numFrames andNumChannels:numChannels];
-        
         ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
-       
     }];
-    
 }
 
 
@@ -563,7 +524,6 @@ static BBAudioManager *bbAudioManager = nil;
 //
 -(void) additionalProcessingOfInputData:(float *) data forNumOfFrames:(UInt32) numFrames andNumChannels:(UInt32) numChannels
 {
-    
     [self amDemodulationOfData:data numFrames:numFrames numChannels:numChannels];
     
     if(self.amDemodulationIsON)
@@ -575,9 +535,6 @@ static BBAudioManager *bbAudioManager = nil;
     {
         [fileWriter writeNewAudio:data numFrames:numFrames numChannels:numChannels];
     }
-    
-    
-    
     
     [self updateBasicStatsOnData:data numFrames:numFrames numChannels:numChannels];
    
@@ -602,7 +559,6 @@ static BBAudioManager *bbAudioManager = nil;
     {
         [[BBAnalysisManager bbAnalysisManager] findSpikesInRTForData:data numberOfFrames:numFrames numberOfChannel:numChannels selectedChannel:_selectedChannel];
     }
-    
 }
 
 
@@ -610,10 +566,7 @@ static BBAudioManager *bbAudioManager = nil;
 {
     if(thisNumChannels<3)
     {
-    
         //calculate RMS for original signal
-        
-
         float zero = 0.0f;
         //get first channel
         vDSP_vsadd(newData,
@@ -637,22 +590,15 @@ static BBAudioManager *bbAudioManager = nil;
         //NSLog(@"a/b: %f",rmsOfOriginalSignal/rmsOfNotchedSignal);
         if(rmsOfNotchedSignal*3<rmsOfOriginalSignal)
         {
-    
-             self.amDemodulationIsON = true;
-            
-            
-                vDSP_vabs(newData, 1, newData, 1, thisNumChannels*thisNumFrames);
-            
-            
-            
-            
-                [filterAMStage1 filterData:newData numFrames:thisNumFrames numChannels:thisNumChannels];
-                [filterAMStage2 filterData:newData numFrames:thisNumFrames numChannels:thisNumChannels];
-                [filterAMStage3 filterData:newData numFrames:thisNumFrames numChannels:thisNumChannels];
+            self.amDemodulationIsON = true;
+            vDSP_vabs(newData, 1, newData, 1, thisNumChannels*thisNumFrames);
+
+            [filterAMStage1 filterData:newData numFrames:thisNumFrames numChannels:thisNumChannels];
+            [filterAMStage2 filterData:newData numFrames:thisNumFrames numChannels:thisNumChannels];
+            [filterAMStage3 filterData:newData numFrames:thisNumFrames numChannels:thisNumChannels];
             
             float sum = 0;
             float offset = 0;
-            
             
             if(thisNumChannels==1)
             {
@@ -697,11 +643,6 @@ static BBAudioManager *bbAudioManager = nil;
                            thisNumFrames);
  
             }
-            
-            //vDSP_vneg(newData,1, newData, 1, thisNumChannels*thisNumFrames);
-           
-            
-            //amOffset = newData[0];
         }
         else
         {
@@ -772,8 +713,6 @@ static BBAudioManager *bbAudioManager = nil;
 
 -(void) setFilterSettings:(int) newFilterSettings
 {
-    
-    
     switch (newFilterSettings) {
         case FILTER_SETTINGS_RAW:
             [self setFilterLPCutoff:FILTER_LP_OFF hpCutoff:FILTER_HP_OFF];
@@ -814,8 +753,6 @@ static BBAudioManager *bbAudioManager = nil;
   //  [[AVAudioSession sharedInstance] overrideOutputAudioPort:AVAudioSessionPortOverrideSpeaker error:nil];
     
     */
-    
-
 }
 
 -(int) getLPFilterCutoff {return lpFilterCutoff;}
@@ -912,17 +849,6 @@ static BBAudioManager *bbAudioManager = nil;
     {
         [self stopFFT];
     }
-    
-    if(ECGOn)
-    {
-        [self stopECG];
-    }
-    
-   /* if(rtSpikeSorting)
-    {
-        [self stopRTSpikeSorting];
-    }*/
-    
 }
 
 
@@ -1021,7 +947,7 @@ static BBAudioManager *bbAudioManager = nil;
 {
     if(dspThresholder)
     {
-        dspThresholder->GetIsTriggered();
+        return dspThresholder->GetIsTriggered();
     }
     else
     {
