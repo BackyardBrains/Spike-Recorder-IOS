@@ -3,7 +3,7 @@
 //  Backyard Brains
 //
 //  Created by Stanislav Mircic on 8/7/14.
-//  Copyright (c) 2014 Datta Lab, Harvard University. All rights reserved.
+//  Copyright (c) 2014 BackyardBrains. All rights reserved.
 //
 
 #import "DCMDExperimentViewController.h"
