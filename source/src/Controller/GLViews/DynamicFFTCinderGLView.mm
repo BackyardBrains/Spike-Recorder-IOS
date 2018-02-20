@@ -61,12 +61,15 @@
     lengthOfFFTBuffer = inNumOfGraphs;
     
     float tempNumberOfPix = lengthOfFFTData*lengthOfFFTBuffer;
-    float tempOverload = 11825.0f/tempNumberOfPix;
-    int newFreq = lengthOfFFTData*tempOverload;
+   // float tempOverload = 11825.0f/tempNumberOfPix;//Hack for older phones that have old graphic cards
+    int newFreq = lengthOfFFTData;//*tempOverload;
     
     
     baseFreq = inBaseFreq;
-    baseTime = inMaxTime/(float) inNumOfGraphs;
+    //we put here -1 because FFT buffer has one more graph than we need.
+    //We made this because we had grapical gliches because calculating of FFT and drawing are asinc.
+    //Now that FT has one more graph it can write new graph in additional element of buffer that is never used for display.
+    baseTime = inMaxTime/((float) inNumOfGraphs-4);
     
     maxFreq = baseFreq*( lengthOfFFTData>newFreq?newFreq:lengthOfFFTData);
     maxTime = inMaxTime;
@@ -162,7 +165,7 @@
         offsetX = X_AXIS_OFFSET* scaleXY.x/(2*retinaCorrection);
         offsetY = Y_AXIS_OFFSET* scaleXY.y/(2*retinaCorrection);
         
-        int indexOfGraphs = [[BBAudioManager bbAudioManager] indexOfFFTGraphBuffer];
+        
         
         float offsetOfRawSignal = currentMaxFreq + 0.5f*(currentMaxFreq*(1.0f+SIZE_OF_RAW)-currentMaxFreq);
         
@@ -196,6 +199,7 @@
         float blueC=0;
         float oldBlueC=0;
         float endOfTime = -currentMaxTime+offsetX;
+        int indexOfGraphs = [[BBAudioManager bbAudioManager] indexOfFFTGraphBuffer];
         for(currTime=0.0;currTime>endOfTime;currTime-=baseTime)
         {
             indexOfGraphs--;
@@ -214,7 +218,6 @@
             holderOfFreqGraph = graphBuffer[indexOfGraphs];
             for(currFreq = offsetY;currFreq<currentMaxFreq;currFreq=currFreq)
             {
-                
                 normPower = holderOfFreqGraph[freqIndex];
                 //glColor4f(normPower, normPower, normPower, 1.0f);
                 redC = red(normPower);
@@ -241,8 +244,7 @@
                 freqIndex++;
             }
         }
-        
-        
+
         
         // Marks for X axis - Time
         float markPos=0;

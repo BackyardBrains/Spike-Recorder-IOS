@@ -17,6 +17,8 @@
 		1C3882CE2018AF8B00B0388B /* landcape-2208-1242.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C3882CB2018AF8B00B0388B /* landcape-2208-1242.png */; };
 		1C3882CF2018AF8B00B0388B /* landcape-2436-1125.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C3882CC2018AF8B00B0388B /* landcape-2436-1125.png */; };
 		1C3882F6201B58D500B0388B /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1C3882F5201B58D500B0388B /* MainStoryboard.storyboard */; };
+		1C9850672036E3830076997B /* fft@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C9850652036E3810076997B /* fft@2x.png */; };
+		1C9850682036E3830076997B /* fft.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C9850662036E3810076997B /* fft.png */; };
 		1CB1265C1F87DDFF00247389 /* ObjectiveDropboxOfficial.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CB1265B1F87DDFF00247389 /* ObjectiveDropboxOfficial.framework */; };
 		1CB1265D1F87DDFF00247389 /* ObjectiveDropboxOfficial.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1CB1265B1F87DDFF00247389 /* ObjectiveDropboxOfficial.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1CBD16121E72E6DC00F59AEF /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CBD16101E72E6DC00F59AEF /* Crashlytics.framework */; };
@@ -280,6 +282,8 @@
 		1C3882CB2018AF8B00B0388B /* landcape-2208-1242.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "landcape-2208-1242.png"; sourceTree = "<group>"; };
 		1C3882CC2018AF8B00B0388B /* landcape-2436-1125.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "landcape-2436-1125.png"; sourceTree = "<group>"; };
 		1C3882F5201B58D500B0388B /* MainStoryboard.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MainStoryboard.storyboard; sourceTree = "<group>"; };
+		1C9850652036E3810076997B /* fft@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fft@2x.png"; sourceTree = "<group>"; };
+		1C9850662036E3810076997B /* fft.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fft.png; sourceTree = "<group>"; };
 		1CB1265B1F87DDFF00247389 /* ObjectiveDropboxOfficial.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ObjectiveDropboxOfficial.framework; path = Carthage/Build/iOS/ObjectiveDropboxOfficial.framework; sourceTree = "<group>"; };
 		1CBD16101E72E6DC00F59AEF /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		1CBD16111E72E6DC00F59AEF /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
@@ -1212,6 +1216,8 @@
 				2418FE891A83F5D700662547 /* again.png */,
 				2418FE8A1A83F5D700662547 /* again@2x.png */,
 				2418FE8B1A83F5D700662547 /* backbtn.png */,
+				1C9850662036E3810076997B /* fft.png */,
+				1C9850652036E3810076997B /* fft@2x.png */,
 				2418FE8C1A83F5D700662547 /* backbtn@2x.png */,
 				2418FE8D1A83F5D700662547 /* bluetooth.png */,
 				2418FE8E1A83F5D700662547 /* bluetooth@2x.png */,
@@ -1619,6 +1625,7 @@
 				2418FFCD1A8406A600662547 /* Default-Landcape@2x.png in Resources */,
 				2418FFD21A8406A600662547 /* Screenshot-1242x2208.png in Resources */,
 				24EBC1B31997DD21001D3392 /* TrialActionsViewController.xib in Resources */,
+				1C9850682036E3830076997B /* fft.png in Resources */,
 				2418FEC31A83F5D700662547 /* ecg.png in Resources */,
 				1C3882C52018890300B0388B /* landscape-2048-1536.png in Resources */,
 				1C3882CE2018AF8B00B0388B /* landcape-2208-1242.png in Resources */,
@@ -1647,6 +1654,7 @@
 				2418FEDD1A83F5D700662547 /* ThresholdImage@2x.png in Resources */,
 				2418FEBC1A83F5D700662547 /* bluetooth@2x.png in Resources */,
 				1CF7DB331F7988DF008F303E /* slider-default7-trackBackground@2x.png in Resources */,
+				1C9850672036E3830076997B /* fft@2x.png in Resources */,
 				1CE5E0371F7453080016E7D9 /* ChooseFilterTypeViewController.xib in Resources */,
 				2418FFD11A8406A600662547 /* Screenshot-750x1334.png in Resources */,
 				2418FEBF1A83F5D700662547 /* checkmark.png in Resources */,

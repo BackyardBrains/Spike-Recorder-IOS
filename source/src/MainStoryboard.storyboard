@@ -60,11 +60,24 @@
                                     <action selector="configButtonPressed:" destination="pde-FL-esI" eventType="touchUpInside" id="59q-Z7-TpN"/>
                                 </connections>
                             </button>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Hcp-Ep-Hyg">
+                                <rect key="frame" x="70" y="49" width="58" height="58"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="58" id="4f6-lD-qfa"/>
+                                    <constraint firstAttribute="width" constant="58" id="lFl-gb-FrZ"/>
+                                </constraints>
+                                <state key="normal" image="fft.png"/>
+                                <connections>
+                                    <action selector="fftButtonPressed:" destination="pde-FL-esI" eventType="touchUpInside" id="Ol4-cu-aDj"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="ndR-rK-Iub" firstAttribute="top" secondItem="zLF-zu-TnF" secondAttribute="top" constant="5" id="FK9-MC-BDt"/>
+                            <constraint firstItem="Hcp-Ep-Hyg" firstAttribute="leading" secondItem="ndR-rK-Iub" secondAttribute="trailing" constant="6" id="LPv-h5-737"/>
                             <constraint firstItem="zLF-zu-TnF" firstAttribute="trailing" secondItem="WnN-vn-xXv" secondAttribute="trailing" constant="6" id="Nmk-G6-nnI"/>
+                            <constraint firstItem="Hcp-Ep-Hyg" firstAttribute="top" secondItem="zLF-zu-TnF" secondAttribute="top" constant="5" id="YBr-4W-457"/>
                             <constraint firstItem="WnN-vn-xXv" firstAttribute="top" secondItem="zLF-zu-TnF" secondAttribute="top" constant="5" id="lvy-9g-hd5"/>
                             <constraint firstItem="ndR-rK-Iub" firstAttribute="leading" secondItem="zLF-zu-TnF" secondAttribute="leading" constant="6" id="pTz-dX-3pD"/>
                         </constraints>
@@ -75,6 +88,7 @@
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics" barStyle="black" translucent="NO"/>
                     <connections>
                         <outlet property="configButton" destination="ndR-rK-Iub" id="FM1-Pw-nvH"/>
+                        <outlet property="fftButton" destination="Hcp-Ep-Hyg" id="Wro-vl-vXe"/>
                         <outlet property="recordButton" destination="WnN-vn-xXv" id="UyH-dS-g5S"/>
                         <outlet property="stopButton" destination="I3B-o4-r5A" id="GEP-B2-lPs"/>
                     </connections>
@@ -82,6 +96,75 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="YO2-om-zHG" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-3452" y="-3711.0944527736133"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="d4B-CN-Ruz">
+            <objects>
+                <viewController storyboardIdentifier="fftViewID" useStoryboardIdentifierAsRestorationIdentifier="YES" id="BFs-bK-mnD" customClass="FFTViewController" sceneMemberID="viewController">
+                    <view key="view" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="h4X-kq-uCI">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="729"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fCL-VR-Lvp">
+                                <rect key="frame" x="251" y="29" width="55" height="39"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="39" id="8cD-6T-CTP"/>
+                                    <constraint firstAttribute="width" constant="55" id="kH7-pY-Fzv"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="27"/>
+                                <state key="normal" title="Ch">
+                                    <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Hjq-ba-UE5">
+                                <rect key="frame" x="6" y="50" width="40" height="34"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="34" id="e73-Ia-CuW"/>
+                                    <constraint firstAttribute="width" constant="40" id="n0i-Ut-u5C"/>
+                                </constraints>
+                                <state key="normal" image="backbtn.png">
+                                    <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="backBtnClick:" destination="fyE-7H-PSK" eventType="touchUpInside" id="BCY-Pn-abY"/>
+                                    <action selector="backButtonPressed:" destination="BFs-bK-mnD" eventType="touchUpInside" id="crR-Op-aJL"/>
+                                </connections>
+                            </button>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kuT-UJ-bSW">
+                                <rect key="frame" x="251" y="29" width="55" height="39"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="55" id="jPD-do-V2k"/>
+                                    <constraint firstAttribute="height" constant="39" id="xzi-8D-C7Y"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="27"/>
+                                <state key="normal" title="Ch">
+                                    <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="channelBtnClick:" destination="BFs-bK-mnD" eventType="touchUpInside" id="Pg4-wa-zL0"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="Hjq-ba-UE5" firstAttribute="top" secondItem="oRI-df-p6v" secondAttribute="top" constant="6" id="Aw7-pf-5vY"/>
+                            <constraint firstItem="oRI-df-p6v" firstAttribute="trailing" secondItem="fCL-VR-Lvp" secondAttribute="trailing" constant="69" id="B2U-a4-kiA"/>
+                            <constraint firstItem="Hjq-ba-UE5" firstAttribute="leading" secondItem="oRI-df-p6v" secondAttribute="leading" constant="6" id="Xb9-FA-viT"/>
+                            <constraint firstItem="fCL-VR-Lvp" firstAttribute="top" secondItem="oRI-df-p6v" secondAttribute="top" constant="6" id="sjG-rc-acC"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="oRI-df-p6v"/>
+                    </view>
+                    <extendedEdge key="edgesForExtendedLayout"/>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics" barStyle="black" translucent="NO"/>
+                    <connections>
+                        <outlet property="channelBtn" destination="kuT-UJ-bSW" id="tsu-5I-Qzd"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="gmk-dO-jAW" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-2521" y="-3712"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="yYW-QL-hre">
@@ -713,6 +796,7 @@
         <image name="WaveImage.png" width="30" height="30"/>
         <image name="backbtn.png" width="40" height="40"/>
         <image name="configIcon.png" width="58" height="58"/>
+        <image name="fft.png" width="58" height="58"/>
         <image name="trash.png" width="25" height="25"/>
     </resources>
 </document>

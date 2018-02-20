@@ -9,6 +9,7 @@
 //
 
 #import "ViewAndRecordViewController.h"
+#import "FFTViewController.h"
 
 @interface ViewAndRecordViewController()
 {
@@ -26,6 +27,7 @@
 @synthesize glView;
 @synthesize configButton;
 @synthesize stopButton;
+@synthesize fftButton;
 
 #pragma mark - View management
 
@@ -45,6 +47,7 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    
     [[BBAudioManager bbAudioManager] startMonitoring];
 
     if(glView)
@@ -356,21 +359,27 @@
 -(void) setVisibilityForConfigButton:(BOOL) setVisible
 {
     self.configButton.hidden = !setVisible;
+    
+    int filterSettings = [[BBAudioManager bbAudioManager] currentFilterSettings];
+    if(filterSettings == FILTER_SETTINGS_EEG || filterSettings == FILTER_SETTINGS_RAW || filterSettings == FILTER_SETTINGS_CUSTOM)
+    {
+        self.fftButton.hidden = !setVisible;
+    }
+    else
+    {
+        self.fftButton.hidden = YES;
+    }
 }
 
 - (IBAction)configButtonPressed:(id)sender {
     // grab the view controller we want to show
-    //UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-    //UIViewController *controller = [storyboard instantiateViewControllerWithIdentifier:@"Pop"];
     ChooseFilterTypeViewController *controller = [[ChooseFilterTypeViewController alloc] initWithNibName:@"ChooseFilterTypeViewController" bundle:nil];
     // present the controller
     // on iPad, this will be a Popover
     // on iPhone, this will be an action sheet
     controller.modalPresentationStyle = UIModalPresentationPopover;
     controller.preferredContentSize = CGSizeMake(200, 275);
-    
     controller.delegate = self;
-    
     
     // configure the Popover presentation controller
     popController = [controller popoverPresentationController];
@@ -390,9 +399,7 @@
         popController.sourceRect =  CGRectMake(self.configButton.bounds.origin.x, self.configButton.bounds.origin.y, configButton.bounds.size.width, configButton.bounds.size.height);
     }
     
-    
     // in case we don't have a bar button as reference
-    
     [self presentViewController:controller animated:YES completion:nil];
 }
 
@@ -481,6 +488,14 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+#pragma mark - FFT stuff
+-(IBAction) fftButtonPressed:(id)sender
+{
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
+    UIViewController *controller = [storyboard instantiateViewControllerWithIdentifier:@"fftViewID"];
+    [self presentViewController:controller animated:YES completion:nil];
+}
+
 #pragma mark - Memory management
 
 - (void)dealloc
@@ -489,6 +504,7 @@
     [stopButton release];
     [configButton release];
     [glView release];
+    [fftButton release];
     [super dealloc];
 }
 

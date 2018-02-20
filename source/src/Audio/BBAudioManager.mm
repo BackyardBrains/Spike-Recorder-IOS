@@ -1319,7 +1319,7 @@ static BBAudioManager *bbAudioManager = nil;
     
     [self makeInputOutput];// here we also create ring buffer so it must be before we set ring buffer
     
-    dspAnalizer->InitDynamicFFT(ringBuffer, _sourceNumberOfChannels, _sourceSamplingRate, n, 95, maxNumOfSeconds);
+    dspAnalizer->InitDynamicFFT(ringBuffer, _sourceNumberOfChannels, _sourceSamplingRate, n, 99, maxNumOfSeconds);
     
     FFTOn = true;
     

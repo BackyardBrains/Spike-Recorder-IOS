@@ -3,11 +3,10 @@
 //  Backyard Brains
 //
 //  Created by Stanislav Mircic on 7/16/14.
-//  Copyright (c) 2014 Datta Lab, Harvard University. All rights reserved.
+//  Copyright (c) 2014 Backyard Brains. All rights reserved.
 //
 
 #import "FFTViewController.h"
-//#import "BBBTManager.h"
 
 @interface FFTViewController ()
 
@@ -15,12 +14,22 @@
 
 @implementation FFTViewController
 
+#pragma mark - View management
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate:) name:UIApplicationWillTerminateNotification object:nil];
+}
+
+- (void)viewDidUnload {
+    [super viewDidUnload];
+}
+
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     [[self navigationController] setNavigationBarHidden:YES animated:NO];
     [[BBAudioManager bbAudioManager] startDynanimcFFT];
-    
     
     //Config GL view
     if(glView)
@@ -38,6 +47,7 @@
     _channelBtn.hidden = [[BBAudioManager bbAudioManager] sourceNumberOfChannels]<2;
    [self.view addSubview:glView];
    [self.view sendSubviewToBack:glView];
+    [self initConstrainsForGLView];
    [glView startAnimation];
     
  
@@ -57,24 +67,7 @@
     NSLog(@"Stopping regular view");
     [glView stopAnimation];
     [[BBAudioManager bbAudioManager] stopFFT];
-
-  /*  [[NSNotificationCenter defaultCenter] removeObserver:self name:NO_BT_CONNECTION object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:BT_DISCONNECTED object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:BT_SLOW_CONNECTION object:nil];*/
-   // [[NSNotificationCenter defaultCenter] removeObserver:self name:RESETUP_SCREEN_NOTIFICATION object:nil];
-}
-
-- (void)viewDidLoad
-{
     
-    [super viewDidLoad];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate:) name:UIApplicationWillTerminateNotification object:nil];
-}
-
-- (void)applicationWillTerminate:(UIApplication *)application {
-    NSLog(@"Terminating...");
-    [glView stopAnimation];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
@@ -82,43 +75,20 @@
     return YES;
 }
 
+#pragma mark - Application management
 
-
-
-#pragma mark - BT stuff
-
-
--(void) noBTConnection
-{
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"No Bluetooth connection."
-                                                    message:@"Please pair with BYB bluetooth device in Bluetooth settings."
-                                                   delegate:nil
-                                          cancelButtonTitle:@"OK"
-                                          otherButtonTitles:nil];
-    [alert show];
-    [alert release];
+- (void)applicationWillTerminate:(UIApplication *)application {
+    NSLog(@"Terminating...");
+    [glView stopAnimation];
 }
 
--(void) btDisconnected
-{
-    if([[BBAudioManager bbAudioManager] btOn])
-    {
-        
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"No Bluetooth connection."
-                                                        message:@"Bluetooth device disconnected. Get in range of the device and try to pair with the device in Bluetooth settings again."
-                                                       delegate:self
-                                              cancelButtonTitle:@"OK"
-                                              otherButtonTitles:nil];
-        [alert show];
-        [alert release];
-    }
-}
+
+#pragma mark - Init/Reset
 
 -(void) reSetupScreen
 {
    NSLog(@"Resetup screen");
     [[BBAudioManager bbAudioManager] startDynanimcFFT];
-    
     
     //Config GL view
     if(glView)
@@ -137,8 +107,35 @@
     [self.view addSubview:glView];
     [self.view sendSubviewToBack:glView];
     [glView startAnimation];
-
 }
+
+-(void) initConstrainsForGLView
+{
+    if(glView)
+    {
+        if (@available(iOS 11, *))
+        {
+            glView.translatesAutoresizingMaskIntoConstraints = NO;
+            
+            UILayoutGuide * guide = self.view.safeAreaLayoutGuide;
+            
+            [glView.leadingAnchor constraintEqualToAnchor:guide.leadingAnchor].active = YES;
+            [glView.trailingAnchor constraintEqualToAnchor:guide.trailingAnchor].active = YES;
+            [glView.topAnchor constraintEqualToAnchor:guide.topAnchor].active = YES;
+            [glView.bottomAnchor constraintEqualToAnchor:guide.bottomAnchor].active = YES;
+            // Refresh myView and/or main view
+            [self.view layoutIfNeeded];
+        }
+    }
+}
+
+#pragma mark - UI handlers
+
+- (IBAction)backButtonPressed:(id)sender
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
 
 #pragma mark - Channel code
 
@@ -152,7 +149,6 @@
     popover = [[FPPopoverController alloc] initWithViewController:controller];
     popover.border = NO;
     popover.tint = FPPopoverWhiteTint;
-    
     
     if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
     {
@@ -184,6 +180,7 @@
     [popover dismissPopoverAnimated:YES];
 }
 
+
 #pragma mark - Destroy view
 
 - (void)dealloc {
@@ -191,9 +188,7 @@
     [super dealloc];
 }
 
-- (void)viewDidUnload {
-    [super viewDidUnload];
-}
+
 
 
 @end

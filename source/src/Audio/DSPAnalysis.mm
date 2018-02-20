@@ -130,7 +130,9 @@ void DSPAnalysis::InitDynamicFFT(RingBuffer *externalRingBuffer, UInt32 numberOf
         bufferMaxSeconds = 0.1;
     }
     mBufferMaxSec = bufferMaxSeconds;
-    NumberOfGraphsInBuffer = (bufferMaxSeconds*mSamplingRate)/((float)mNumberOfSamplesBetweenWindows);
+    
+    //we add 4 here so that we can add new data asinc with draw graph function and avoid graphic glitches
+    NumberOfGraphsInBuffer =4 + (bufferMaxSeconds*mSamplingRate)/((float)mNumberOfSamplesBetweenWindows);
     
     mNumberOfSamplesWhaitingForAnalysis = 0;
     
@@ -215,7 +217,6 @@ void DSPAnalysis::CalculateDynamicFFT(const float *data, UInt32 numberOfFramesIn
             }
             // NSLog(@"%f", halfMaxMagnitude);
             FFTDynamicMagnitude[GraphBufferIndex][ind] = (FFTDynamicMagnitude[GraphBufferIndex][ind]/halfMaxMagnitude)-1.0;
-            
         }
     }
     mNumberOfSamplesWhaitingForAnalysis -= numberOfWindowsToAdd*mNumberOfSamplesBetweenWindows;

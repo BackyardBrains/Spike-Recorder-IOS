@@ -547,6 +547,7 @@ static BBAnalysisManager *bbAnalysisManager = nil;
     int i;
     if([peaksIndexes count]>0)
     {
+       
         //Filter positive spikes using kill interval
  
         for(i=0;i<[peaksIndexes count]-1;i++) //look on the right

@@ -19,5 +19,6 @@
 }
 @property (retain, nonatomic) IBOutlet UIButton *channelBtn;
 - (IBAction)channelBtnClick:(id)sender;
+- (IBAction)backButtonPressed:(id)sender;
 
 @end
