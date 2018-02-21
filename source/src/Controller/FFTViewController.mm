@@ -9,6 +9,10 @@
 #import "FFTViewController.h"
 
 @interface FFTViewController ()
+{
+    NSTimer * touchTimer;
+    BOOL backButtonActive;
+}
 
 @end
 
@@ -44,11 +48,16 @@
     float baseFreq = 0.5*((float)[[BBAudioManager bbAudioManager] sourceSamplingRate])/((float)[[BBAudioManager bbAudioManager] lengthOfFFTData]);
     [glView setupWithBaseFreq:baseFreq lengthOfFFT:[[BBAudioManager bbAudioManager] lengthOf30HzData] numberOfGraphs:[[BBAudioManager bbAudioManager] lenghtOfFFTGraphBuffer] maxTime:maxTime];
     [[BBAudioManager bbAudioManager] selectChannel:0];
+    glView.masterDelegate = self;
     _channelBtn.hidden = [[BBAudioManager bbAudioManager] sourceNumberOfChannels]<2;
    [self.view addSubview:glView];
    [self.view sendSubviewToBack:glView];
     [self initConstrainsForGLView];
    [glView startAnimation];
+    
+    UITapGestureRecognizer *doubleTap = [[[UITapGestureRecognizer alloc] initWithTarget: self action:@selector(doubleTapHandler)] autorelease];
+    doubleTap.numberOfTapsRequired = 1;
+    [glView addGestureRecognizer:doubleTap];
     
  
     //Bluetooth notifications
@@ -58,6 +67,7 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
+    [self startBackButtonCountdown];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -133,9 +143,18 @@
 
 - (IBAction)backButtonPressed:(id)sender
 {
+    if(touchTimer)
+    {
+        [touchTimer invalidate];
+        touchTimer = nil;
+    }
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
+-(void) doubleTapHandler
+{
+   
+}
 
 #pragma mark - Channel code
 
@@ -180,15 +199,58 @@
     [popover dismissPopoverAnimated:YES];
 }
 
+#pragma mark - DynamicFFTProtocolDelegate methods
+
+-(void) glViewTouched
+{
+    if(!backButtonActive)
+    {
+        [UIView animateWithDuration:0.7  delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState
+                         animations:^{
+                             backButtonActive = YES;
+                             self.backButton.alpha = 1;
+                             self.backButton.hidden = NO;
+                         } completion:^(BOOL finished) {
+                             [self startBackButtonCountdown];
+                         }];
+    }
+    else
+    {
+        [self startBackButtonCountdown];
+    }
+}
+
+#pragma mark - Back button show/hide
+
+-(void) startBackButtonCountdown
+{
+    if(touchTimer)
+    {
+        [touchTimer invalidate];
+        touchTimer = nil;
+    }
+    touchTimer = [NSTimer scheduledTimerWithTimeInterval:4 target:self selector:@selector(hideBackButton) userInfo:nil repeats:NO] ;
+}
+
+-(void) hideBackButton
+{
+    [touchTimer invalidate];
+    touchTimer = nil;
+    [UIView animateWithDuration:1.0  delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState
+                     animations:^{
+                         backButtonActive = NO;
+                         self.backButton.alpha = 0;
+                     } completion:^(BOOL finished) {
+                         self.backButton.hidden = YES;
+                     }];
+}
 
 #pragma mark - Destroy view
 
 - (void)dealloc {
     [_channelBtn release];
+    [_backButton release];
     [super dealloc];
 }
-
-
-
 
 @end

@@ -159,6 +159,7 @@
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics" barStyle="black" translucent="NO"/>
                     <connections>
+                        <outlet property="backButton" destination="Hjq-ba-UE5" id="pfz-H7-ahN"/>
                         <outlet property="channelBtn" destination="kuT-UJ-bSW" id="tsu-5I-Qzd"/>
                     </connections>
                 </viewController>

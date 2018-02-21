@@ -562,9 +562,7 @@
     //Selecting time interval and thresholding are mutualy exclusive
     else if (touches.size() == 1)
     {
-        
-        
-        
+        [[self masterDelegate] glViewTouched];
     }
     
 }
