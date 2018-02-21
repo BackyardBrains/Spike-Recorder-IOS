@@ -42,8 +42,8 @@
     mScaleFont = gl::TextureFont::create( Font("Helvetica", 12) );
     
     
-    retinaCorrection = 1.0f;
-    if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] && [[UIScreen mainScreen] scale]==2.0)
+    retinaCorrection = 2.0f;
+   if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] )
     {//if it is retina correct scale
         retinaCorrection = 1/((float)[[UIScreen mainScreen] scale]);
     }
@@ -72,6 +72,7 @@
     baseTime = inMaxTime/((float) inNumOfGraphs-4);
     
     maxFreq = baseFreq*( lengthOfFFTData>newFreq?newFreq:lengthOfFFTData);
+    initialMaxFrequency = maxFreq;
     maxTime = inMaxTime;
     
     currentMaxFreq = maxFreq;
@@ -168,10 +169,10 @@
         
         
         float offsetOfRawSignal = currentMaxFreq + 0.5f*(currentMaxFreq*(1.0f+SIZE_OF_RAW)-currentMaxFreq);
-        
+        float amplitudeZoom =rawSignalVoltsVisible *currentMaxFreq/initialMaxFrequency;
         vDSP_vsmsa ((float *)&(rawSignal.getPoints()[0])+1,
                     2,
-                    &rawSignalVoltsVisible,
+                    &amplitudeZoom,
                     &offsetOfRawSignal,
                     (float *)&(rawSignal.getPoints()[0])+1,
                     2,
@@ -352,7 +353,7 @@
         }
         
         hzString.str("");
-        hzString << fixed << "Time (S)";
+        hzString << fixed << "Time [S]";
         xScaleTextSize = mScaleFont->measureString(hzString.str());
         
         xScaleTextPosition.x = self.frame.size.width - xScaleTextSize.x*1.5 ;
@@ -477,6 +478,7 @@
     // it's because the fingers are separated in the orthogonal axis, and so movement along
     // the much-too-close axis should be ignored.
     // e.g. if you're pinching vertically, you should probably ignore horizontal movement.
+    
     if (abs(thisXDistance) <= minPinchDistance)
         deltaX = 1.0f;
     
@@ -491,6 +493,23 @@
     
     if ( isnan(deltaY)  || deltaY<0.0f)
         deltaY = 1.0f;
+    
+    
+    int pinchType = [self determinePinchType:touches];
+    switch(pinchType)
+    {
+        case 1: //vertical pinch
+            deltaX = 1.0f;
+            break;
+        case 2: //horizontal pinch
+            deltaY = 1.0f;
+            break;
+        default: //diagonal pinch, we don't react on that
+            deltaX = 1.0f;
+            deltaY = 1.0f;
+            break;
+    }
+    
     
     return Vec2f(deltaX, deltaY);
 }
@@ -567,6 +586,31 @@
     
 }
 
+
+//
+//1 - vertical pinch, 2 - horizontal pinch, 0 no pinch
+//
+-(int) determinePinchType:(std::vector<ci::app::TouchEvent::Touch>)touches
+{
+    float thisXDistance = fabs(touches[0].getX() - touches[1].getX());
+    float thisYDistance = fabs(touches[0].getY() - touches[1].getY());
+    if(thisYDistance>thisXDistance)
+    {
+        if(thisXDistance<140)
+        {
+            return 1;
+        }
+    }
+    else
+    {
+        if(thisYDistance<140)
+        {
+            return 2;
+        }
+    }
+    // NSLog(@"X: %f,   Y: %f ", thisXDistance, thisYDistance);
+    return 0;
+}
 
 
 #pragma mark - Utility

@@ -105,18 +105,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="729"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fCL-VR-Lvp">
-                                <rect key="frame" x="251" y="29" width="55" height="39"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="39" id="8cD-6T-CTP"/>
-                                    <constraint firstAttribute="width" constant="55" id="kH7-pY-Fzv"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="27"/>
-                                <state key="normal" title="Ch">
-                                    <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                    <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                </state>
-                            </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Hjq-ba-UE5">
                                 <rect key="frame" x="6" y="50" width="40" height="34"/>
                                 <constraints>
@@ -131,12 +119,8 @@
                                     <action selector="backButtonPressed:" destination="BFs-bK-mnD" eventType="touchUpInside" id="crR-Op-aJL"/>
                                 </connections>
                             </button>
-                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kuT-UJ-bSW">
-                                <rect key="frame" x="251" y="29" width="55" height="39"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="55" id="jPD-do-V2k"/>
-                                    <constraint firstAttribute="height" constant="39" id="xzi-8D-C7Y"/>
-                                </constraints>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kuT-UJ-bSW">
+                                <rect key="frame" x="323" y="44" width="36" height="45"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="27"/>
                                 <state key="normal" title="Ch">
                                     <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -150,9 +134,9 @@
                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="Hjq-ba-UE5" firstAttribute="top" secondItem="oRI-df-p6v" secondAttribute="top" constant="6" id="Aw7-pf-5vY"/>
-                            <constraint firstItem="oRI-df-p6v" firstAttribute="trailing" secondItem="fCL-VR-Lvp" secondAttribute="trailing" constant="69" id="B2U-a4-kiA"/>
+                            <constraint firstItem="oRI-df-p6v" firstAttribute="trailing" secondItem="kuT-UJ-bSW" secondAttribute="trailing" constant="16" id="Ka2-cS-eX3"/>
                             <constraint firstItem="Hjq-ba-UE5" firstAttribute="leading" secondItem="oRI-df-p6v" secondAttribute="leading" constant="6" id="Xb9-FA-viT"/>
-                            <constraint firstItem="fCL-VR-Lvp" firstAttribute="top" secondItem="oRI-df-p6v" secondAttribute="top" constant="6" id="sjG-rc-acC"/>
+                            <constraint firstItem="kuT-UJ-bSW" firstAttribute="top" secondItem="oRI-df-p6v" secondAttribute="top" id="sXJ-45-k67"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="oRI-df-p6v"/>
                     </view>

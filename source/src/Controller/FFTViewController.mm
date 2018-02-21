@@ -76,6 +76,7 @@
     [super viewWillDisappear:animated];
     [[self navigationController] setNavigationBarHidden:NO animated:NO];
     NSLog(@"Stopping regular view");
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:RESETUP_SCREEN_NOTIFICATION object:nil];
     [glView stopAnimation];
     [[BBAudioManager bbAudioManager] stopFFT];
     
@@ -162,6 +163,7 @@
 - (IBAction)channelBtnClick:(id)sender {
     SAFE_ARC_RELEASE(popover); popover=nil;
     
+    [self startBackButtonCountdown];
     //the controller we want to present as a popover
     BBChannelSelectionTableViewController *controller = [[BBChannelSelectionTableViewController alloc] initWithStyle:UITableViewStylePlain];
     
@@ -198,6 +200,7 @@
 {
     [[BBAudioManager bbAudioManager] selectChannel:rowIndex];
     [popover dismissPopoverAnimated:YES];
+    [self startBackButtonCountdown];
 }
 
 #pragma mark - DynamicFFTProtocolDelegate methods
@@ -206,11 +209,14 @@
 {
     if(!backButtonActive)
     {
+        bool hideChannelButton = [[BBAudioManager bbAudioManager] sourceNumberOfChannels]<2;
         [UIView animateWithDuration:0.7  delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState
                          animations:^{
                              backButtonActive = YES;
                              self.backButton.alpha = 1;
                              self.backButton.hidden = NO;
+                             self.channelBtn.alpha = 1;
+                             _channelBtn.hidden = hideChannelButton;
                          } completion:^(BOOL finished) {
                              [self startBackButtonCountdown];
                          }];
@@ -241,8 +247,10 @@
                      animations:^{
                          backButtonActive = NO;
                          self.backButton.alpha = 0;
+                         self.channelBtn.alpha = 0;
                      } completion:^(BOOL finished) {
                          self.backButton.hidden = YES;
+                         self.channelBtn.hidden = YES;
                      }];
 }
 

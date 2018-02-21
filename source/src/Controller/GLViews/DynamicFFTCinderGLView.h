@@ -46,6 +46,7 @@
     float samplingRate;
     UInt32 numberOfSamplesMax;
     BOOL firstDrawAfterChannelChange;
+    float initialMaxFrequency;
 }
 
 @property (nonatomic, assign) id <DynamicFFTProtocolDelegate> masterDelegate;
