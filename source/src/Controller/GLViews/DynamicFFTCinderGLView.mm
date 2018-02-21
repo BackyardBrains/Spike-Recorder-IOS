@@ -571,6 +571,12 @@
 
 #pragma mark - Utility
 
+-(void) autorangeSelectedChannel
+{
+    rawSignalVoltsVisible = 1/(0.3*[[BBAudioManager bbAudioManager] currMax]);
+}
+
+
 float interpolate( float val, float y0, float x0, float y1, float x1 ) {
     return (val-x0)*(y1-y0)/(x1-x0) + y0;
 }

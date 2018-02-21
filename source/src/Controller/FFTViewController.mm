@@ -55,10 +55,11 @@
     [self initConstrainsForGLView];
    [glView startAnimation];
     
+    //autorange vertical scale on double tap
     UITapGestureRecognizer *doubleTap = [[[UITapGestureRecognizer alloc] initWithTarget: self action:@selector(doubleTapHandler)] autorelease];
-    doubleTap.numberOfTapsRequired = 1;
+    doubleTap.numberOfTapsRequired = 2;
     [glView addGestureRecognizer:doubleTap];
-    
+    [self doubleTapHandler];
  
     //Bluetooth notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reSetupScreen) name:RESETUP_SCREEN_NOTIFICATION object:nil];
@@ -153,7 +154,7 @@
 
 -(void) doubleTapHandler
 {
-   
+    [glView autorangeSelectedChannel];
 }
 
 #pragma mark - Channel code
