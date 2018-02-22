@@ -369,7 +369,7 @@
     {
         self.fftButton.hidden = YES;
     }
-    self.fftButton.hidden = NO;//debug
+    //self.fftButton.hidden = NO;//debug
 }
 
 - (IBAction)configButtonPressed:(id)sender {

@@ -63,6 +63,9 @@
  
     //Bluetooth notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reSetupScreen) name:RESETUP_SCREEN_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate:) name:UIApplicationWillTerminateNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -77,6 +80,9 @@
     [[self navigationController] setNavigationBarHidden:NO animated:NO];
     NSLog(@"Stopping regular view");
     [[NSNotificationCenter defaultCenter] removeObserver:self name:RESETUP_SCREEN_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillTerminateNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillResignActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
     [glView stopAnimation];
     [[BBAudioManager bbAudioManager] stopFFT];
     
@@ -87,13 +93,25 @@
     return YES;
 }
 
-#pragma mark - Application management
+#pragma mark - App management
 
-- (void)applicationWillTerminate:(UIApplication *)application {
-    NSLog(@"Terminating...");
+-(void) applicationDidBecomeActive:(UIApplication *)application {
+    NSLog(@"\n\nApp will become active - FFT view\n\n");
+    if(glView)
+    {
+        [glView startAnimation];
+    }
+}
+
+-(void) applicationWillResignActive:(UIApplication *)application {
+    NSLog(@"\n\nResign active - FFT view\n\n");
     [glView stopAnimation];
 }
 
+- (void)applicationWillTerminate:(UIApplication *)application {
+    NSLog(@"Terminating... FFT view");
+    [glView stopAnimation];
+}
 
 #pragma mark - Init/Reset
 
