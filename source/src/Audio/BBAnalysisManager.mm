@@ -179,7 +179,275 @@ static BBAnalysisManager *bbAnalysisManager = nil;
 }
 
 
+//
+// Find spikes in one channel with index: channelIndex
+// In order to work this function need data that is without offset
+//(schmit triger needs that, maybe we should substract mean value or detrend)
+//
+- (int)findSpikes:(BBFile *)aFile andChannel:(int) channelIndex
+{
+    
+    if (fileReader != nil)
+    {
+        [fileReader release];
+        fileReader = nil;
+    }
+    
+    fileReader = [[BBAudioFileReader alloc]
+                  initWithAudioFileURL:[aFile fileURL]
+                  samplingRate:aFile.samplingrate
+                  numChannels:aFile.numberOfChannels];
+    
+    
+    int numberOfSamples = (int)(fileReader.duration * aFile.samplingrate);
+    float killInterval = 0.005;//5ms
+    int numberOfBins = 200;
+    int lengthOfBin = numberOfSamples/numberOfBins;
+    int maxLengthOfBin = (BUFFER_SIZE/aFile.numberOfChannels);
+    if(lengthOfBin>maxLengthOfBin)
+    {
+        lengthOfBin = maxLengthOfBin;
+        numberOfBins = ceil((float)numberOfSamples/(float)lengthOfBin);
+    }
+    
+    if(lengthOfBin<50)
+    {
+        NSLog(@"findSpikes: File too short.");
+        return -1;
+    }
+    
+    float *stdArray = (float*)calloc(numberOfBins,sizeof(float));
+    
+    //calculate STD for each bin
+    int ibin;
+    float zero = 0.0f;
+    for(ibin=0;ibin<numberOfBins;ibin++)
+    {
+        [fileReader retrieveFreshAudio:tempCalculationBuffer numFrames:(UInt32)(lengthOfBin) numChannels:aFile.numberOfChannels];
+        //get only one channel and put it on the begining of buffer in non-interleaved form
+        vDSP_vsadd((float *)&tempCalculationBuffer[channelIndex],
+                   aFile.numberOfChannels,
+                   &zero,
+                   tempCalculationBuffer,
+                   1,
+                   lengthOfBin);
+        stdArray[ibin] = dspAnalizer->SDT(tempCalculationBuffer, lengthOfBin);
+    }
+    //sort array of STDs
+    std::sort(stdArray, stdArray + numberOfBins, std::greater<float>());
+    //take value that is greater than 40% STDs
+    float sig = 2 * stdArray[(int)ceil(((float)numberOfBins)*0.4)];
+    float negsig = -1* sig;
+    
+    //make maximal bins for faster processing
+    lengthOfBin = (BUFFER_SIZE/aFile.numberOfChannels);
+    numberOfBins = ceil((float)numberOfSamples/(float)lengthOfBin);
+    
+    //find peaks
+    int numberOfFramesRead;
+    int isample;
+    
+    int schmitPosState = kSchmittOFF;
+    int schmitNegState = kSchmittOFF;
+    float maxPeakValue = -1000.0;
+    int maxPeakIndex = 0;
+    float minPeakValue = 1000.0;
+    int minPeakIndex = 0;
+    NSMutableArray * peaksIndexes = [[NSMutableArray alloc] initWithCapacity:0];
+    NSMutableArray * peaksIndexesNeg = [[NSMutableArray alloc] initWithCapacity:0];
+    for(ibin=0;ibin<numberOfBins;ibin++)
+    {
+        //read lengthOfBin frames except for last one reading where we should read only what is left
+        numberOfFramesRead = ibin == (numberOfBins-1) ? (numberOfSamples % lengthOfBin):lengthOfBin;
+        
+        [fileReader retrieveFreshAudio:tempCalculationBuffer numFrames:(UInt32)(numberOfFramesRead) numChannels:aFile.numberOfChannels seek:ibin*lengthOfBin];
+        
+        //get only one channel and put it on the begining of buffer in non-interleaved form
+        vDSP_vsadd((float *)&tempCalculationBuffer[channelIndex],
+                   aFile.numberOfChannels,
+                   &zero,
+                   tempCalculationBuffer,
+                   1,
+                   lengthOfBin);
+        
+        for(isample=0;isample<numberOfFramesRead;isample++)
+        {
+            //determine state of positive schmitt trigger
+            if(schmitPosState == kSchmittOFF && tempCalculationBuffer[isample]>sig)
+            {
+                schmitPosState =kSchmittON;
+                maxPeakValue = -1000.0;
+            }
+            else if(schmitPosState == kSchmittON && tempCalculationBuffer[isample]<0)
+            {
+                schmitPosState = kSchmittOFF;
+                BBSpike * tempSpike = [[BBSpike alloc] initWithValue:maxPeakValue index:maxPeakIndex andTime:((float)maxPeakIndex)/aFile.samplingrate];
+                [peaksIndexes addObject:tempSpike];//add max of positive peak
+                [tempSpike release];
+            }
+            
+            //determine state of negative schmitt trigger
+            if(schmitNegState == kSchmittOFF && tempCalculationBuffer[isample]<negsig)
+            {
+                schmitNegState =kSchmittON;
+                minPeakValue = 1000.0;
+            }
+            else if(schmitNegState == kSchmittON && tempCalculationBuffer[isample]>0)
+            {
+                schmitNegState = kSchmittOFF;
+                BBSpike * tempSpike = [[BBSpike alloc] initWithValue:minPeakValue index:minPeakIndex andTime:((float)minPeakIndex)/aFile.samplingrate];
+                [peaksIndexesNeg addObject:tempSpike]; //add min of negative peak
+                [tempSpike release];
+            }
+            
+            //find max in positive peak
+            if(schmitPosState==kSchmittON && tempCalculationBuffer[isample]>maxPeakValue)
+            {
+                maxPeakValue = tempCalculationBuffer[isample];
+                maxPeakIndex = isample + ibin*lengthOfBin;
+            }
+            
+            //find min in negative peak
+            else if(schmitNegState==kSchmittON && tempCalculationBuffer[isample]<minPeakValue)
+            {
+                minPeakValue = tempCalculationBuffer[isample];
+                minPeakIndex = isample + ibin*lengthOfBin;
+            }
+        }
+    }
+    
+    int i;
+    if([peaksIndexes count]>0)
+    {
+        //Filter positive spikes using kill interval
+        
+        for(i=0;i<[peaksIndexes count]-1;i++) //look on the right
+        {
+            if([(BBSpike *)[peaksIndexes objectAtIndex:i] value]<[(BBSpike *)[peaksIndexes objectAtIndex:i+1] value])
+            {
+                if(([(BBSpike *)[peaksIndexes objectAtIndex:i+1] time]-[(BBSpike *)[peaksIndexes objectAtIndex:i] time])<killInterval)
+                {
+                    [peaksIndexes removeObjectAtIndex:i];
+                    i--;
+                }
+            }
+        }
+        
+        for(i=1;i<[peaksIndexes count];i++) //look on the left neighbor
+        {
+            if([(BBSpike *)[peaksIndexes objectAtIndex:i] value]<[(BBSpike *)[peaksIndexes objectAtIndex:i-1] value])
+            {
+                if(([(BBSpike *)[peaksIndexes objectAtIndex:i] time]-[(BBSpike *)[peaksIndexes objectAtIndex:i-1] time])<killInterval)
+                {
+                    [peaksIndexes removeObjectAtIndex:i];
+                    i--;
+                }
+            }
+        }
+    }
+    
+    if([peaksIndexesNeg count]>0)
+    {
+        //Filter negative spikes using kill interval
+        for(i=0;i<[peaksIndexesNeg count]-1;i++)
+        {
+            if([(BBSpike *)[peaksIndexesNeg objectAtIndex:i] value]>[(BBSpike *)[peaksIndexesNeg objectAtIndex:i+1] value])
+            {
+                if(([(BBSpike *)[peaksIndexesNeg objectAtIndex:i+1] time]-[(BBSpike *)[peaksIndexesNeg objectAtIndex:i] time])<killInterval)
+                {
+                    [peaksIndexesNeg removeObjectAtIndex:i];
+                    i--;
+                }
+            }
+        }
+        
+        for(i=1;i<[peaksIndexesNeg count];i++)
+        {
+            if([(BBSpike *)[peaksIndexesNeg objectAtIndex:i] value]>[(BBSpike *)[peaksIndexesNeg objectAtIndex:i-1] value])
+            {
+                if(([(BBSpike *)[peaksIndexesNeg objectAtIndex:i] time]-[(BBSpike *)[peaksIndexesNeg objectAtIndex:i-1] time])<killInterval)
+                {
+                    [peaksIndexesNeg removeObjectAtIndex:i];
+                    i--;
+                }
+            }
+        }
+    }
+    
+    [peaksIndexes addObjectsFromArray:peaksIndexesNeg];
+    
+    //sort all spikes according to time
+    NSSortDescriptor *sortDescriptor;
+    sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"index"
+                                                 ascending:YES];
+    NSArray *sortDescriptors = [NSArray arrayWithObject:sortDescriptor];
+    NSMutableArray *sortedArray;
+    sortedArray = [[peaksIndexes sortedArrayUsingDescriptors:sortDescriptors] mutableCopy];
+    
+    //add spikes
+    [aFile.allSpikes addObject:sortedArray];
+    
+    
+    //[aFile save];
+    [peaksIndexes release];
+    [peaksIndexesNeg release];
+    [sortDescriptor release];
+    [sortedArray release];
+    
+    free(stdArray);
+    
+    return 0;
+}
+
+//
+// Separate all spikes to spike trains. And put it in BBSpikeTrain object
+//
+-(void) filterSpikes
+{
+    if(_file)
+    {
+        for(int channelIndex = 0;channelIndex<_file.numberOfChannels;channelIndex++)
+        {
+            BBChannel * tempChannel = [[_file allChannels] objectAtIndex:channelIndex];
+            NSMutableArray * currentChannelSpikes = [[_file allSpikes] objectAtIndex:channelIndex];
+            for(int spikeIndex = 0;spikeIndex<[tempChannel.spikeTrains count];spikeIndex++)
+            {
+                BBSpikeTrain * tempSpikeTrain = [tempChannel.spikeTrains objectAtIndex:spikeIndex];
+                [tempSpikeTrain.spikes removeAllObjects];
+                
+                float uperThreshold;
+                float lowerThreshold;
+                if(tempSpikeTrain.firstThreshold>tempSpikeTrain.secondThreshold)
+                {
+                    uperThreshold = tempSpikeTrain.firstThreshold;
+                    lowerThreshold = tempSpikeTrain.secondThreshold;
+                }
+                else
+                {
+                    uperThreshold = tempSpikeTrain.secondThreshold;
+                    lowerThreshold = tempSpikeTrain.firstThreshold;
+                }
+                
+                BBSpike * tempSpike;
+                for(int i=0;i<[currentChannelSpikes count];i++)
+                {
+                    tempSpike = (BBSpike *)[currentChannelSpikes objectAtIndex:i];
+                    if(tempSpike.value>lowerThreshold && tempSpike.value<uperThreshold)
+                    {
+                        [tempSpikeTrain.spikes addObject:tempSpike];
+                    }
+                }
+            }
+            
+        }
+        _file.spikesFiltered = FILE_SPIKE_SORTED;
+        [_file save];
+    }
+}
+
+
 //-------------------- RT spike sorting ---------------------------------
+#pragma mark - RT spike sorting
 
 -(float *) rtPeaksIndexs
 {
@@ -407,272 +675,7 @@ static BBAnalysisManager *bbAnalysisManager = nil;
 }
 //------------------------------------------------------------------------
 
-//
-// Find spikes in one channel with index: channelIndex
-// In order to work this function need data that is without offset
-//(schmit triger needs that, maybe we should substract mean value or detrend)
-//
-- (int)findSpikes:(BBFile *)aFile andChannel:(int) channelIndex
-{
-
-    if (fileReader != nil)
-    {
-        [fileReader release];
-        fileReader = nil;
-    }
-
-    fileReader = [[BBAudioFileReader alloc]
-                  initWithAudioFileURL:[aFile fileURL]
-                  samplingRate:aFile.samplingrate
-                  numChannels:aFile.numberOfChannels];
-    
-    
-    int numberOfSamples = (int)(fileReader.duration * aFile.samplingrate);
-    float killInterval = 0.005;//5ms
-    int numberOfBins = 200;
-    int lengthOfBin = numberOfSamples/numberOfBins;
-    int maxLengthOfBin = (BUFFER_SIZE/aFile.numberOfChannels);
-    if(lengthOfBin>maxLengthOfBin)
-    {
-        lengthOfBin = maxLengthOfBin;
-        numberOfBins = ceil((float)numberOfSamples/(float)lengthOfBin);
-    }
-    
-    if(lengthOfBin<50)
-    {
-        NSLog(@"findSpikes: File too short.");
-        return -1;
-    }
-    
-    float *stdArray = (float*)calloc(numberOfBins,sizeof(float));
-    
-    //calculate STD for each bin
-    int ibin;
-    float zero = 0.0f;
-    for(ibin=0;ibin<numberOfBins;ibin++)
-    {
-        [fileReader retrieveFreshAudio:tempCalculationBuffer numFrames:(UInt32)(lengthOfBin) numChannels:aFile.numberOfChannels];
-        //get only one channel and put it on the begining of buffer in non-interleaved form
-        vDSP_vsadd((float *)&tempCalculationBuffer[channelIndex],
-                   aFile.numberOfChannels,
-                   &zero,
-                   tempCalculationBuffer,
-                   1,
-                   lengthOfBin);
-        stdArray[ibin] = dspAnalizer->SDT(tempCalculationBuffer, lengthOfBin);
-    }
-    //sort array of STDs
-    std::sort(stdArray, stdArray + numberOfBins, std::greater<float>());
-    //take value that is greater than 40% STDs
-    float sig = 2 * stdArray[(int)ceil(((float)numberOfBins)*0.4)];
-    float negsig = -1* sig;
-    
-    //make maximal bins for faster processing
-    lengthOfBin = (BUFFER_SIZE/aFile.numberOfChannels);
-    numberOfBins = ceil((float)numberOfSamples/(float)lengthOfBin);
-    
-    //find peaks
-    int numberOfFramesRead;
-    int isample;
-    
-    int schmitPosState = kSchmittOFF;
-    int schmitNegState = kSchmittOFF;
-    float maxPeakValue = -1000.0;
-    int maxPeakIndex = 0;
-    float minPeakValue = 1000.0;
-    int minPeakIndex = 0;
-    NSMutableArray * peaksIndexes = [[NSMutableArray alloc] initWithCapacity:0];
-    NSMutableArray * peaksIndexesNeg = [[NSMutableArray alloc] initWithCapacity:0];
-    for(ibin=0;ibin<numberOfBins;ibin++)
-    {
-        //read lengthOfBin frames except for last one reading where we should read only what is left
-        numberOfFramesRead = ibin == (numberOfBins-1) ? (numberOfSamples % lengthOfBin):lengthOfBin;
-
-        [fileReader retrieveFreshAudio:tempCalculationBuffer numFrames:(UInt32)(numberOfFramesRead) numChannels:aFile.numberOfChannels seek:ibin*lengthOfBin];
-      
-        //get only one channel and put it on the begining of buffer in non-interleaved form
-        vDSP_vsadd((float *)&tempCalculationBuffer[channelIndex],
-                   aFile.numberOfChannels,
-                   &zero,
-                   tempCalculationBuffer,
-                   1,
-                   lengthOfBin);
-        
-        for(isample=0;isample<numberOfFramesRead;isample++)
-        {
-            //determine state of positive schmitt trigger
-            if(schmitPosState == kSchmittOFF && tempCalculationBuffer[isample]>sig)
-            {
-                schmitPosState =kSchmittON;
-                maxPeakValue = -1000.0;
-            }
-            else if(schmitPosState == kSchmittON && tempCalculationBuffer[isample]<0)
-            {
-                schmitPosState = kSchmittOFF;
-                BBSpike * tempSpike = [[BBSpike alloc] initWithValue:maxPeakValue index:maxPeakIndex andTime:((float)maxPeakIndex)/aFile.samplingrate];
-                [peaksIndexes addObject:tempSpike];//add max of positive peak
-                [tempSpike release];
-            }
-            
-            //determine state of negative schmitt trigger
-            if(schmitNegState == kSchmittOFF && tempCalculationBuffer[isample]<negsig)
-            {
-                schmitNegState =kSchmittON;
-                minPeakValue = 1000.0;
-            }
-            else if(schmitNegState == kSchmittON && tempCalculationBuffer[isample]>0)
-            {
-                schmitNegState = kSchmittOFF;
-                BBSpike * tempSpike = [[BBSpike alloc] initWithValue:minPeakValue index:minPeakIndex andTime:((float)minPeakIndex)/aFile.samplingrate];
-                [peaksIndexesNeg addObject:tempSpike]; //add min of negative peak
-                [tempSpike release];
-            }
-            
-            //find max in positive peak
-            if(schmitPosState==kSchmittON && tempCalculationBuffer[isample]>maxPeakValue)
-            {
-                maxPeakValue = tempCalculationBuffer[isample];
-                maxPeakIndex = isample + ibin*lengthOfBin;
-            }
-            
-            //find min in negative peak
-            else if(schmitNegState==kSchmittON && tempCalculationBuffer[isample]<minPeakValue)
-            {
-                minPeakValue = tempCalculationBuffer[isample];
-                minPeakIndex = isample + ibin*lengthOfBin;
-            }
-        }
-    }
-    
-    int i;
-    if([peaksIndexes count]>0)
-    {
-        //Filter positive spikes using kill interval
- 
-        for(i=0;i<[peaksIndexes count]-1;i++) //look on the right
-        {
-            if([(BBSpike *)[peaksIndexes objectAtIndex:i] value]<[(BBSpike *)[peaksIndexes objectAtIndex:i+1] value])
-            {
-                if(([(BBSpike *)[peaksIndexes objectAtIndex:i+1] time]-[(BBSpike *)[peaksIndexes objectAtIndex:i] time])<killInterval)
-                {
-                    [peaksIndexes removeObjectAtIndex:i];
-                    i--;
-                }
-            }
-        }
-        
-        for(i=1;i<[peaksIndexes count];i++) //look on the left neighbor
-        {
-            if([(BBSpike *)[peaksIndexes objectAtIndex:i] value]<[(BBSpike *)[peaksIndexes objectAtIndex:i-1] value])
-            {
-                if(([(BBSpike *)[peaksIndexes objectAtIndex:i] time]-[(BBSpike *)[peaksIndexes objectAtIndex:i-1] time])<killInterval)
-                {
-                    [peaksIndexes removeObjectAtIndex:i];
-                    i--;
-                }
-            }
-        }
-    }
-    
-    if([peaksIndexesNeg count]>0)
-    {
-        //Filter negative spikes using kill interval
-        for(i=0;i<[peaksIndexesNeg count]-1;i++)
-        {
-            if([(BBSpike *)[peaksIndexesNeg objectAtIndex:i] value]>[(BBSpike *)[peaksIndexesNeg objectAtIndex:i+1] value])
-            {
-                if(([(BBSpike *)[peaksIndexesNeg objectAtIndex:i+1] time]-[(BBSpike *)[peaksIndexesNeg objectAtIndex:i] time])<killInterval)
-                {
-                    [peaksIndexesNeg removeObjectAtIndex:i];
-                    i--;
-                }
-            }
-        }
-        
-        for(i=1;i<[peaksIndexesNeg count];i++)
-        {
-            if([(BBSpike *)[peaksIndexesNeg objectAtIndex:i] value]>[(BBSpike *)[peaksIndexesNeg objectAtIndex:i-1] value])
-            {
-                if(([(BBSpike *)[peaksIndexesNeg objectAtIndex:i] time]-[(BBSpike *)[peaksIndexesNeg objectAtIndex:i-1] time])<killInterval)
-                {
-                    [peaksIndexesNeg removeObjectAtIndex:i];
-                    i--;
-                }
-            }
-        }
-    }
-
-    [peaksIndexes addObjectsFromArray:peaksIndexesNeg];
-    
-    //sort all spikes according to time
-    NSSortDescriptor *sortDescriptor;
-    sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"index"
-                                                 ascending:YES];
-    NSArray *sortDescriptors = [NSArray arrayWithObject:sortDescriptor];
-    NSMutableArray *sortedArray;
-    sortedArray = [[peaksIndexes sortedArrayUsingDescriptors:sortDescriptors] mutableCopy];
-
-    //add spikes
-    [aFile.allSpikes addObject:sortedArray];
-
-    
-    //[aFile save];
-    [peaksIndexes release];
-    [peaksIndexesNeg release];
-    [sortDescriptor release];
-    [sortedArray release];
-
-    free(stdArray);
-    
-    return 0;
-}
-
-//
-// Separate all spikes to spike trains. And put it in BBSpikeTrain object
-//
--(void) filterSpikes
-{
-    if(_file)
-    {
-        for(int channelIndex = 0;channelIndex<_file.numberOfChannels;channelIndex++)
-        {
-            BBChannel * tempChannel = [[_file allChannels] objectAtIndex:channelIndex];
-            NSMutableArray * currentChannelSpikes = [[_file allSpikes] objectAtIndex:channelIndex];
-            for(int spikeIndex = 0;spikeIndex<[tempChannel.spikeTrains count];spikeIndex++)
-            {
-                BBSpikeTrain * tempSpikeTrain = [tempChannel.spikeTrains objectAtIndex:spikeIndex];
-                [tempSpikeTrain.spikes removeAllObjects];
-                
-                float uperThreshold;
-                float lowerThreshold;
-                if(tempSpikeTrain.firstThreshold>tempSpikeTrain.secondThreshold)
-                {
-                    uperThreshold = tempSpikeTrain.firstThreshold;
-                    lowerThreshold = tempSpikeTrain.secondThreshold;
-                }
-                else
-                {
-                    uperThreshold = tempSpikeTrain.secondThreshold;
-                    lowerThreshold = tempSpikeTrain.firstThreshold;
-                }
-                
-                BBSpike * tempSpike;
-                for(int i=0;i<[currentChannelSpikes count];i++)
-                {
-                    tempSpike = (BBSpike *)[currentChannelSpikes objectAtIndex:i];
-                    if(tempSpike.value>lowerThreshold && tempSpike.value<uperThreshold)
-                    {
-                        [tempSpikeTrain.spikes addObject:tempSpike];
-                    }
-                }
-            }
-        
-        }
-        _file.spikesFiltered = FILE_SPIKE_SORTED;
-        [_file save];
-    }
- }
-
+#pragma mark - Graph analysis
 //
 //Average spikes. It performs one pass calculation of everage and STD:
 //http://www.strchr.com/standard_deviation_in_one_pass

@@ -276,7 +276,9 @@
 
 - (IBAction)sliderValueChanged:(id)sender {
     
-    [BBAudioManager bbAudioManager].currentFileTime = (float)self.timeSlider.value;
+    //[BBAudioManager bbAudioManager].currentFileTime = (float)self.timeSlider.value;
+    
+    [[BBAudioManager bbAudioManager] setSeekTime:(float)self.timeSlider.value];
 }
 
 - (IBAction)playPauseButtonPressed:(id)sender
@@ -286,7 +288,6 @@
 
 - (void)togglePlayback
 {
-
     if ([BBAudioManager bbAudioManager].playing == false) {
         
         [[BBAudioManager bbAudioManager] resumePlaying];
@@ -294,7 +295,6 @@
     else {
         [[BBAudioManager bbAudioManager] pausePlaying];
     }
-    
 }
 
 //Seek to new place in file

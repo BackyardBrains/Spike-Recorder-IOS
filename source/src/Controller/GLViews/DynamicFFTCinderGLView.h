@@ -47,6 +47,9 @@
     UInt32 numberOfSamplesMax;
     BOOL firstDrawAfterChannelChange;
     float initialMaxFrequency;
+    
+    Font currentTimeFont;
+    gl::TextureFontRef currentTimeTextureFont;
 }
 
 @property (nonatomic, assign) id <DynamicFFTProtocolDelegate> masterDelegate;
@@ -61,4 +64,5 @@
 
 @optional
 -(void) glViewTouched;
+-(bool) areWeInFileMode;
 @end

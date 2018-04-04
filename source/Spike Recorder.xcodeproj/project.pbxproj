@@ -17,6 +17,7 @@
 		1C3882CE2018AF8B00B0388B /* landcape-2208-1242.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C3882CB2018AF8B00B0388B /* landcape-2208-1242.png */; };
 		1C3882CF2018AF8B00B0388B /* landcape-2436-1125.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C3882CC2018AF8B00B0388B /* landcape-2436-1125.png */; };
 		1C3882F6201B58D500B0388B /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1C3882F5201B58D500B0388B /* MainStoryboard.storyboard */; };
+		1C3FC2FC203EE99600C28680 /* FFTRecordingsViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1C3FC2FB203EE99600C28680 /* FFTRecordingsViewController.mm */; };
 		1C9850672036E3830076997B /* fft@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C9850652036E3810076997B /* fft@2x.png */; };
 		1C9850682036E3830076997B /* fft.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C9850662036E3810076997B /* fft.png */; };
 		1CB1265C1F87DDFF00247389 /* ObjectiveDropboxOfficial.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CB1265B1F87DDFF00247389 /* ObjectiveDropboxOfficial.framework */; };
@@ -282,6 +283,8 @@
 		1C3882CB2018AF8B00B0388B /* landcape-2208-1242.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "landcape-2208-1242.png"; sourceTree = "<group>"; };
 		1C3882CC2018AF8B00B0388B /* landcape-2436-1125.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "landcape-2436-1125.png"; sourceTree = "<group>"; };
 		1C3882F5201B58D500B0388B /* MainStoryboard.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MainStoryboard.storyboard; sourceTree = "<group>"; };
+		1C3FC2FB203EE99600C28680 /* FFTRecordingsViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = FFTRecordingsViewController.mm; sourceTree = "<group>"; };
+		1C3FC2FD203EE9B200C28680 /* FFTRecordingsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FFTRecordingsViewController.h; sourceTree = "<group>"; };
 		1C9850652036E3810076997B /* fft@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fft@2x.png"; sourceTree = "<group>"; };
 		1C9850662036E3810076997B /* fft.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fft.png; sourceTree = "<group>"; };
 		1CB1265B1F87DDFF00247389 /* ObjectiveDropboxOfficial.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ObjectiveDropboxOfficial.framework; path = Carthage/Build/iOS/ObjectiveDropboxOfficial.framework; sourceTree = "<group>"; };
@@ -1323,6 +1326,8 @@
 				1C15BBBF2035862500C3881E /* DCMD */,
 				2418FF211A83FD3700662547 /* FFTViewController.h */,
 				2418FF221A83FD3700662547 /* FFTViewController.mm */,
+				1C3FC2FD203EE9B200C28680 /* FFTRecordingsViewController.h */,
+				1C3FC2FB203EE99600C28680 /* FFTRecordingsViewController.mm */,
 				2418FF231A83FD3700662547 /* FilterSettingsViewController.h */,
 				2418FF241A83FD3700662547 /* FilterSettingsViewController.mm */,
 				2418FF251A83FD3700662547 /* MyAppDelegate.h */,
@@ -1807,6 +1812,7 @@
 				2418FF621A83FDA100662547 /* ISIGraphCollectionViewCell.m in Sources */,
 				2418FF971A83FE1200662547 /* AverageSpikeGraphView.mm in Sources */,
 				2418FF601A83FDA100662547 /* GraphDCMDTrialViewController.mm in Sources */,
+				1C3FC2FC203EE99600C28680 /* FFTRecordingsViewController.mm in Sources */,
 				2418FF3F1A83FD6700662547 /* BYBHandleButton.mm in Sources */,
 				2418FF801A83FDD500662547 /* ExperimentsMenuTableViewCell.m in Sources */,
 				2418FF121A83F79200662547 /* BBAudioManager.mm in Sources */,

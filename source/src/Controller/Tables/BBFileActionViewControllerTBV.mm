@@ -14,6 +14,7 @@
 #import "ISIGraphViewController.h"
 #import "AutoGraphViewController.h"
 #import "AverageSpikeGraphViewController.h"
+#import "FFTRecordingsViewController.h"
 
 #define FILE_DETAILS_MENU_TEXT  @"File Details"
 #define PLAY_MENU_TEXT          @"Play"
@@ -22,6 +23,7 @@
 #define ISI_MENU_TEXT           @"ISI"
 #define CROSS_CORR_MENU_TEXT    @"Cross-correlation"
 #define AVERAGE_SPIKE_MENU_TEXT @"Average Spike"
+#define FFT_ANALYSIS_TEXT       @"Spectrum"
 #define SHARE_MENU_TEXT         @"Share"
 #define DELETE_MENU_TEXT        @"Delete"
 
@@ -33,6 +35,7 @@
 #define SEGUE_PLAYBACK_VIEW             @"playbackViewSegue"
 #define SEGUE_SPIKE_ANALYSIS_VIEW       @"spikeAnalysisViewSegue"
 #define SEGUE_FILE_DETAILS              @"fileDetailsSegue"
+#define SEGUE_RECORDINGS_FFT            @"recordingsFFTSegue"
 
 
 @implementation BBFileActionViewControllerTBV
@@ -118,6 +121,7 @@
                                       ISI_MENU_TEXT,
                                       CROSS_CORR_MENU_TEXT, //When we have multiple spike trains
                                       AVERAGE_SPIKE_MENU_TEXT,
+                                      FFT_ANALYSIS_TEXT,
                                       SHARE_MENU_TEXT,
                                       DELETE_MENU_TEXT, nil];
             }
@@ -131,6 +135,7 @@
                                       AUTOCORR_MENU_TEXT,
                                       ISI_MENU_TEXT,
                                       AVERAGE_SPIKE_MENU_TEXT,
+                                      FFT_ANALYSIS_TEXT,
                                       SHARE_MENU_TEXT,
                                       DELETE_MENU_TEXT, nil];
             }
@@ -142,6 +147,7 @@
                                   FILE_DETAILS_MENU_TEXT,
                                   PLAY_MENU_TEXT,
                                   FIND_SPIKES_MENU_TEXT,
+                                  FFT_ANALYSIS_TEXT,
                                   SHARE_MENU_TEXT,
                                   DELETE_MENU_TEXT, nil];
         }
@@ -227,6 +233,10 @@
     else if ([cell.textLabel.text isEqualToString:AVERAGE_SPIKE_MENU_TEXT])
     {
         [self performSegueWithIdentifier:SEGUE_AVERAGE_SPIKE_GRAPH sender:self];
+    }
+    else if ([cell.textLabel.text isEqualToString:FFT_ANALYSIS_TEXT])
+    {
+        [self performSegueWithIdentifier:SEGUE_RECORDINGS_FFT sender:self];
     }
 	else if ([cell.textLabel.text isEqualToString:SHARE_MENU_TEXT])
 	{
@@ -327,6 +337,11 @@
     {
         BBFileDetailsTableViewController * fdvc = (BBFileDetailsTableViewController *) segue.destinationViewController;
         [fdvc setNewFile:[self.files objectAtIndex:0]];
+    }
+    else if([[segue identifier] isEqualToString:SEGUE_RECORDINGS_FFT])
+    {
+        FFTRecordingsViewController *fftvc =(FFTRecordingsViewController *) segue.destinationViewController;
+        fftvc.bbfile = [self.files objectAtIndex:0];
     }
 }
 

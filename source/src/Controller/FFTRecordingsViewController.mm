@@ -1,28 +1,47 @@
 //
-//  FFTViewController.m
-//  Backyard Brains
+//  FFTRecordingsViewController.m
+//  Spike Recorder
 //
-//  Created by Stanislav Mircic on 7/16/14.
-//  Copyright (c) 2014 Backyard Brains. All rights reserved.
+//  Created by Stanislav Mircic on 2/22/18.
+//  Copyright © 2018 BackyardBrains. All rights reserved.
 //
 
-#import "FFTViewController.h"
+#import <Foundation/Foundation.h>
+#import "FFTRecordingsViewController.h"
 
-@interface FFTViewController ()
+@interface FFTRecordingsViewController ()
 {
     NSTimer * touchTimer;
     BOOL backButtonActive;
+    dispatch_source_t callbackTimer; //timer for update of slider/scrubber
 }
 
 @end
 
-@implementation FFTViewController
+@implementation FFTRecordingsViewController
+
+@synthesize bbfile;
+@synthesize timeSlider;
+@synthesize playPauseButton;
 
 #pragma mark - View management
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate:) name:UIApplicationWillTerminateNotification object:nil];
+    self.timeSlider.continuous = YES;
+    [self.timeSlider addTarget:self
+                        action:@selector(sliderTouchUpInside:)
+              forControlEvents:(UIControlEventTouchUpInside)];
+    [self.timeSlider addTarget:self
+                        action:@selector(sliderTouchDown:)
+              forControlEvents:(UIControlEventTouchDown)];
+    [self.timeSlider addTarget:self
+                        action:@selector(sliderTouchUpOutside:)
+              forControlEvents:(UIControlEventTouchUpOutside)];
+    [self.timeSlider addTarget:self
+                        action:@selector(sliderTouchCancel:)
+              forControlEvents:(UIControlEventTouchCancel)];
 }
 
 - (void)viewDidUnload {
@@ -33,7 +52,28 @@
 {
     [super viewWillAppear:animated];
     [[self navigationController] setNavigationBarHidden:YES animated:NO];
-    [[BBAudioManager bbAudioManager] startDynanimcFFTForLiveView];
+    
+    // start playing file, initializes the file and buffers audio and initialize FFT
+    [[BBAudioManager bbAudioManager] startDynanimcFFTForRecording:bbfile];
+    
+    [[BBAudioManager bbAudioManager] addObserver:self forKeyPath:@"playing" options:NSKeyValueObservingOptionNew context:NULL];
+    
+    // Set the slider to have the bounds of the audio file's duraiton
+    timeSlider.minimumValue = 0;
+    timeSlider.maximumValue = [BBAudioManager bbAudioManager].fileDuration;
+    // Periodically poll for the current position in the audio file, and update the slider accordingly.
+    callbackTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue());
+    dispatch_source_set_timer(callbackTimer, dispatch_walltime(NULL, 0), 0.25*NSEC_PER_SEC, 0);
+    dispatch_source_set_event_handler(callbackTimer, ^{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (!self.timeSlider.isTracking)
+                [self.timeSlider setValue:[BBAudioManager bbAudioManager].currentFileTime];
+        });
+    });
+
+    dispatch_resume(callbackTimer);
+    
+
     
     //Config GL view
     if(glView)
@@ -43,6 +83,7 @@
         [glView release];
         glView = nil;
     }
+
     float maxTime = MAX_NUMBER_OF_FFT_SEC;
     glView = [[DynamicFFTCinderGLView alloc] initWithFrame:self.view.frame];
     float baseFreq = 0.5*((float)[[BBAudioManager bbAudioManager] sourceSamplingRate])/((float)[[BBAudioManager bbAudioManager] lengthOfFFTData]);
@@ -50,17 +91,18 @@
     [[BBAudioManager bbAudioManager] selectChannel:0];
     glView.masterDelegate = self;
     _channelBtn.hidden = [[BBAudioManager bbAudioManager] sourceNumberOfChannels]<2;
-   [self.view addSubview:glView];
-   [self.view sendSubviewToBack:glView];
+    [self.view addSubview:glView];
+    [self.view sendSubviewToBack:glView];
     [self initConstrainsForGLView];
-   [glView startAnimation];
+    [glView startAnimation];
+    [self updatePlayPauseButtonIcon];
     
     //autorange vertical scale on double tap
     UITapGestureRecognizer *doubleTap = [[[UITapGestureRecognizer alloc] initWithTarget: self action:@selector(doubleTapHandler)] autorelease];
     doubleTap.numberOfTapsRequired = 2;
     [glView addGestureRecognizer:doubleTap];
     [self doubleTapHandler];
- 
+    
     //Bluetooth notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reSetupScreen) name:RESETUP_SCREEN_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate:) name:UIApplicationWillTerminateNotification object:nil];
@@ -117,9 +159,8 @@
 
 -(void) reSetupScreen
 {
-   NSLog(@"Resetup screen");
-    [[BBAudioManager bbAudioManager] startDynanimcFFTForLiveView];
-    
+    NSLog(@"Resetup screen");
+   
     //Config GL view
     if(glView)
     {
@@ -128,6 +169,7 @@
         [glView release];
         glView = nil;
     }
+     [[BBAudioManager bbAudioManager] startDynanimcFFTForRecording:bbfile];
     float maxTime = 10.0f;
     glView = [[DynamicFFTCinderGLView alloc] initWithFrame:self.view.frame];
     float baseFreq = 0.5*((float)[[BBAudioManager bbAudioManager] sourceSamplingRate])/((float)[[BBAudioManager bbAudioManager] lengthOfFFTData]);
@@ -168,7 +210,74 @@
         [touchTimer invalidate];
         touchTimer = nil;
     }
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (IBAction)sliderValueChanged:(id)sender
+{
+    NSLog(@"Slider changed ------ %f",(float)self.timeSlider.value);
+     //[BBAudioManager bbAudioManager].currentFileTime = (float)self.timeSlider.value;
+    
+    [[BBAudioManager bbAudioManager] setSeekTime:(float)self.timeSlider.value];
+}
+
+//
+// Called when user stop dragging scruber
+//
+- (void)sliderTouchUpInside:(NSNotification *)notification {
+    
+    NSLog(@"Slider Touch up inside");
+    [[BBAudioManager bbAudioManager] enableFFTForSeeking:YES];
+    if([BBAudioManager bbAudioManager].playing)
+    {
+        [[BBAudioManager bbAudioManager] setSeeking:NO];
+        [[BBAudioManager bbAudioManager] resumePlaying];
+    }
+}
+
+//
+// Called when user start dragging scruber
+//
+- (void)sliderTouchDown:(NSNotification *)notification {
+    [[BBAudioManager bbAudioManager] enableFFTForSeeking:NO];
+    [[BBAudioManager bbAudioManager] setSeeking:YES];
+    [[BBAudioManager bbAudioManager] pausePlaying];
+}
+
+//
+// Called when user stop dragging scruber
+//
+- (void) sliderTouchUpOutside:(NSNotification *)notification {
+    NSLog(@"Slider Touch up outside");
+    [[BBAudioManager bbAudioManager] enableFFTForSeeking:YES];
+}
+
+
+//
+// Called when user stop dragging scruber
+//
+- (void) sliderTouchCancel:(NSNotification *)notification {
+    NSLog(@"Slider Tuch Cancel");
+    [[BBAudioManager bbAudioManager] enableFFTForSeeking:YES];
+}
+
+
+
+- (IBAction)playPauseButtonPressed:(id)sender {
+    [self togglePlayback];
+}
+
+
+
+- (void)togglePlayback
+{
+    if ([BBAudioManager bbAudioManager].playing == false) {
+        
+        [[BBAudioManager bbAudioManager] resumePlaying];
+    }
+    else {
+        [[BBAudioManager bbAudioManager] pausePlaying];
+    }
 }
 
 -(void) doubleTapHandler
@@ -221,6 +330,35 @@
     [self startBackButtonCountdown];
 }
 
+
+#pragma mark - Audio Manager observer handler
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ([keyPath isEqualToString:@"playing"])
+    {
+        [self updatePlayPauseButtonIcon];
+    }
+}
+
+
+-(void) updatePlayPauseButtonIcon
+{
+    if ([BBAudioManager bbAudioManager].playing == YES)
+    {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.playPauseButton setBackgroundImage:[UIImage imageNamed:@"Pause"] forState:UIControlStateNormal];
+        });
+    }
+    else
+    {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.playPauseButton setBackgroundImage:[UIImage imageNamed:@"Play"] forState:UIControlStateNormal];
+        });
+    }
+}
+
+
 #pragma mark - DynamicFFTProtocolDelegate methods
 
 -(void) glViewTouched
@@ -243,6 +381,11 @@
     {
         [self startBackButtonCountdown];
     }
+}
+
+-(bool) areWeInFileMode
+{
+    return YES;
 }
 
 #pragma mark - Back button show/hide
@@ -277,6 +420,9 @@
 - (void)dealloc {
     [_channelBtn release];
     [_backButton release];
+    [bbfile release];
+    [timeSlider release];
+    [playPauseButton release];
     [super dealloc];
 }
 

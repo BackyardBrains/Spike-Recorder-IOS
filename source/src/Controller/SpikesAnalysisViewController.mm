@@ -190,7 +190,10 @@
 #pragma mark - UI Handlers
 
 - (IBAction)timeValueChanged:(id)sender {
+    
     [[BBAnalysisManager bbAnalysisManager] setCurrentFileTime: (float)self.timeSlider.value];
+    
+    
 }
 
 //Add another threshold pair (new spike train)

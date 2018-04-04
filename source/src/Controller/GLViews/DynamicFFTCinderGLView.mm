@@ -18,7 +18,7 @@
 //
 - (void)setup
 {
-    lengthOfFFTData = 1024;
+    lengthOfFFTData = 128;//1024;
     lengthOfFFTBuffer = 1;
     baseFreq = 12.0;//Hz
     maxFreq = baseFreq*lengthOfFFTData;
@@ -41,6 +41,8 @@
     // Set up our font, which we'll use to display the unit scales
     mScaleFont = gl::TextureFont::create( Font("Helvetica", 12) );
     
+    currentTimeFont = Font("Helvetica", 13);//26/retinaScaling);
+    currentTimeTextureFont = gl::TextureFont::create( currentTimeFont );
     
     retinaCorrection = 2.0f;
    if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] )
@@ -406,6 +408,7 @@
         //mScaleFont->drawString(hzString.str(), xScaleTextPosition);
         
         
+        [self drawCurrentTime];
         
         /*
          
@@ -453,6 +456,48 @@
     }
 }
 
+-(void) drawCurrentTime
+{
+    //show current time label if we are in playback mode
+    if ([[self masterDelegate] respondsToSelector:@selector(areWeInFileMode)])
+    {
+        if([[self masterDelegate] areWeInFileMode])
+        {
+            
+            gl::disableDepthRead();
+            gl::setMatricesWindow( Vec2i(self.frame.size.width, self.frame.size.height) );
+            gl::enableAlphaBlending();
+            glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+            //make a string for current time in the file
+            std::stringstream currentTimeStringStream;
+            
+            
+            if(([[BBAudioManager bbAudioManager] currentFileTime]/60)<10)
+            {
+                currentTimeStringStream<<"0";
+            }
+            currentTimeStringStream<<(int)([[BBAudioManager bbAudioManager] currentFileTime]/60);
+            
+            currentTimeStringStream<<":";
+            
+            if((((int)[[BBAudioManager bbAudioManager] currentFileTime])%60)<10)
+            {
+                currentTimeStringStream<<"0";
+            }
+            
+            currentTimeStringStream<<((int)[[BBAudioManager bbAudioManager] currentFileTime])%60;
+            
+            Vec2f currentTimeTextPosition = Vec2f(0.,0.);
+            currentTimeTextPosition.x = self.frame.size.width - 45 ;
+            currentTimeTextPosition.y = self.frame.size.height-10 - retinaCorrection*(currentMaxFreq/scaleXY.y) - (currentTimeTextureFont->getAscent() / 2.0f);
+            currentTimeTextureFont->drawString(currentTimeStringStream.str(), currentTimeTextPosition);
+            gl::enableDepthRead();
+        }
+    }
+    
+}
+
+
 //====================================== TOUCH ===================
 #pragma mark - Touch Navigation - Zoom
 
@@ -471,7 +516,6 @@
     float deltaY = thisYDistance / prevYDistance;
     
     // Turns out you can't get your fingers much closer than 40 pixels.
-    // TODO: check this on non-retina
     float minPinchDistance = 40.0f;
     
     // If the touches are closer than the minimum pinch distance in some axis,

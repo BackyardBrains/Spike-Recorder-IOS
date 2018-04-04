@@ -1278,7 +1278,6 @@
     
     if(mode == MultichannelGLViewModeThresholding && [[BBAudioManager bbAudioManager] currentFilterSettings]==FILTER_SETTINGS_EKG && [[BBAudioManager bbAudioManager] amDemodulationIsON])
     {
-        
         std::stringstream hearRateText;
         hearRateText << (int)[[BBAudioManager bbAudioManager] heartRate] << "BPM";
         
@@ -1296,9 +1295,6 @@
         
         gl::color( ColorA( 1.0, 1.0f, 1.0f, 1.0f ) );
         heartBeatTextureFont->drawString(hearRateText.str(), heartTextPosition);
-        
-   
-        
     }
 
     //[[BBAudioManager bbAudioManager] currentFilterSettings]
@@ -1773,7 +1769,10 @@
                     float diffPix = touches[0].getPos().x - touches[0].getPrevPos().x;
                     float timeDiff = -diffPix*(numSamplesVisible/windowWidth)*(1/[[BBAudioManager bbAudioManager] sourceSamplingRate]);
                     [[BBAudioManager bbAudioManager] setSeeking:YES];
-                    [[BBAudioManager bbAudioManager] setCurrentFileTime:[[BBAudioManager bbAudioManager] currentFileTime] + timeDiff ];
+                    // [[BBAudioManager bbAudioManager] setCurrentFileTime:[[BBAudioManager bbAudioManager] currentFileTime] + timeDiff ];
+                     
+                     [[BBAudioManager bbAudioManager] setSeekTime:[[BBAudioManager bbAudioManager] currentFileTime] + timeDiff ];
+                   
                 }
                 
             }
@@ -1899,54 +1898,6 @@
     
     [super touchesEnded:touches withEvent:event];
 }
-
-
-
-
-/*
- 
- //
- // Called when user stop dragging scruber
- //
- - (void)sliderTouchUpInside:(NSNotification *)notification {
- if(!audioPaused)
- {
- [bbAudioManager setSeeking:NO];
- [bbAudioManager resumePlaying];
- }
- }
- 
- //
- // Called when user start dragging scruber
- //
- - (void)sliderTouchDown:(NSNotification *)notification {
- [bbAudioManager setSeeking:YES];
- [bbAudioManager pausePlaying];
- audioPaused = YES;
- }
- 
- //Seek to new place in file
- - (IBAction)backBtnClick:(id)sender {
- [self.navigationController popViewControllerAnimated:YES];
- }
- 
- - (IBAction)sliderValueChanged:(id)sender {
- 
- bbAudioManager.currentFileTime = (float)self.timeSlider.value;
- }
- */
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

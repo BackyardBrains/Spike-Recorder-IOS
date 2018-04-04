@@ -145,6 +145,7 @@ static pthread_mutex_t threadLock;
     else
     {
         dispatch_async(dispatch_get_main_queue(), ^{
+            NSLog(@"Seek file to: %f",thisCurrentTime);
             ExtAudioFileSeek(self.inputFile, thisCurrentTime*self.samplingRate);
         });
     }
