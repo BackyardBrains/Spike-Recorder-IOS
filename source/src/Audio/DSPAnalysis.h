@@ -69,7 +69,12 @@ private:
     UInt32 mLengthOfWindow;
     COMPLEX_SPLIT A;
     FFTSetup fftSetup;
+    FFTSetup fftSetupOptimized;
     float maxMagnitude;
     float halfMaxMagnitude;
+    float maxMagnitudeOptimized;
+    float halfMaxMagnitudeOptimized;
+    
+    
     float oneFrequencyStep;
 };

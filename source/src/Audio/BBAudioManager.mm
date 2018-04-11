@@ -63,8 +63,7 @@ static BBAudioManager *bbAudioManager = nil;
     float _currentMin;
     float _currentMean;
     
-    //FFT
-    bool enableFFTSeek;
+
    
     //ECG
     BBECGAnalysis * ecgAnalysis;
@@ -196,7 +195,7 @@ static BBAudioManager *bbAudioManager = nil;
         lastSeekPosition = -1;
         newSeekPosition = -1;
         dspAnalizer = new DSPAnalysis();
-        enableFFTSeek = NO;
+
         
         
         // Set a default input block acquiring data to a big ring buffer.
@@ -870,6 +869,10 @@ static BBAudioManager *bbAudioManager = nil;
     {
         [self resetBuffers];
     }
+    else
+    {
+        ringBuffer->Clear();
+    }
     [self makeInputOutput];
 }
 
@@ -1079,9 +1082,8 @@ static BBAudioManager *bbAudioManager = nil;
     
     //get the data from file into clean ring buffer
    // dispatch_sync(dispatch_get_main_queue(), ^{
-        NSLog(@"Before FFT rec");
         dspAnalizer->CalculateDynamicFFTDuringSeek(fileReader, targetFrame-startFrame, startFrame, _sourceNumberOfChannels, _selectedChannel);
-        NSLog(@"After FFT rec");
+
     //});
     
 }
@@ -1160,7 +1162,7 @@ static BBAudioManager *bbAudioManager = nil;
                 //clear ring buffer
                 
                 //calculate begining and end of interval to display
-                NSLog(@"Before we cal filetime: %f, seektime:%f", fileReader.currentTime, lastSeekPosition);
+               
                 UInt32 targetFrame = (UInt32)(lastSeekPosition * ((float)_sourceSamplingRate));
                 int startFrame = targetFrame - maxNumberOfSamplesToDisplay;
                 if(startFrame<0)
@@ -1192,76 +1194,12 @@ static BBAudioManager *bbAudioManager = nil;
                     
                     if(FFTOn)
                     {
-                        if(!enableFFTSeek)
-                        {
-                            dspAnalizer->resetFFTMagnitudeBuffer();
-                        }
-                    }
-                    NSLog(@"---- After we cal filetime: %f, seektime:%f", fileReader.currentTime, lastSeekPosition);
-                    
-                });
-                
-                
-                
-                
-                /*
-                lastSeekPosition = fileReader.currentTime;
-                
-                //clear ring buffer
-
-                
-                //calculate begining and end of interval to display
-                NSLog(@"Before we calc. begining of reading: file position: %f", fileReader.currentTime);
-                UInt32 targetFrame = (UInt32)(fileReader.currentTime * ((float)_sourceSamplingRate));
-                int startFrame = targetFrame - maxNumberOfSamplesToDisplay;
-                if(startFrame<0)
-                {
-                    startFrame = 0;
-                }
-
-                //get the data from file into clean ring buffer
-                dispatch_sync(dispatch_get_main_queue(), ^{
-                    ringBuffer->Clear();
-                    ringBuffer->SeekWriteHeadPosition(0);
-                    ringBuffer->SeekReadHeadPosition(0);
-                    NSLog(@"Before raw reading: begining of reading: %f and current file position: %f", ((float)startFrame)/_sourceSamplingRate, fileReader.currentTime);
-                    [fileReader retrieveFreshAudio:tempCalculationBuffer numFrames:(UInt32)(targetFrame-startFrame) numChannels:_sourceNumberOfChannels seek:(UInt32)startFrame];
-                    
-                    NSLog(@"After raw reading:begining of reading: %f and current file position: %f", ((float)startFrame)/_sourceSamplingRate, fileReader.currentTime);
-
-                    ringBuffer->AddNewInterleavedFloatData(tempCalculationBuffer, targetFrame-startFrame, _sourceNumberOfChannels);
-                  
-                    _preciseTimeOfLastData = (float)targetFrame/(float)_sourceSamplingRate;
-
-                    //set playback time to scrubber position
-                    
-                    if(selecting)
-                    {
-                         //if we have active selection recalculate RMS
-                        [self updateSelection:_selectionEndTime timeSpan:_timeSpan];
-                    }
-                    
-                    if(FFTOn)
-                    {
-                        if(enableFFTSeek)
-                        {
-                            
-                            
-                                NSLog(@"Before FFT file position: %f,  lastSeekPosition: %f", fileReader.currentTime, lastSeekPosition);
-                                dspAnalizer->CalculateDynamicFFTDuringSeek(fileReader, targetFrame-startFrame, startFrame, _sourceNumberOfChannels, _selectedChannel);
-                                 NSLog(@"After FFT file position: %f,  lastSeekPosition: %f", fileReader.currentTime, lastSeekPosition);
-                            
-                           //dspAnalizer->CalculateDynamicFFTDuringSeek(fileReader, targetFrame-startFrame, startFrame, _sourceNumberOfChannels, _selectedChannel);
-                           
-                        }
-                        else
-                        {
-                            dspAnalizer->resetFFTMagnitudeBuffer();
-                        }
+                        [self recalculateFFT];
+                       
                     }
                    
-                    //fileReader.currentTime = lastSeekPosition;
-                });*/
+                    
+                });
             }//end of if(self.seeking && lastSeekPosition != fileReader.currentTime)
             
             //set playback data to zero (silence during scrubbing)
@@ -1465,15 +1403,7 @@ static BBAudioManager *bbAudioManager = nil;
     return dspAnalizer->GraphBufferIndex;
 }
 
--(void) enableFFTForSeeking:(BOOL) enable
-{
-    enableFFTSeek = enable;
-    NSLog(@"FFT enabled: %s",enable ? "TRUE" : "FALSE");
-    if(enable)
-    {
-        [self recalculateFFT];
-    }
-}
+
 
 
 #pragma mark - data feed for graphs

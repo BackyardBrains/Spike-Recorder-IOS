@@ -215,9 +215,6 @@
 
 - (IBAction)sliderValueChanged:(id)sender
 {
-    NSLog(@"Slider changed ------ %f",(float)self.timeSlider.value);
-     //[BBAudioManager bbAudioManager].currentFileTime = (float)self.timeSlider.value;
-    
     [[BBAudioManager bbAudioManager] setSeekTime:(float)self.timeSlider.value];
 }
 
@@ -227,7 +224,7 @@
 - (void)sliderTouchUpInside:(NSNotification *)notification {
     
     NSLog(@"Slider Touch up inside");
-    [[BBAudioManager bbAudioManager] enableFFTForSeeking:YES];
+    
     if([BBAudioManager bbAudioManager].playing)
     {
         [[BBAudioManager bbAudioManager] setSeeking:NO];
@@ -239,7 +236,7 @@
 // Called when user start dragging scruber
 //
 - (void)sliderTouchDown:(NSNotification *)notification {
-    [[BBAudioManager bbAudioManager] enableFFTForSeeking:NO];
+    
     [[BBAudioManager bbAudioManager] setSeeking:YES];
     [[BBAudioManager bbAudioManager] pausePlaying];
 }
@@ -249,7 +246,7 @@
 //
 - (void) sliderTouchUpOutside:(NSNotification *)notification {
     NSLog(@"Slider Touch up outside");
-    [[BBAudioManager bbAudioManager] enableFFTForSeeking:YES];
+    
 }
 
 
@@ -258,7 +255,7 @@
 //
 - (void) sliderTouchCancel:(NSNotification *)notification {
     NSLog(@"Slider Tuch Cancel");
-    [[BBAudioManager bbAudioManager] enableFFTForSeeking:YES];
+    
 }
 
 

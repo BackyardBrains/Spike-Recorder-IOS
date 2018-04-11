@@ -171,6 +171,8 @@ void DSPAnalysis::InitDynamicFFT(RingBuffer *externalRingBuffer, UInt32 numberOf
         }
     }
     
+    
+    
     uint32_t log2n = log2f((float)mLengthOfWindow);
     
     A.realp = (float*) malloc(sizeof(float) * LengthOfFFTData);
@@ -178,9 +180,14 @@ void DSPAnalysis::InitDynamicFFT(RingBuffer *externalRingBuffer, UInt32 numberOf
     
     //Make FFT config
     fftSetup = vDSP_create_fftsetup(log2n, FFT_RADIX2);
+    
+    fftSetupOptimized = vDSP_create_fftsetup(log2f((float)mLengthOfWindow/512), FFT_RADIX2);
+    
     GraphBufferIndex = 0;
     maxMagnitude = 20;
     halfMaxMagnitude = 20;
+    maxMagnitudeOptimized = 4.83;
+    halfMaxMagnitudeOptimized =maxMagnitudeOptimized*0.5;
 }
 
 
@@ -217,6 +224,8 @@ void DSPAnalysis::CalculateDynamicFFT(const float *data, UInt32 numberOfFramesIn
             {
                 maxMagnitude = FFTDynamicMagnitude[GraphBufferIndex][ind];
                 halfMaxMagnitude = maxMagnitude*0.5f;
+                maxMagnitudeOptimized = FFTDynamicMagnitude[GraphBufferIndex][ind]*0.001953125;//1/512
+                halfMaxMagnitudeOptimized = maxMagnitudeOptimized*0.5f;
             }
             // NSLog(@"%f", halfMaxMagnitude);
             FFTDynamicMagnitude[GraphBufferIndex][ind] = (FFTDynamicMagnitude[GraphBufferIndex][ind]/halfMaxMagnitude)-1.0;
@@ -284,37 +293,41 @@ void DSPAnalysis::CalculateDynamicFFTDuringSeek(BBAudioFileReader *fileReader, U
     float * tempDataBuffer = (float *)calloc(LengthOfFFTData*2, sizeof(float));
     float zero = 0.0f;
 
-    uint32_t log2n = log2f((float)mLengthOfWindow);
+    int downsampleFactor = 512;
+    uint32_t log2n = log2f((float)mLengthOfWindow/downsampleFactor);
+    
     for(int i=0;i<numberOfWindowsToAdd;i++)
     {
 
         //get data for just one FFT window in small buffer
         vDSP_vsadd((float *)&tempData[i*mNumberOfSamplesBetweenWindows+whichChannel],
-                   numberOfChannels,
+                   numberOfChannels*downsampleFactor,
                    &zero,
                    tempDataBuffer,
                    1,
-                   LengthOfFFTData*2);
+                   LengthOfFFTData*2/downsampleFactor);
 
         /* Carry out a Forward FFT transform. */
-        vDSP_ctoz((COMPLEX *) tempDataBuffer, 2, &A, 1, LengthOfFFTData);
-        vDSP_fft_zrip(fftSetup, &A, 1, log2n, FFT_FORWARD);
+        vDSP_ctoz((COMPLEX *) tempDataBuffer, 2, &A, 1, LengthOfFFTData/downsampleFactor);
+        vDSP_fft_zrip(fftSetupOptimized, &A, 1, log2n, FFT_FORWARD);
 
         
         //Calculate DC component
-        FFTDynamicMagnitude[GraphBufferIndex][0] = (sqrtf(A.realp[0]*A.realp[0])/halfMaxMagnitude)-1.0;
+        FFTDynamicMagnitude[GraphBufferIndex][0] = (sqrtf(A.realp[0]*A.realp[0])/halfMaxMagnitudeOptimized)-1.0;
 
         //Calculate magnitude for all freq.
         for(int ind = 1; ind < LengthOf30HzData; ind++){
             
             FFTDynamicMagnitude[GraphBufferIndex][ind] = sqrtf(A.realp[ind]*A.realp[ind] + A.imagp[ind] * A.imagp[ind]);
-            if(FFTDynamicMagnitude[GraphBufferIndex][ind]>maxMagnitude)
+            if(FFTDynamicMagnitude[GraphBufferIndex][ind]>maxMagnitudeOptimized)
             {
-                maxMagnitude = FFTDynamicMagnitude[GraphBufferIndex][ind];
+                maxMagnitudeOptimized = FFTDynamicMagnitude[GraphBufferIndex][ind];
+                halfMaxMagnitudeOptimized = maxMagnitudeOptimized*0.5f;
+                maxMagnitude = FFTDynamicMagnitude[GraphBufferIndex][ind]*512.0;
                 halfMaxMagnitude = maxMagnitude*0.5f;
             }
             // NSLog(@"%f", halfMaxMagnitude);
-            FFTDynamicMagnitude[GraphBufferIndex][ind] = (FFTDynamicMagnitude[GraphBufferIndex][ind]/halfMaxMagnitude)-1.0;
+            FFTDynamicMagnitude[GraphBufferIndex][ind] = (FFTDynamicMagnitude[GraphBufferIndex][ind]/halfMaxMagnitudeOptimized)-1.0;
         }
         GraphBufferIndex = (GraphBufferIndex+1)%NumberOfGraphsInBuffer;
 

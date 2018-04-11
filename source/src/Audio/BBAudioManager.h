@@ -168,7 +168,7 @@
 -(void) startDynanimcFFTForRecording:(BBFile *) newFile;
 -(UInt32) indexOfFFTGraphBuffer;
 -(UInt32) lenghtOfFFTGraphBuffer;
--(void) enableFFTForSeeking:(BOOL) enable;
+
 
 
 //RT Spike Sorting

@@ -49,6 +49,8 @@
     {//if it is retina correct scale
         retinaCorrection = 1/((float)[[UIScreen mainScreen] scale]);
     }
+    
+    
 }
 
 //
@@ -138,9 +140,10 @@
 // Draw graph
 //
 - (void)draw {
-    
+
     float ** graphBuffer = [[BBAudioManager bbAudioManager] getDynamicFFTResult];
     [[BBAudioManager bbAudioManager] fetchAudioForSelectedChannel:(float *)&(rawSignal.getPoints()[0])+1 numFrames:numberOfSamplesMax stride:2];
+
     if(graphBuffer)
     {
         if(firstDrawAfterChannelChange)
@@ -151,27 +154,32 @@
             firstDrawAfterChannelChange = NO;
             mScaleFont = nil;
            mScaleFont = gl::TextureFont::create( Font("Helvetica", 12) );
+            currentTimeTextureFont = nil;
+           currentTimeTextureFont = gl::TextureFont::create( currentTimeFont );
+           
         }
-        
+
         // this pair of lines is the standard way to clear the screen in OpenGL
         gl::clear( Color( 0.0f, 0.0f, 0.0f ), true );
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
         
-        
+
         // Look at it right
         mCam.setOrtho(-currentMaxTime, 0, 0, currentMaxFreq*(1.0f+SIZE_OF_RAW), 1, 100);
         gl::setMatrices( mCam );
-        
+
         [self calculateScale];
         [self calculateAxisIntervals];
-        
+
         offsetX = X_AXIS_OFFSET* scaleXY.x/(2*retinaCorrection);
         offsetY = Y_AXIS_OFFSET* scaleXY.y/(2*retinaCorrection);
         
         
+        //--------------------------- Draw raw signal waveform ------------------------------------------
         
         float offsetOfRawSignal = currentMaxFreq + 0.5f*(currentMaxFreq*(1.0f+SIZE_OF_RAW)-currentMaxFreq);
         float amplitudeZoom =rawSignalVoltsVisible *currentMaxFreq/initialMaxFrequency;
+
         vDSP_vsmsa ((float *)&(rawSignal.getPoints()[0])+1,
                     2,
                     &amplitudeZoom,
@@ -180,74 +188,81 @@
                     2,
                     numberOfSamplesMax
                     );
-        
-        
+
         
         glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         glLineWidth(1.0f);
         gl::draw(rawSignal);
-        
+
         glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         glLineWidth(10.0f);
-        float currTime = 0;
-        float currFreq = 0;
+
+        
+        // ------------------------------ Make Spectrum image -------------------------------------------
+        
         float normPower;
         int freqIndex;
-        Rectf tempRect = Rectf(0.0,0.0,0.0,0.0);
-        float * holderOfFreqGraph;
         float redC = 0;
-        float oldRedC = 0;
         float greenC = 0;
-        float oldGreernC=0;
         float blueC=0;
-        float oldBlueC=0;
         float endOfTime = -currentMaxTime+offsetX;
-        int indexOfGraphs = [[BBAudioManager bbAudioManager] indexOfFFTGraphBuffer];
-        for(currTime=0.0;currTime>endOfTime;currTime-=baseTime)
+        int indexOfGraphs;
+
+        int widthS =abs(endOfTime/baseTime)-4;
+        int heightS = abs((currentMaxFreq-offsetY)/baseFreq);
+        
+        Surface mySurface = Surface(widthS, heightS, false);
+        Surface::Iter mySurfaceIter( mySurface.getIter() );
+        
+        int indexOfGraphsPos = ([[BBAudioManager bbAudioManager] indexOfFFTGraphBuffer]+lengthOfFFTBuffer-widthS-1)%lengthOfFFTBuffer;
+        freqIndex = 0;
+        while( mySurfaceIter.line() )
         {
-            indexOfGraphs--;
-            if(indexOfGraphs<0)
+            indexOfGraphs = indexOfGraphsPos;
+            while( mySurfaceIter.pixel() )
             {
-                indexOfGraphs = lengthOfFFTBuffer-1;
-            }
-            
-            freqIndex = 0;
-            tempRect.x1 = currTime;
-            tempRect.x2 = currTime-baseTime;
-            if(tempRect.x2<endOfTime)
-            {
-                tempRect.x2 = endOfTime;
-            }
-            holderOfFreqGraph = graphBuffer[indexOfGraphs];
-            for(currFreq = offsetY;currFreq<currentMaxFreq;currFreq=currFreq)
-            {
-                normPower = holderOfFreqGraph[freqIndex];
-                //glColor4f(normPower, normPower, normPower, 1.0f);
+                indexOfGraphs++;
+                if(indexOfGraphs==lengthOfFFTBuffer)
+                {
+                    indexOfGraphs = 0;
+                }
+                
+                normPower = graphBuffer[indexOfGraphs][heightS-freqIndex-1];
                 redC = red(normPower);
                 greenC = green(normPower);
                 blueC = blue(normPower);
-                if(redC!=oldRedC || greenC!=oldGreernC || blueC != oldBlueC)
-                {
-                    glColor4f(redC, greenC, blueC, 1.0f);
-                    oldBlueC = blueC;
-                    oldRedC = redC;
-                    oldGreernC = greenC;
-                }
-                tempRect.y1 = currFreq;
-                currFreq+=baseFreq;
-                if(currFreq>currentMaxFreq)
-                {
-                    currFreq=currentMaxFreq;
-                }
-                tempRect.y2 = currFreq;
                 
-                //draw one freq/time sqare
-                gl::drawSolidRect(tempRect);
+                mySurfaceIter.g() = greenC*255; // for brevity I have omitted the calcs for newR, newG, newB
+                mySurfaceIter.r() = redC*255;
+                mySurfaceIter.b() = blueC*255;
                 
-                freqIndex++;
             }
+            freqIndex++;
         }
+        
+        //------------------------- Draw Spectrum image ------------------------------------------------
 
+        gl::disableDepthRead();
+        
+        
+        gl::setMatricesWindow( Vec2i(self.frame.size.width, self.frame.size.height) );
+        gl::enableAlphaBlending();
+    
+        
+        
+        // and in your App's draw()
+        gl::Texture myTexture = gl::Texture( mySurface );
+        myTexture.bind();
+        float yTop = self.frame.size.height - retinaCorrection*(currentMaxFreq/scaleXY.y);
+        float yBottom = self.frame.size.height;
+        float xLeft = 0.0f;
+        float xRight = self.frame.size.width;
+        
+        gl::draw(myTexture,Rectf(xLeft,yTop,xRight,yBottom));
+        gl::enableDepthRead();
+        
+        gl::setMatrices( mCam );
+        //----------------------------- Marks for X axis - Time --------------------------------------------
         
         // Marks for X axis - Time
         float markPos=0;
@@ -279,9 +294,10 @@
                 break;
             }
         }
+
         
+        //----------------------------- Mark for Y axis frequency --------------------------------------------
         
-        //Mark for Y axis frequency
         markPos=offsetY;
         sizeOfMark = 10* scaleXY.x/(2*retinaCorrection);
         thirdOfMark = sizeOfMark*0.33;
@@ -309,14 +325,16 @@
             }
         }
         
-        
-        //========== Draw scale text ==================
+
+        //------------------------------------- Draw scale text -----------------------------------------------
         
         //Text for X axis - Time
         
         gl::disableDepthRead();
         gl::setMatricesWindow( Vec2i(self.frame.size.width, self.frame.size.height) );
         gl::enableAlphaBlending();
+        
+    
         
         markPos=0.0;
         std::stringstream hzString;
@@ -363,7 +381,7 @@
         xScaleTextPosition.y =35+topEdgeOfSpectrogram;
         mScaleFont->drawString(hzString.str(), xScaleTextPosition);
         
-        
+
         
         //Text for Y axis - Frequency
         
@@ -409,7 +427,7 @@
         
         
         [self drawCurrentTime];
-        
+
         /*
          
          //========== Draw scale text ==================
@@ -620,12 +638,25 @@
         }
 
     }
-    
-    // Touching to change the threshold value, if we're thresholding
-    //Selecting time interval and thresholding are mutualy exclusive
     else if (touches.size() == 1)
     {
+        //inform main controller tat view has been touched
         [[self masterDelegate] glViewTouched];
+        
+        
+        //one finger seek
+        if(![[BBAudioManager bbAudioManager] playing])
+        {
+            float windowWidth = self.frame.size.width;
+           // if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] )
+           // {
+           //     windowWidth *= [[UIScreen mainScreen] scale];
+           // }
+            float diffPix = touches[0].getPos().x - touches[0].getPrevPos().x;
+            float timeDiff = (-diffPix/windowWidth)*abs(currentMaxTime);
+            [[BBAudioManager bbAudioManager] setSeeking:YES];
+            [[BBAudioManager bbAudioManager] setSeekTime:[[BBAudioManager bbAudioManager] currentFileTime] + timeDiff ];
+        }
     }
     
 }

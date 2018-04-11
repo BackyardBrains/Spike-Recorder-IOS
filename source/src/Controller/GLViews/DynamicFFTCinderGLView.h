@@ -50,10 +50,11 @@
     
     Font currentTimeFont;
     gl::TextureFontRef currentTimeTextureFont;
+    
+    
 }
 
 @property (nonatomic, assign) id <DynamicFFTProtocolDelegate> masterDelegate;
-
 -(void) setupWithBaseFreq:(float) inBaseFreq lengthOfFFT:(UInt32) inLengthOfFFT numberOfGraphs:(UInt32) inNumOfGraphs maxTime:(float) inMaxTime;
 -(void) autorangeSelectedChannel;
 
