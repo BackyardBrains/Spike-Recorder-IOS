@@ -3,7 +3,7 @@
 //  Spike Recorder
 //
 //  Created by Stanislav Mircic on 5/30/16.
-//  Copyright © 2016 Datta Lab, Harvard University. All rights reserved.
+//  Copyright © 2016 Backyard Brains. All rights reserved.
 //
 #import <CoreGraphics/CoreGraphics.h>
 
@@ -26,10 +26,6 @@
 
 - (void)textViewDidChange:(UITextView *)textView
 {
-   /* int newHeight = self.textTV.contentSize.height;
-    CGFrame * newframe =self.textTV.frame;
-    newframe.size.height = self.textTV.contentSize.height;
-    self.textTV.frame = newframe;*/
 }
 
 - (void)dealloc {

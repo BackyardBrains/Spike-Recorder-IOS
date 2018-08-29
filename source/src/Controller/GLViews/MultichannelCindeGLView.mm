@@ -3,7 +3,7 @@
 //  Backyard Brains
 //
 //  Created by Stanislav Mircic on 5/28/14.
-//  Copyright (c) 2014 Datta Lab, Harvard University. All rights reserved.
+//  Copyright (c) 2014 Backyard Brains. All rights reserved.
 //
 
 #import "MultichannelCindeGLView.h"
@@ -11,7 +11,6 @@
 #import "BBSpike.h"
 #import "BBSpikeTrain.h"
 #import "BBChannel.h"
-//#import "BBBTManager.h"
 #import "BBAudioManager.h"
 #define HANDLE_RADIUS 10
 
@@ -243,7 +242,7 @@
         {
             channelsConfiguration = channelsConfiguration | (tempMask<<k);
         }
-     NSLog([[NSString alloc] initWithFormat:@"Channel configuration: %d", channelsConfiguration ]);
+    
     
     for(int i=0;i<maxNumberOfChannels;i++)
     {
@@ -721,7 +720,6 @@
         glLineWidth(1.0f);
         float zoom = maxVoltsSpan/ numVoltsVisible[selectedChannel];
         // Draw a line from left to right at the voltage threshold value.
-        float thresholdValue = [dataSourceDelegate threshold];
         float threshval = yOffsets[selectedChannel]+[dataSourceDelegate threshold]*zoom;
 
         float centerOfCircleX = -(float)retinaScaling*HANDLE_RADIUS*scaleXY.x;
@@ -824,21 +822,13 @@
     
     rmstream.precision(3);
     rmstream <<"RMS: "<< fixed << rmsToDisplay << " mV";
-    
-    
-    
-    
+
     gl::disableDepthRead();
     gl::setMatricesWindow( Vec2i(self.frame.size.width, self.frame.size.height) );
 	gl::enableAlphaBlending();
-    
-  
-    
+
 	gl::color( ColorA( 1.0, 1.0f, 1.0f, 1.0f ) );
-    
- 
-    
-    
+
       //Draw time ---------------------------------------------
     
     //if we are measuring draw measure result at the bottom
@@ -846,15 +836,9 @@
     Vec2f xScaleTextPosition = Vec2f(0.,0.);
     xScaleTextPosition.x = (self.frame.size.width - xScaleTextSize.x)/2.0;
     //if it is iPad put somewhat higher
+
+    xScaleTextPosition.y =self.frame.size.height-23 + (mScaleFont->getAscent() / 2.0f);
     
-    
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        xScaleTextPosition.y =0.85*self.frame.size.height + (mScaleFont->getAscent() / 2.0f);
-    }
-    else
-    {
-        xScaleTextPosition.y =0.923*self.frame.size.height + (mScaleFont->getAscent() / 2.0f);
-    }
     glColor4f(0.0, 0.47843137254901963, 1.0, 1.0);
     float centerx = self.frame.size.width/2;
     
@@ -881,7 +865,8 @@
     float heightOfOneRow = textSize.y * 1.4f;// * scaleXY.y;
     float rowVerticalGap = 4;// * scaleXY.x;
     
-    float xPositionOfBackground = self.frame.size.width-widthOfBackground-paddingOfBackground;
+    //self.frame.size.width
+    float xPositionOfBackground = self.frame.size.width -widthOfBackground-paddingOfBackground;
     float yPositionOfBackground = 100;
     
     
@@ -1069,7 +1054,7 @@
 
              //draw handle for active channels
             [self setColorWithIndex:indexOfChannel transparency:1.0f];
-            if((self.mode == MultichannelGLViewModeView || [self channelActive:indexOfChannel]) && !self.rtConfigurationActive)
+            if(self.mode == MultichannelGLViewModeView || [self channelActive:indexOfChannel])
             {
                 gl::drawSolidEllipse( Vec2f(centerOfCircleX, yOffsets[indexOfChannel]), radiusXAxis, radiusYAxis, 1000 );
                 gl::drawSolidTriangle(
@@ -1121,44 +1106,7 @@
     }//if multichannel
     
     
-    //If configuration of rt spike sorting is active
-    if(self.rtConfigurationActive)
-    {
-        //draw RT handle on selected channe;
-        if(self.mode == MultichannelGLViewModeView && [[BBAudioManager bbAudioManager] rtSpikeSorting])
-        {
-            float zoom = maxVoltsSpan/ numVoltsVisible[selectedChannel];
-         
-         //draw first RT threshold line
-            float xPositionOfThresholdFirst = -radiusXAxis;
-            float yPositionOfThresholdFirst = yOffsets[selectedChannel]+[[BBAudioManager bbAudioManager] rtThresholdFirst]*zoom;
-            [self setColorWithIndex:selectedChannel+1 transparency:1.0];
-            gl::drawSolidEllipse( Vec2f(xPositionOfThresholdFirst, yPositionOfThresholdFirst), radiusXAxis, radiusYAxis, 1000 );
-            gl::drawSolidTriangle(
-                                  Vec2f(xPositionOfThresholdFirst-0.35*radiusXAxis, yPositionOfThresholdFirst+radiusYAxis*0.97),
-                                  Vec2f(xPositionOfThresholdFirst-1.6*radiusXAxis, yPositionOfThresholdFirst),
-                                  Vec2f(xPositionOfThresholdFirst-0.35*radiusXAxis, yPositionOfThresholdFirst-radiusYAxis*0.97)
-                                  );
-            gl::drawLine(Vec2f(-maxTimeSpan, yPositionOfThresholdFirst), Vec2f(0.0f, yPositionOfThresholdFirst));
-            
-            
-            
-        //draw second RT threshold line
-            float xPositionOfThresholdSecond = -maxTimeSpan+radiusXAxis;
-            float yPositionOfThresholdSecond = yOffsets[selectedChannel]+[[BBAudioManager bbAudioManager] rtThresholdSecond]*zoom;
-
-            gl::drawSolidEllipse( Vec2f(xPositionOfThresholdSecond, yPositionOfThresholdSecond), radiusXAxis, radiusYAxis, 1000 );
-            gl::drawSolidTriangle(
-                                  Vec2f(xPositionOfThresholdSecond+0.35*radiusXAxis, yPositionOfThresholdSecond+radiusYAxis*0.97),
-                                  Vec2f(xPositionOfThresholdSecond+1.6*radiusXAxis, yPositionOfThresholdSecond),
-                                  Vec2f(xPositionOfThresholdSecond+0.35*radiusXAxis, yPositionOfThresholdSecond-radiusYAxis*0.97)
-                                  );
-            
-            
-            gl::drawLine(Vec2f(-maxTimeSpan, yPositionOfThresholdSecond), Vec2f(0.0f, yPositionOfThresholdSecond));
-        }
-    }
-    
+   
     gl::enableDepthRead();
 }
 
@@ -1172,10 +1120,7 @@
     //we use timestamp (timeForSincDrawing) that is taken from audio manager "at the same time"
     //when we took data from circular buffer to display waveform. It is important for sinc of waveform and spike marks
     float currentTime = timeForSincDrawing ;
-    
-    //If we are not playing (we are scrubbing) than take time stamp directly from audio manager
 
-    //float currentTime = [dataSourceDelegate getCurrentTimeForSinc];
     NSMutableArray * allChannels = [dataSourceDelegate getChannels];
     
     
@@ -1333,7 +1278,6 @@
     
     if(mode == MultichannelGLViewModeThresholding && [[BBAudioManager bbAudioManager] currentFilterSettings]==FILTER_SETTINGS_EKG && [[BBAudioManager bbAudioManager] amDemodulationIsON])
     {
-        
         std::stringstream hearRateText;
         hearRateText << (int)[[BBAudioManager bbAudioManager] heartRate] << "BPM";
         
@@ -1351,9 +1295,6 @@
         
         gl::color( ColorA( 1.0, 1.0f, 1.0f, 1.0f ) );
         heartBeatTextureFont->drawString(hearRateText.str(), heartTextPosition);
-        
-        [dataSourceDelegate setPositionOfHeartX:centerx-3*heartTextSize.y Y:heartTextPosition.y-1.1*heartTextSize.y];
-        
     }
 
     //[[BBAudioManager bbAudioManager] currentFilterSettings]
@@ -1431,7 +1372,6 @@
         
         currentTimeStringStream<<((int)[[BBAudioManager bbAudioManager] currentFileTime])%60;
         
-        Vec2f currentTimeTextSize = currentTimeTextureFont->measureString(currentTimeStringStream.str());
         Vec2f currentTimeTextPosition = Vec2f(0.,0.);
         currentTimeTextPosition.x = self.frame.size.width - 45 ;
         currentTimeTextPosition.y = self.frame.size.height - 45 - (currentTimeTextureFont->getAscent() / 2.0f);
@@ -1562,10 +1502,6 @@
         Vec2f touchDistanceDelta = [self calculateTouchDistanceChange:touches];
         float oldNumSamplesVisible = numSamplesVisible;
         float oldNumVoltsVisible = numVoltsVisible[selectedChannel];
-        
-        float deltax = fabs(touchDistanceDelta.x-1.0f);
-        float deltay = fabs(touchDistanceDelta.y-1.0f);
-        // NSLog(@"Touch X: %f", deltax/deltay);
      
         //determine pinch type and make zoom mutual exclusive (vertical or horizontal)
         int pinchType = [self determinePinchType:touches];
@@ -1721,31 +1657,7 @@
         
         }
         
-        //RT spike sorting line
-        if(self.mode == MultichannelGLViewModeView && [[BBAudioManager bbAudioManager] rtSpikeSorting] && self.rtConfigurationActive)
-        {
-            float zoom = maxVoltsSpan/ numVoltsVisible[selectedChannel];
-            
-            Vec2f screenThresholdPos1 = [self worldToScreen:Vec2f(0.0f, [[BBAudioManager bbAudioManager] rtThresholdFirst]*zoom + yOffsets[selectedChannel])];
-            
-            float distance1 = (touchPos.y - screenThresholdPos1.y)*(touchPos.y - screenThresholdPos1.y)+(touchPos.x - screenThresholdPos1.x)*(touchPos.x - screenThresholdPos1.x);
-            
-            if (distance1 < 8500) // set via experimentation
-            {
-                [[BBAudioManager bbAudioManager] setRtThresholdFirst:(glWorldTouchPos.y-yOffsets[selectedChannel])/zoom];
-                return;
-            }
-            
-            Vec2f screenThresholdPos2 = [self worldToScreen:Vec2f(0.0f, [[BBAudioManager bbAudioManager] rtThresholdSecond]*zoom + yOffsets[selectedChannel])];
-            
-            float distance2 = (touchPos.y - screenThresholdPos2.y)*(touchPos.y - screenThresholdPos2.y)+(touchPos.x - -maxTimeSpan)*(touchPos.x - -maxTimeSpan);
-            
-            if (distance2 < 8500) // set via experimentation
-            {
-                [[BBAudioManager bbAudioManager] setRtThresholdSecond:(glWorldTouchPos.y-yOffsets[selectedChannel])/zoom];
-                return;
-            }
-        }
+       
         
         //Remove channel X button
         if([self checkIntesectionWithRemoveButton:glWorldTouchPos])
@@ -1857,7 +1769,10 @@
                     float diffPix = touches[0].getPos().x - touches[0].getPrevPos().x;
                     float timeDiff = -diffPix*(numSamplesVisible/windowWidth)*(1/[[BBAudioManager bbAudioManager] sourceSamplingRate]);
                     [[BBAudioManager bbAudioManager] setSeeking:YES];
-                    [[BBAudioManager bbAudioManager] setCurrentFileTime:[[BBAudioManager bbAudioManager] currentFileTime] + timeDiff ];
+                    // [[BBAudioManager bbAudioManager] setCurrentFileTime:[[BBAudioManager bbAudioManager] currentFileTime] + timeDiff ];
+                     
+                     [[BBAudioManager bbAudioManager] setSeekTime:[[BBAudioManager bbAudioManager] currentFileTime] + timeDiff ];
+                   
                 }
                 
             }
@@ -1916,7 +1831,7 @@
 //
 -(int) checkIntersectionWithHandles:(Vec2f) touchPos
 {
-    if(!multichannel || self.rtConfigurationActive)
+    if(!multichannel)
     {
         return -1;
     }
@@ -1983,54 +1898,6 @@
     
     [super touchesEnded:touches withEvent:event];
 }
-
-
-
-
-/*
- 
- //
- // Called when user stop dragging scruber
- //
- - (void)sliderTouchUpInside:(NSNotification *)notification {
- if(!audioPaused)
- {
- [bbAudioManager setSeeking:NO];
- [bbAudioManager resumePlaying];
- }
- }
- 
- //
- // Called when user start dragging scruber
- //
- - (void)sliderTouchDown:(NSNotification *)notification {
- [bbAudioManager setSeeking:YES];
- [bbAudioManager pausePlaying];
- audioPaused = YES;
- }
- 
- //Seek to new place in file
- - (IBAction)backBtnClick:(id)sender {
- [self.navigationController popViewControllerAnimated:YES];
- }
- 
- - (IBAction)sliderValueChanged:(id)sender {
- 
- bbAudioManager.currentFileTime = (float)self.timeSlider.value;
- }
- */
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

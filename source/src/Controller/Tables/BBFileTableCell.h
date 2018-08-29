@@ -10,22 +10,9 @@
 
 @class BBFileTableCell;
 
-
-@protocol BBFileTableCellDelegate
--(void)cellActionTriggeredFrom:(BBFileTableCell *) cell;
-@end
-
-
 @interface BBFileTableCell : UITableViewCell 
 
 @property (nonatomic, retain) IBOutlet UILabel *shortname;
 @property (nonatomic, retain) IBOutlet UILabel *subname;
 @property (nonatomic, retain) IBOutlet UILabel *lengthname;
-@property (nonatomic, retain) IBOutlet UIButton *actionButton;
-
-@property (nonatomic, assign) id <BBFileTableCellDelegate> delegate;
-
-- (IBAction)actionButtonSelected;
-
-
 @end

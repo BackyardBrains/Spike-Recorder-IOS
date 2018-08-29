@@ -3,7 +3,7 @@
 //  Spike Recorder
 //
 //  Created by Stanislav Mircic on 5/30/16.
-//  Copyright © 2016 Datta Lab, Harvard University. All rights reserved.
+//  Copyright © 2016 Backyard Brains. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>

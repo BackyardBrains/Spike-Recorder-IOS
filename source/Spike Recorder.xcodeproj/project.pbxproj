@@ -7,6 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1C3882BF2018844E00B0388B /* icon83-5@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C3882BE2018844E00B0388B /* icon83-5@2x.png */; };
+		1C3882C12018863400B0388B /* landscape-1024-768.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C3882C02018863400B0388B /* landscape-1024-768.png */; };
+		1C3882C32018879400B0388B /* portrait-768-1024.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C3882C22018879400B0388B /* portrait-768-1024.png */; };
+		1C3882C52018890300B0388B /* landscape-2048-1536.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C3882C42018890300B0388B /* landscape-2048-1536.png */; };
+		1C3882C720188A4C00B0388B /* portrait-1536-2048.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C3882C620188A4C00B0388B /* portrait-1536-2048.png */; };
+		1C3882C92018AB5900B0388B /* Screenshot@2x-1.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C3882C82018AB5900B0388B /* Screenshot@2x-1.png */; };
+		1C3882CD2018AF8B00B0388B /* portrait-1125-2436.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C3882CA2018AF8B00B0388B /* portrait-1125-2436.png */; };
+		1C3882CE2018AF8B00B0388B /* landcape-2208-1242.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C3882CB2018AF8B00B0388B /* landcape-2208-1242.png */; };
+		1C3882CF2018AF8B00B0388B /* landcape-2436-1125.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C3882CC2018AF8B00B0388B /* landcape-2436-1125.png */; };
+		1C3882F6201B58D500B0388B /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1C3882F5201B58D500B0388B /* MainStoryboard.storyboard */; };
+		1C3FC2FC203EE99600C28680 /* FFTRecordingsViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1C3FC2FB203EE99600C28680 /* FFTRecordingsViewController.mm */; };
+		1C9850672036E3830076997B /* fft@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C9850652036E3810076997B /* fft@2x.png */; };
+		1C9850682036E3830076997B /* fft.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C9850662036E3810076997B /* fft.png */; };
 		1CB1265C1F87DDFF00247389 /* ObjectiveDropboxOfficial.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CB1265B1F87DDFF00247389 /* ObjectiveDropboxOfficial.framework */; };
 		1CB1265D1F87DDFF00247389 /* ObjectiveDropboxOfficial.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1CB1265B1F87DDFF00247389 /* ObjectiveDropboxOfficial.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1CBD16121E72E6DC00F59AEF /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CBD16101E72E6DC00F59AEF /* Crashlytics.framework */; };
@@ -39,9 +52,6 @@
 		1CF7DB3D1F7988DF008F303E /* slider-metal-trackBackground@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CF7DB211F7988DF008F303E /* slider-metal-trackBackground@2x.png */; };
 		1CF7DB3E1F7988DF008F303E /* NMRangeSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CF7DB231F7988DF008F303E /* NMRangeSlider.m */; };
 		2407C4381AE573FD005D671B /* OBSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = 2407C4371AE573FD005D671B /* OBSlider.m */; };
-		240D8067190E98F6009F9AEA /* CrossCorrViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 240D8065190E98F6009F9AEA /* CrossCorrViewController.xib */; };
-		241453CF1AB87B33001B5D92 /* RTSpikeSortingButton.mm in Sources */ = {isa = PBXBuildFile; fileRef = 241453CE1AB87B33001B5D92 /* RTSpikeSortingButton.mm */; };
-		241453D21AB88916001B5D92 /* RTCancelButton.mm in Sources */ = {isa = PBXBuildFile; fileRef = 241453D11AB88916001B5D92 /* RTCancelButton.mm */; };
 		2418FE5F1A83F4C600662547 /* beep.wav in Resources */ = {isa = PBXBuildFile; fileRef = 2418FE5E1A83F4C600662547 /* beep.wav */; };
 		2418FEB71A83F5D700662547 /* again.png in Resources */ = {isa = PBXBuildFile; fileRef = 2418FE891A83F5D700662547 /* again.png */; };
 		2418FEB81A83F5D700662547 /* again@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2418FE8A1A83F5D700662547 /* again@2x.png */; };
@@ -86,14 +96,12 @@
 		2418FEDF1A83F5D700662547 /* TickMarksBig.png in Resources */ = {isa = PBXBuildFile; fileRef = 2418FEB11A83F5D700662547 /* TickMarksBig.png */; };
 		2418FEE01A83F5D700662547 /* trash.png in Resources */ = {isa = PBXBuildFile; fileRef = 2418FEB21A83F5D700662547 /* trash.png */; };
 		2418FEE11A83F5D700662547 /* trash@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2418FEB31A83F5D700662547 /* trash@2x.png */; };
-		2418FEE21A83F5D700662547 /* unselected.png in Resources */ = {isa = PBXBuildFile; fileRef = 2418FEB41A83F5D700662547 /* unselected.png */; };
 		2418FEE31A83F5D700662547 /* WaveImage.png in Resources */ = {isa = PBXBuildFile; fileRef = 2418FEB51A83F5D700662547 /* WaveImage.png */; };
 		2418FEE41A83F5D700662547 /* WaveImage@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2418FEB61A83F5D700662547 /* WaveImage@2x.png */; };
 		2418FEF41A83F6C800662547 /* BBChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 2418FEE71A83F6C800662547 /* BBChannel.m */; };
 		2418FEF51A83F6C800662547 /* BBDCMDExperiment.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FEE91A83F6C800662547 /* BBDCMDExperiment.mm */; };
 		2418FEF61A83F6C800662547 /* BBDCMDTrial.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FEEB1A83F6C800662547 /* BBDCMDTrial.mm */; };
 		2418FEF71A83F6C800662547 /* BBFile.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FEED1A83F6C800662547 /* BBFile.mm */; };
-		2418FEF81A83F6C800662547 /* BBSignalEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 2418FEEF1A83F6C800662547 /* BBSignalEvent.m */; };
 		2418FEF91A83F6C800662547 /* BBSpike.m in Sources */ = {isa = PBXBuildFile; fileRef = 2418FEF11A83F6C800662547 /* BBSpike.m */; };
 		2418FEFA1A83F6C800662547 /* BBSpikeTrain.m in Sources */ = {isa = PBXBuildFile; fileRef = 2418FEF31A83F6C800662547 /* BBSpikeTrain.m */; };
 		2418FF0F1A83F79200662547 /* BBAnalysisManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FEFD1A83F79200662547 /* BBAnalysisManager.mm */; };
@@ -104,7 +112,6 @@
 		2418FF151A83F79200662547 /* DSPAnalysis.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FF091A83F79200662547 /* DSPAnalysis.mm */; };
 		2418FF161A83F79200662547 /* DSPThreshold.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FF0B1A83F79200662547 /* DSPThreshold.mm */; };
 		2418FF171A83F79200662547 /* WavManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FF0E1A83F79200662547 /* WavManager.mm */; };
-		2418FF311A83FD3700662547 /* BBBTChooserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2418FF1C1A83FD3700662547 /* BBBTChooserViewController.m */; };
 		2418FF321A83FD3700662547 /* DCMDExperimentViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FF1E1A83FD3700662547 /* DCMDExperimentViewController.mm */; };
 		2418FF341A83FD3700662547 /* FFTViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FF221A83FD3700662547 /* FFTViewController.mm */; };
 		2418FF351A83FD3700662547 /* FilterSettingsViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FF241A83FD3700662547 /* FilterSettingsViewController.mm */; };
@@ -153,13 +160,9 @@
 		2418FFD31A8406A600662547 /* Screenshot@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2418FFCB1A8406A600662547 /* Screenshot@2x.png */; };
 		241C8AF41B31EEEA00CEFCEE /* tinyxml2.mm in Sources */ = {isa = PBXBuildFile; fileRef = 241C8AF21B31EEEA00CEFCEE /* tinyxml2.mm */; };
 		241C8AF71B3201B800CEFCEE /* template.xml in Resources */ = {isa = PBXBuildFile; fileRef = 241C8AF61B3201B800CEFCEE /* template.xml */; };
-		242631B419C2042A00225E44 /* ECGViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 242631B219C2042A00225E44 /* ECGViewController.xib */; };
-		24507B53196C333C00E27BD2 /* AutoGraphViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 24507B51196C333C00E27BD2 /* AutoGraphViewController.xib */; };
 		2454D8AA19AD02010056B71B /* GraphDCMDExperimentViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2454D8A819AD02010056B71B /* GraphDCMDExperimentViewController.xib */; };
-		2454D8B219AE18D50056B71B /* AverageSpikeGraphViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2454D8B019AE18D50056B71B /* AverageSpikeGraphViewController.xib */; };
 		245B1842199135ED00943684 /* ExperimentsMenuTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 245B1840199135ED00943684 /* ExperimentsMenuTableViewCell.xib */; };
 		245B1847199172D200943684 /* ExperimentsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 245B1845199172D200943684 /* ExperimentsViewController.xib */; };
-		245E26FA19EAC01100EE298E /* BBBTChooserViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 245E26F819EAC01100EE298E /* BBBTChooserViewController.xib */; };
 		247087011A850FF6004C6B9B /* CCGLTouchAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FDA41A83F14700662547 /* CCGLTouchAppDelegate.mm */; };
 		247087031A850FF6004C6B9B /* CCGLTouchView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FDA61A83F14700662547 /* CCGLTouchView.mm */; };
 		247087051A850FF6004C6B9B /* CCGLTouchViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FDA81A83F14700662547 /* CCGLTouchViewController.mm */; };
@@ -221,17 +224,11 @@
 		247087C91A851774004C6B9B /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 247087B71A851774004C6B9B /* Icon.png */; };
 		247087CA1A851774004C6B9B /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 247087B81A851774004C6B9B /* Icon@2x.png */; };
 		247087CB1A851774004C6B9B /* iTunesArtwork@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 247087B91A851774004C6B9B /* iTunesArtwork@2x.png */; };
-		2474366B18F6DBFF0044E11D /* SpikesViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2474366A18F6DBFF0044E11D /* SpikesViewController.xib */; };
 		247ED9BE193DEC0800871BAC /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 247ED9BD193DEC0800871BAC /* libz.dylib */; };
 		2489D8201992284500C00A9C /* ExperimentSetupViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2489D81E1992284500C00A9C /* ExperimentSetupViewController.xib */; };
 		2489D8251993ABCA00C00A9C /* DCMDExperimentViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2489D8231993ABCA00C00A9C /* DCMDExperimentViewController.xib */; };
 		248C8EBF18E5D8FC00307C4C /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 248C8EBE18E5D8FC00307C4C /* MobileCoreServices.framework */; };
 		248C8EC118E5D90500307C4C /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 248C8EC018E5D90500307C4C /* ImageIO.framework */; };
-		2490139C1966CD5E00E5EF91 /* GraphMatrixViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2490139A1966CD5E00E5EF91 /* GraphMatrixViewController.xib */; };
-		249013A4196AB45200E5EF91 /* ISIGraphViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 249013A2196AB45200E5EF91 /* ISIGraphViewController.xib */; };
-		249A246319058465005F5F03 /* AutocorrelationGraphViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 249A246119058465005F5F03 /* AutocorrelationGraphViewController.xib */; };
-		249A24681906AC59005F5F03 /* ISIHistogramViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 249A24661906AC59005F5F03 /* ISIHistogramViewController.xib */; };
-		249C244B1A9E272500B81B1A /* BufferStateIndicator.mm in Sources */ = {isa = PBXBuildFile; fileRef = 249C244A1A9E272500B81B1A /* BufferStateIndicator.mm */; };
 		24BB8365199E7D0C00C12932 /* GraphDCMDTrialViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 24BB8363199E7D0C00C12932 /* GraphDCMDTrialViewController.xib */; };
 		24D697BA1A6FF3EB00108D78 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 24D697B91A6FF3EB00108D78 /* Images.xcassets */; };
 		24DBA92A197709DF00AEDE86 /* FFTViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 24DBA928197709DF00AEDE86 /* FFTViewController.xib */; };
@@ -239,16 +236,13 @@
 		24E6D8A91A011EE0006C8CED /* FilterSettingsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 24E6D8A71A011EE0006C8CED /* FilterSettingsViewController.xib */; };
 		24EBC1AE1997852D001D3392 /* TrialsDCMDTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 24EBC1AC1997852D001D3392 /* TrialsDCMDTableViewController.xib */; };
 		24EBC1B31997DD21001D3392 /* TrialActionsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 24EBC1B11997DD21001D3392 /* TrialActionsViewController.xib */; };
-		FA35CEFF15ABBADC0082FBC3 /* PlaybackViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA35CEFD15ABBADB0082FBC3 /* PlaybackViewController.xib */; };
 		FA49A7B015D9C352002A78EC /* BBFileViewControllerTBV.plist in Resources */ = {isa = PBXBuildFile; fileRef = FA49A7AF15D9C352002A78EC /* BBFileViewControllerTBV.plist */; };
 		FA90598A15A9F4E20013688B /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = FA90598915A9F4E20013688B /* libsqlite3.0.dylib */; };
 		FA905A4815AA8BBA0013688B /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA905A4715AA8BBA0013688B /* Security.framework */; };
 		FA905A4C15AA8CF00013688B /* BBFileTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA905A4B15AA8CF00013688B /* BBFileTableCell.xib */; };
 		FA905A7A15AA8F0C0013688B /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA905A7915AA8F0B0013688B /* CFNetwork.framework */; };
 		FA905A7C15AA8F370013688B /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA905A7B15AA8F360013688B /* MessageUI.framework */; };
-		FA9A665215BA3DC100CF1697 /* MainWindow-iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA9A665115BA3DC100CF1697 /* MainWindow-iPad.xib */; };
 		FA9A665B15BB19B000CF1697 /* SettingsDefaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = FA9A665A15BB19B000CF1697 /* SettingsDefaults.plist */; };
-		FAA27C1E15AD01CA00DCC60B /* ThresholdViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FAA27C1D15AD01CA00DCC60B /* ThresholdViewController.xib */; };
 		FAAC8E7D15A3738D003EB28A /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FAAC8E7C15A3738D003EB28A /* Accelerate.framework */; };
 		FADF26551596362F006C87BA /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FADF26541596362F006C87BA /* UIKit.framework */; };
 		FADF26571596362F006C87BA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FADF26561596362F006C87BA /* Foundation.framework */; };
@@ -261,9 +255,7 @@
 		FADF26651596362F006C87BA /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FADF26641596362F006C87BA /* CoreMedia.framework */; };
 		FADF26671596362F006C87BA /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FADF26661596362F006C87BA /* CoreText.framework */; };
 		FADF266D1596362F006C87BA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = FADF266B1596362F006C87BA /* InfoPlist.strings */; };
-		FADF266F1596362F006C87BA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FADF266E1596362F006C87BA /* main.m */; };
-		FADF268715963630006C87BA /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = FADF268615963630006C87BA /* MainWindow.xib */; };
-		FADF268915963630006C87BA /* ViewAndRecordViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = FADF268815963630006C87BA /* ViewAndRecordViewController.xib */; };
+		FADF266F1596362F006C87BA /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = FADF266E1596362F006C87BA /* main.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -281,6 +273,20 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1C3882BE2018844E00B0388B /* icon83-5@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon83-5@2x.png"; sourceTree = "<group>"; };
+		1C3882C02018863400B0388B /* landscape-1024-768.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "landscape-1024-768.png"; sourceTree = "<group>"; };
+		1C3882C22018879400B0388B /* portrait-768-1024.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "portrait-768-1024.png"; sourceTree = "<group>"; };
+		1C3882C42018890300B0388B /* landscape-2048-1536.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "landscape-2048-1536.png"; sourceTree = "<group>"; };
+		1C3882C620188A4C00B0388B /* portrait-1536-2048.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "portrait-1536-2048.png"; sourceTree = "<group>"; };
+		1C3882C82018AB5900B0388B /* Screenshot@2x-1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Screenshot@2x-1.png"; sourceTree = "<group>"; };
+		1C3882CA2018AF8B00B0388B /* portrait-1125-2436.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "portrait-1125-2436.png"; sourceTree = "<group>"; };
+		1C3882CB2018AF8B00B0388B /* landcape-2208-1242.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "landcape-2208-1242.png"; sourceTree = "<group>"; };
+		1C3882CC2018AF8B00B0388B /* landcape-2436-1125.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "landcape-2436-1125.png"; sourceTree = "<group>"; };
+		1C3882F5201B58D500B0388B /* MainStoryboard.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MainStoryboard.storyboard; sourceTree = "<group>"; };
+		1C3FC2FB203EE99600C28680 /* FFTRecordingsViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = FFTRecordingsViewController.mm; sourceTree = "<group>"; };
+		1C3FC2FD203EE9B200C28680 /* FFTRecordingsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FFTRecordingsViewController.h; sourceTree = "<group>"; };
+		1C9850652036E3810076997B /* fft@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fft@2x.png"; sourceTree = "<group>"; };
+		1C9850662036E3810076997B /* fft.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fft.png; sourceTree = "<group>"; };
 		1CB1265B1F87DDFF00247389 /* ObjectiveDropboxOfficial.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ObjectiveDropboxOfficial.framework; path = Carthage/Build/iOS/ObjectiveDropboxOfficial.framework; sourceTree = "<group>"; };
 		1CBD16101E72E6DC00F59AEF /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		1CBD16111E72E6DC00F59AEF /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
@@ -318,11 +324,6 @@
 		1CF7DB231F7988DF008F303E /* NMRangeSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NMRangeSlider.m; sourceTree = "<group>"; };
 		2407C4361AE573FD005D671B /* OBSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OBSlider.h; sourceTree = "<group>"; };
 		2407C4371AE573FD005D671B /* OBSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OBSlider.m; sourceTree = "<group>"; };
-		240D8065190E98F6009F9AEA /* CrossCorrViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CrossCorrViewController.xib; sourceTree = "<group>"; };
-		241453CD1AB87B33001B5D92 /* RTSpikeSortingButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTSpikeSortingButton.h; sourceTree = "<group>"; };
-		241453CE1AB87B33001B5D92 /* RTSpikeSortingButton.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RTSpikeSortingButton.mm; sourceTree = "<group>"; };
-		241453D01AB88916001B5D92 /* RTCancelButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTCancelButton.h; sourceTree = "<group>"; };
-		241453D11AB88916001B5D92 /* RTCancelButton.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RTCancelButton.mm; sourceTree = "<group>"; };
 		2418FDA31A83F14700662547 /* CCGLTouchAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCGLTouchAppDelegate.h; sourceTree = "<group>"; };
 		2418FDA41A83F14700662547 /* CCGLTouchAppDelegate.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = CCGLTouchAppDelegate.mm; sourceTree = "<group>"; };
 		2418FDA51A83F14700662547 /* CCGLTouchView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCGLTouchView.h; sourceTree = "<group>"; };
@@ -533,7 +534,6 @@
 		2418FEB11A83F5D700662547 /* TickMarksBig.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TickMarksBig.png; sourceTree = "<group>"; };
 		2418FEB21A83F5D700662547 /* trash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = trash.png; sourceTree = "<group>"; };
 		2418FEB31A83F5D700662547 /* trash@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "trash@2x.png"; sourceTree = "<group>"; };
-		2418FEB41A83F5D700662547 /* unselected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = unselected.png; sourceTree = "<group>"; };
 		2418FEB51A83F5D700662547 /* WaveImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = WaveImage.png; sourceTree = "<group>"; };
 		2418FEB61A83F5D700662547 /* WaveImage@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "WaveImage@2x.png"; sourceTree = "<group>"; };
 		2418FEE61A83F6C800662547 /* BBChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BBChannel.h; sourceTree = "<group>"; };
@@ -544,8 +544,6 @@
 		2418FEEB1A83F6C800662547 /* BBDCMDTrial.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BBDCMDTrial.mm; sourceTree = "<group>"; };
 		2418FEEC1A83F6C800662547 /* BBFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BBFile.h; sourceTree = "<group>"; };
 		2418FEED1A83F6C800662547 /* BBFile.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BBFile.mm; sourceTree = "<group>"; };
-		2418FEEE1A83F6C800662547 /* BBSignalEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BBSignalEvent.h; sourceTree = "<group>"; };
-		2418FEEF1A83F6C800662547 /* BBSignalEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BBSignalEvent.m; sourceTree = "<group>"; };
 		2418FEF01A83F6C800662547 /* BBSpike.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BBSpike.h; sourceTree = "<group>"; };
 		2418FEF11A83F6C800662547 /* BBSpike.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BBSpike.m; sourceTree = "<group>"; };
 		2418FEF21A83F6C800662547 /* BBSpikeTrain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BBSpikeTrain.h; sourceTree = "<group>"; };
@@ -566,8 +564,6 @@
 		2418FF0B1A83F79200662547 /* DSPThreshold.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DSPThreshold.mm; sourceTree = "<group>"; };
 		2418FF0D1A83F79200662547 /* WavManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WavManager.h; sourceTree = "<group>"; };
 		2418FF0E1A83F79200662547 /* WavManager.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WavManager.mm; sourceTree = "<group>"; };
-		2418FF1B1A83FD3700662547 /* BBBTChooserViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BBBTChooserViewController.h; sourceTree = "<group>"; };
-		2418FF1C1A83FD3700662547 /* BBBTChooserViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BBBTChooserViewController.m; sourceTree = "<group>"; };
 		2418FF1D1A83FD3700662547 /* DCMDExperimentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DCMDExperimentViewController.h; sourceTree = "<group>"; };
 		2418FF1E1A83FD3700662547 /* DCMDExperimentViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DCMDExperimentViewController.mm; sourceTree = "<group>"; };
 		2418FF211A83FD3700662547 /* FFTViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFTViewController.h; sourceTree = "<group>"; };
@@ -655,14 +651,10 @@
 		241C8AF21B31EEEA00CEFCEE /* tinyxml2.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = tinyxml2.mm; sourceTree = "<group>"; };
 		241C8AF31B31EEEA00CEFCEE /* tinyxml2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tinyxml2.h; sourceTree = "<group>"; };
 		241C8AF61B3201B800CEFCEE /* template.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = template.xml; sourceTree = "<group>"; };
-		242631B219C2042A00225E44 /* ECGViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ECGViewController.xib; sourceTree = "<group>"; };
-		24507B51196C333C00E27BD2 /* AutoGraphViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AutoGraphViewController.xib; sourceTree = "<group>"; };
 		2454D8A819AD02010056B71B /* GraphDCMDExperimentViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GraphDCMDExperimentViewController.xib; sourceTree = "<group>"; };
-		2454D8B019AE18D50056B71B /* AverageSpikeGraphViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AverageSpikeGraphViewController.xib; sourceTree = "<group>"; };
 		2459174219D316ED001CF8B4 /* Backyard Brains.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "Backyard Brains.entitlements"; sourceTree = SOURCE_ROOT; };
 		245B1840199135ED00943684 /* ExperimentsMenuTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ExperimentsMenuTableViewCell.xib; sourceTree = "<group>"; };
 		245B1845199172D200943684 /* ExperimentsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ExperimentsViewController.xib; sourceTree = "<group>"; };
-		245E26F819EAC01100EE298E /* BBBTChooserViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BBBTChooserViewController.xib; sourceTree = "<group>"; };
 		247087A81A851774004C6B9B /* Icon-60.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-60.png"; sourceTree = "<group>"; };
 		247087A91A851774004C6B9B /* Icon-60@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-60@2x.png"; sourceTree = "<group>"; };
 		247087AA1A851774004C6B9B /* Icon-60@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-60@3x.png"; sourceTree = "<group>"; };
@@ -681,19 +673,12 @@
 		247087B71A851774004C6B9B /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		247087B81A851774004C6B9B /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
 		247087B91A851774004C6B9B /* iTunesArtwork@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iTunesArtwork@2x.png"; sourceTree = "<group>"; };
-		2474366A18F6DBFF0044E11D /* SpikesViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SpikesViewController.xib; sourceTree = "<group>"; };
 		247ED9BD193DEC0800871BAC /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		2489D81E1992284500C00A9C /* ExperimentSetupViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ExperimentSetupViewController.xib; sourceTree = "<group>"; };
 		2489D8231993ABCA00C00A9C /* DCMDExperimentViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DCMDExperimentViewController.xib; sourceTree = "<group>"; };
 		248C8EBE18E5D8FC00307C4C /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		248C8EC018E5D90500307C4C /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
-		2490139A1966CD5E00E5EF91 /* GraphMatrixViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GraphMatrixViewController.xib; sourceTree = "<group>"; };
-		249013A2196AB45200E5EF91 /* ISIGraphViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ISIGraphViewController.xib; sourceTree = "<group>"; };
 		2490D73A1A927C1B00E1D5E9 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
-		249A246119058465005F5F03 /* AutocorrelationGraphViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AutocorrelationGraphViewController.xib; sourceTree = "<group>"; };
-		249A24661906AC59005F5F03 /* ISIHistogramViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ISIHistogramViewController.xib; sourceTree = "<group>"; };
-		249C24491A9E272500B81B1A /* BufferStateIndicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BufferStateIndicator.h; sourceTree = "<group>"; };
-		249C244A1A9E272500B81B1A /* BufferStateIndicator.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BufferStateIndicator.mm; sourceTree = "<group>"; };
 		24BB8363199E7D0C00C12932 /* GraphDCMDTrialViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GraphDCMDTrialViewController.xib; sourceTree = "<group>"; };
 		24D697B91A6FF3EB00108D78 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = "Backyard Brains/Images.xcassets"; sourceTree = SOURCE_ROOT; };
 		24DBA928197709DF00AEDE86 /* FFTViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FFTViewController.xib; sourceTree = "<group>"; };
@@ -702,16 +687,13 @@
 		24E6D8A71A011EE0006C8CED /* FilterSettingsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FilterSettingsViewController.xib; sourceTree = "<group>"; };
 		24EBC1AC1997852D001D3392 /* TrialsDCMDTableViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TrialsDCMDTableViewController.xib; sourceTree = "<group>"; };
 		24EBC1B11997DD21001D3392 /* TrialActionsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TrialActionsViewController.xib; sourceTree = "<group>"; };
-		FA35CEFD15ABBADB0082FBC3 /* PlaybackViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PlaybackViewController.xib; sourceTree = "<group>"; };
 		FA49A7AF15D9C352002A78EC /* BBFileViewControllerTBV.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = BBFileViewControllerTBV.plist; sourceTree = "<group>"; };
 		FA90598915A9F4E20013688B /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = usr/lib/libsqlite3.0.dylib; sourceTree = SDKROOT; };
 		FA905A4715AA8BBA0013688B /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		FA905A4B15AA8CF00013688B /* BBFileTableCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BBFileTableCell.xib; sourceTree = "<group>"; };
 		FA905A7915AA8F0B0013688B /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		FA905A7B15AA8F360013688B /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
-		FA9A665115BA3DC100CF1697 /* MainWindow-iPad.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = "MainWindow-iPad.xib"; path = "iPad/MainWindow-iPad.xib"; sourceTree = "<group>"; };
 		FA9A665A15BB19B000CF1697 /* SettingsDefaults.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = SettingsDefaults.plist; sourceTree = "<group>"; };
-		FAA27C1D15AD01CA00DCC60B /* ThresholdViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ThresholdViewController.xib; sourceTree = "<group>"; };
 		FAAC8E7C15A3738D003EB28A /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		FADF26501596362F006C87BA /* Spike Recorder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Spike Recorder.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FADF26541596362F006C87BA /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -726,10 +708,8 @@
 		FADF26661596362F006C87BA /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 		FADF266A1596362F006C87BA /* Spike Recorder-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Spike Recorder-Info.plist"; sourceTree = "<group>"; };
 		FADF266C1596362F006C87BA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		FADF266E1596362F006C87BA /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		FADF266E1596362F006C87BA /* main.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
 		FADF26701596362F006C87BA /* Spike Recorder-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Spike Recorder-Prefix.pch"; sourceTree = "<group>"; };
-		FADF268615963630006C87BA /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
-		FADF268815963630006C87BA /* ViewAndRecordViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ViewAndRecordViewController.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -765,6 +745,82 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1C15BBBE2035858E00C3881E /* DCMD */ = {
+			isa = PBXGroup;
+			children = (
+				2418FEE81A83F6C800662547 /* BBDCMDExperiment.h */,
+				2418FEE91A83F6C800662547 /* BBDCMDExperiment.mm */,
+				2418FEEA1A83F6C800662547 /* BBDCMDTrial.h */,
+				2418FEEB1A83F6C800662547 /* BBDCMDTrial.mm */,
+			);
+			path = DCMD;
+			sourceTree = "<group>";
+		};
+		1C15BBBF2035862500C3881E /* DCMD */ = {
+			isa = PBXGroup;
+			children = (
+				2418FF1D1A83FD3700662547 /* DCMDExperimentViewController.h */,
+				2418FF1E1A83FD3700662547 /* DCMDExperimentViewController.mm */,
+			);
+			path = DCMD;
+			sourceTree = "<group>";
+		};
+		1C15BBC02035864B00C3881E /* DCMD */ = {
+			isa = PBXGroup;
+			children = (
+				2418FF8F1A83FE1200662547 /* ExperimentDCMDGraphView.h */,
+				2418FF901A83FE1200662547 /* ExperimentDCMDGraphView.mm */,
+				2418FF951A83FE1200662547 /* TrialDCMDGraphView.h */,
+				2418FF961A83FE1200662547 /* TrialDCMDGraphView.mm */,
+				2418FF891A83FE1200662547 /* DCMDGLView.h */,
+				2418FF8A1A83FE1200662547 /* DCMDGLView.mm */,
+			);
+			path = DCMD;
+			sourceTree = "<group>";
+		};
+		1C15BBC12035869500C3881E /* DCMD */ = {
+			isa = PBXGroup;
+			children = (
+				2418FF761A83FDD500662547 /* TrialActionsViewController.h */,
+				2418FF771A83FDD500662547 /* TrialActionsViewController.mm */,
+				2418FF781A83FDD500662547 /* TrialsDCMDTableViewController.h */,
+				2418FF791A83FDD500662547 /* TrialsDCMDTableViewController.mm */,
+				2418FF721A83FDD500662547 /* ExperimentsMenuTableViewCell.h */,
+				2418FF731A83FDD500662547 /* ExperimentsMenuTableViewCell.m */,
+				2418FF741A83FDD500662547 /* ExperimentsViewController.h */,
+				2418FF751A83FDD500662547 /* ExperimentsViewController.mm */,
+				2418FF701A83FDD500662547 /* ExperimentSetupViewController.h */,
+				2418FF711A83FDD500662547 /* ExperimentSetupViewController.mm */,
+			);
+			path = DCMD;
+			sourceTree = "<group>";
+		};
+		1C15BBC22035870200C3881E /* DCMD */ = {
+			isa = PBXGroup;
+			children = (
+				2418FF4D1A83FDA100662547 /* GraphDCMDExperimentViewController.h */,
+				2418FF4E1A83FDA100662547 /* GraphDCMDExperimentViewController.mm */,
+				2418FF4F1A83FDA100662547 /* GraphDCMDTrialViewController.h */,
+				2418FF501A83FDA100662547 /* GraphDCMDTrialViewController.mm */,
+			);
+			path = DCMD;
+			sourceTree = "<group>";
+		};
+		1C16E2DE20232E7C004E0C25 /* DCMD */ = {
+			isa = PBXGroup;
+			children = (
+				24EBC1AC1997852D001D3392 /* TrialsDCMDTableViewController.xib */,
+				24BB8363199E7D0C00C12932 /* GraphDCMDTrialViewController.xib */,
+				2454D8A819AD02010056B71B /* GraphDCMDExperimentViewController.xib */,
+				245B1845199172D200943684 /* ExperimentsViewController.xib */,
+				2489D81E1992284500C00A9C /* ExperimentSetupViewController.xib */,
+				245B1840199135ED00943684 /* ExperimentsMenuTableViewCell.xib */,
+				2489D8231993ABCA00C00A9C /* DCMDExperimentViewController.xib */,
+				24EBC1B11997DD21001D3392 /* TrialActionsViewController.xib */,
+			);
+			name = DCMD;
+			sourceTree = "<group>";
+		};
 		1CF7DB041F7988DF008F303E /* NMRangeSlider */ = {
 			isa = PBXGroup;
 			children = (
@@ -1125,6 +1181,7 @@
 				247087B31A851774004C6B9B /* Icon-Small-50@2x.png */,
 				247087B41A851774004C6B9B /* Icon-Small.png */,
 				247087B51A851774004C6B9B /* Icon-Small@2x.png */,
+				1C3882BE2018844E00B0388B /* icon83-5@2x.png */,
 				247087B61A851774004C6B9B /* Icon-Small@3x.png */,
 				247087B71A851774004C6B9B /* Icon.png */,
 				247087B81A851774004C6B9B /* Icon@2x.png */,
@@ -1141,7 +1198,15 @@
 				2418FFC61A8406A600662547 /* Default-Portrait.png */,
 				2418FFC71A8406A600662547 /* Default-Portrait@2x.png */,
 				2418FFC81A8406A600662547 /* Screenshot-568h.png */,
+				1C3882C22018879400B0388B /* portrait-768-1024.png */,
+				1C3882CB2018AF8B00B0388B /* landcape-2208-1242.png */,
+				1C3882CC2018AF8B00B0388B /* landcape-2436-1125.png */,
+				1C3882CA2018AF8B00B0388B /* portrait-1125-2436.png */,
+				1C3882C42018890300B0388B /* landscape-2048-1536.png */,
+				1C3882C620188A4C00B0388B /* portrait-1536-2048.png */,
+				1C3882C02018863400B0388B /* landscape-1024-768.png */,
 				2418FFC91A8406A600662547 /* Screenshot-750x1334.png */,
+				1C3882C82018AB5900B0388B /* Screenshot@2x-1.png */,
 				2418FFCA1A8406A600662547 /* Screenshot-1242x2208.png */,
 				2418FFCB1A8406A600662547 /* Screenshot@2x.png */,
 			);
@@ -1154,6 +1219,8 @@
 				2418FE891A83F5D700662547 /* again.png */,
 				2418FE8A1A83F5D700662547 /* again@2x.png */,
 				2418FE8B1A83F5D700662547 /* backbtn.png */,
+				1C9850662036E3810076997B /* fft.png */,
+				1C9850652036E3810076997B /* fft@2x.png */,
 				2418FE8C1A83F5D700662547 /* backbtn@2x.png */,
 				2418FE8D1A83F5D700662547 /* bluetooth.png */,
 				2418FE8E1A83F5D700662547 /* bluetooth@2x.png */,
@@ -1196,7 +1263,6 @@
 				2418FEB11A83F5D700662547 /* TickMarksBig.png */,
 				2418FEB21A83F5D700662547 /* trash.png */,
 				2418FEB31A83F5D700662547 /* trash@2x.png */,
-				2418FEB41A83F5D700662547 /* unselected.png */,
 				2418FEB51A83F5D700662547 /* WaveImage.png */,
 				2418FEB61A83F5D700662547 /* WaveImage@2x.png */,
 			);
@@ -1206,16 +1272,11 @@
 		2418FEE51A83F6C800662547 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				1C15BBBE2035858E00C3881E /* DCMD */,
 				2418FEE61A83F6C800662547 /* BBChannel.h */,
 				2418FEE71A83F6C800662547 /* BBChannel.m */,
-				2418FEE81A83F6C800662547 /* BBDCMDExperiment.h */,
-				2418FEE91A83F6C800662547 /* BBDCMDExperiment.mm */,
-				2418FEEA1A83F6C800662547 /* BBDCMDTrial.h */,
-				2418FEEB1A83F6C800662547 /* BBDCMDTrial.mm */,
 				2418FEEC1A83F6C800662547 /* BBFile.h */,
 				2418FEED1A83F6C800662547 /* BBFile.mm */,
-				2418FEEE1A83F6C800662547 /* BBSignalEvent.h */,
-				2418FEEF1A83F6C800662547 /* BBSignalEvent.m */,
 				2418FEF01A83F6C800662547 /* BBSpike.h */,
 				2418FEF11A83F6C800662547 /* BBSpike.m */,
 				2418FEF21A83F6C800662547 /* BBSpikeTrain.h */,
@@ -1227,6 +1288,7 @@
 		2418FEFB1A83F79200662547 /* Audio */ = {
 			isa = PBXGroup;
 			children = (
+				2418FF0C1A83F79200662547 /* wav */,
 				2418FEFC1A83F79200662547 /* BBAnalysisManager.h */,
 				2418FEFD1A83F79200662547 /* BBAnalysisManager.mm */,
 				2418FEFE1A83F79200662547 /* BBAudioFileReader.h */,
@@ -1241,7 +1303,6 @@
 				2418FF091A83F79200662547 /* DSPAnalysis.mm */,
 				2418FF0A1A83F79200662547 /* DSPThreshold.h */,
 				2418FF0B1A83F79200662547 /* DSPThreshold.mm */,
-				2418FF0C1A83F79200662547 /* wav */,
 			);
 			path = Audio;
 			sourceTree = "<group>";
@@ -1258,16 +1319,15 @@
 		2418FF1A1A83FD3700662547 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				2418FF841A83FE1200662547 /* GLViews */,
-				2418FF651A83FDD500662547 /* Tables */,
-				2418FF401A83FDA100662547 /* Graphs */,
 				2418FF3C1A83FD6700662547 /* Components */,
-				2418FF1B1A83FD3700662547 /* BBBTChooserViewController.h */,
-				2418FF1C1A83FD3700662547 /* BBBTChooserViewController.m */,
-				2418FF1D1A83FD3700662547 /* DCMDExperimentViewController.h */,
-				2418FF1E1A83FD3700662547 /* DCMDExperimentViewController.mm */,
+				2418FF401A83FDA100662547 /* Graphs */,
+				2418FF651A83FDD500662547 /* Tables */,
+				2418FF841A83FE1200662547 /* GLViews */,
+				1C15BBBF2035862500C3881E /* DCMD */,
 				2418FF211A83FD3700662547 /* FFTViewController.h */,
 				2418FF221A83FD3700662547 /* FFTViewController.mm */,
+				1C3FC2FD203EE9B200C28680 /* FFTRecordingsViewController.h */,
+				1C3FC2FB203EE99600C28680 /* FFTRecordingsViewController.mm */,
 				2418FF231A83FD3700662547 /* FilterSettingsViewController.h */,
 				2418FF241A83FD3700662547 /* FilterSettingsViewController.mm */,
 				2418FF251A83FD3700662547 /* MyAppDelegate.h */,
@@ -1292,12 +1352,6 @@
 				1CF7DB041F7988DF008F303E /* NMRangeSlider */,
 				2418FF3D1A83FD6700662547 /* BYBHandleButton.h */,
 				2418FF3E1A83FD6700662547 /* BYBHandleButton.mm */,
-				249C24491A9E272500B81B1A /* BufferStateIndicator.h */,
-				249C244A1A9E272500B81B1A /* BufferStateIndicator.mm */,
-				241453CD1AB87B33001B5D92 /* RTSpikeSortingButton.h */,
-				241453CE1AB87B33001B5D92 /* RTSpikeSortingButton.mm */,
-				241453D01AB88916001B5D92 /* RTCancelButton.h */,
-				241453D11AB88916001B5D92 /* RTCancelButton.mm */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -1305,6 +1359,7 @@
 		2418FF401A83FDA100662547 /* Graphs */ = {
 			isa = PBXGroup;
 			children = (
+				1C15BBC22035870200C3881E /* DCMD */,
 				2418FF411A83FDA100662547 /* AutoGraphCollectionViewCell.h */,
 				2418FF421A83FDA100662547 /* AutoGraphCollectionViewCell.m */,
 				2418FF431A83FDA100662547 /* AutoGraphViewController.h */,
@@ -1317,10 +1372,6 @@
 				2418FF4A1A83FDA100662547 /* CrossCorrViewController.m */,
 				2418FF4B1A83FDA100662547 /* GraphCollectionViewCell.h */,
 				2418FF4C1A83FDA100662547 /* GraphCollectionViewCell.mm */,
-				2418FF4D1A83FDA100662547 /* GraphDCMDExperimentViewController.h */,
-				2418FF4E1A83FDA100662547 /* GraphDCMDExperimentViewController.mm */,
-				2418FF4F1A83FDA100662547 /* GraphDCMDTrialViewController.h */,
-				2418FF501A83FDA100662547 /* GraphDCMDTrialViewController.mm */,
 				2418FF511A83FDA100662547 /* GraphMatrixViewController.h */,
 				2418FF521A83FDA100662547 /* GraphMatrixViewController.mm */,
 				2418FF531A83FDA100662547 /* ISIGraphCollectionViewCell.h */,
@@ -1336,6 +1387,7 @@
 		2418FF651A83FDD500662547 /* Tables */ = {
 			isa = PBXGroup;
 			children = (
+				1C15BBC12035869500C3881E /* DCMD */,
 				2418FF661A83FDD500662547 /* BBChannelSelectionTableViewController.h */,
 				2418FF671A83FDD500662547 /* BBChannelSelectionTableViewController.m */,
 				2418FF681A83FDD500662547 /* BBFileActionViewControllerTBV.h */,
@@ -1344,24 +1396,12 @@
 				2418FF6D1A83FDD500662547 /* BBFileTableCell.m */,
 				2418FF6E1A83FDD500662547 /* BBFileViewControllerTBV.h */,
 				2418FF6F1A83FDD500662547 /* BBFileViewControllerTBV.mm */,
-				2418FF701A83FDD500662547 /* ExperimentSetupViewController.h */,
-				2418FF711A83FDD500662547 /* ExperimentSetupViewController.mm */,
-				2418FF721A83FDD500662547 /* ExperimentsMenuTableViewCell.h */,
-				2418FF731A83FDD500662547 /* ExperimentsMenuTableViewCell.m */,
-				2418FF741A83FDD500662547 /* ExperimentsViewController.h */,
-				2418FF751A83FDD500662547 /* ExperimentsViewController.mm */,
-				2418FF761A83FDD500662547 /* TrialActionsViewController.h */,
-				2418FF771A83FDD500662547 /* TrialActionsViewController.mm */,
-				2418FF781A83FDD500662547 /* TrialsDCMDTableViewController.h */,
-				2418FF791A83FDD500662547 /* TrialsDCMDTableViewController.mm */,
 				1CD05B9B1CFCFEF700A83727 /* BBFileDetailsTableViewController.h */,
 				1CD05B9C1CFCFEF700A83727 /* BBFileDetailsTableViewController.mm */,
 				1CD05BA11CFD02EE00A83727 /* BBFileDetailsViewCell.h */,
 				1CD05BA21CFD02EE00A83727 /* BBFileDetailsViewCell.m */,
-				1CD05BA31CFD02EE00A83727 /* BBFileDetailsViewCell.xib */,
 				1CD05BA61CFD398400A83727 /* BBCommentDetailsCell.h */,
 				1CD05BA71CFD398400A83727 /* BBCommentDetailsCell.m */,
-				1CD05BA81CFD398400A83727 /* BBCommentDetailsCell.xib */,
 			);
 			path = Tables;
 			sourceTree = "<group>";
@@ -1369,22 +1409,17 @@
 		2418FF841A83FE1200662547 /* GLViews */ = {
 			isa = PBXGroup;
 			children = (
+				1C15BBC02035864B00C3881E /* DCMD */,
 				2418FF851A83FE1200662547 /* AverageSpikeGraphView.h */,
 				2418FF861A83FE1200662547 /* AverageSpikeGraphView.mm */,
 				2418FF871A83FE1200662547 /* BYBGLView.h */,
 				2418FF881A83FE1200662547 /* BYBGLView.mm */,
-				2418FF891A83FE1200662547 /* DCMDGLView.h */,
-				2418FF8A1A83FE1200662547 /* DCMDGLView.mm */,
 				2418FF8B1A83FE1200662547 /* DynamicFFTCinderGLView.h */,
 				2418FF8C1A83FE1200662547 /* DynamicFFTCinderGLView.mm */,
-				2418FF8F1A83FE1200662547 /* ExperimentDCMDGraphView.h */,
-				2418FF901A83FE1200662547 /* ExperimentDCMDGraphView.mm */,
 				2418FF911A83FE1200662547 /* MultichannelCindeGLView.h */,
 				2418FF921A83FE1200662547 /* MultichannelCindeGLView.mm */,
 				2418FF931A83FE1200662547 /* SpikesCinderView.h */,
 				2418FF941A83FE1200662547 /* SpikesCinderView.mm */,
-				2418FF951A83FE1200662547 /* TrialDCMDGraphView.h */,
-				2418FF961A83FE1200662547 /* TrialDCMDGraphView.mm */,
 			);
 			path = GLViews;
 			sourceTree = "<group>";
@@ -1404,14 +1439,6 @@
 				241C8AF61B3201B800CEFCEE /* template.xml */,
 			);
 			path = templates;
-			sourceTree = "<group>";
-		};
-		FA9A665015BA3DC000CF1697 /* iPad */ = {
-			isa = PBXGroup;
-			children = (
-				FA9A665115BA3DC100CF1697 /* MainWindow-iPad.xib */,
-			);
-			name = iPad;
 			sourceTree = "<group>";
 		};
 		FADF26451596362E006C87BA = {
@@ -1483,7 +1510,7 @@
 				2459174219D316ED001CF8B4 /* Backyard Brains.entitlements */,
 				FADF266A1596362F006C87BA /* Spike Recorder-Info.plist */,
 				FADF266B1596362F006C87BA /* InfoPlist.strings */,
-				FADF266E1596362F006C87BA /* main.m */,
+				FADF266E1596362F006C87BA /* main.mm */,
 				FADF26701596362F006C87BA /* Spike Recorder-Prefix.pch */,
 				24E1430B1B61407B00DA32B9 /* Log.h */,
 				24E1430C1B61407B00DA32B9 /* Log.m */,
@@ -1494,33 +1521,14 @@
 		FADF268515963630006C87BA /* Boards */ = {
 			isa = PBXGroup;
 			children = (
-				FA9A665015BA3DC000CF1697 /* iPad */,
+				1C16E2DE20232E7C004E0C25 /* DCMD */,
+				1CD05BA81CFD398400A83727 /* BBCommentDetailsCell.xib */,
+				1CD05BA31CFD02EE00A83727 /* BBFileDetailsViewCell.xib */,
 				24DBA928197709DF00AEDE86 /* FFTViewController.xib */,
 				1CE5E0351F7453080016E7D9 /* ChooseFilterTypeViewController.xib */,
 				24E6D8A71A011EE0006C8CED /* FilterSettingsViewController.xib */,
-				245E26F819EAC01100EE298E /* BBBTChooserViewController.xib */,
-				242631B219C2042A00225E44 /* ECGViewController.xib */,
-				2454D8B019AE18D50056B71B /* AverageSpikeGraphViewController.xib */,
-				24EBC1AC1997852D001D3392 /* TrialsDCMDTableViewController.xib */,
-				24BB8363199E7D0C00C12932 /* GraphDCMDTrialViewController.xib */,
-				2454D8A819AD02010056B71B /* GraphDCMDExperimentViewController.xib */,
-				245B1845199172D200943684 /* ExperimentsViewController.xib */,
-				2489D81E1992284500C00A9C /* ExperimentSetupViewController.xib */,
-				245B1840199135ED00943684 /* ExperimentsMenuTableViewCell.xib */,
-				2489D8231993ABCA00C00A9C /* DCMDExperimentViewController.xib */,
-				24EBC1B11997DD21001D3392 /* TrialActionsViewController.xib */,
-				24507B51196C333C00E27BD2 /* AutoGraphViewController.xib */,
-				249013A2196AB45200E5EF91 /* ISIGraphViewController.xib */,
-				2490139A1966CD5E00E5EF91 /* GraphMatrixViewController.xib */,
-				240D8065190E98F6009F9AEA /* CrossCorrViewController.xib */,
-				249A24661906AC59005F5F03 /* ISIHistogramViewController.xib */,
-				249A246119058465005F5F03 /* AutocorrelationGraphViewController.xib */,
 				FA905A4B15AA8CF00013688B /* BBFileTableCell.xib */,
-				FADF268615963630006C87BA /* MainWindow.xib */,
-				FA35CEFD15ABBADB0082FBC3 /* PlaybackViewController.xib */,
-				FAA27C1D15AD01CA00DCC60B /* ThresholdViewController.xib */,
-				2474366A18F6DBFF0044E11D /* SpikesViewController.xib */,
-				FADF268815963630006C87BA /* ViewAndRecordViewController.xib */,
+				1C3882F5201B58D500B0388B /* MainStoryboard.storyboard */,
 			);
 			name = Boards;
 			sourceTree = "<group>";
@@ -1555,8 +1563,8 @@
 		FADF26471596362E006C87BA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0500;
-				ORGANIZATIONNAME = "Datta Lab, Harvard University";
+				LastUpgradeCheck = 0920;
+				ORGANIZATIONNAME = BackyardBrains;
 				TargetAttributes = {
 					FADF264F1596362F006C87BA = {
 						DevelopmentTeam = MLGRKD657P;
@@ -1606,9 +1614,7 @@
 				247087BC1A851774004C6B9B /* Icon-60@3x.png in Resources */,
 				2418FED81A83F5D700662547 /* StimSettings.png in Resources */,
 				247087C31A851774004C6B9B /* Icon-Small-40@3x.png in Resources */,
-				FADF268715963630006C87BA /* MainWindow.xib in Resources */,
-				FADF268915963630006C87BA /* ViewAndRecordViewController.xib in Resources */,
-				249A246319058465005F5F03 /* AutocorrelationGraphViewController.xib in Resources */,
+				1C3882CD2018AF8B00B0388B /* portrait-1125-2436.png in Resources */,
 				247087BF1A851774004C6B9B /* Icon-76.png in Resources */,
 				2418FED91A83F5D700662547 /* StimSettings@2x.png in Resources */,
 				1CF7DB381F7988DF008F303E /* slider-metal-handle.png in Resources */,
@@ -1623,12 +1629,15 @@
 				2454D8AA19AD02010056B71B /* GraphDCMDExperimentViewController.xib in Resources */,
 				2418FFCD1A8406A600662547 /* Default-Landcape@2x.png in Resources */,
 				2418FFD21A8406A600662547 /* Screenshot-1242x2208.png in Resources */,
-				249A24681906AC59005F5F03 /* ISIHistogramViewController.xib in Resources */,
 				24EBC1B31997DD21001D3392 /* TrialActionsViewController.xib in Resources */,
+				1C9850682036E3830076997B /* fft.png in Resources */,
 				2418FEC31A83F5D700662547 /* ecg.png in Resources */,
+				1C3882C52018890300B0388B /* landscape-2048-1536.png in Resources */,
+				1C3882CE2018AF8B00B0388B /* landcape-2208-1242.png in Resources */,
 				1CF7DB361F7988DF008F303E /* slider-metal-handle-highlighted.png in Resources */,
+				1C3882C92018AB5900B0388B /* Screenshot@2x-1.png in Resources */,
 				241C8AF71B3201B800CEFCEE /* template.xml in Resources */,
-				FA35CEFF15ABBADC0082FBC3 /* PlaybackViewController.xib in Resources */,
+				1C3882C12018863400B0388B /* landscape-1024-768.png in Resources */,
 				247087C61A851774004C6B9B /* Icon-Small.png in Resources */,
 				245B1847199172D200943684 /* ExperimentsViewController.xib in Resources */,
 				247087BA1A851774004C6B9B /* Icon-60.png in Resources */,
@@ -1637,13 +1646,10 @@
 				1CF7DB3C1F7988DF008F303E /* slider-metal-trackBackground.png in Resources */,
 				2418FFCC1A8406A600662547 /* Default-Landcape.png in Resources */,
 				1CE5E02B1F742E730016E7D9 /* configIcon@2x.png in Resources */,
-				2474366B18F6DBFF0044E11D /* SpikesViewController.xib in Resources */,
 				2418FEB81A83F5D700662547 /* again@2x.png in Resources */,
-				FAA27C1E15AD01CA00DCC60B /* ThresholdViewController.xib in Resources */,
 				1CF7DB371F7988DF008F303E /* slider-metal-handle-highlighted@2x.png in Resources */,
 				2418FFD31A8406A600662547 /* Screenshot@2x.png in Resources */,
 				247087BB1A851774004C6B9B /* Icon-60@2x.png in Resources */,
-				FA9A665215BA3DC100CF1697 /* MainWindow-iPad.xib in Resources */,
 				2418FEC41A83F5D700662547 /* ecg@2x.png in Resources */,
 				24E6D8A91A011EE0006C8CED /* FilterSettingsViewController.xib in Resources */,
 				FA9A665B15BB19B000CF1697 /* SettingsDefaults.plist in Resources */,
@@ -1653,16 +1659,16 @@
 				2418FEDD1A83F5D700662547 /* ThresholdImage@2x.png in Resources */,
 				2418FEBC1A83F5D700662547 /* bluetooth@2x.png in Resources */,
 				1CF7DB331F7988DF008F303E /* slider-default7-trackBackground@2x.png in Resources */,
+				1C9850672036E3830076997B /* fft@2x.png in Resources */,
 				1CE5E0371F7453080016E7D9 /* ChooseFilterTypeViewController.xib in Resources */,
 				2418FFD11A8406A600662547 /* Screenshot-750x1334.png in Resources */,
 				2418FEBF1A83F5D700662547 /* checkmark.png in Resources */,
 				1CD05BA51CFD02EE00A83727 /* BBFileDetailsViewCell.xib in Resources */,
 				2418FEDC1A83F5D700662547 /* ThresholdImage.png in Resources */,
 				24DBA92A197709DF00AEDE86 /* FFTViewController.xib in Resources */,
-				240D8067190E98F6009F9AEA /* CrossCorrViewController.xib in Resources */,
 				247087C21A851774004C6B9B /* Icon-Small-40@2x.png in Resources */,
+				1C3882C32018879400B0388B /* portrait-768-1024.png in Resources */,
 				2418FEBB1A83F5D700662547 /* bluetooth.png in Resources */,
-				242631B419C2042A00225E44 /* ECGViewController.xib in Resources */,
 				247087C51A851774004C6B9B /* Icon-Small-50@2x.png in Resources */,
 				1CF7DB321F7988DF008F303E /* slider-default7-trackBackground.png in Resources */,
 				247087C91A851774004C6B9B /* Icon.png in Resources */,
@@ -1681,9 +1687,10 @@
 				2418FEE31A83F5D700662547 /* WaveImage.png in Resources */,
 				2418FEE41A83F5D700662547 /* WaveImage@2x.png in Resources */,
 				2418FECD1A83F5D700662547 /* Pause.png in Resources */,
+				1C3882BF2018844E00B0388B /* icon83-5@2x.png in Resources */,
 				2418FFCF1A8406A600662547 /* Default-Portrait@2x.png in Resources */,
-				249013A4196AB45200E5EF91 /* ISIGraphViewController.xib in Resources */,
 				2418FEB71A83F5D700662547 /* again.png in Resources */,
+				1C3882F6201B58D500B0388B /* MainStoryboard.storyboard in Resources */,
 				247087BD1A851774004C6B9B /* Icon-72.png in Resources */,
 				2418FEC71A83F5D700662547 /* hasbeat.png in Resources */,
 				1CF7DB301F7988DF008F303E /* slider-default7-track.png in Resources */,
@@ -1694,7 +1701,6 @@
 				2418FEC21A83F5D700662547 /* dropbox@2x.png in Resources */,
 				2418FED61A83F5D700662547 /* spectrum.png in Resources */,
 				2418FEB91A83F5D700662547 /* backbtn.png in Resources */,
-				2490139C1966CD5E00E5EF91 /* GraphMatrixViewController.xib in Resources */,
 				2418FECF1A83F5D700662547 /* Play.png in Resources */,
 				2418FEBE1A83F5D700662547 /* charticon@2x.png in Resources */,
 				2489D8201992284500C00A9C /* ExperimentSetupViewController.xib in Resources */,
@@ -1702,22 +1708,20 @@
 				2418FECB1A83F5D700662547 /* nobeat.png in Resources */,
 				2418FEC81A83F5D700662547 /* hasbeat@2x.png in Resources */,
 				1CF7DB3B1F7988DF008F303E /* slider-metal-track@2x.png in Resources */,
-				2454D8B219AE18D50056B71B /* AverageSpikeGraphViewController.xib in Resources */,
-				2418FEE21A83F5D700662547 /* unselected.png in Resources */,
 				245B1842199135ED00943684 /* ExperimentsMenuTableViewCell.xib in Resources */,
 				2418FEC01A83F5D700662547 /* checkmark@2x.png in Resources */,
 				2418FED11A83F5D700662547 /* Record.png in Resources */,
 				2418FEBD1A83F5D700662547 /* charticon.png in Resources */,
 				2418FEC51A83F5D700662547 /* FileNeuron.png in Resources */,
 				2418FEBA1A83F5D700662547 /* backbtn@2x.png in Resources */,
-				245E26FA19EAC01100EE298E /* BBBTChooserViewController.xib in Resources */,
+				1C3882CF2018AF8B00B0388B /* landcape-2436-1125.png in Resources */,
 				2489D8251993ABCA00C00A9C /* DCMDExperimentViewController.xib in Resources */,
 				2418FED41A83F5D700662547 /* settings.png in Resources */,
 				1CF7DB391F7988DF008F303E /* slider-metal-handle@2x.png in Resources */,
 				24EBC1AE1997852D001D3392 /* TrialsDCMDTableViewController.xib in Resources */,
 				2418FECA1A83F5D700662547 /* inputicon@2x.png in Resources */,
+				1C3882C720188A4C00B0388B /* portrait-1536-2048.png in Resources */,
 				247087C71A851774004C6B9B /* Icon-Small@2x.png in Resources */,
-				24507B53196C333C00E27BD2 /* AutoGraphViewController.xib in Resources */,
 				1CF7DB3A1F7988DF008F303E /* slider-metal-track.png in Resources */,
 				2418FED71A83F5D700662547 /* spectrum@2x.png in Resources */,
 			);
@@ -1780,7 +1784,6 @@
 				2418FEF71A83F6C800662547 /* BBFile.mm in Sources */,
 				2418FEF41A83F6C800662547 /* BBChannel.m in Sources */,
 				2418FF101A83F79200662547 /* BBAudioFileReader.mm in Sources */,
-				2418FEF81A83F6C800662547 /* BBSignalEvent.m in Sources */,
 				2418FF9C1A83FE1200662547 /* ExperimentDCMDGraphView.mm in Sources */,
 				2418FF7D1A83FDD500662547 /* BBFileTableCell.m in Sources */,
 				2418FF3A1A83FD3700662547 /* ThresholdViewController.mm in Sources */,
@@ -1793,7 +1796,6 @@
 				2418FEF51A83F6C800662547 /* BBDCMDExperiment.mm in Sources */,
 				2407C4381AE573FD005D671B /* OBSlider.m in Sources */,
 				2418FF341A83FD3700662547 /* FFTViewController.mm in Sources */,
-				2418FF311A83FD3700662547 /* BBBTChooserViewController.m in Sources */,
 				2418FF5A1A83FDA100662547 /* AutoGraphViewController.mm in Sources */,
 				2418FF611A83FDA100662547 /* GraphMatrixViewController.mm in Sources */,
 				2418FF9E1A83FE1200662547 /* SpikesCinderView.mm in Sources */,
@@ -1802,7 +1804,7 @@
 				2418FF9F1A83FE1200662547 /* TrialDCMDGraphView.mm in Sources */,
 				2418FF991A83FE1200662547 /* DCMDGLView.mm in Sources */,
 				2418FF5E1A83FDA100662547 /* GraphCollectionViewCell.mm in Sources */,
-				FADF266F1596362F006C87BA /* main.m in Sources */,
+				FADF266F1596362F006C87BA /* main.mm in Sources */,
 				2418FEF91A83F6C800662547 /* BBSpike.m in Sources */,
 				2418FF7A1A83FDD500662547 /* BBChannelSelectionTableViewController.m in Sources */,
 				2418FF361A83FD3700662547 /* MyAppDelegate.mm in Sources */,
@@ -1810,6 +1812,7 @@
 				2418FF621A83FDA100662547 /* ISIGraphCollectionViewCell.m in Sources */,
 				2418FF971A83FE1200662547 /* AverageSpikeGraphView.mm in Sources */,
 				2418FF601A83FDA100662547 /* GraphDCMDTrialViewController.mm in Sources */,
+				1C3FC2FC203EE99600C28680 /* FFTRecordingsViewController.mm in Sources */,
 				2418FF3F1A83FD6700662547 /* BYBHandleButton.mm in Sources */,
 				2418FF801A83FDD500662547 /* ExperimentsMenuTableViewCell.m in Sources */,
 				2418FF121A83F79200662547 /* BBAudioManager.mm in Sources */,
@@ -1847,11 +1850,9 @@
 				241C8AF41B31EEEA00CEFCEE /* tinyxml2.mm in Sources */,
 				247087721A85103D004C6B9B /* FPPopoverController.m in Sources */,
 				247087741A85103D004C6B9B /* FPPopoverView.m in Sources */,
-				241453D21AB88916001B5D92 /* RTCancelButton.mm in Sources */,
 				247087761A85103D004C6B9B /* FPTouchView.m in Sources */,
 				247087651A85102F004C6B9B /* NVHighShelvingFilter.m in Sources */,
 				2470876F1A851035004C6B9B /* NVDSP.mm in Sources */,
-				241453CF1AB87B33001B5D92 /* RTSpikeSortingButton.mm in Sources */,
 				247087671A85102F004C6B9B /* NVLowpassFilter.m in Sources */,
 				247087691A85102F004C6B9B /* NVLowShelvingFilter.m in Sources */,
 				2470876B1A85102F004C6B9B /* NVNotchFilter.m in Sources */,
@@ -1867,7 +1868,6 @@
 				2418FF591A83FDA100662547 /* AutoGraphCollectionViewCell.m in Sources */,
 				2418FF811A83FDD500662547 /* ExperimentsViewController.mm in Sources */,
 				2418FF0F1A83F79200662547 /* BBAnalysisManager.mm in Sources */,
-				249C244B1A9E272500B81B1A /* BufferStateIndicator.mm in Sources */,
 				2418FF821A83FDD500662547 /* TrialActionsViewController.mm in Sources */,
 				2418FF5C1A83FDA100662547 /* ColumnHeaderCollectionViewCell.m in Sources */,
 				2418FF351A83FD3700662547 /* FilterSettingsViewController.mm in Sources */,
@@ -1905,6 +1905,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -1917,7 +1918,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 			};
@@ -1934,7 +1935,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
@@ -1946,7 +1947,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-1";
 				CINDER_PATH = /Users/stanislavmircic/Desktop/Projects/Backup/Libraries/cinder_0.8.6_mac;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -1974,7 +1975,7 @@
 					"$(CINDER_PATH)/boost",
 				);
 				INFOPLIST_FILE = "src/Spike Recorder-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(CINDER_PATH)/lib",
@@ -1984,16 +1985,21 @@
 					"$(PROJECT_DIR)/libs/CorePlot",
 				);
 				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-Wno-inconsistent-missing-override",
+				);
 				OTHER_LDFLAGS = (
 					"-lz",
 					"$(CINDER_PATH)/lib/libcinder-iphone_d.a",
 					"-ObjC",
 					"$(CINDER_PATH)/lib/libcinder-iphone-sim_d.a",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.backyardbrains.Backyard-Brains";
 				PRODUCT_NAME = "Spike Recorder";
 				PROVISIONING_PROFILE = "";
 				RUN_CLANG_STATIC_ANALYZER = YES;
-				SDKROOT = iphoneos9.3;
+				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "$(CINDER_PATH)/include";
 				VALID_ARCHS = "armv7 arm64 armv7s ";
@@ -2005,7 +2011,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-1";
 				CINDER_PATH = /Users/stanislavmircic/Desktop/Projects/Backup/Libraries/cinder_0.8.6_mac;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -2035,7 +2041,7 @@
 					"$(CINDER_PATH)/boost",
 				);
 				INFOPLIST_FILE = "src/Spike Recorder-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(CINDER_PATH)/lib",
@@ -2045,18 +2051,23 @@
 					"$(PROJECT_DIR)/libs/CorePlot",
 				);
 				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-Wno-inconsistent-missing-override",
+				);
 				OTHER_LDFLAGS = (
 					"-lz",
 					"$(CINDER_PATH)/lib/libcinder-iphone-sim.a",
 					"$(CINDER_PATH)/lib/libcinder-iphone.a",
 					"-ObjC",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.backyardbrains.Backyard-Brains";
 				PRODUCT_NAME = "Spike Recorder";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				RUN_CLANG_STATIC_ANALYZER = YES;
-				SDKROOT = iphoneos9.3;
+				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "$(CINDER_PATH)/include";
 				VALID_ARCHS = "armv7 arm64 armv7s ";

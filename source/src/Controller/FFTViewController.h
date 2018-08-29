@@ -12,12 +12,18 @@
 #import "FPPopoverController.h"
 #import "BBChannelSelectionTableViewController.h"
 
-@interface FFTViewController : CCGLTouchViewController <FPPopoverControllerDelegate,BBSelectionTableDelegateProtocol>
+@interface FFTViewController : CCGLTouchViewController <FPPopoverControllerDelegate,BBSelectionTableDelegateProtocol, DynamicFFTProtocolDelegate>
 {
     DynamicFFTCinderGLView *glView;
     FPPopoverController * popover;
 }
 @property (retain, nonatomic) IBOutlet UIButton *channelBtn;
+@property (retain, nonatomic) IBOutlet UIButton *backButton;
 - (IBAction)channelBtnClick:(id)sender;
+- (IBAction)backButtonPressed:(id)sender;
+
+
+//DynamicFFTProtocolDelegate functions
+-(void) glViewTouched;
 
 @end

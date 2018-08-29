@@ -18,7 +18,7 @@
     [self setNeedsDisplay];
 }
 
-- (void)drawRect:(CGRect)rect {
+-(void) drawRect:(CGRect)rect {
 
     currentColor = [BYBGLView getSpikeTrainColorWithIndex:0 transparency:1.0f];
     

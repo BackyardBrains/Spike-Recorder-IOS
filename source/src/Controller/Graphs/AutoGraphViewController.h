@@ -15,6 +15,8 @@
 
 @property (retain, nonatomic) IBOutlet UICollectionView *collectionView;
 @property (retain, nonatomic) IBOutlet CPTGraphHostingView *hostView;
+@property (retain, nonatomic) IBOutlet NSLayoutConstraint *hostViewTrailingConstraint;
+@property (retain, nonatomic) IBOutlet NSLayoutConstraint *hostViewBottomConstraint;
 
 
 -(void) setFileForGraph:(BBFile *) file;

@@ -1,54 +1,54 @@
 //
-//  MyViewController.mm
-//  CCGLTouchBasic example
+// BackyardBrains
 //
-//  Created by Matthieu Savary on 09/09/11.
-//  Copyright (c) 2011 SMALLAB.ORG. All rights reserved.
+// ViewAndRecordViewController.mm
+//
+// View and Record controller used for real time view and recording
 //
 //  More info on the CCGLTouch project >> http://www.smallab.org/code/ccgl-touch/
-//  License & disclaimer >> see license.txt file included in the distribution package
 //
 
 #import "ViewAndRecordViewController.h"
-//#import "BBBTManager.h"
-#import "BBBTChooserViewController.h"
+#import "FFTViewController.h"
 
-
-
-
-@interface ViewAndRecordViewController() {
-    dispatch_source_t callbackTimer;
+@interface ViewAndRecordViewController()
+{
     BBFile *aFile;
     dispatch_source_t _timer;
     float recordingTime;
-    BOOL rawSelected;
 }
-
 @end
 
 @implementation ViewAndRecordViewController
-@synthesize slider;
+
+#pragma mark - Components and variables
+
 @synthesize recordButton;
-@synthesize bufferStateIndicator;
-@synthesize cancelRTViewButton;
 @synthesize glView;
 @synthesize configButton;
+@synthesize stopButton;
+@synthesize fftButton;
 
+#pragma mark - View management
 
+- (void)viewDidLoad
+{
+    NSLog(@"\n View and Record - viewDidLoad\n\n");
+    [super viewDidLoad];
+}
 
-
-
-
+- (void)viewDidUnload {
+    
+    [self setRecordButton:nil];
+    [self setStopButton:nil];
+    [self setConfigButton:nil];
+    [super viewDidUnload];
+}
 
 - (void)viewWillAppear:(BOOL)animated
 {
     
-  
-  
-    
     [[BBAudioManager bbAudioManager] startMonitoring];
-    
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 
     if(glView)
     {
@@ -58,51 +58,40 @@
     {
         glView = [[MultichannelCindeGLView alloc] initWithFrame:self.view.frame];
         [self.view addSubview:glView];
-        [self.view sendSubviewToBack:glView];
+        [self.view sendSubviewToBack:glView];        
+        [self initConstrainsForGLView];
     }
     [self setGLView:glView];
     glView.mode = MultichannelGLViewModeView;
     
     NSLog(@"ViewAndRecord - set number of channesl");
- 
     
     [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels ] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
     
-
     NSLog(@"ViewAndRecord - start animation");
-	[glView startAnimation];
+	
     
     UITapGestureRecognizer *doubleTap = [[[UITapGestureRecognizer alloc] initWithTarget: self action:@selector(autorangeView)] autorelease];
     doubleTap.numberOfTapsRequired = 2;
     [glView addGestureRecognizer:doubleTap];
-    
-    // set our view controller's prop that will hold a pointer to our newly created CCGLTouchView
-    
-    
+ 
     NSLog(@"ViewAndRecord - set active channels");
         
-        //Set all channels to active
-        UInt8 configurationOfChannels = 0;
-        int tempMask = 1;
-        for(int i=0;i<[[BBAudioManager bbAudioManager] sourceNumberOfChannels];i++)
-        {
-            configurationOfChannels = configurationOfChannels | (tempMask<<i);
-        }
-        glView.channelsConfiguration = configurationOfChannels;
-        
-    //    [self.btButton setImage:[UIImage imageNamed:@"bluetooth.png"] forState:UIControlStateNormal];
-    [self.bufferStateIndicator setHidden:YES];
-    [self.cancelRTViewButton setHidden:YES];
-
+    //Set all channels to active
+    UInt8 configurationOfChannels = 0;
+    int tempMask = 1;
+    for(int i=0;i<[[BBAudioManager bbAudioManager] sourceNumberOfChannels];i++)
+    {
+        configurationOfChannels = configurationOfChannels | (tempMask<<i);
+    }
+    glView.channelsConfiguration = configurationOfChannels;
 
     
     NSLog(@"ViewAndRecord -add notifications");
 
-   // [self detectBluetooth];
-   // [self.rtSpikeViewButton objectColor:[BYBGLView getSpikeTrainColorWithIndex:4 transparency:1.0f]];
-   // [self.rtSpikeViewButton changeCurrentState:HANDLE_STATE];
-   // [self.cancelRTViewButton setHidden:YES];
-    [glView setRtConfigurationActive:NO];
+    CGRect stopButtonRect = CGRectMake(self.stopButton.frame.origin.x, -self.stopButton.frame.size.height, self.stopButton.frame.size.width, self.stopButton.frame.size.height);
+    [self.stopButton setFrame:stopButtonRect];
+    
     [super viewWillAppear:animated];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reSetupScreen) name:RESETUP_SCREEN_NOTIFICATION object:nil];
@@ -111,7 +100,6 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
     
     [glView startAnimation];
-    
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -122,49 +110,20 @@
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-   
     NSLog(@"\n\n view WillDisappear View And Record\n\n");
     [glView stopAnimation];
-   // [self tapOnCancelRTButton];
     NSLog(@"Stopping regular view");
     [glView saveSettings:FALSE]; // save non-threshold settings
 
-
-
-   [[NSNotificationCenter defaultCenter] removeObserver:self name:RESETUP_SCREEN_NOTIFICATION object:nil];
-
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:RESETUP_SCREEN_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillTerminateNotification object:nil];
-
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillResignActiveNotification object:nil];
-
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
     [super viewWillDisappear:animated];
 }
 
-- (void)viewDidLoad
-{
-    NSLog(@"\n View and Record - viewDidLoad\n\n");
-    // Listen for going down
 
-
-    //Add handler for start of RT view
-    UITapGestureRecognizer *singleFingerTap =
-    [[UITapGestureRecognizer alloc] initWithTarget:self
-                                            action:@selector(tapOnRTButton)];
-    [self.rtSpikeViewButton addGestureRecognizer:singleFingerTap];
-    [singleFingerTap release];
-    
-    //Add handler for end of RT view
-    UITapGestureRecognizer *cancelFingerTap =
-    [[UITapGestureRecognizer alloc] initWithTarget:self
-                                            action:@selector(tapOnCancelRTButton)];
-    [self.cancelRTViewButton addGestureRecognizer:cancelFingerTap];
-    [cancelFingerTap release];
-    [super viewDidLoad];
-    
- 
-}
-
+#pragma mark - App management
 
 -(void) applicationDidBecomeActive:(UIApplication *)application {
     NSLog(@"\n\nApp will become active - ViewRecord\n\n");
@@ -179,17 +138,56 @@
      [glView stopAnimation];
 }
 
-
 - (void)applicationWillTerminate:(UIApplication *)application {
     NSLog(@"Terminating...");
     [glView saveSettings:FALSE];
     [glView stopAnimation];
 }
 
+
+#pragma mark - Init/Reset
+
+-(void) reSetupScreen
+{
+    NSLog(@"Resetup screen - View And Record View Controller");
+    if(glView)
+    {
+        [glView stopAnimation];
+        
+    }
+    else
+    {
+        glView = [[MultichannelCindeGLView alloc] initWithFrame:self.view.frame];
+        [self.view addSubview:glView];
+        [self.view sendSubviewToBack:glView];
+        [self initConstrainsForGLView];
+    }
+    
+    [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
+    glView.mode = MultichannelGLViewModeView;
+    
+    
+    UITapGestureRecognizer *doubleTap = [[[UITapGestureRecognizer alloc] initWithTarget: self action:@selector(autorangeView)] autorelease];
+    doubleTap.numberOfTapsRequired = 2;
+    [glView addGestureRecognizer:doubleTap];
+    
+    // set our view controller's prop that will hold a pointer to our newly created CCGLTouchView
+    [self setGLView:glView];
+    [glView startAnimation];
+    
+    //Set all channels to active
+    UInt8 configurationOfChannels = 0;
+    int tempMask = 1;
+    for(int i=0;i<[[BBAudioManager bbAudioManager] sourceNumberOfChannels];i++)
+    {
+        configurationOfChannels = configurationOfChannels | (tempMask<<i);
+    }
+    glView.channelsConfiguration = configurationOfChannels;
+}
+
 - (void)setGLView:(MultichannelCindeGLView *)view
 {
     glView = view;
-    callbackTimer = nil;
 }
 
 -(void) autorangeView
@@ -197,14 +195,32 @@
     [glView autorangeSelectedChannel];
 }
 
+-(void) initConstrainsForGLView
+{
+    if(glView)
+    {
+        if (@available(iOS 11, *))
+        {
+            glView.translatesAutoresizingMaskIntoConstraints = NO;
+            
+            UILayoutGuide * guide = self.view.safeAreaLayoutGuide;
+            
+            [self.glView.leadingAnchor constraintEqualToAnchor:guide.leadingAnchor].active = YES;
+            [self.glView.trailingAnchor constraintEqualToAnchor:guide.trailingAnchor].active = YES;
+            [self.glView.topAnchor constraintEqualToAnchor:guide.topAnchor].active = YES;
+            [self.glView.bottomAnchor constraintEqualToAnchor:guide.bottomAnchor].active = YES;
+            // Refresh myView and/or main view
+            [self.view layoutIfNeeded];
+        }
+    }
+}
+
 
 #pragma mark - MultichannelGLViewDelegate function
 - (float) fetchDataToDisplay:(float *)data numFrames:(UInt32)numFrames whichChannel:(UInt32)whichChannel
 {
-    
     //Fetch data and get time of data as precise as posible. Used to sichronize
     //display of waveform and spike marks
-   
     return [[BBAudioManager bbAudioManager] fetchAudio:data numFrames:numFrames whichChannel:whichChannel stride:1];
 }
 
@@ -219,21 +235,15 @@
 //
 - (void) removeChannel:(int) chanelIndex
 {
-
-    if([[BBAudioManager bbAudioManager] btOn])
-    {
-        [self removeBTChannel:chanelIndex];
-    }
+    //used to add remove BT multichannel
 }
 
-
+//
+// Add channel
+//
 - (void) addChannel:(int) chanelIndex
 {
-    
-    if([[BBAudioManager bbAudioManager] btOn])
-    {
-        [self addBTChannel:chanelIndex];
-    }
+    //used to add remove BT multichannel
 }
 
 
@@ -245,7 +255,29 @@
 
 - (IBAction)startRecording:(id)sender
 {
-    CGRect stopButtonRect = CGRectMake(self.stopButton.frame.origin.x, 0.0f, self.stopButton.frame.size.width, self.stopButton.frame.size.height);
+    CGRect stopButtonRect;
+    
+    
+    if (@available(iOS 11.0, *))
+    {
+        
+        float originY = self.recordButton.bounds.origin.y;
+        float heightButton = self.recordButton.bounds.size.height;
+        float safeTop = self.view.safeAreaInsets.top;
+        stopButtonRect = CGRectMake(
+                                    0,
+                                    0,
+                                    self.stopButton.bounds.size.width,
+                                    safeTop+originY+heightButton+2
+                                    );
+        
+    }
+    else
+    {
+        stopButtonRect = CGRectMake(self.stopButton.frame.origin.x, 0.0f, self.stopButton.frame.size.width, self.stopButton.frame.size.height);
+        
+    }
+    
     self.stopButton.titleLabel.numberOfLines = 2; // Dynamic number of lines
     self.stopButton.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
     self.stopButton.titleLabel.textAlignment = NSTextAlignmentCenter;
@@ -265,8 +297,6 @@
             double minutes = fmod(trunc(duration / 60.0), 60.0);
             //update label
             [self.stopButton setTitle:  [NSString stringWithFormat:@"Tap to Stop Recording \n%02.0f:%04.1f", minutes, seconds] forState: UIControlStateNormal];
-           
-        
         });
         dispatch_resume(_timer);
     }
@@ -299,7 +329,6 @@
         [bbAudioManager startRecording:[aFile fileURL]];
         recordingTime = 0.0f;
     }
-
 }
 
 - (IBAction)stopRecording:(id)sender {
@@ -325,24 +354,26 @@
     [aFile release];
 }
 
-- (void)timerTick{
-    
-    
-}
-
-
 #pragma mark - Config button stuff
 
 -(void) setVisibilityForConfigButton:(BOOL) setVisible
 {
     self.configButton.hidden = !setVisible;
-    //self.configButton.hidden  = NO;
+    
+    int filterSettings = [[BBAudioManager bbAudioManager] currentFilterSettings];
+    if(filterSettings == FILTER_SETTINGS_EEG || filterSettings == FILTER_SETTINGS_RAW || filterSettings == FILTER_SETTINGS_CUSTOM)
+    {
+        self.fftButton.hidden = !setVisible;
+    }
+    else
+    {
+        self.fftButton.hidden = YES;
+    }
+    //self.fftButton.hidden = NO;//debug
 }
 
 - (IBAction)configButtonPressed:(id)sender {
     // grab the view controller we want to show
-    //UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-    //UIViewController *controller = [storyboard instantiateViewControllerWithIdentifier:@"Pop"];
     ChooseFilterTypeViewController *controller = [[ChooseFilterTypeViewController alloc] initWithNibName:@"ChooseFilterTypeViewController" bundle:nil];
     // present the controller
     // on iPad, this will be a Popover
@@ -351,10 +382,9 @@
     controller.preferredContentSize = CGSizeMake(200, 275);
     controller.delegate = self;
     
-    
     // configure the Popover presentation controller
     popController = [controller popoverPresentationController];
-    
+    popController.backgroundColor = [UIColor whiteColor];
     popController.delegate = self;
     
     popController.sourceView = self.configButton;
@@ -370,9 +400,7 @@
         popController.sourceRect =  CGRectMake(self.configButton.bounds.origin.x, self.configButton.bounds.origin.y, configButton.bounds.size.width, configButton.bounds.size.height);
     }
     
-    
     // in case we don't have a bar button as reference
-    
     [self presentViewController:controller animated:YES completion:nil];
 }
 
@@ -381,7 +409,6 @@
           willRepositionPopoverToRect:(inout CGRect *)rect
                                inView:(inout UIView * _Nonnull *)view
 {
-
     if(popoverPresentationController == popController)
     {
             if (UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation) && (!( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )))
@@ -389,7 +416,6 @@
                 popController.permittedArrowDirections = UIPopoverArrowDirectionLeft;
                 
                 popController.sourceRect =  CGRectMake(self.configButton.bounds.origin.x, 0, configButton.bounds.size.width, configButton.bounds.size.height);
-                
             }
             else
             {
@@ -397,8 +423,6 @@
                 popController.sourceRect =  CGRectMake(self.configButton.bounds.origin.x, self.configButton.bounds.origin.y, configButton.bounds.size.width, configButton.bounds.size.height);
             }
     }
-
-
 }
 
 
@@ -416,20 +440,14 @@
     }
 }
 
-
-
- - (UIModalPresentationStyle)adaptivePresentationStyleForPresentationController:(UIPresentationController *)controller
- {
-     return UIModalPresentationNone;
- }
- 
-
+- (UIModalPresentationStyle)adaptivePresentationStyleForPresentationController:(UIPresentationController *)controller
+{
+ return UIModalPresentationNone;
+}
 
 - (void)endSelectionOfFilters:(int) filterType
 {
     [self dismissViewControllerAnimated:YES completion:^void () {
-    
-    
         if(filterType == FILTER_SETTINGS_CUSTOM)
         {
             if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
@@ -461,397 +479,41 @@
             }
         }
     }];
-    
-
-}
-
-
-
-#pragma mark - BT stuff
-
-/*- (void)detectBluetooth
-{
-    if(!testBluetoothManager)
-    {
-        // Put on main queue so we can call UIAlertView from delegate callbacks.
-        testBluetoothManager = [[[CBCentralManager alloc] initWithDelegate:self queue:dispatch_get_main_queue()] autorelease];
-    }
-    [self centralManagerDidUpdateState:testBluetoothManager]; // Show initial state
-}
-
-- (void)centralManagerDidUpdateState:(CBCentralManager *)central
-{
-    NSString *stateString = nil;
-    switch(testBluetoothManager.state)
-    {
-        case CBCentralManagerStateResetting: stateString = @"The connection with the system service was momentarily lost, update imminent."; break;
-        case CBCentralManagerStateUnsupported: stateString = @"The platform doesn't support Bluetooth Low Energy."; break;
-        case CBCentralManagerStateUnauthorized: stateString = @"The app is not authorized to use Bluetooth Low Energy."; break;
-        case CBCentralManagerStatePoweredOff: stateString = @"Bluetooth is currently powered off."; break;
-        case CBCentralManagerStatePoweredOn: stateString = @"Bluetooth is currently powered on and available to use."; break;
-        default: stateString = @"State unknown, update imminent."; break;
-    }
-    
-    NSLog(@"BT state: %@ ************", stateString);
-}
-*/
-
-#pragma mark - BT connection
-
--(void) updateBTBufferIndicator
-{
-  /*  [self.bufferStateIndicator updateBufferState:(((float)[[BBBTManager btManager] numberOfFramesBuffered])/[[BBAudioManager bbAudioManager] sourceSamplingRate])];*/
-}
-
-- (IBAction)btButtonPressed:(id)sender {
-    
-    //[self openDevicesPopover];
-    NSLog(@"BT button pressed");
-    
-    if([[BBAudioManager bbAudioManager] recording])
-    {
-        [self stopRecording:nil];
-    }
-    
-    
-    if([[BBAudioManager bbAudioManager] btOn])
-    {
-        if(glView)
-        {
-            [glView stopAnimation];
-        }
-
-        [[BBAudioManager bbAudioManager] closeBluetooth];
-    }
-    else
-    {
-        [[BBAudioManager bbAudioManager] testBluetoothConnection];
-    }
-     
-}
-
-
-
--(void) reSetupScreen
-{
-    NSLog(@"Resetup screen - View And Record View Controller");
-    if(glView)
-    {
-        [glView stopAnimation];
-
-    }
-    else
-    {
-        glView = [[MultichannelCindeGLView alloc] initWithFrame:self.view.frame];
-        [self.view addSubview:glView];
-        [self.view sendSubviewToBack:glView];
-    }
-
-    [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
-    glView.mode = MultichannelGLViewModeView;
-
-    
-    UITapGestureRecognizer *doubleTap = [[[UITapGestureRecognizer alloc] initWithTarget: self action:@selector(autorangeView)] autorelease];
-    doubleTap.numberOfTapsRequired = 2;
-    [glView addGestureRecognizer:doubleTap];
-    
-    // set our view controller's prop that will hold a pointer to our newly created CCGLTouchView
-    [self setGLView:glView];
-    [glView startAnimation];
-    if([[BBAudioManager bbAudioManager] btOn])
-    {
-      /*  glView.channelsConfiguration = [[BBBTManager btManager] activeChannels];
-        [self.btButton setImage:[UIImage imageNamed:@"inputicon.png"] forState:UIControlStateNormal];
-        [self.bufferStateIndicator setHidden:NO];*/
-    }
-    else
-    {
-        
-        //Set all channels to active
-        UInt8 configurationOfChannels = 0;
-        int tempMask = 1;
-        for(int i=0;i<[[BBAudioManager bbAudioManager] sourceNumberOfChannels];i++)
-        {
-            configurationOfChannels = configurationOfChannels | (tempMask<<i);
-        }
-        glView.channelsConfiguration = configurationOfChannels;
-
-        
-        [self.btButton setImage:[UIImage imageNamed:@"bluetooth.png"] forState:UIControlStateNormal];
-        [self.bufferStateIndicator setHidden:YES];
-    }
-
-}
-
-
-#pragma mark - Devices Popover
-
-
-
-//
-// ------- THIS IS NOT USED -----------
-//
--(void) openDevicesPopover
-{
-    SAFE_ARC_RELEASE(devicesPopover); devicesPopover=nil;
-    
-    //the controller we want to present as a popover
-    BBBTChooserViewController *deviceChooserVC = [[BBBTChooserViewController alloc] initWithNibName:@"BBBTChooserViewController" bundle:nil];
-    
-    //deviceChooserVC.masterDelegate = self;
-    
-    devicesPopover = [[FPPopoverController alloc] initWithViewController:deviceChooserVC];
-    devicesPopover.delegate = self;
-    devicesPopover.tint = FPPopoverWhiteTint;
-    devicesPopover.border = NO;
-    devicesPopover.arrowDirection = FPPopoverNoArrow;
-    devicesPopover.title = nil;
-    rawSelected = NO;
-    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-    {
-        devicesPopover.contentSize = CGSizeMake(300, 450);
-    }
-    else {
-        devicesPopover.contentSize = CGSizeMake(300, 450);
-    }
-    /*if(sender == transparentPopover)
-     {
-     popover.alpha = 0.5;
-     }
-     */
-    
-    
-    [devicesPopover presentPopoverFromPoint: CGPointMake(self.view.center.x, self.view.center.y - devicesPopover.contentSize.height/2)];
-    
-    [deviceChooserVC release];
-    
-}
-
-
-
-
-
-#pragma mark - Channel Popover
-
-
--(void) foundBTConnection
-{
-  
 }
 
 //
-// Count number of channels in configuration
+// Used for custom filter view
 //
--(int) countNumberOfChannels:(int) channelsConfig
-{
-    int returnNumberOfChannels = 0;
-   /* int tempMask = 1;
-    for(int i=0;i<[[BBBTManager btManager] maxNumberOfChannelsForDevice];i++)
-    {
-        if((channelsConfig & (tempMask<<i))>0)
-        {
-            returnNumberOfChannels++;
-        }
-    }*/
-    return returnNumberOfChannels;
-}
-
-
--(void) removeBTChannel:(int) indexOfChannel
-{
-
-   
-}
-
-
--(void) addBTChannel:(int) indexOfChannel
-{
-  
-}
-
-
-- (void)popoverControllerDidDismissPopover:(FPPopoverController *)popoverController
-{
-    NSLog(@"Dismiss popover");
-    if(!rawSelected)
-    {
-        //stop BT when dismising config popover since it is started before popover was opened
-        [[BBAudioManager bbAudioManager] closeBluetooth];
-    }
-    rawSelected = NO;
-
-}
-
-- (void)rowSelected:(NSInteger) rowIndex
-{
-    
-    NSLog(@"Depricated function called");
-
-
-}
--(NSMutableArray *) getAllRows
-{
-    NSMutableArray * allOptionsLabels = [[[NSMutableArray alloc] init] autorelease];
-
-    [allOptionsLabels addObject:@"1 channel (4000Hz)"];
-    [allOptionsLabels addObject:@"2 channel (2000Hz)"];
-    [allOptionsLabels addObject:@"3 channel (1333Hz)"];
-    [allOptionsLabels addObject:@"4 channel (1000Hz)"];
-    [allOptionsLabels addObject:@"5 channel (1000Hz)"];
-    [allOptionsLabels addObject:@"6 channel (1000Hz)"];
-    
-    return allOptionsLabels;
-}
-
-
 -(void) finishedWithConfiguration
 {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-
--(void) noBTConnection
+#pragma mark - FFT stuff
+-(IBAction) fftButtonPressed:(id)sender
 {
-    [self.bufferStateIndicator setHidden:YES];
-    [self.btButton setImage:[UIImage imageNamed:@"bluetooth.png"] forState:UIControlStateNormal];
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"No Bluetooth connection."
-                                                    message:@"Please pair with BYB bluetooth device in Bluetooth settings."
-                                                   delegate:nil
-                                          cancelButtonTitle:@"OK"
-                                          otherButtonTitles:nil];
-    [alert show];
-    [alert release];
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
+    UIViewController *controller = [storyboard instantiateViewControllerWithIdentifier:@"fftViewID"];
+    [self presentViewController:controller animated:YES completion:nil];
 }
 
--(void) btDisconnected
+#pragma mark - Memory management
+
+- (void)dealloc
 {
-    if([[BBAudioManager bbAudioManager] btOn])
-    {
-        [self.bufferStateIndicator setHidden:YES];
-        [self.btButton setImage:[UIImage imageNamed:@"bluetooth.png"] forState:UIControlStateNormal];
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"No Bluetooth connection."
-                                                        message:@"Bluetooth device disconnected. Get in range of the device and try to pair with the device in Bluetooth settings again."
-                                                       delegate:self
-                                              cancelButtonTitle:@"OK"
-                                              otherButtonTitles:nil];
-        [alert show];
-        [alert release];
-    }
-}
-
--(void) btSlowConnection
-{
-    
-    if([[BBAudioManager bbAudioManager] btOn])
-    {
-        [self.bufferStateIndicator setHidden:YES];
-        [self.btButton setImage:[UIImage imageNamed:@"bluetooth.png"] forState:UIControlStateNormal];
-
-    }
-    
-}
-
-
-#pragma mark - Actions
-
-//
-// Start RT processing or just change position of handles
-//
--(void) tapOnRTButton
-{
-    BBAudioManager *bbAudioManager = [BBAudioManager bbAudioManager];
-    if([self.rtSpikeViewButton currentStatus] == TICK_MARK_STATE)
-    {
-        [self.rtSpikeViewButton changeCurrentState:HANDLE_STATE];
-        [self.cancelRTViewButton setHidden:YES];
-        [glView setRtConfigurationActive:NO];
-        [self.rtSpikeViewButton objectColor:[BYBGLView getSpikeTrainColorWithIndex:4 transparency:1.0f]];
-    
-    }
-    else
-    {
-        if (bbAudioManager.rtSpikeSorting == false) {
-            NSLog(@"Start real time spike sorting");
-            [bbAudioManager startRTSpikeSorting];
-        }
-        [glView setRtConfigurationActive:YES];
-        [self.cancelRTViewButton setHidden:NO];
-        [self.rtSpikeViewButton changeCurrentState:TICK_MARK_STATE];
-    }
-}
-
-
-//
-// Cancel RT processing
-//
--(void) tapOnCancelRTButton
-{
-     NSLog(@"Stop real time spike sorting");
-    [glView setRtConfigurationActive:NO];
-     BBAudioManager *bbAudioManager = [BBAudioManager bbAudioManager];
-    if([bbAudioManager rtSpikeSorting])
-    {
-        [bbAudioManager stopRTSpikeSorting];
-    }
-    [self.rtSpikeViewButton changeCurrentState:HANDLE_STATE];
-    [self.cancelRTViewButton setHidden:YES];
-    
-}
-
-
-
-- (void)dealloc {
-    [slider release];
     [recordButton release];
-
-    [_stopButton release];
-    [_btButton release];
-    [_rtSpikeViewButton release];
-    [bufferStateIndicator release];
-    [cancelRTViewButton release];
+    [stopButton release];
     [configButton release];
+    [glView release];
+    [fftButton release];
     [super dealloc];
 }
 
-- (void)viewDidUnload {
-    [self setSlider:nil];
-    [self setRecordButton:nil];
-    [self setStopButton:nil];
-    [super viewDidUnload];
-}
-
-
-
-- (void)didReceiveMemoryWarning {
-    
-    
+- (void)didReceiveMemoryWarning
+{
     NSLog(@"\n\n!Memory Warning! View And Record\n\n");
-    // Release anything that's not essential, such as cached data (meaning
-    // instance variables, and what else...?)
-    
-    // Obviously can't access local variables such as defined in method
-    // loadView, so can't release them here We can set some instance variables
-    // as nil, rather than call the release method on them, if we have defined
-    // setters that retain nil and release their old values (such as through use
-    // of @synthesize). This can be a better approach than using the release
-    // method, because this prevents a variable from pointing to random remnant
-    // data.  Note in contrast, that setting a variable directly (using "=" and
-    // not using the setter), would result in a memory leak.
-    //self.myStringB = nil;
-    //self.myStringD = nil;
-    //[myStringA release];// No setter defined - must release it this way
-    //[myStringC release];// No setter defined - must release it this way
-    
-    /* 3. MUST CONFIRM: NOT necessary to release outlets here - See override of
-     setView instead.
-     self.labelA = nil;
-     self.imageViewA = nil;
-     self.subViewA = nil;
-     */
     // Releases the view if it doesn't have a superview
     [super didReceiveMemoryWarning];
 }
-
-
 
 @end

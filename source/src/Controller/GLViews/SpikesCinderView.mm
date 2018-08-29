@@ -160,22 +160,11 @@
     mCam.setOrtho(-numSecondsVisible, -numSecondsMin, -numVoltsVisible/2.0f, numVoltsVisible/2.0f, 1, 100);;
     gl::setMatrices( mCam );
     
-    
- 
-    //Calculate ref size values in Cinder world
-   /* Vec2f refSizeS = [self worldToScreen:Vec2f(-numSecondsMin,0.0)];
-    Vec2f refSizeW = [self screenToWorld:Vec2f(refSizeS.x-10,refSizeS.y+10)];
-    float tenPixX =refSizeW.x+numSecondsMin;
-    float tenPixY =refSizeW.y;*/
-    
     scaleXY = [self screenToWorld:Vec2f(1.0f,1.0f)];
     Vec2f scaleXYZero = [self screenToWorld:Vec2f(0.0f,0.0f)];
     scaleXY.x = fabsf(scaleXY.x - scaleXYZero.x);
     scaleXY.y = fabsf(scaleXY.y - scaleXYZero.y);
-    
-    
-    
-   // gl::drawSolidRect(Rectf(refSize.x,refSize.y,refSize.x-refSize.x, refSize.y+refSize.y));
+
     // Set the line color and width
     glColor4f(0.4f, 0.4f, 0.4f, 1.0f);
     glLineWidth(2.0f);
@@ -257,22 +246,6 @@
     glLineWidth(1.0f);
     
     
-    
-    
-    
-   /* glLineWidth(2.0f);
-    gl::drawLine(Vec2f(-numSecondsVisible, threshval1), Vec2f(-numSecondsMin, threshval1));
-    gl::drawLine(Vec2f(-numSecondsVisible, threshval2), Vec2f(-numSecondsMin, threshval2));
-    glLineWidth(1.0f);
-    gl::drawSolidRect(Rectf(-numSecondsMin+5*tenPixX,threshval1-2*tenPixY,-numSecondsMin,threshval1+2*tenPixY));
-    gl::drawSolidTriangle(Vec2f(-numSecondsMin+5*tenPixX,threshval1-2*tenPixY), Vec2f(-numSecondsMin+5*tenPixX,threshval1+2*tenPixY), Vec2f(-numSecondsMin+7*tenPixX,threshval1));
-    
-    gl::drawSolidRect(Rectf(-numSecondsVisible-5*tenPixX,threshval2-2*tenPixY,-numSecondsVisible,threshval2+2*tenPixY));
-    gl::drawSolidTriangle(Vec2f(-numSecondsVisible-5*tenPixX,threshval2-2*tenPixY), Vec2f(-numSecondsVisible-5*tenPixX,threshval2+2*tenPixY), Vec2f(-numSecondsVisible-7*tenPixX,threshval2));
-    gl::enableDepthRead();*/
-    
-    
-    
     // Draw some text on that screen
     [self drawScaleTextAndSelected];
 }
@@ -302,7 +275,6 @@
         yScale /= [[UIScreen mainScreen] scale];
     }
     
-    
     // Figure out what we want to say
     std::ostringstream yStringStream;
     yStringStream.precision(2);
@@ -318,12 +290,6 @@
     }
     
 	gl::color( ColorA( 1.0, 1.0f, 1.0f, 1.0f ) );
-    
-    
-    // Draw the y-axis scale text
-    
-   // mScaleFont->drawString(yStringStream.str(), yScaleTextPosition);
-    
 
     //If we are not measuring draw x-scale text
     // Now that we have the string, calculate the position of the x-scale text
@@ -350,7 +316,6 @@
     //draw line for x-axis
     float left, top, right, bottom, near, far;
     mCam.getFrustum(&left, &top, &right, &bottom, &near, &far);
-    float height = top - bottom;
     float width = right - left;
     float middleX = (right - left)/2.0f + left;
     //draw line for x-axis if we are not displaying time interval measure

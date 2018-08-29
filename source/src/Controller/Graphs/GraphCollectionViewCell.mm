@@ -3,7 +3,7 @@
 //  Backyard Brains
 //
 //  Created by Stanislav Mircic on 7/4/14.
-//  Copyright (c) 2014 Datta Lab, Harvard University. All rights reserved.
+//  Copyright (c) 2014 BackyardBrains. All rights reserved.
 //
 
 #import "GraphCollectionViewCell.h"
@@ -101,23 +101,14 @@
 
 -(void) drawGraph
 {
-    
     [self clearGraph:nil];
     
     CGRect frameOfView = CGRectMake(self.bounds.origin.x, self.bounds.origin.y, self.bounds.size.width, self.bounds.size.height);
     barChart = [[CPTXYGraph alloc] initWithFrame:frameOfView];
     
-    
     _hostingView = [[CPTGraphHostingView alloc] initWithFrame:frameOfView];
     _hostingView.userInteractionEnabled = NO;
-   /* UITapGestureRecognizer *touchOnView = [[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(touchOnGraph)] autorelease];
-    // Set required taps and number of touches
-    [touchOnView setNumberOfTapsRequired:1];
-    [touchOnView setNumberOfTouchesRequired:1];
-    // Add the gesture to the view
-    [_hostingView addGestureRecognizer:touchOnView];*/
-    
-    
+
     barChart.plotAreaFrame.borderLineStyle = nil;
     barChart.plotAreaFrame.cornerRadius = 0.0f;
     
@@ -155,11 +146,9 @@
     [Xformatter release];
     x.labelingPolicy = CPTAxisLabelingPolicyAutomatic;
     
-    
     x.title = @"Time (s)";
     x.titleOffset = 26.0f;
     x.titleLocation = CPTDecimalFromFloat(0.0f);
-    
     
     CPTXYAxis *y = axisSet.yAxis;
     y.labelingPolicy = CPTAxisLabelingPolicyAutomatic;
@@ -172,7 +161,6 @@
     
     CPTBarPlot *barPlot = [[[CPTBarPlot alloc] init] autorelease];
     barPlot.fill = [CPTFill fillWithColor:[CPTColor colorWithCGColor:graphColor.CGColor]];
-    //barPlot.fill = [CPTFill fillWithColor:[CPTColor colorWithComponentRed:0.0f green:0.27843137254901963 blue:1.0f alpha:1.0f]];
     barPlot.lineStyle = nil;
     
     float widthOfBar = _hostingView.frame.size.width/[_values count];
@@ -213,10 +201,5 @@
         return [_values objectAtIndex:index];
     }
 }
-
-
-
-
-
 
 @end

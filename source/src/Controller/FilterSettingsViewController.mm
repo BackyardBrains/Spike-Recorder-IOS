@@ -129,14 +129,14 @@
 }
 
 - (void)addDoneButton {
-    UIToolbar* keyboardToolbar = [[UIToolbar alloc] init];
+    UIToolbar* keyboardToolbar = [[[UIToolbar alloc] init] autorelease];
     [keyboardToolbar sizeToFit];
-    UIBarButtonItem *flexBarButton = [[UIBarButtonItem alloc]
-                                      initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
-                                      target:nil action:nil];
-    UIBarButtonItem *doneBarButton = [[UIBarButtonItem alloc]
-                                      initWithBarButtonSystemItem:UIBarButtonSystemItemDone
-                                      target:self.view action:@selector(endEditing:)];
+    UIBarButtonItem *flexBarButton = [[[UIBarButtonItem alloc]
+                                       initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
+                                       target:nil action:nil] autorelease];
+    UIBarButtonItem *doneBarButton = [[[UIBarButtonItem alloc]
+                                       initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                       target:self.view action:@selector(endEditing:)] autorelease];
     keyboardToolbar.items = @[flexBarButton, doneBarButton];
     self.lowTI.inputAccessoryView = keyboardToolbar;
     self.highTI.inputAccessoryView = keyboardToolbar;
@@ -162,7 +162,7 @@
 -(BOOL) setSliderValuesFromTI
 {
     NSNumber * tempNumber = [[[NSNumber alloc] initWithFloat:0.0f] autorelease];
-    if([self stringIsNumeric:self.lowTI.text andNumber:&tempNumber] && ([tempNumber floatValue] >= 0.0f) && ([tempNumber floatValue]<=[[BBAudioManager bbAudioManager] sourceSamplingRate]*0.3))
+    if([self stringIsNumeric:self.lowTI.text andNumber:&tempNumber] && ([tempNumber floatValue] >= 0.0f) && ([tempNumber floatValue]<=REAL_VALUE_MAX))
     {
         
        if([tempNumber floatValue]<1.0)
@@ -176,12 +176,12 @@
     }
     else
     {
-        [self validationAlertWithText:@"Enter valid number for low cutoff frequency. (0 - Fs/3)"];
+        [self validationAlertWithText:[NSString stringWithFormat:@"Enter valid number for low cutoff frequency. (0 - %dHz)",(int)REAL_VALUE_MAX]];
         return NO;
     }
     
     tempNumber = [[[NSNumber alloc] initWithFloat:0.0f] autorelease];
-    if([self stringIsNumeric:self.highTI.text andNumber:&tempNumber]  && ([tempNumber floatValue] >= 0.0f) && ([tempNumber floatValue]<=[[BBAudioManager bbAudioManager] sourceSamplingRate]*0.3))
+    if([self stringIsNumeric:self.highTI.text andNumber:&tempNumber]  && ([tempNumber floatValue] >= 0.0f) && ([tempNumber floatValue]<=REAL_VALUE_MAX))
     {
         
         if([tempNumber floatValue]<1.0)
@@ -195,7 +195,7 @@
     }
     else
     {
-        [self validationAlertWithText:@"Enter valid number for high cutoff frequency. (0 - Fs/3)"];
+        [self validationAlertWithText:[NSString stringWithFormat:@"Enter valid number for low cutoff frequency. (0 - %dHz)",(int)REAL_VALUE_MAX]];
         return NO;
     }
     return YES;
@@ -218,6 +218,19 @@
                                                    delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
     [alert show];
     [alert release];
+    
+
+  /*  UIAlertController *actionSheet = [UIAlertController alertControllerWithTitle:@"Invalid value" message:errorString preferredStyle:UIAlertControllerStyleAlert];
+    
+    [actionSheet addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action)
+                            {
+                                [self dismissViewControllerAnimated:YES completion:^{
+                                }];
+                            }]];
+    
+    // Present action sheet.
+    [self presentViewController:actionSheet animated:YES completion:nil];*/
+    
 }
 
 

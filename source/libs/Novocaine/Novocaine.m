@@ -933,13 +933,9 @@ void sessionPropertyListener(void *                  inClientData,
     {
         Novocaine *sm = (__bridge Novocaine *)inClientData;
        
-       // [sm checkSessionProperties];
         [sm pause];
         [sm initNovocaine];
         [sm play];
-        //[sm sendNotificationToUpdateBuffersInMainApp];
-        
-        
     }
     
 }

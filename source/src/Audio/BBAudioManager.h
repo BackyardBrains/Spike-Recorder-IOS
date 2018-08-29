@@ -149,6 +149,8 @@
 - (void)saveSettingsToUserDefaults;
 -(void) clearWaveform;
 
+-(void) setSeekTime:(float) newTime;
+
 
 
 //Bluetooth
@@ -162,9 +164,11 @@
 -(UInt32) lengthOfFFTData;
 -(UInt32) lengthOf30HzData;
 -(void) stopFFT;
--(void) startDynanimcFFT;
+-(void) startDynanimcFFTForLiveView;
+-(void) startDynanimcFFTForRecording:(BBFile *) newFile;
 -(UInt32) indexOfFFTGraphBuffer;
 -(UInt32) lenghtOfFFTGraphBuffer;
+
 
 
 //RT Spike Sorting
@@ -180,7 +184,6 @@
 
 //ECG
 -(float) heartRate;
-//-(void) playBeep;
 @property (readonly) BOOL heartBeatPresent;
 
 @property float maxVoltageVisible;

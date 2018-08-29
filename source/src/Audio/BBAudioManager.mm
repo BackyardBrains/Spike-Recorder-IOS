@@ -41,6 +41,7 @@ static BBAudioManager *bbAudioManager = nil;
     // so we have to babysit it quite closely.
     float desiredSeekTimeInAudioFile;
     float lastSeekPosition;
+    float newSeekPosition;
     float * tempCalculationBuffer;//used to load data for display while scrubbing
 
     UInt32 lastNumberOfSampleDisplayed;//used to find position of selection in trigger view
@@ -62,6 +63,7 @@ static BBAudioManager *bbAudioManager = nil;
     float _currentMin;
     float _currentMean;
     
+
    
     //ECG
     BBECGAnalysis * ecgAnalysis;
@@ -191,8 +193,9 @@ static BBAudioManager *bbAudioManager = nil;
         tempCalculationBuffer = (float *)calloc(maxNumberOfSamplesToDisplay*_sourceNumberOfChannels, sizeof(float));
 
         lastSeekPosition = -1;
+        newSeekPosition = -1;
         dspAnalizer = new DSPAnalysis();
-        
+
         
         
         // Set a default input block acquiring data to a big ring buffer.
@@ -504,57 +507,18 @@ static BBAudioManager *bbAudioManager = nil;
 -(void) makeInputOutput
 {
      NSLog(@"makeInputOutput %p\n",audioManager);
-
-   /* playEKGBeep = NO;
-    counterForEKGBeep = 0;
-
     
-    [audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
-        
-        if(playEKGBeep)
-        {
-            memset(data, 0, numChannels*numFrames*sizeof(float));
-            
-            int lengthToCopy = numFrames;
-            if(lengthToCopy> (LENGTH_OF_EKG_BEEP_IN_SAMPLES- counterForEKGBeep))
-            {
-                lengthToCopy = (LENGTH_OF_EKG_BEEP_IN_SAMPLES- counterForEKGBeep);
-            }
-            memcpy(data, &(ekgBeepBuffer[counterForEKGBeep]), lengthToCopy);
-            counterForEKGBeep+=lengthToCopy;
-            if(counterForEKGBeep>=LENGTH_OF_EKG_BEEP_IN_SAMPLES)
-            {
-                playEKGBeep = NO;
-            }
-            
-            NSLog(@"sound");
-        }
-        else
-        {
-            memset(data, 0, numChannels*numFrames*sizeof(float));
-            return;
-        }
-        
-            
-    } ];
-   
-        */
-
-
     // Replace the input block with the old input block, where we just save an in-memory copy of the audio.
-    [audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
-       
+    [audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
+    {
         if(ringBuffer == NULL)
         {
             NSLog(@"/n/n ERROR in Input block %p", self);
             return;
         }
         [self additionalProcessingOfInputData:data forNumOfFrames:numFrames andNumChannels:numChannels];
-        
         ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
-       
     }];
-    
 }
 
 
@@ -563,7 +527,6 @@ static BBAudioManager *bbAudioManager = nil;
 //
 -(void) additionalProcessingOfInputData:(float *) data forNumOfFrames:(UInt32) numFrames andNumChannels:(UInt32) numChannels
 {
-    
     [self amDemodulationOfData:data numFrames:numFrames numChannels:numChannels];
     
     if(self.amDemodulationIsON)
@@ -575,9 +538,6 @@ static BBAudioManager *bbAudioManager = nil;
     {
         [fileWriter writeNewAudio:data numFrames:numFrames numChannels:numChannels];
     }
-    
-    
-    
     
     [self updateBasicStatsOnData:data numFrames:numFrames numChannels:numChannels];
    
@@ -602,7 +562,6 @@ static BBAudioManager *bbAudioManager = nil;
     {
         [[BBAnalysisManager bbAnalysisManager] findSpikesInRTForData:data numberOfFrames:numFrames numberOfChannel:numChannels selectedChannel:_selectedChannel];
     }
-    
 }
 
 
@@ -610,10 +569,7 @@ static BBAudioManager *bbAudioManager = nil;
 {
     if(thisNumChannels<3)
     {
-    
         //calculate RMS for original signal
-        
-
         float zero = 0.0f;
         //get first channel
         vDSP_vsadd(newData,
@@ -637,22 +593,15 @@ static BBAudioManager *bbAudioManager = nil;
         //NSLog(@"a/b: %f",rmsOfOriginalSignal/rmsOfNotchedSignal);
         if(rmsOfNotchedSignal*3<rmsOfOriginalSignal)
         {
-    
-             self.amDemodulationIsON = true;
-            
-            
-                vDSP_vabs(newData, 1, newData, 1, thisNumChannels*thisNumFrames);
-            
-            
-            
-            
-                [filterAMStage1 filterData:newData numFrames:thisNumFrames numChannels:thisNumChannels];
-                [filterAMStage2 filterData:newData numFrames:thisNumFrames numChannels:thisNumChannels];
-                [filterAMStage3 filterData:newData numFrames:thisNumFrames numChannels:thisNumChannels];
+            self.amDemodulationIsON = true;
+            vDSP_vabs(newData, 1, newData, 1, thisNumChannels*thisNumFrames);
+
+            [filterAMStage1 filterData:newData numFrames:thisNumFrames numChannels:thisNumChannels];
+            [filterAMStage2 filterData:newData numFrames:thisNumFrames numChannels:thisNumChannels];
+            [filterAMStage3 filterData:newData numFrames:thisNumFrames numChannels:thisNumChannels];
             
             float sum = 0;
             float offset = 0;
-            
             
             if(thisNumChannels==1)
             {
@@ -697,11 +646,6 @@ static BBAudioManager *bbAudioManager = nil;
                            thisNumFrames);
  
             }
-            
-            //vDSP_vneg(newData,1, newData, 1, thisNumChannels*thisNumFrames);
-           
-            
-            //amOffset = newData[0];
         }
         else
         {
@@ -772,8 +716,6 @@ static BBAudioManager *bbAudioManager = nil;
 
 -(void) setFilterSettings:(int) newFilterSettings
 {
-    
-    
     switch (newFilterSettings) {
         case FILTER_SETTINGS_RAW:
             [self setFilterLPCutoff:FILTER_LP_OFF hpCutoff:FILTER_HP_OFF];
@@ -814,8 +756,6 @@ static BBAudioManager *bbAudioManager = nil;
   //  [[AVAudioSession sharedInstance] overrideOutputAudioPort:AVAudioSessionPortOverrideSpeaker error:nil];
     
     */
-    
-
 }
 
 -(int) getLPFilterCutoff {return lpFilterCutoff;}
@@ -912,17 +852,6 @@ static BBAudioManager *bbAudioManager = nil;
     {
         [self stopFFT];
     }
-    
-    if(ECGOn)
-    {
-        [self stopECG];
-    }
-    
-   /* if(rtSpikeSorting)
-    {
-        [self stopRTSpikeSorting];
-    }*/
-    
 }
 
 
@@ -939,6 +868,10 @@ static BBAudioManager *bbAudioManager = nil;
     if(tempSamplingRate != _sourceSamplingRate  || tempNumberOfChannels != _sourceNumberOfChannels)
     {
         [self resetBuffers];
+    }
+    else
+    {
+        ringBuffer->Clear();
     }
     [self makeInputOutput];
 }
@@ -1021,7 +954,7 @@ static BBAudioManager *bbAudioManager = nil;
 {
     if(dspThresholder)
     {
-        dspThresholder->GetIsTriggered();
+        return dspThresholder->GetIsTriggered();
     }
     else
     {
@@ -1128,12 +1061,6 @@ static BBAudioManager *bbAudioManager = nil;
     return [ecgAnalysis heartRate];
 }
 
-/*-(void) playBeep
-{
-    playEKGBeep = YES;
-    counterForEKGBeep = 0;
-}*/
-
 -(BOOL) heartBeatPresent
 {
     return [ecgAnalysis heartBeatPresent];
@@ -1141,6 +1068,25 @@ static BBAudioManager *bbAudioManager = nil;
 
 
 #pragma mark - Playback
+
+-(void) recalculateFFT
+{
+    //calculate begining and end of interval to display
+
+    UInt32 targetFrame = (UInt32)(newSeekPosition * ((float)_sourceSamplingRate));
+    int startFrame = targetFrame - maxNumberOfSamplesToDisplay;
+    if(startFrame<0)
+    {
+        startFrame = 0;
+    }
+    
+    //get the data from file into clean ring buffer
+   // dispatch_sync(dispatch_get_main_queue(), ^{
+        dspAnalizer->CalculateDynamicFFTDuringSeek(fileReader, targetFrame-startFrame, startFrame, _sourceNumberOfChannels, _selectedChannel);
+
+    //});
+    
+}
 
 - (void)startPlaying:(BBFile *) fileToPlay
 {
@@ -1198,64 +1144,68 @@ static BBAudioManager *bbAudioManager = nil;
     
     [audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
         
-        
-        //------- Scrubbing ----------------
         UInt32 realNumberOfFrames = (UInt32)(((float)numFrames)*(_sourceSamplingRate/audioManager.samplingRate));
-
-       
         Float32 zero = 0;
         Float32 increment = (float)(realNumberOfFrames)/(float)(numFrames);
         vDSP_vramp(&zero, &increment, tempResamplingIndexes, 1, numFrames);//here may be numFrames-1
         
         
+        //---------- NOT Playing ---------------------------- (stop or seek)
+        
         if (!self.playing) {
             //if we have new seek position
-            if(self.seeking && lastSeekPosition != fileReader.currentTime)
+            //if(self.seeking && lastSeekPosition != fileReader.currentTime)
+            if(self.seeking && lastSeekPosition != newSeekPosition)
             {
-                lastSeekPosition = fileReader.currentTime;
+                
+                lastSeekPosition = newSeekPosition;
                 //clear ring buffer
-
                 
                 //calculate begining and end of interval to display
-                UInt32 targetFrame = (UInt32)(fileReader.currentTime * ((float)_sourceSamplingRate));
+               
+                UInt32 targetFrame = (UInt32)(lastSeekPosition * ((float)_sourceSamplingRate));
                 int startFrame = targetFrame - maxNumberOfSamplesToDisplay;
                 if(startFrame<0)
                 {
                     startFrame = 0;
                 }
-
+                
                 //get the data from file into clean ring buffer
                 dispatch_sync(dispatch_get_main_queue(), ^{
                     ringBuffer->Clear();
                     ringBuffer->SeekWriteHeadPosition(0);
                     ringBuffer->SeekReadHeadPosition(0);
+                    //NSLog(@"Before raw reading: begining of reading: %f and current file position: %f", ((float)startFrame)/_sourceSamplingRate, fileReader.currentTime);
                     [fileReader retrieveFreshAudio:tempCalculationBuffer numFrames:(UInt32)(targetFrame-startFrame) numChannels:_sourceNumberOfChannels seek:(UInt32)startFrame];
                     
-                    
-                    //Filtering of recorded data while scrolling
-                    //[self filterData:tempCalculationBuffer numFrames:(UInt32)(targetFrame-startFrame) numChannels:_sourceNumberOfChannels];
-                    
-                    
-                    
+                    //NSLog(@"After raw reading:begining of reading: %f and current file position: %f", ((float)startFrame)/_sourceSamplingRate, fileReader.currentTime);
                     
                     ringBuffer->AddNewInterleavedFloatData(tempCalculationBuffer, targetFrame-startFrame, _sourceNumberOfChannels);
-                  
+                    
                     _preciseTimeOfLastData = (float)targetFrame/(float)_sourceSamplingRate;
-
+                    
                     //set playback time to scrubber position
-                    fileReader.currentTime = lastSeekPosition;
+                    
                     if(selecting)
                     {
-                         //if we have active selection recalculate RMS
+                        //if we have active selection recalculate RMS
                         [self updateSelection:_selectionEndTime timeSpan:_timeSpan];
                     }
+                    
+                    if(FFTOn)
+                    {
+                        [self recalculateFFT];
+                       
+                    }
+                   
+                    
                 });
-            }
+            }//end of if(self.seeking && lastSeekPosition != fileReader.currentTime)
             
             //set playback data to zero (silence during scrubbing)
             memset(data, 0, numChannels*numFrames*sizeof(float));
             return;
-        }
+        }//end of not playing
         
         
         
@@ -1273,8 +1223,7 @@ static BBAudioManager *bbAudioManager = nil;
             
             //FIltering of playback data
           //  [self filterData:tempCalculationBuffer numFrames:realNumberOfFrames numChannels:_sourceNumberOfChannels];
-            
-            
+           
             //move just numChannels in buffer
             float zero = 0.0f;
            
@@ -1315,6 +1264,10 @@ static BBAudioManager *bbAudioManager = nil;
             ringBuffer->AddNewInterleavedFloatData(tempCalculationBuffer, realNumberOfFrames, _sourceNumberOfChannels);
             _preciseTimeOfLastData = fileReader.currentTime;
             [self updateBasicStatsOnData:tempCalculationBuffer numFrames:realNumberOfFrames numChannels:_sourceNumberOfChannels];
+            if(FFTOn)
+            {
+                dspAnalizer->CalculateDynamicFFT(data, realNumberOfFrames, _selectedChannel);
+            }
             
 
             
@@ -1386,7 +1339,7 @@ static BBAudioManager *bbAudioManager = nil;
 }
 
 
--(void) startDynanimcFFT
+-(void) startDynanimcFFTForLiveView
 {
     float maxNumOfSeconds = MAX_NUMBER_OF_FFT_SEC;
     [self quitAllFunctions];
@@ -1399,7 +1352,22 @@ static BBAudioManager *bbAudioManager = nil;
     
     [self makeInputOutput];// here we also create ring buffer so it must be before we set ring buffer
     
-    dspAnalizer->InitDynamicFFT(ringBuffer, _sourceNumberOfChannels, _sourceSamplingRate, n, 95, maxNumOfSeconds);
+    dspAnalizer->InitDynamicFFT(ringBuffer, _sourceNumberOfChannels, _sourceSamplingRate, n, 99, maxNumOfSeconds);
+    
+    FFTOn = true;
+    
+}
+
+-(void) startDynanimcFFTForRecording:(BBFile *) newFile;
+{
+    
+    [self startPlaying:newFile];
+    float maxNumOfSeconds = MAX_NUMBER_OF_FFT_SEC;
+
+    uint32_t log2n = log2f((float)_sourceSamplingRate);
+    uint32_t n = 1 << (log2n+2);
+    
+    dspAnalizer->InitDynamicFFT(ringBuffer, _sourceNumberOfChannels, _sourceSamplingRate,n,99, maxNumOfSeconds);
     
     FFTOn = true;
     
@@ -1435,10 +1403,7 @@ static BBAudioManager *bbAudioManager = nil;
     return dspAnalizer->GraphBufferIndex;
 }
 
-//-(float *) movingAverageFFT
-//{
-//    return dspAnalizer->movingAverageFFT;
-//}
+
 
 
 #pragma mark - data feed for graphs
@@ -1724,6 +1689,16 @@ static BBAudioManager *bbAudioManager = nil;
         fileReader.currentTime = newCurrentFileTime;
     }
 }
+
+-(void) setSeekTime:(float) newTime
+{
+    if(fileReader.duration<newTime)
+    {
+        newTime = fileReader.duration;
+    }
+    newSeekPosition  = newTime;
+}
+
 
 - (float)fileDuration
 {

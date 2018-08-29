@@ -7,6 +7,7 @@
 //
 #import <Foundation/Foundation.h>
 #import "RingBuffer.h"
+#import "BBAudioFileReader.h"
 
 
 class DSPAnalysis {
@@ -14,6 +15,9 @@ class DSPAnalysis {
 public:
     DSPAnalysis();
     ~DSPAnalysis();
+    
+    
+    
     //Calculate Root mean square of data array
     float RMSSelection(const float *data, int64_t mSizeOfBuffer);
     //Calculate standard deviation of data array
@@ -35,7 +39,9 @@ public:
     void InitDynamicFFT(RingBuffer *externalRingBuffer, UInt32 numberOfChannels, UInt32 samplingRate, UInt32 lengthOfWindow, UInt32 percOverlapOfWindows, float bufferMaxSeconds);
     //Calculate FFT for new data (It can calculate one or more window depending on amount of data that arrived)
     void CalculateDynamicFFT(const float *data, UInt32 numberOfFramesInData, UInt32 whichChannel);
+    void CalculateDynamicFFTDuringSeek(BBAudioFileReader *fileReader, UInt32 numberOfFramesToGet, UInt32 startFrame, UInt32 numberOfChannels, UInt32 whichChannel);
     float ** FFTDynamicMagnitude;
+    void resetFFTMagnitudeBuffer();
     
     
     //length of FFT window. Must be 2^N
@@ -63,7 +69,12 @@ private:
     UInt32 mLengthOfWindow;
     COMPLEX_SPLIT A;
     FFTSetup fftSetup;
+    FFTSetup fftSetupOptimized;
     float maxMagnitude;
     float halfMaxMagnitude;
+    float maxMagnitudeOptimized;
+    float halfMaxMagnitudeOptimized;
+    
+    
     float oneFrequencyStep;
 };
