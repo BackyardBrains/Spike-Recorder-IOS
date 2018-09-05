@@ -16,6 +16,11 @@
 //#import <HealthKit/HealthKit.h>
 #import "MBProgressHUD.h"
 
+//------------------------------ MFI ----------------------------------
+#import "DemoProtocol.h"
+//------------------------------ MFI ----------------------------------
+
+
 @interface MyAppDelegate : CCGLTouchAppDelegate <UITabBarControllerDelegate>{
     UIWindow *window;
     UITabBarController *tabBarController;
@@ -24,7 +29,7 @@
 }
 @property (retain, nonatomic) IBOutlet UITabBarController *tabBarController;
 //@property (retain, nonatomic) HKHealthStore *healthStore;
-
++(DemoProtocol*) getEaManager;
 -(BOOL) sharedFileShouldBeOpened;
 -(void) sharedFileIsOpened;
 @end
