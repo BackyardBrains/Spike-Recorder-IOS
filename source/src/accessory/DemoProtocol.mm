@@ -27,8 +27,12 @@
 #define P1_CMD_SND_TIME        11
 
 #define PROTOCOL_HEADER_SIZE    2
-#define PROTOCOL_PAYLOAD_SIZE   6
+#define PROTOCOL_PAYLOAD_SIZE   1024
 #define PROTOCOL_PACKET_SIZE    (PROTOCOL_HEADER_SIZE + PROTOCOL_PAYLOAD_SIZE)
+
+#define SIZE_OF_CIRC_BUFFER 4024
+#define SIZE_OF_MESSAGES_BUFFER 64
+#define ESCAPE_SEQUENCE_LENGTH 6
 
 const uint8_t kHeaderBytes[] = {0xCA, 0x5C};
 
@@ -36,6 +40,9 @@ const uint8_t kHeaderBytes[] = {0xCA, 0x5C};
     NSUInteger _packetLength;
     uint8_t _packet[PROTOCOL_PACKET_SIZE];
     float floatDataPacket[PROTOCOL_PACKET_SIZE];
+    char circularBuffer[SIZE_OF_CIRC_BUFFER];
+    float obuffer[PROTOCOL_PACKET_SIZE*2];
+
     
 }
 static  EAInputBlock inputBlock;
@@ -170,34 +177,230 @@ static  EAInputBlock inputBlock;
         {
             floatDataPacket[i] = (((float)bytes[i])-128)/128.0;
         }
-    [[BBAudioManager bbAudioManager] addNewData:floatDataPacket frames:len channels:1];
+    
+    int numOfFrames = [self processData:bytes withSize:len];
+    
+    if(numOfFrames>0)
+    {
+        [[BBAudioManager bbAudioManager] addNewData:obuffer frames:numOfFrames channels:2];
+    }
         //inputBlock(floatDataPacket,len, 1);
     //}
     
-/*
-    // Reset the packet length if it is out of range
-    if (_packetLength >= PROTOCOL_PACKET_SIZE) {
-        _packetLength = 0;
-    }
-    // Handle packet framing (ie. search stream for header bytes)
-    for (int i=0; i < len; i++) {
-        _packet[_packetLength++] = bytes[i];
-        if (_packetLength == 1) {
-            if (_packet[0] != kHeaderBytes[0]) {
-                _packetLength = 0;
-            }
-        }
-        else if (_packetLength == 2) {
-            if (_packet[1] != kHeaderBytes[1]) {
-                _packetLength = 0;
-            }
-        }
-        else if (_packetLength == PROTOCOL_PACKET_SIZE) {
-            [self processPacket:&_packet[2] length:PROTOCOL_PAYLOAD_SIZE];
-            _packetLength = 0;
-        }
-    }
-    */
+
 }
+
+
+//
+// Process raw data from serial port
+// Extract frames and extract samples from frames
+//
+-(int) processData:(uint8_t * ) buffer withSize:(int) size
+{
+    int numberOfFrames = 0;
+    int obufferIndex = 0;
+    int writeInteger = 0;
+    // std::cout<<"------------------ Size: "<<size<<"\n";
+    
+    
+    for(int i=0;i<size;i++)
+    {
+       /* if(weAreInsideEscapeSequence)
+        {
+            messagesBuffer[messageBufferIndex] = buffer[i];
+            messageBufferIndex++;
+        }
+        else
+        {*/
+            circularBuffer[cBufHead++] = buffer[i];
+            //uint debugMSB  = ((uint)(buffer[i])) & 0xFF;
+            //std::cout<<"M: " << debugMSB<<"\n";
+            
+            if(cBufHead>=SIZE_OF_CIRC_BUFFER)
+            {
+                cBufHead = 0;
+            }
+        //}
+       // testEscapeSequence(((unsigned int) buffer[i]) & 0xFF,  (i/2)/_numberOfChannels);
+    }
+    if(size==-1)
+    {
+        return -1;
+    }
+    uint LSB;
+    uint MSB;
+    bool haveData = true;
+    bool weAlreadyProcessedBeginingOfTheFrame;
+    int numberOfParsedChannels;
+    while (haveData)
+    {
+        
+        MSB  = ((uint)(circularBuffer[cBufTail])) & 0xFF;
+        
+        if(MSB > 127)//if we are at the begining of frame
+        {
+            weAlreadyProcessedBeginingOfTheFrame = false;
+            numberOfParsedChannels = 0;
+            if([self checkIfHaveWholeFrame])
+            {
+                //std::cout<<"Inside serial "<< numberOfFrames<<"\n";
+                numberOfFrames++;
+                while (1)
+                {
+                    //make sample value from two consecutive bytes
+                    // std::cout<<"Tail: "<<cBufTail<<"\n";
+                    //  MSB  = ((uint)(circularBuffer[cBufTail])) & 0xFF;
+                    //std::cout<< cBufTail<<" -M "<<MSB<<"\n";
+                    
+                    
+                    MSB  = ((uint)(circularBuffer[cBufTail])) & 0xFF;
+                    if(weAlreadyProcessedBeginingOfTheFrame && MSB>127)
+                    {
+                        //we have begining of the frame inside frame
+                        //something is wrong
+                        numberOfFrames--;
+                        break;//continue as if we have new frame
+                    }
+                    MSB  = ((uint)(circularBuffer[cBufTail])) & 0x7F;
+                    weAlreadyProcessedBeginingOfTheFrame = true;
+                    
+                    cBufTail++;
+                    if(cBufTail>=SIZE_OF_CIRC_BUFFER)
+                    {
+                        cBufTail = 0;
+                    }
+                    LSB  = ((uint)(circularBuffer[cBufTail])) & 0xFF;
+                    //if we have error in frame (lost data)
+                    if(LSB>127)
+                    {
+                        numberOfFrames--;
+                        break;//continue as if we have new frame
+                    }
+                    // std::cout<< cBufTail<<" -L "<<LSB<<"\n";
+                    LSB  = ((uint)(circularBuffer[cBufTail])) & 0x7F;
+                    
+                    MSB = MSB<<7;
+                    writeInteger = LSB | MSB;
+                    //  if(writeInteger>300)
+                    //  {
+                    //      logData = true;
+                    //  }
+                    
+                    
+                    numberOfParsedChannels++;
+                    if(numberOfParsedChannels>2)
+                    {
+                        //we have more data in frame than we need
+                        //something is wrong with this frame
+                        numberOfFrames--;
+                        break;//continue as if we have new frame
+                    }
+                    
+                    obuffer[obufferIndex++] = ((float)(writeInteger-512))/512.0;
+                    
+                    
+                    if([self areWeAtTheEndOfFrame])
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        cBufTail++;
+                        if(cBufTail>=SIZE_OF_CIRC_BUFFER)
+                        {
+                            cBufTail = 0;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                haveData = false;
+                break;
+            }
+        }
+        if(!haveData)
+        {
+            break;
+        }
+        cBufTail++;
+        if(cBufTail>=SIZE_OF_CIRC_BUFFER)
+        {
+            cBufTail = 0;
+        }
+        if(cBufTail==cBufHead)
+        {
+            haveData = false;
+            break;
+        }
+        
+        
+    }
+    
+    return numberOfFrames;
+}
+
+
+
+
+-(bool)checkIfNextByteExis
+{
+    int tempTail = cBufTail + 1;
+    if(tempTail>= SIZE_OF_CIRC_BUFFER)
+    {
+        tempTail = 0;
+    }
+    if(tempTail==cBufHead)
+    {
+        return false;
+    }
+    return true;
+}
+
+-(bool) checkIfHaveWholeFrame
+{
+    int tempTail = cBufTail + 1;
+    if(tempTail>= SIZE_OF_CIRC_BUFFER)
+    {
+        tempTail = 0;
+    }
+    while(tempTail!=cBufHead)
+    {
+        uint nextByte  = ((uint)(circularBuffer[tempTail])) & 0xFF;
+        if(nextByte > 127)
+        {
+            return true;
+        }
+        tempTail++;
+        if(tempTail>= SIZE_OF_CIRC_BUFFER)
+        {
+            tempTail = 0;
+        }
+    }
+    return false;
+}
+
+-(bool) areWeAtTheEndOfFrame
+{
+    int tempTail = cBufTail + 1;
+    if(tempTail>= SIZE_OF_CIRC_BUFFER)
+    {
+        tempTail = 0;
+    }
+    uint nextByte  = ((uint)(circularBuffer[tempTail])) & 0xFF;
+    if(nextByte > 127)
+    {
+        return true;
+    }
+    return false;
+}
+
+
+
+
+
+
+
+
 
 @end

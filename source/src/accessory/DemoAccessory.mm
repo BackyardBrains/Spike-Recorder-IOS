@@ -21,6 +21,7 @@
     EASession *_session;
     NSString *_protocol;
     NSMutableData *_txData;
+
 }
 
 // Adds a string to the end of a debug log.
@@ -151,10 +152,13 @@
         [self gatherAccessoryInfo:accessory];
         [self addDebugString:@"Opening session...\n"];
         _session = [[EASession alloc] initWithAccessory:accessory forProtocol:protocolString];
+        
         if (_session) {
             
             //change audio manager input to external accessory
-            [[BBAudioManager bbAudioManager] switchToExternalDeviceWithChannels:1 andSampleRate:10000];
+            cBufHead=0;
+            cBufTail=0;
+            [[BBAudioManager bbAudioManager] switchToExternalDeviceWithChannels:2 andSampleRate:10000];
             
             
             

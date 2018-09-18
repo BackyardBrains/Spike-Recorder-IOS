@@ -17,6 +17,10 @@
 //#define DEBUG_MFI
 
 @interface DemoAccessory : NSObject <NSStreamDelegate>
+{
+    int cBufHead;
+    int cBufTail;
+}
 
 @property NSString *accessoryInfoString;
 @property NSMutableString *debugString;

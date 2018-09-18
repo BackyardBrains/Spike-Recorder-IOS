@@ -429,6 +429,7 @@ static BBAudioManager *bbAudioManager = nil;
     
     [self resetBuffers];
     [self makeInputOutput];
+    [[NSNotificationCenter defaultCenter] postNotificationName:RESETUP_SCREEN_NOTIFICATION object:self];
 }
 -(void) closeExternalDevice
 {
