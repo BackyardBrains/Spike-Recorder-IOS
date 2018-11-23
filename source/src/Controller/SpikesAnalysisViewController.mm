@@ -308,6 +308,16 @@
                                           [self dismissViewControllerAnimated:YES completion:^{
                                           }];
                                       }]];
+                
+                //make so that on iPad alert is displayed in the center of the screen
+                if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+                {
+                    CGRect rectForWindow;
+                    alertView.popoverPresentationController.sourceView = self.view;
+                    alertView.popoverPresentationController.permittedArrowDirections = 0;
+                    rectForWindow = CGRectMake(self.view.bounds.size.width/2, self.view.bounds.size.height/2, 1, 1);
+                    alertView.popoverPresentationController.sourceRect = rectForWindow;
+                }
                 // Present action sheet.
                 [self presentViewController:alertView animated:YES completion:nil];
                 
