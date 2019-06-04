@@ -130,7 +130,7 @@
 
 // Search connected accessories for the requested protocol. If found, open a session
 // and hook up the associated streams.
-- (void)openSessionWithProtocol:(NSString *)protocolString
+- (void) openSessionWithProtocol:(NSString *)protocolString
 {
     NSArray *accessories = [[EAAccessoryManager sharedAccessoryManager] connectedAccessories];
     EAAccessory *accessory = nil;
@@ -222,6 +222,10 @@
     }
     return self;
 }
+
+
+
+
 
 // On instance removal, stop listening for connect/disconnect events and close the session if
 // there is one.

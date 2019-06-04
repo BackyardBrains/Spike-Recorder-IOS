@@ -259,6 +259,7 @@ static BBAudioManager *bbAudioManager = nil;
         lpFilterCutoff = FILTER_LP_OFF;
         hpFilterCutoff = FILTER_HP_OFF;
         [audioManager play];
+        eaManager = [MyAppDelegate getEaManager];
     }
     
     return self;
@@ -423,6 +424,7 @@ static BBAudioManager *bbAudioManager = nil;
 {
     [self stopAllInputOutput];
     externalAccessoryOn = true;
+    NSLog(@"External accessories ON");
     _sourceSamplingRate=inSampleRate;
     _sourceNumberOfChannels= numberOfChannels;
     
@@ -435,6 +437,7 @@ static BBAudioManager *bbAudioManager = nil;
 {
     [self stopAllInputOutput];
     externalAccessoryOn = false;
+    NSLog(@"External accessories OFF");
     _sourceSamplingRate =  audioManager.samplingRate;
     _sourceNumberOfChannels = audioManager.numInputChannels;
     [self resetBuffers];
@@ -466,7 +469,7 @@ static BBAudioManager *bbAudioManager = nil;
     }];
     
     
-    [DemoProtocol setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
+    [eaManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
         
     }];
    // audioManager.inputBlock = nil;
@@ -474,7 +477,7 @@ static BBAudioManager *bbAudioManager = nil;
 
 -(void) getChannelsConfig
 {
-    if(btOn)
+    if(externalAccessoryOn)
     {
      /*   _sourceSamplingRate =  [[BBBTManager btManager] samplingRate];
         _sourceNumberOfChannels = [[BBBTManager btManager] numberOfChannels];*/
@@ -529,7 +532,7 @@ static BBAudioManager *bbAudioManager = nil;
     if(externalAccessoryOn)
     {
         // Replace the input block with the old input block, where we just save an in-memory copy of the audio.
-        [DemoProtocol setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
+        [eaManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
          {
              if(ringBuffer == NULL)
              {

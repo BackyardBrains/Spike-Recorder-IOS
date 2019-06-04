@@ -67,7 +67,7 @@ static pthread_mutex_t outputAudioFileLock;
         {
             wavManager = [[WavManager alloc] init];
             [wavManager createWav:urlToAudioFile samlingRate:thisSamplingRate numberOfChannels:thisNumChannels];
-            self.outputBuffer = (float *)calloc(2*self.samplingRate, sizeof(float));
+            self.outputBuffer = (float *)calloc(2*self.samplingRate, sizeof(float));//mod needed (2 channels hardcoded)
             pthread_mutex_init(&outputAudioFileLock, NULL);
         }
         else

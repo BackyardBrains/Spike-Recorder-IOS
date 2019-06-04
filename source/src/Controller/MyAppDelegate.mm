@@ -63,6 +63,7 @@ static DemoProtocol *demoProtocol;
     
 //------------------------------ MFI ----------------------------------
      demoProtocol = [[DemoProtocol alloc] init];
+    [demoProtocol initProtocol];
 //------------------------------ MFI ----------------------------------
 }
 

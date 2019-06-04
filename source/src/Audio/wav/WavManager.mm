@@ -345,15 +345,16 @@ SubFormat	16	GUID, including the data format code
         NSLog(@"Failed to open the wav file");
         return 0;
     }
-    long tempDataSample;
+
     if(fileProperties.compressionType == WAVE_FORMAT_IEEE_FLOAT)
     {
             UInt32 numberOfBytesToRead = thisNumChannels*thisNumFrames*4;
             UInt32 positionToSeek = thisNumChannels*position*4+44;
-            
+        
             [_fileHandle seekToFileOffset: positionToSeek];
             NSData *headerData =[_fileHandle readDataOfLength:numberOfBytesToRead];
             memcpy(buffer, [headerData bytes], [headerData length]);
+            currentPositionDuringRead = positionToSeek+[headerData length];
             return [headerData length]/(fileProperties.numOfChannels*4);
     }
     else
@@ -361,7 +362,7 @@ SubFormat	16	GUID, including the data format code
         int numbOfBytesInSample = fileProperties.bitsPerSample/8;
         UInt32 numberOfBytesToRead = thisNumChannels*thisNumFrames*numbOfBytesInSample;
         UInt32 positionToSeek = thisNumChannels*position*numbOfBytesInSample+44;
-        
+        currentPositionDuringRead = positionToSeek;
         [_fileHandle seekToFileOffset: positionToSeek];
         NSData *headerData =[_fileHandle readDataOfLength:numberOfBytesToRead];
         long sampleIndex = 0;
@@ -373,7 +374,7 @@ SubFormat	16	GUID, including the data format code
             buffer[sampleIndex++] = elem/32768.0f;
             
         }
-       
+       currentPositionDuringRead = positionToSeek+[headerData length];
         return [headerData length]/(fileProperties.numOfChannels*numbOfBytesInSample);
     
     }

@@ -25,8 +25,10 @@
 typedef void (^EAInputBlock)(float *data, UInt32 numFrames, UInt32 numChannels);
 // Explicitly declaring the block setters will create the correct block signature for auto-complete.
 // These will map to the setters for the block properties below.
-+ (void)setInputBlock:(EAInputBlock)block;
-+ (EAInputBlock)getInputBlock;
+- (void)setInputBlock:(EAInputBlock)block;
+//+ (EAInputBlock)getInputBlock;
+-(void) initProtocol;
+@property (atomic, copy) EAInputBlock inputBlock;
 
 - (void)getGpioState;
 - (void)setGpioState:(uint8_t)gpio;

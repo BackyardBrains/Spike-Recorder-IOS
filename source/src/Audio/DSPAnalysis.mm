@@ -284,10 +284,10 @@ void DSPAnalysis::CalculateDynamicFFTDuringSeek(BBAudioFileReader *fileReader, U
     int differenceInBeginingOfFile = realBeginingOfDataInFile - beginingOfDataInFile;
     
     //make big buffer that will take all data
-    float * tempData = (float *)calloc(realEndOfDataInFile-beginingOfDataInFile, sizeof(float));
+    float * tempData = (float *)calloc(numberOfChannels*(realEndOfDataInFile-beginingOfDataInFile), sizeof(float));
     //get all data
    
-    [fileReader retrieveFreshAudio:&tempData[differenceInBeginingOfFile] numFrames:(UInt32)(realEndOfDataInFile-realBeginingOfDataInFile) numChannels:numberOfChannels seek:(UInt32)realBeginingOfDataInFile];
+    [fileReader retrieveFreshAudio:&tempData[numberOfChannels*differenceInBeginingOfFile] numFrames:(UInt32)(realEndOfDataInFile-realBeginingOfDataInFile) numChannels:numberOfChannels seek:(UInt32)realBeginingOfDataInFile];
     
     //make small buffer that will hold one window of data for FFT
     float * tempDataBuffer = (float *)calloc(LengthOfFFTData*2, sizeof(float));

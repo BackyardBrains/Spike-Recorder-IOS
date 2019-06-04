@@ -47,22 +47,28 @@ const uint8_t kHeaderBytes[] = {0xCA, 0x5C};
 }
 static  EAInputBlock inputBlock;
 
-+ (void)setInputBlock:(EAInputBlock)block
+/*+ (void)setInputBlock:(EAInputBlock)block
 {
     inputBlock = block;
 }
 + (EAInputBlock)getInputBlock
 {
     return inputBlock;
-}
+}*/
 - (id)init
 {
-    self = [super initWithProtocol:@"com.silabs.demo"];
+    self = [super init];//initWithProtocol:@"com.silabs.demo"];
    // DemoProtocol.inputBlock = nil;
     if (self) {
         // Initialize properties
     }
     return self;
+}
+
+-(void) initProtocol
+{
+     [super initWithProtocol:@"com.silabs.demo"];
+    
 }
 
 // Adds protocol header to payload, then queues the packet on the accessory
@@ -182,9 +188,10 @@ static  EAInputBlock inputBlock;
     
     if(numOfFrames>0)
     {
-        [[BBAudioManager bbAudioManager] addNewData:obuffer frames:numOfFrames channels:2];
+       // [[BBAudioManager bbAudioManager] addNewData:obuffer frames:numOfFrames channels:2];
+        self.inputBlock(obuffer,numOfFrames, 2);
     }
-        //inputBlock(floatDataPacket,len, 1);
+        //
     //}
     
 
