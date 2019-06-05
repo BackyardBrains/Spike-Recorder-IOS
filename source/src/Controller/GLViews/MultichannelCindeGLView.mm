@@ -609,7 +609,7 @@
         
         if([dataSourceDelegate respondsToSelector:@selector(setVisibilityForConfigButton:)])
         {
-            [dataSourceDelegate setVisibilityForConfigButton:[[BBAudioManager bbAudioManager] amDemodulationIsON]];
+            [dataSourceDelegate setVisibilityForConfigButton:[[BBAudioManager bbAudioManager] amDemodulationIsON] || [[BBAudioManager bbAudioManager] externalAccessoryOn]];
         }
 
         // this pair of lines is the standard way to clear the screen in OpenGL

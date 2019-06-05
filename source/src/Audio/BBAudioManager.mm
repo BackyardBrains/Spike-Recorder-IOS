@@ -1112,7 +1112,7 @@ static BBAudioManager *bbAudioManager = nil;
     //calculate begining and end of interval to display
 
     UInt32 targetFrame = (UInt32)(newSeekPosition * ((float)_sourceSamplingRate));
-    int startFrame = targetFrame - maxNumberOfSamplesToDisplay;
+    int startFrame = targetFrame - MAX_NUMBER_OF_FFT_SEC*_sourceSamplingRate;
     if(startFrame<0)
     {
         startFrame = 0;
@@ -1163,7 +1163,7 @@ static BBAudioManager *bbAudioManager = nil;
     [avPlayer release];
     avPlayer = nil;
     
-
+    _selectedChannel = 0;
     //Free memory
     [self resetBuffers];
     
@@ -1423,7 +1423,12 @@ static BBAudioManager *bbAudioManager = nil;
 
 -(UInt32) lengthOfFFTData
 {
-    return dspAnalizer->LengthOfFFTData;
+    return dspAnalizer->dLengthOfFFTData;
+}
+
+-(float) baseFFTFrequency
+{
+    return dspAnalizer->oneFrequencyStep;
 }
 
 -(UInt32) lengthOf30HzData
@@ -1650,6 +1655,7 @@ static BBAudioManager *bbAudioManager = nil;
     {
         [[BBAnalysisManager bbAnalysisManager] clearRTSpikes];
     }
+   
 }
 
 //private. Starts selection functionality

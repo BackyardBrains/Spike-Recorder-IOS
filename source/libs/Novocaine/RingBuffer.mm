@@ -189,9 +189,9 @@ float RingBuffer::FetchFreshData2(float *outData, SInt64 numFrames, SInt64 which
     else { // if we will overrun, then we need to do two separate copies.
        // NSLog(@"fetch audio 5");
         // The copy that bleeds off the left, and cycles back to the right of the ring buffer
-        int numSamplesInFirstCopy = numFrames - mLastWrittenIndex[whichChannel];
+        int numSamplesInFirstCopy = numFrames - (mLastWrittenIndex[whichChannel]+1);
         // The copy that starts at the beginning, and proceeds to the end.
-        int numSamplesInSecondCopy = mLastWrittenIndex[whichChannel];
+        int numSamplesInSecondCopy = mLastWrittenIndex[whichChannel]+1;
         
         
         float zero = 0.0f;

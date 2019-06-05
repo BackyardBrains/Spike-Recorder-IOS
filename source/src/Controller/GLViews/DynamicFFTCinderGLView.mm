@@ -91,7 +91,7 @@
     [[NSUserDefaults standardUserDefaults] registerDefaults:defaultsDict];
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
-    numberOfSamplesMax = [[defaults valueForKey:@"numSamplesMaxNew"] floatValue];
+    numberOfSamplesMax = inMaxTime*[[BBAudioManager bbAudioManager] sourceSamplingRate];// [[defaults valueForKey:@"numSamplesMaxNew"] floatValue];
     
     //Make x coordinates for raw signal
     rawSignal = PolyLine2f();

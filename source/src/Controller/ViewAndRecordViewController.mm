@@ -361,7 +361,7 @@
     self.configButton.hidden = !setVisible;
     
     int filterSettings = [[BBAudioManager bbAudioManager] currentFilterSettings];
-    if(filterSettings == FILTER_SETTINGS_EEG || filterSettings == FILTER_SETTINGS_RAW || filterSettings == FILTER_SETTINGS_CUSTOM)
+    if(filterSettings == FILTER_SETTINGS_EEG || filterSettings == FILTER_SETTINGS_RAW || filterSettings == FILTER_SETTINGS_CUSTOM || [[BBAudioManager bbAudioManager] externalAccessoryOn])
     {
         self.fftButton.hidden = !setVisible;
     }

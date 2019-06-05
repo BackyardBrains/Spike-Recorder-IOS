@@ -178,6 +178,8 @@
 -(void) startDynanimcFFTForRecording:(BBFile *) newFile;
 -(UInt32) indexOfFFTGraphBuffer;
 -(UInt32) lenghtOfFFTGraphBuffer;
+-(float) baseFFTFrequency;
+-(void) recalculateFFT;
 
 
 
