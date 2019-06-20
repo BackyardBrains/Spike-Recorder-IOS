@@ -153,10 +153,11 @@
             
             //draw  STD
             [self setGLColor:[BYBGLView getSpikeTrainColorWithIndex:i transparency:1.0f]];
-            glLineWidth(10.0f);
+
             for(int j=0;j<lengthOfGraphData;j++)
             {
-                gl::drawLine(Vec2f(tempGraph.getPoints()[j].x, spikes[i].bottomSTDLine[j]*zoom + actualOffSet), Vec2f(tempGraph.getPoints()[j].x, spikes[i].topSTDLine[j]*zoom + actualOffSet));
+                /*gl::drawLine(Vec2f(tempGraph.getPoints()[j].x, spikes[i].bottomSTDLine[j]*zoom + actualOffSet), Vec2f(tempGraph.getPoints()[j].x, spikes[i].topSTDLine[j]*zoom + actualOffSet));*/
+                gl::drawSolidRect( Rectf(tempGraph.getPoints()[j].x,spikes[i].bottomSTDLine[j]*zoom + actualOffSet,tempGraph.getPoints()[j].x+tempGraph.getPoints()[1].x-tempGraph.getPoints()[0].x,spikes[i].topSTDLine[j]*zoom + actualOffSet));
                 
             }
             
