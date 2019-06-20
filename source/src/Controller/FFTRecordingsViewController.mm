@@ -86,7 +86,7 @@
 
     float maxTime = MAX_NUMBER_OF_FFT_SEC;
     glView = [[DynamicFFTCinderGLView alloc] initWithFrame:self.view.frame];
-    float baseFreq = 0.5*((float)[[BBAudioManager bbAudioManager] sourceSamplingRate])/((float)[[BBAudioManager bbAudioManager] lengthOfFFTData]);
+    float baseFreq = [[BBAudioManager bbAudioManager] baseFFTFrequency];
     [glView setupWithBaseFreq:baseFreq lengthOfFFT:[[BBAudioManager bbAudioManager] lengthOf30HzData] numberOfGraphs:[[BBAudioManager bbAudioManager] lenghtOfFFTGraphBuffer] maxTime:maxTime];
     [[BBAudioManager bbAudioManager] selectChannel:0];
     glView.masterDelegate = self;
@@ -127,6 +127,9 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
     [glView stopAnimation];
     [[BBAudioManager bbAudioManager] stopFFT];
+    [[BBAudioManager bbAudioManager] clearWaveform];
+    dispatch_suspend(callbackTimer);
+    [[BBAudioManager bbAudioManager] stopPlaying];
     
 }
 
@@ -172,9 +175,14 @@
      [[BBAudioManager bbAudioManager] startDynanimcFFTForRecording:bbfile];
     float maxTime = 10.0f;
     glView = [[DynamicFFTCinderGLView alloc] initWithFrame:self.view.frame];
-    float baseFreq = 0.5*((float)[[BBAudioManager bbAudioManager] sourceSamplingRate])/((float)[[BBAudioManager bbAudioManager] lengthOfFFTData]);
+    float baseFreq = [[BBAudioManager bbAudioManager] baseFFTFrequency];
     [glView setupWithBaseFreq:baseFreq lengthOfFFT:[[BBAudioManager bbAudioManager] lengthOf30HzData] numberOfGraphs:[[BBAudioManager bbAudioManager] lenghtOfFFTGraphBuffer] maxTime:maxTime];
     [[BBAudioManager bbAudioManager] selectChannel:0];
+    //autorange vertical scale on double tap
+    UITapGestureRecognizer *doubleTap = [[[UITapGestureRecognizer alloc] initWithTarget: self action:@selector(doubleTapHandler)] autorelease];
+    doubleTap.numberOfTapsRequired = 2;
+    [glView addGestureRecognizer:doubleTap];
+    [self doubleTapHandler];
     _channelBtn.hidden = [[BBAudioManager bbAudioManager] sourceNumberOfChannels]<2;
     [self.view addSubview:glView];
     [self.view sendSubviewToBack:glView];
@@ -322,9 +330,20 @@
 
 - (void)rowSelected:(NSInteger) rowIndex
 {
+    bool rememberIfPlaying = [[BBAudioManager bbAudioManager] playing];
+    [[BBAudioManager bbAudioManager] pausePlaying];
     [[BBAudioManager bbAudioManager] selectChannel:rowIndex];
+   [[BBAudioManager bbAudioManager] setSeekTime:[[BBAudioManager bbAudioManager] currentFileTime]];
+   [[BBAudioManager bbAudioManager] recalculateFFT];
+        
+    
+    
     [popover dismissPopoverAnimated:YES];
     [self startBackButtonCountdown];
+    if(rememberIfPlaying)
+    {
+        [[BBAudioManager bbAudioManager] resumePlaying];
+    }
 }
 
 
@@ -371,6 +390,10 @@
                              self.channelBtn.alpha = 1;
                              _channelBtn.hidden = hideChannelButton;
                          } completion:^(BOOL finished) {
+                             backButtonActive = YES;
+                             self.backButton.alpha = 1;
+                             self.backButton.hidden = NO;
+                             self.channelBtn.alpha = 1;
                              [self startBackButtonCountdown];
                          }];
     }
@@ -389,6 +412,7 @@
 
 -(void) startBackButtonCountdown
 {
+    
     if(touchTimer)
     {
         [touchTimer invalidate];
@@ -407,8 +431,11 @@
                          self.backButton.alpha = 0;
                          self.channelBtn.alpha = 0;
                      } completion:^(BOOL finished) {
-                         self.backButton.hidden = YES;
-                         self.channelBtn.hidden = YES;
+                         if(!backButtonActive)
+                         {
+                             self.backButton.hidden = YES;
+                             self.channelBtn.hidden = YES;
+                         }
                      }];
 }
 

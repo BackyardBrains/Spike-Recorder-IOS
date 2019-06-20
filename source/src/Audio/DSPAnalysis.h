@@ -45,36 +45,38 @@ public:
     
     
     //length of FFT window. Must be 2^N
-    UInt32 LengthOfFFTData;
+    UInt32 dLengthOfFFTData;
     UInt32 LengthOf30HzData;
     UInt32 GraphBufferIndex;
     UInt32 NumberOfGraphsInBuffer;
+    float oneFrequencyStep;
 private:
     
     UInt32 mPercOverlapOfWindow;
-    UInt32 mNumberOfSamplesBetweenWindows;
+    UInt32 oNumberOfSamplesBetweenWindows;
     UInt32 mNumberOfGraphsInBuffer;
     float mBufferMaxSec;
-    UInt32 mNumberOfSamplesWhaitingForAnalysis;
+    UInt32 oNumberOfSamplesWhaitingForAnalysis;
     
     // Ring buffer used as an input for FFT
     RingBuffer *mExternalRingBuffer;
     //Number of channels at input of FFT
     UInt32 mNumberOfChannels;
     //Sampling rate of input data in mExternalRingBuffer
-    float mSamplingRate;
+    float oSamplingRate;
     //FFT calculation variables
-    float *mInputBuffer;
+    float *oInputBuffer;
     float *mOutputBuffer;
-    UInt32 mLengthOfWindow;
+    UInt32 oLengthOfWindow;
+    float downsamplingFactor;
     COMPLEX_SPLIT A;
     FFTSetup fftSetup;
-    FFTSetup fftSetupOptimized;
+    //FFTSetup fftSetupOptimized;
     float maxMagnitude;
     float halfMaxMagnitude;
-    float maxMagnitudeOptimized;
-    float halfMaxMagnitudeOptimized;
+    //float maxMagnitudeOptimized;
+    //float halfMaxMagnitudeOptimized;
     
     
-    float oneFrequencyStep;
+    
 };

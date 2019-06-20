@@ -9,6 +9,8 @@
 #import <Crashlytics/Crashlytics.h>
 #import <ObjectiveDropboxOfficial/ObjectiveDropboxOfficial.h>
 
+
+
 //Tab bar pages indexes
 #define kViewRecordTabBarIndex  0
 #define kThresholdTabBarIndex   1
@@ -18,8 +20,17 @@
 @implementation MyAppDelegate
 
 @synthesize tabBarController;
+//------------------------------ MFI ----------------------------------
+static DemoProtocol *demoProtocol;
+//------------------------------ MFI ----------------------------------
+
 
 #pragma mark - CCGLTouchAppDelegate functions
+
++(DemoProtocol*) getEaManager
+{
+    return demoProtocol;
+}
 
 //
 // This "launch" is called on the end of "application: didFinishLaunchingWithOptions"
@@ -49,6 +60,11 @@
     [DBClientsManager setupWithAppKey:@"r3clmvcekkjiams"];
     
     [UIApplication sharedApplication].idleTimerDisabled = YES;
+    
+//------------------------------ MFI ----------------------------------
+     demoProtocol = [[DemoProtocol alloc] init];
+    [demoProtocol initProtocol];
+//------------------------------ MFI ----------------------------------
 }
 
 #pragma mark - Application management
@@ -60,6 +76,11 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setValue:[NSNumber numberWithInt:tabBarController.selectedIndex] forKey:@"tabIndex"];
     [defaults synchronize];
+    
+    
+//------------------------------ MFI ----------------------------------
+     demoProtocol = nil;
+//------------------------------ MFI ----------------------------------
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application

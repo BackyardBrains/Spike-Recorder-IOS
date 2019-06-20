@@ -19,7 +19,7 @@ DSPAnalysis::~DSPAnalysis()
 
 DSPAnalysis::DSPAnalysis ()
 {
-    mInputBuffer = nil;
+    oInputBuffer = nil;
     mOutputBuffer = nil;
     FFTMagnitude = nil;
     FFTDynamicMagnitude = nil;
@@ -35,27 +35,27 @@ void DSPAnalysis::InitFFT(RingBuffer *externalRingBuffer, UInt32 numberOfChannel
 {
     mExternalRingBuffer = externalRingBuffer;
     mNumberOfChannels = numberOfChannels;
-    mSamplingRate = (float)samplingRate;
-    mLengthOfWindow = lengthOfWindow;//1024 - must be 2^N
-    LengthOfFFTData = lengthOfWindow/2;
+    oSamplingRate = (float)samplingRate;
+    oLengthOfWindow = lengthOfWindow;//1024 - must be 2^N
+    dLengthOfFFTData = lengthOfWindow/2;
     
     /* vector allocations*/
-    if(mInputBuffer)
+    if(oInputBuffer)
     {
-        free(mInputBuffer);
+        free(oInputBuffer);
         free(mOutputBuffer);
         free(FFTMagnitude);
         free(A.realp);
         free(A.imagp);
     }
-    mInputBuffer = new float [lengthOfWindow];
+    oInputBuffer = new float [lengthOfWindow];
     mOutputBuffer = new float[lengthOfWindow];
-    FFTMagnitude = new float[LengthOfFFTData];
+    FFTMagnitude = new float[dLengthOfFFTData];
     
-    uint32_t log2n = log2f((float)mLengthOfWindow);
+    uint32_t log2n = log2f((float)oLengthOfWindow);
     
-    A.realp = (float*) malloc(sizeof(float) * LengthOfFFTData);
-    A.imagp = (float*) malloc(sizeof(float) * LengthOfFFTData);
+    A.realp = (float*) malloc(sizeof(float) * dLengthOfFFTData);
+    A.imagp = (float*) malloc(sizeof(float) * dLengthOfFFTData);
     
     //Make FFT config
     fftSetup = vDSP_create_fftsetup(log2n, FFT_RADIX2);
@@ -68,18 +68,18 @@ void DSPAnalysis::InitFFT(RingBuffer *externalRingBuffer, UInt32 numberOfChannel
 float * DSPAnalysis::CalculateFFT(UInt32 whichChannel)
 {
     //Get data from ring buffer
-    mExternalRingBuffer->FetchFreshData2(mInputBuffer, mLengthOfWindow, whichChannel , 1);
+    mExternalRingBuffer->FetchFreshData2(oInputBuffer, oLengthOfWindow, whichChannel , 1);
     
-    uint32_t log2n = log2f((float)mLengthOfWindow);
+    uint32_t log2n = log2f((float)oLengthOfWindow);
     /* Carry out a Forward FFT transform. */
-    vDSP_ctoz((COMPLEX *) mInputBuffer, 2, &A, 1, LengthOfFFTData);
+    vDSP_ctoz((COMPLEX *) oInputBuffer, 2, &A, 1, dLengthOfFFTData);
     vDSP_fft_zrip(fftSetup, &A, 1, log2n, FFT_FORWARD);
     
     //Calculate DC component
     FFTMagnitude[0] = sqrtf(A.realp[0]*A.realp[0]);
     
     //Calculate magnitude for all freq.
-    for(int i = 1; i < LengthOfFFTData; i++){
+    for(int i = 1; i < dLengthOfFFTData; i++){
         FFTMagnitude[i] = sqrtf(A.realp[i]*A.realp[i] + A.imagp[i] * A.imagp[i]);
     }
     
@@ -89,7 +89,8 @@ float * DSPAnalysis::CalculateFFT(UInt32 whichChannel)
 
 
 //----------------- Dynamic FFT -------------------------------------------
-
+#define FIXED_SIZE_OF_FFT_DATA 512
+#define FIXED_SIZE_OF_WINDOW_IN_SEC 4
 void DSPAnalysis::InitDynamicFFT(RingBuffer *externalRingBuffer, UInt32 numberOfChannels, UInt32 samplingRate, UInt32 lengthOfWindow, UInt32 percOverlapOfWindows, float bufferMaxSeconds)
 {
     //First deallocate buffer before we overwrite mNumberOfGraphsInBuffer
@@ -104,17 +105,19 @@ void DSPAnalysis::InitDynamicFFT(RingBuffer *externalRingBuffer, UInt32 numberOf
     
     mExternalRingBuffer = externalRingBuffer;
     mNumberOfChannels = numberOfChannels;
-    mSamplingRate = (float)samplingRate;
-    mLengthOfWindow = lengthOfWindow;//1024 - must be 2^N
-    LengthOfFFTData = lengthOfWindow/2;
+    oSamplingRate = (float)samplingRate;
+    oLengthOfWindow = FIXED_SIZE_OF_WINDOW_IN_SEC*oSamplingRate;//4 seconds
+    downsamplingFactor = (oLengthOfWindow/(float)FIXED_SIZE_OF_FFT_DATA);
+    float dSamplingRate = oSamplingRate/downsamplingFactor;
+    dLengthOfFFTData = FIXED_SIZE_OF_FFT_DATA;
     
-    oneFrequencyStep = 0.5*samplingRate/((float)LengthOfFFTData);
+    oneFrequencyStep = dSamplingRate/((float)dLengthOfFFTData);
     LengthOf30HzData = 32/oneFrequencyStep;//we will use only low freq. data
     
     
-    if(LengthOfFFTData<2)
+    if(dLengthOfFFTData<2)
     {
-        LengthOfFFTData = 2;
+        dLengthOfFFTData = 2;
     }
     
     if(percOverlapOfWindows>99)
@@ -123,23 +126,23 @@ void DSPAnalysis::InitDynamicFFT(RingBuffer *externalRingBuffer, UInt32 numberOf
     }
     mPercOverlapOfWindow = percOverlapOfWindows;
     
-    mNumberOfSamplesBetweenWindows = mLengthOfWindow*(1.0f-(((float)percOverlapOfWindows)/100.0f));
+    oNumberOfSamplesBetweenWindows = oLengthOfWindow*(1.0f-(((float)mPercOverlapOfWindow)/100.0f));
     
     if(bufferMaxSeconds<=0.0f)
     {
         bufferMaxSeconds = 0.1;
     }
-    mBufferMaxSec = bufferMaxSeconds;
+    mBufferMaxSec = bufferMaxSeconds;//6 seconds
     
     //we add 4 here so that we can add new data asinc with draw graph function and avoid graphic glitches
-    NumberOfGraphsInBuffer =4 + (bufferMaxSeconds*mSamplingRate)/((float)mNumberOfSamplesBetweenWindows);
+    NumberOfGraphsInBuffer =4 + (mBufferMaxSec*oSamplingRate)/((float)oNumberOfSamplesBetweenWindows);
     
-    mNumberOfSamplesWhaitingForAnalysis = 0;
+    oNumberOfSamplesWhaitingForAnalysis = 0;
     
     /* vector allocations*/
-    if(mInputBuffer)
+    if(oInputBuffer)
     {
-        free(mInputBuffer);
+        free(oInputBuffer);
         free(mOutputBuffer);
         free(FFTMagnitude);
         free(A.realp);
@@ -150,9 +153,9 @@ void DSPAnalysis::InitDynamicFFT(RingBuffer *externalRingBuffer, UInt32 numberOf
     //as long as it is big enough to hold
     //one portion of data arriving from input source
     //(for mic audio it is usualy 1024)
-    mInputBuffer = new float [lengthOfWindow*10];
+    oInputBuffer = new float [oLengthOfWindow*10];
     
-    mOutputBuffer = new float[lengthOfWindow];
+    mOutputBuffer = new float[oLengthOfWindow];
     
     int i,k;
     
@@ -173,45 +176,54 @@ void DSPAnalysis::InitDynamicFFT(RingBuffer *externalRingBuffer, UInt32 numberOf
     
     
     
-    uint32_t log2n = log2f((float)mLengthOfWindow);
     
-    A.realp = (float*) malloc(sizeof(float) * LengthOfFFTData);
-    A.imagp = (float*) malloc(sizeof(float) * LengthOfFFTData);
+    uint32_t log2n = log2f((float)dLengthOfFFTData);
+    A.realp = (float*) malloc(sizeof(float) * dLengthOfFFTData);
+    A.imagp = (float*) malloc(sizeof(float) * dLengthOfFFTData);
     
     //Make FFT config
     fftSetup = vDSP_create_fftsetup(log2n, FFT_RADIX2);
     
-    fftSetupOptimized = vDSP_create_fftsetup(log2f((float)mLengthOfWindow/512), FFT_RADIX2);
+    
+    
+    
     
     GraphBufferIndex = 0;
-    maxMagnitude = 20;
-    halfMaxMagnitude = 20;
-    maxMagnitudeOptimized = 4.83;
-    halfMaxMagnitudeOptimized =maxMagnitudeOptimized*0.5;
+    maxMagnitude = 4.83;
+    halfMaxMagnitude = maxMagnitude*0.5;
+    //maxMagnitudeOptimized = ;
+   // halfMaxMagnitudeOptimized =maxMagnitudeOptimized*0.5;
 }
 
 
 void DSPAnalysis::CalculateDynamicFFT(const float *data, UInt32 numberOfFramesInData, UInt32 whichChannel)
 {
-    mNumberOfSamplesWhaitingForAnalysis += numberOfFramesInData;
-    int numberOfWindowsToAdd = mNumberOfSamplesWhaitingForAnalysis/mNumberOfSamplesBetweenWindows;
+    oNumberOfSamplesWhaitingForAnalysis += numberOfFramesInData;
+    int numberOfWindowsToAdd = oNumberOfSamplesWhaitingForAnalysis/oNumberOfSamplesBetweenWindows;
 
     if(numberOfWindowsToAdd==0)
     { //if we don't have enough data
         return;
     }
     
-    
     //Get data from ring buffer
-    mExternalRingBuffer->FetchFreshData2(mInputBuffer, LengthOfFFTData*2, whichChannel , 1);
-    
+    mExternalRingBuffer->FetchFreshData2(oInputBuffer, oLengthOfWindow, whichChannel , 1);
+    float * tempDataBuffer = (float *)calloc(dLengthOfFFTData*2, sizeof(float));
+    float zero = 0.0f;
+    uint32_t log2n = log2f((float)dLengthOfFFTData);
+        
+        
     for(int i=0;i<numberOfWindowsToAdd;i++)
     {
-        uint32_t log2n = log2f((float)mLengthOfWindow);
-        
-        
+        //get data for just one FFT window in small buffer
+        vDSP_vsadd((float *)&oInputBuffer[i*oNumberOfSamplesBetweenWindows],
+                   downsamplingFactor,
+                   &zero,
+                   tempDataBuffer,
+                   1,
+                   dLengthOfFFTData);
         /* Carry out a Forward FFT transform. */
-        vDSP_ctoz((COMPLEX *) &mInputBuffer[i*mNumberOfSamplesBetweenWindows], 2, &A, 1, LengthOfFFTData);
+        vDSP_ctoz((COMPLEX *) tempDataBuffer, 2, &A, 1, dLengthOfFFTData);
         vDSP_fft_zrip(fftSetup, &A, 1, log2n, FFT_FORWARD);
         
         //Calculate DC component
@@ -224,15 +236,14 @@ void DSPAnalysis::CalculateDynamicFFT(const float *data, UInt32 numberOfFramesIn
             {
                 maxMagnitude = FFTDynamicMagnitude[GraphBufferIndex][ind];
                 halfMaxMagnitude = maxMagnitude*0.5f;
-                maxMagnitudeOptimized = FFTDynamicMagnitude[GraphBufferIndex][ind]*0.001953125;//1/512
-                halfMaxMagnitudeOptimized = maxMagnitudeOptimized*0.5f;
             }
             // NSLog(@"%f", halfMaxMagnitude);
             FFTDynamicMagnitude[GraphBufferIndex][ind] = (FFTDynamicMagnitude[GraphBufferIndex][ind]/halfMaxMagnitude)-1.0;
         }
+        GraphBufferIndex = (GraphBufferIndex+1)%NumberOfGraphsInBuffer;
     }
-    mNumberOfSamplesWhaitingForAnalysis -= numberOfWindowsToAdd*mNumberOfSamplesBetweenWindows;
-    GraphBufferIndex = (GraphBufferIndex+1)%NumberOfGraphsInBuffer;
+    oNumberOfSamplesWhaitingForAnalysis -= numberOfWindowsToAdd*oNumberOfSamplesBetweenWindows;
+    
 }
 
 void DSPAnalysis::resetFFTMagnitudeBuffer()
@@ -251,8 +262,8 @@ void DSPAnalysis::resetFFTMagnitudeBuffer()
 void DSPAnalysis::CalculateDynamicFFTDuringSeek(BBAudioFileReader *fileReader, UInt32 numberOfFramesToGet, UInt32 startFrame, UInt32 numberOfChannels, UInt32 whichChannel)
 {
     
-    mNumberOfSamplesWhaitingForAnalysis = numberOfFramesToGet;
-    int numberOfWindowsToAdd = mNumberOfSamplesWhaitingForAnalysis/mNumberOfSamplesBetweenWindows;
+    oNumberOfSamplesWhaitingForAnalysis = numberOfFramesToGet;
+    int numberOfWindowsToAdd = oNumberOfSamplesWhaitingForAnalysis/oNumberOfSamplesBetweenWindows;
     
     //clear all FFT data
     resetFFTMagnitudeBuffer();
@@ -267,7 +278,7 @@ void DSPAnalysis::CalculateDynamicFFTDuringSeek(BBAudioFileReader *fileReader, U
     
     //calculate begining of the FFT processing. Starting frame is length of FFT before
     //displayed signal since that is how FFT is processed in live view
-    int beginingOfDataInFile = startFrame-LengthOfFFTData*2;
+    int beginingOfDataInFile = startFrame-oLengthOfWindow;
     //make sure that file reading will end on startFrame + numberOfFramesToGet
     //because we need to finish file reading where raw signal ends
     realEndOfDataInFile =startFrame + numberOfFramesToGet;
@@ -284,56 +295,54 @@ void DSPAnalysis::CalculateDynamicFFTDuringSeek(BBAudioFileReader *fileReader, U
     int differenceInBeginingOfFile = realBeginingOfDataInFile - beginingOfDataInFile;
     
     //make big buffer that will take all data
-    float * tempData = (float *)calloc(realEndOfDataInFile-beginingOfDataInFile, sizeof(float));
+    float * tempData = (float *)calloc(numberOfChannels*(realEndOfDataInFile-beginingOfDataInFile), sizeof(float));
     //get all data
    
-    [fileReader retrieveFreshAudio:&tempData[differenceInBeginingOfFile] numFrames:(UInt32)(realEndOfDataInFile-realBeginingOfDataInFile) numChannels:numberOfChannels seek:(UInt32)realBeginingOfDataInFile];
+    [fileReader retrieveFreshAudio:&tempData[numberOfChannels*differenceInBeginingOfFile] numFrames:(UInt32)(realEndOfDataInFile-realBeginingOfDataInFile) numChannels:numberOfChannels seek:(UInt32)realBeginingOfDataInFile];
     
     //make small buffer that will hold one window of data for FFT
-    float * tempDataBuffer = (float *)calloc(LengthOfFFTData*2, sizeof(float));
+    float * tempDataBuffer = (float *)calloc(dLengthOfFFTData*2, sizeof(float));
     float zero = 0.0f;
 
-    int downsampleFactor = 512;
-    uint32_t log2n = log2f((float)mLengthOfWindow/downsampleFactor);
+    
+    uint32_t log2n = log2f((float)dLengthOfFFTData);
     
     for(int i=0;i<numberOfWindowsToAdd;i++)
     {
 
         //get data for just one FFT window in small buffer
-        vDSP_vsadd((float *)&tempData[i*mNumberOfSamplesBetweenWindows+whichChannel],
-                   numberOfChannels*downsampleFactor,
+        vDSP_vsadd((float *)&tempData[i*numberOfChannels*oNumberOfSamplesBetweenWindows+whichChannel],
+                   numberOfChannels*downsamplingFactor,
                    &zero,
                    tempDataBuffer,
                    1,
-                   LengthOfFFTData*2/downsampleFactor);
+                   dLengthOfFFTData);
 
         /* Carry out a Forward FFT transform. */
-        vDSP_ctoz((COMPLEX *) tempDataBuffer, 2, &A, 1, LengthOfFFTData/downsampleFactor);
-        vDSP_fft_zrip(fftSetupOptimized, &A, 1, log2n, FFT_FORWARD);
+        vDSP_ctoz((COMPLEX *) tempDataBuffer, 2, &A, 1, dLengthOfFFTData);
+        vDSP_fft_zrip(fftSetup, &A, 1, log2n, FFT_FORWARD);
 
         
         //Calculate DC component
-        FFTDynamicMagnitude[GraphBufferIndex][0] = (sqrtf(A.realp[0]*A.realp[0])/halfMaxMagnitudeOptimized)-1.0;
+        FFTDynamicMagnitude[GraphBufferIndex][0] = (sqrtf(A.realp[0]*A.realp[0])/halfMaxMagnitude)-1.0;
 
         //Calculate magnitude for all freq.
         for(int ind = 1; ind < LengthOf30HzData; ind++){
             
             FFTDynamicMagnitude[GraphBufferIndex][ind] = sqrtf(A.realp[ind]*A.realp[ind] + A.imagp[ind] * A.imagp[ind]);
-            if(FFTDynamicMagnitude[GraphBufferIndex][ind]>maxMagnitudeOptimized)
+            if(FFTDynamicMagnitude[GraphBufferIndex][ind]>maxMagnitude)
             {
-                maxMagnitudeOptimized = FFTDynamicMagnitude[GraphBufferIndex][ind];
-                halfMaxMagnitudeOptimized = maxMagnitudeOptimized*0.5f;
-                maxMagnitude = FFTDynamicMagnitude[GraphBufferIndex][ind]*512.0;
+                maxMagnitude = FFTDynamicMagnitude[GraphBufferIndex][ind];
                 halfMaxMagnitude = maxMagnitude*0.5f;
             }
             // NSLog(@"%f", halfMaxMagnitude);
-            FFTDynamicMagnitude[GraphBufferIndex][ind] = (FFTDynamicMagnitude[GraphBufferIndex][ind]/halfMaxMagnitudeOptimized)-1.0;
+            FFTDynamicMagnitude[GraphBufferIndex][ind] = (FFTDynamicMagnitude[GraphBufferIndex][ind]/halfMaxMagnitude)-1.0;
         }
         GraphBufferIndex = (GraphBufferIndex+1)%NumberOfGraphsInBuffer;
 
     }
     
-    mNumberOfSamplesWhaitingForAnalysis -= numberOfWindowsToAdd*mNumberOfSamplesBetweenWindows;
+    oNumberOfSamplesWhaitingForAnalysis -= numberOfWindowsToAdd*oNumberOfSamplesBetweenWindows;
     free(tempDataBuffer);
     free(tempData);
     

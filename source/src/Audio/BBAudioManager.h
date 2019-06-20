@@ -17,6 +17,7 @@
 #import "NVHighpassFilter.h"
 #import "NVLowpassFilter.h"
 #import "NVNotchFilter.h"
+#import "DemoProtocol.h"
 
 #define RESETUP_SCREEN_NOTIFICATION @"resetupScreenNotification"
 #define FILTER_PARAMETERS_CHANGED @"filterParametersChanged"
@@ -110,6 +111,7 @@
 @property (readonly) BOOL selecting;
 @property (readonly) BOOL playing;
 @property (readonly) BOOL btOn;
+@property (readonly) BOOL externalAccessoryOn;
 @property (readonly) BOOL FFTOn;
 @property (readonly) BOOL ECGOn;
 @property (readonly) BOOL rtSpikeSorting;
@@ -159,6 +161,14 @@
 -(void) selectChannel:(int) selectedChannel;
 -(int) numberOfFramesBuffered;
 
+
+//Mfi
+-(void) switchToExternalDeviceWithChannels:(int)numberOfChannels andSampleRate:(int) inSampleRate;
+-(void) closeExternalDevice;
+-(void) addNewData:(float*)data frames:(int) numberOfFrames channels:(int) numberOfChannels;
+
+
+
 //FFT
 -(float **) getDynamicFFTResult;
 -(UInt32) lengthOfFFTData;
@@ -168,6 +178,8 @@
 -(void) startDynanimcFFTForRecording:(BBFile *) newFile;
 -(UInt32) indexOfFFTGraphBuffer;
 -(UInt32) lenghtOfFFTGraphBuffer;
+-(float) baseFFTFrequency;
+-(void) recalculateFFT;
 
 
 

@@ -66,8 +66,11 @@
     
     // set our view controller's prop that will hold a pointer to our newly created CCGLTouchView
     [self setGLView:glView];
-
-    [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
+    
+    
+   
+    
+   
     
     UITapGestureRecognizer *doubleTap = [[[UITapGestureRecognizer alloc] initWithTarget: self action:@selector(autorangeView)] autorelease];
     doubleTap.numberOfTapsRequired = 2;
@@ -83,7 +86,7 @@
     NSURL *theURL = [bbfile fileURL];
     NSLog(@"Playing a file at: %@", theURL);
     [[BBAudioManager bbAudioManager] startPlaying:bbfile]; // startPlaying: initializes the file and buffers audio
-    
+     [glView setNumberOfChannels: [bbfile numberOfChannels]  samplingRate:[bbfile samplingrate] andDataSource:self];
     // Set the slider to have the bounds of the audio file's duraiton
     timeSlider.minimumValue = 0;
     timeSlider.maximumValue = [BBAudioManager bbAudioManager].fileDuration;

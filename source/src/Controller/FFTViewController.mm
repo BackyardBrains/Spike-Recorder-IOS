@@ -45,7 +45,7 @@
     }
     float maxTime = MAX_NUMBER_OF_FFT_SEC;
     glView = [[DynamicFFTCinderGLView alloc] initWithFrame:self.view.frame];
-    float baseFreq = 0.5*((float)[[BBAudioManager bbAudioManager] sourceSamplingRate])/((float)[[BBAudioManager bbAudioManager] lengthOfFFTData]);
+    float baseFreq =[[BBAudioManager bbAudioManager] baseFFTFrequency];
     [glView setupWithBaseFreq:baseFreq lengthOfFFT:[[BBAudioManager bbAudioManager] lengthOf30HzData] numberOfGraphs:[[BBAudioManager bbAudioManager] lenghtOfFFTGraphBuffer] maxTime:maxTime];
     [[BBAudioManager bbAudioManager] selectChannel:0];
     glView.masterDelegate = self;
@@ -130,9 +130,14 @@
     }
     float maxTime = 10.0f;
     glView = [[DynamicFFTCinderGLView alloc] initWithFrame:self.view.frame];
-    float baseFreq = 0.5*((float)[[BBAudioManager bbAudioManager] sourceSamplingRate])/((float)[[BBAudioManager bbAudioManager] lengthOfFFTData]);
+    float baseFreq = [[BBAudioManager bbAudioManager] baseFFTFrequency];
     [glView setupWithBaseFreq:baseFreq lengthOfFFT:[[BBAudioManager bbAudioManager] lengthOf30HzData] numberOfGraphs:[[BBAudioManager bbAudioManager] lenghtOfFFTGraphBuffer] maxTime:maxTime];
     [[BBAudioManager bbAudioManager] selectChannel:0];
+    //autorange vertical scale on double tap
+    UITapGestureRecognizer *doubleTap = [[[UITapGestureRecognizer alloc] initWithTarget: self action:@selector(doubleTapHandler)] autorelease];
+    doubleTap.numberOfTapsRequired = 2;
+    [glView addGestureRecognizer:doubleTap];
+    [self doubleTapHandler];
     _channelBtn.hidden = [[BBAudioManager bbAudioManager] sourceNumberOfChannels]<2;
     [self.view addSubview:glView];
     [self.view sendSubviewToBack:glView];

@@ -13,6 +13,7 @@
 #import "BBChannel.h"
 #import <Accelerate/Accelerate.h>
 #import "BBECGAnalysis.h"
+#import "MyAppDelegate.h"
 
 //#define RING_BUFFER_SIZE 524288
 #define LENGTH_OF_EKG_BEEP_IN_SAMPLES 4851//0.11*44100
@@ -22,6 +23,7 @@ static BBAudioManager *bbAudioManager = nil;
 {
     Novocaine *audioManager;
     RingBuffer *ringBuffer;
+    DemoProtocol * eaManager;
     __block BBAudioFileWriter *fileWriter;
     __block BBAudioFileReader *fileReader;
     DSPThreshold *dspThresholder;
@@ -102,6 +104,7 @@ static BBAudioManager *bbAudioManager = nil;
 @synthesize playing;
 @synthesize seeking;
 @synthesize btOn;
+@synthesize externalAccessoryOn;
 @synthesize FFTOn;
 @synthesize ECGOn;
 @synthesize rtSpikeSorting;
@@ -157,7 +160,7 @@ static BBAudioManager *bbAudioManager = nil;
     if (self = [super init])
     {
         
-        
+        eaManager = [MyAppDelegate getEaManager];
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(filterParametersChanged) name:FILTER_PARAMETERS_CHANGED object:nil];
         
@@ -213,6 +216,7 @@ static BBAudioManager *bbAudioManager = nil;
         FFTOn = false;
         ECGOn = false;
         btOn = false;
+        externalAccessoryOn = false;
         rtSpikeSorting = false;
         
         [self filterParametersChanged];
@@ -250,33 +254,12 @@ static BBAudioManager *bbAudioManager = nil;
         
         ecgAnalysis = [[BBECGAnalysis alloc] init];
         [ecgAnalysis initECGAnalysisWithSamplingRate:_sourceSamplingRate numOfChannels:_sourceNumberOfChannels];
-        
-      /*  ekgBeepBuffer = (float *)calloc(LENGTH_OF_EKG_BEEP_IN_SAMPLES, sizeof(float));
-        int i;
-        int silentIndex = 44100*0.01;
-        float frequencyOfBeep =2000.0;
-        float periodInSamples = 44100.0/frequencyOfBeep;
-        float angleIncrement = (2.0f*M_PI)/(float)periodInSamples;
-        float angleForSin = 0;
-        for(i=0;i<LENGTH_OF_EKG_BEEP_IN_SAMPLES;i++)
-        {
-            if(i<silentIndex)
-            {
-                ekgBeepBuffer[i] = 0.0f;
-            }
-            else
-            {
-                
-                ekgBeepBuffer[i] = 100.1f*sinf(angleForSin);
-                angleForSin += angleIncrement;
-            }
-        }*/
 
-        
         currentFilterSettings = FILTER_SETTINGS_RAW;
         lpFilterCutoff = FILTER_LP_OFF;
         hpFilterCutoff = FILTER_HP_OFF;
         [audioManager play];
+        eaManager = [MyAppDelegate getEaManager];
     }
     
     return self;
@@ -435,7 +418,43 @@ static BBAudioManager *bbAudioManager = nil;
     return 0;//[[BBBTManager btManager] numberOfFramesBuffered];
 }
 
+#pragma mark - External accessory MFi
 
+-(void) switchToExternalDeviceWithChannels:(int)numberOfChannels andSampleRate:(int) inSampleRate
+{
+    [self stopAllInputOutput];
+    externalAccessoryOn = true;
+    NSLog(@"External accessories ON");
+    _sourceSamplingRate=inSampleRate;
+    _sourceNumberOfChannels= numberOfChannels;
+    
+    
+    [self resetBuffers];
+    [self makeInputOutput];
+    [[NSNotificationCenter defaultCenter] postNotificationName:RESETUP_SCREEN_NOTIFICATION object:self];
+}
+-(void) closeExternalDevice
+{
+    [self stopAllInputOutput];
+    externalAccessoryOn = false;
+    NSLog(@"External accessories OFF");
+    _sourceSamplingRate =  audioManager.samplingRate;
+    _sourceNumberOfChannels = audioManager.numInputChannels;
+    [self resetBuffers];
+    [self makeInputOutput];
+    [[NSNotificationCenter defaultCenter] postNotificationName:RESETUP_SCREEN_NOTIFICATION object:self];
+}
+
+-(void) addNewData:(float*)data frames:(int) numberOfFrames channels:(int) numberOfChannels
+{
+    if(ringBuffer == NULL)
+    {
+        NSLog(@"/n/n ERROR in Input block %p", self);
+        return;
+    }
+    [self additionalProcessingOfInputData:data forNumOfFrames:numberOfFrames andNumChannels:numberOfChannels];
+    ringBuffer->AddNewInterleavedFloatData(data, numberOfFrames, numberOfChannels);
+}
 #pragma mark - Helper functions
 
 
@@ -447,8 +466,10 @@ static BBAudioManager *bbAudioManager = nil;
     
     audioManager.outputBlock = nil;
     [audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
-        
-        
+    }];
+    
+    
+    [eaManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
         
     }];
    // audioManager.inputBlock = nil;
@@ -456,7 +477,7 @@ static BBAudioManager *bbAudioManager = nil;
 
 -(void) getChannelsConfig
 {
-    if(btOn)
+    if(externalAccessoryOn)
     {
      /*   _sourceSamplingRate =  [[BBBTManager btManager] samplingRate];
         _sourceNumberOfChannels = [[BBBTManager btManager] numberOfChannels];*/
@@ -508,17 +529,34 @@ static BBAudioManager *bbAudioManager = nil;
 {
      NSLog(@"makeInputOutput %p\n",audioManager);
     
-    // Replace the input block with the old input block, where we just save an in-memory copy of the audio.
-    [audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
+    if(externalAccessoryOn)
     {
-        if(ringBuffer == NULL)
-        {
-            NSLog(@"/n/n ERROR in Input block %p", self);
-            return;
-        }
-        [self additionalProcessingOfInputData:data forNumOfFrames:numFrames andNumChannels:numChannels];
-        ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
-    }];
+        // Replace the input block with the old input block, where we just save an in-memory copy of the audio.
+        [eaManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
+         {
+             if(ringBuffer == NULL)
+             {
+                 NSLog(@"/n/n ERROR in Input block %p", self);
+                 return;
+             }
+             [self additionalProcessingOfInputData:data forNumOfFrames:numFrames andNumChannels:numChannels];
+             ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
+         }];
+    }
+    else
+    {
+            // Replace the input block with the old input block, where we just save an in-memory copy of the audio.
+            [audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
+            {
+                if(ringBuffer == NULL)
+                {
+                    NSLog(@"/n/n ERROR in Input block %p", self);
+                    return;
+                }
+                [self additionalProcessingOfInputData:data forNumOfFrames:numFrames andNumChannels:numChannels];
+                ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
+            }];
+    }
 }
 
 
@@ -1074,7 +1112,7 @@ static BBAudioManager *bbAudioManager = nil;
     //calculate begining and end of interval to display
 
     UInt32 targetFrame = (UInt32)(newSeekPosition * ((float)_sourceSamplingRate));
-    int startFrame = targetFrame - maxNumberOfSamplesToDisplay;
+    int startFrame = targetFrame - MAX_NUMBER_OF_FFT_SEC*_sourceSamplingRate;
     if(startFrame<0)
     {
         startFrame = 0;
@@ -1125,7 +1163,7 @@ static BBAudioManager *bbAudioManager = nil;
     [avPlayer release];
     avPlayer = nil;
     
-
+    _selectedChannel = 0;
     //Free memory
     [self resetBuffers];
     
@@ -1385,7 +1423,12 @@ static BBAudioManager *bbAudioManager = nil;
 
 -(UInt32) lengthOfFFTData
 {
-    return dspAnalizer->LengthOfFFTData;
+    return dspAnalizer->dLengthOfFFTData;
+}
+
+-(float) baseFFTFrequency
+{
+    return dspAnalizer->oneFrequencyStep;
 }
 
 -(UInt32) lengthOf30HzData
@@ -1612,6 +1655,7 @@ static BBAudioManager *bbAudioManager = nil;
     {
         [[BBAnalysisManager bbAnalysisManager] clearRTSpikes];
     }
+   
 }
 
 //private. Starts selection functionality
