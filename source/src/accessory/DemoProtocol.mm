@@ -42,7 +42,17 @@ const uint8_t kHeaderBytes[] = {0xCA, 0x5C};
     float floatDataPacket[PROTOCOL_PACKET_SIZE];
     char circularBuffer[SIZE_OF_CIRC_BUFFER];
     float obuffer[PROTOCOL_PACKET_SIZE*2];
-
+    bool weAreInsideEscapeSequence;
+    char messagesBuffer[SIZE_OF_MESSAGES_BUFFER];//contains payload inside escape sequence
+    int messageBufferIndex;
+    unsigned int escapeSequence[ESCAPE_SEQUENCE_LENGTH];
+    unsigned int endOfescapeSequence[ESCAPE_SEQUENCE_LENGTH];
+    int escapeSequenceDetectorIndex;
+    int _samplingRate;
+    int _numberOfChannels;
+    std::string firmwareVersion;
+    std::string hardwareVersion;
+    std::string hardwareType;
     
 }
 static  EAInputBlock inputBlock;
@@ -60,7 +70,24 @@ static  EAInputBlock inputBlock;
     self = [super init];//initWithProtocol:@"com.silabs.demo"];
    // DemoProtocol.inputBlock = nil;
     if (self) {
-        // Initialize properties
+        escapeSequence[0] = 255;
+        escapeSequence[1] = 255;
+        escapeSequence[2] = 1;
+        escapeSequence[3] = 1;
+        escapeSequence[4] = 128;
+        escapeSequence[5] = 255;
+        
+        endOfescapeSequence[0] = 255;
+        endOfescapeSequence[1] = 255;
+        endOfescapeSequence[2] = 1;
+        endOfescapeSequence[3] = 1;
+        endOfescapeSequence[4] = 129;
+        endOfescapeSequence[5] = 255;
+        weAreInsideEscapeSequence = false;
+        messageBufferIndex =0;
+        escapeSequenceDetectorIndex = 0;
+        _samplingRate = 10000;
+        _numberOfChannels = 2;
     }
     return self;
 }
@@ -68,7 +95,11 @@ static  EAInputBlock inputBlock;
 -(void) initProtocol
 {
      [super initWithProtocol:@"com.silabs.demo"];
-    
+    weAreInsideEscapeSequence = false;
+    messageBufferIndex =0;
+    escapeSequenceDetectorIndex = 0;
+    _samplingRate = 10000;
+    _numberOfChannels = 2;
 }
 
 // Adds protocol header to payload, then queues the packet on the accessory
@@ -212,13 +243,13 @@ static  EAInputBlock inputBlock;
     
     for(int i=0;i<size;i++)
     {
-       /* if(weAreInsideEscapeSequence)
+        if(weAreInsideEscapeSequence)
         {
             messagesBuffer[messageBufferIndex] = buffer[i];
             messageBufferIndex++;
         }
         else
-        {*/
+        {
             circularBuffer[cBufHead++] = buffer[i];
             //uint debugMSB  = ((uint)(buffer[i])) & 0xFF;
             //std::cout<<"M: " << debugMSB<<"\n";
@@ -227,8 +258,8 @@ static  EAInputBlock inputBlock;
             {
                 cBufHead = 0;
             }
-        //}
-       // testEscapeSequence(((unsigned int) buffer[i]) & 0xFF,  (i/2)/_numberOfChannels);
+        }
+        [self testEscapeSequence:(((unsigned int) buffer[i]) & 0xFF) withOffset:((i/2)/_numberOfChannels)];
     }
     if(size==-1)
     {
@@ -348,8 +379,6 @@ static  EAInputBlock inputBlock;
 }
 
 
-
-
 -(bool)checkIfNextByteExis
 {
     int tempTail = cBufTail + 1;
@@ -400,6 +429,235 @@ static  EAInputBlock inputBlock;
         return true;
     }
     return false;
+}
+
+
+
+// Detect start-of-message escape sequence and end-of-message sequence
+// and set up weAreInsideEscapeSequence.
+// When we detect end-of-message sequence call executeContentOfMessageBuffer()
+//
+-(void) testEscapeSequence:(unsigned int) newByte withOffset: (int) offset
+{
+    
+    
+    
+    if(weAreInsideEscapeSequence)
+    {
+        
+        if(messageBufferIndex>=SIZE_OF_MESSAGES_BUFFER)
+        {
+            weAreInsideEscapeSequence = false; //end of escape sequence
+            [self executeContentOfMessageBuffer:offset];
+            escapeSequenceDetectorIndex = 0;//prepare for detecting begining of sequence
+        }
+        else if(endOfescapeSequence[escapeSequenceDetectorIndex] == newByte)
+        {
+            escapeSequenceDetectorIndex++;
+            if(escapeSequenceDetectorIndex ==  ESCAPE_SEQUENCE_LENGTH)
+            {
+                weAreInsideEscapeSequence = false; //end of escape sequence
+                [self executeContentOfMessageBuffer:offset];
+                escapeSequenceDetectorIndex = 0;//prepare for detecting begining of sequence
+            }
+        }
+        else
+        {
+            escapeSequenceDetectorIndex = 0;
+        }
+        
+    }
+    else
+    {
+        if(escapeSequence[escapeSequenceDetectorIndex] == newByte)
+        {
+            escapeSequenceDetectorIndex++;
+            if(escapeSequenceDetectorIndex ==  ESCAPE_SEQUENCE_LENGTH)
+            {
+                weAreInsideEscapeSequence = true; //found escape sequence
+                for(int i=0;i<SIZE_OF_MESSAGES_BUFFER;i++)
+                {
+                    messagesBuffer[i] = 0;
+                }
+                messageBufferIndex = 0;//prepare for receiving message
+                escapeSequenceDetectorIndex = 0;//prepare for detecting end of esc. sequence
+                
+                //rewind writing head and effectively delete escape sequence from data
+                for(int i=0;i<ESCAPE_SEQUENCE_LENGTH;i++)
+                {
+                    cBufHead--;
+                    if(cBufHead<0)
+                    {
+                        cBufHead = SIZE_OF_CIRC_BUFFER-1;
+                    }
+                }
+            }
+        }
+        else
+        {
+            escapeSequenceDetectorIndex = 0;
+        }
+    }
+    
+}
+
+//
+// Parse and check what we need to do with message that we received
+// from microcontroller
+//
+-(void) executeContentOfMessageBuffer:(int) offset
+{
+    bool stillProcessing = true;
+    int currentPositionInString = 0;
+    char message[SIZE_OF_MESSAGES_BUFFER];
+    for(int i=0;i<SIZE_OF_MESSAGES_BUFFER;i++)
+    {
+        message[i] = 0;
+    }
+    int endOfMessage = 0;
+    int startOfMessage = 0;
+    
+    
+    
+    while(stillProcessing)
+    {
+        //std::cout<<"----- MB: "<< currentPositionInString<<"     :"<<messagesBuffer<<"\n";
+        if(messagesBuffer[currentPositionInString]==';')
+        {
+            //we have message, parse it
+            for(int k=0;k<endOfMessage-startOfMessage;k++)
+            {
+                if(message[k]==':')
+                {
+                    
+                    std::string typeOfMessage(message, k);
+                    std::string valueOfMessage(message+k+1, (endOfMessage-startOfMessage)-k-1);
+                    [self executeOneMessageWithType:typeOfMessage value:valueOfMessage offset:offset];
+                    //executeOneMessage(typeOfMessage, valueOfMessage, offset);
+                    break;
+                }
+            }
+            startOfMessage = endOfMessage+1;
+            currentPositionInString++;
+            endOfMessage++;
+            
+        }
+        else
+        {
+            message[currentPositionInString-startOfMessage] = messagesBuffer[currentPositionInString];
+            currentPositionInString++;
+            endOfMessage++;
+            
+        }
+        
+        if(currentPositionInString>=SIZE_OF_MESSAGES_BUFFER)
+        {
+            stillProcessing = false;
+        }
+    }
+    
+    //free(message);
+    
+}
+
+
+-(void) executeOneMessageWithType: (std::string) typeOfMessage  value:(std::string) valueOfMessage offset: (int) offsetin
+{
+
+    if(typeOfMessage == "FWV")
+    {
+        firmwareVersion = valueOfMessage;
+    }
+    if(typeOfMessage == "HWT")
+    {
+        hardwareType = valueOfMessage;
+    }
+    
+    if(typeOfMessage == "HWV")
+    {
+        hardwareVersion = valueOfMessage;
+    }
+    
+    if(typeOfMessage == "PWR")
+    {
+       // _powerRailState = (int)((unsigned int)valueOfMessage[0]-48);
+    }
+    
+    if(typeOfMessage == "EVNT")
+    {
+        int mnum = (int)((unsigned int)valueOfMessage[0]-48);
+        int64_t offset = 0;
+        /* if(!_manager.fileMode())
+         {
+         offset = _audioView->offset();
+         }*/
+        
+       //[ _manager->addMarker(std::string(1, mnum+'0'), offset+offsetin);]
+        [[BBAudioManager bbAudioManager] addEvent:mnum withOffset:offsetin];
+        
+    }
+    if(typeOfMessage == "JOY")
+    {
+       
+
+    }
+    if(typeOfMessage == "BRD")
+    {
+       
+     /*   currentAddOnBoard = (int)((unsigned int)valueOfMessage[0]-48);
+        if(currentAddOnBoard == BOARD_WITH_ADDITIONAL_INPUTS)
+        {
+            //if(_samplingRate != 7500)
+            //{
+            _samplingRate = 5000;
+            _numberOfChannels  =4;
+            restartDevice = true;
+            //}
+        }
+        else if(currentAddOnBoard == BOARD_WITH_HAMMER)
+        {
+            _samplingRate = 5000;
+            _numberOfChannels  =3;
+            restartDevice = true;
+        }
+        else if(currentAddOnBoard == BOARD_WITH_JOYSTICK)
+        {
+            _samplingRate = 5000;
+            _numberOfChannels  =3;
+            restartDevice = true;
+        }
+        else
+        {
+            
+            
+            if(_samplingRate != 10000)
+            {
+                _samplingRate = 10000;
+                _numberOfChannels  =2;
+                restartDevice = true;
+            }
+        }*/
+    }
+    if(typeOfMessage == "RTR")
+    {
+       /* if(((int)((unsigned int)valueOfMessage[0]-48)) == 1)
+        {
+            _rtReapeating = true;
+        }
+        else
+        {
+            _rtReapeating = false;
+        }*/
+    }
+    if(typeOfMessage == "MSF")
+    {
+        //TODO: implement maximum sample rate
+    }
+    if(typeOfMessage == "MNC")
+    {
+        //TODO: implement maximum number of channels
+    }
+    
 }
 
 

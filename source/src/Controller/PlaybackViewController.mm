@@ -211,6 +211,12 @@
     return [[BBAudioManager bbAudioManager] getChannels];
 }
 
+-(NSMutableArray *) getEvents
+{
+    return [[BBAudioManager bbAudioManager] getEvents];
+}
+
+
 -(BOOL) shouldEnableSelection
 {
     return ![[BBAudioManager bbAudioManager] playing];

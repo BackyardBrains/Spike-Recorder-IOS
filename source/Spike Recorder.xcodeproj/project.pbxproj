@@ -236,6 +236,7 @@
 		24E6D8A91A011EE0006C8CED /* FilterSettingsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 24E6D8A71A011EE0006C8CED /* FilterSettingsViewController.xib */; };
 		24EBC1AE1997852D001D3392 /* TrialsDCMDTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 24EBC1AC1997852D001D3392 /* TrialsDCMDTableViewController.xib */; };
 		24EBC1B31997DD21001D3392 /* TrialActionsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 24EBC1B11997DD21001D3392 /* TrialActionsViewController.xib */; };
+		851897AF22BBDF15003C5D7F /* BBEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 851897AE22BBDF15003C5D7F /* BBEvent.m */; };
 		85CE23EF2137DA650035AEC8 /* DemoAccessory.mm in Sources */ = {isa = PBXBuildFile; fileRef = 85CE23EC2137DA640035AEC8 /* DemoAccessory.mm */; };
 		85CE23F02137DA650035AEC8 /* DemoProtocol.mm in Sources */ = {isa = PBXBuildFile; fileRef = 85CE23EE2137DA640035AEC8 /* DemoProtocol.mm */; };
 		85CE23F22137DAB20035AEC8 /* ExternalAccessory.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85CE23F12137DAB20035AEC8 /* ExternalAccessory.framework */; };
@@ -690,6 +691,8 @@
 		24E6D8A71A011EE0006C8CED /* FilterSettingsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FilterSettingsViewController.xib; sourceTree = "<group>"; };
 		24EBC1AC1997852D001D3392 /* TrialsDCMDTableViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TrialsDCMDTableViewController.xib; sourceTree = "<group>"; };
 		24EBC1B11997DD21001D3392 /* TrialActionsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TrialActionsViewController.xib; sourceTree = "<group>"; };
+		851897AD22BBDF15003C5D7F /* BBEvent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BBEvent.h; sourceTree = "<group>"; };
+		851897AE22BBDF15003C5D7F /* BBEvent.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BBEvent.m; sourceTree = "<group>"; };
 		85CE23EB2137DA640035AEC8 /* DemoAccessory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoAccessory.h; sourceTree = "<group>"; };
 		85CE23EC2137DA640035AEC8 /* DemoAccessory.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DemoAccessory.mm; sourceTree = "<group>"; };
 		85CE23ED2137DA640035AEC8 /* DemoProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoProtocol.h; sourceTree = "<group>"; };
@@ -1290,6 +1293,8 @@
 				2418FEF11A83F6C800662547 /* BBSpike.m */,
 				2418FEF21A83F6C800662547 /* BBSpikeTrain.h */,
 				2418FEF31A83F6C800662547 /* BBSpikeTrain.m */,
+				851897AD22BBDF15003C5D7F /* BBEvent.h */,
+				851897AE22BBDF15003C5D7F /* BBEvent.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1849,6 +1854,7 @@
 				247087801A85104D004C6B9B /* NSMutableData-SQLitePersistence.m in Sources */,
 				2470879C1A851063004C6B9B /* ioapi.c in Sources */,
 				2470879E1A851063004C6B9B /* mztools.c in Sources */,
+				851897AF22BBDF15003C5D7F /* BBEvent.m in Sources */,
 				247087A01A851063004C6B9B /* unzip.c in Sources */,
 				247087A21A851063004C6B9B /* zip.c in Sources */,
 				2470879A1A85105A004C6B9B /* UIDeviceExt.m in Sources */,

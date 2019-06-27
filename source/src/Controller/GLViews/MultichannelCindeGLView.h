@@ -87,7 +87,7 @@ typedef enum {
     - (void) addChannel:(int) chanelIndex;
     -(void) selectChannel:(int) selectedChannel;//set selected channel
     - (NSMutableArray *) getChannels;//get channels from BBfile object
-
+    - (NSMutableArray *) getEvents;//get events from BBfile object
     -(BOOL) shouldEnableSelection;//should view enable interval selection
     -(void) updateSelection:(float) newSelectionTime timeSpan:(float) timeSpan;
     -(float) selectionStartTime;

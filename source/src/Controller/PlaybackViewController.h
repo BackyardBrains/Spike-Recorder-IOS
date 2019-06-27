@@ -38,4 +38,5 @@
 - (void)  endSelection;
 - (BOOL)  selecting;
 - (float) rmsOfSelection;
+- (NSMutableArray *) getEvents;
 @end

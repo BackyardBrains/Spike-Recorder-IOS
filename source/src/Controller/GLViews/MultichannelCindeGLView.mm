@@ -9,6 +9,7 @@
 #import "MultichannelCindeGLView.h"
 #import <Accelerate/Accelerate.h>
 #import "BBSpike.h"
+#import "BBEvent.h"
 #import "BBSpikeTrain.h"
 #import "BBChannel.h"
 #import "BBAudioManager.h"
@@ -669,7 +670,12 @@
             [self drawSpikes];
         }
         
-
+        //Draw events
+        glLineWidth(1.0f);
+        if([dataSourceDelegate respondsToSelector:@selector(getEvents)])
+        {
+            [self drawEvents];
+        }
         
         //Draw handlws for movement of axis
         if(multichannel || self.mode == MultichannelGLViewModeView)
@@ -1104,12 +1110,102 @@
             }
         }//for loop for channels
     }//if multichannel
-    
-    
-   
+
     gl::enableDepthRead();
 }
 
+
+-(void) drawEvents
+{
+     float currentTime = timeForSincDrawing ;
+    
+     NSMutableArray * allEvents = [dataSourceDelegate getEvents];
+    
+    
+    float realNumberOfSamplesVisible = numSamplesVisible;
+    /*if (realNumberOfSamplesVisible > numSamplesMax) {
+     realNumberOfSamplesVisible = numSamplesMax;
+     }*/
+    if (realNumberOfSamplesVisible < numSamplesMin) {
+        realNumberOfSamplesVisible = numSamplesMin;
+    }
+    
+    //calc. real size of time span that is displayed
+    float virtualVisibleTimeSpan = realNumberOfSamplesVisible * 1.0f/samplingRate;
+    
+    //calc. real start and end time
+    float graphStartTime =currentTime - virtualVisibleTimeSpan;
+    float realEndTime = currentTime;
+    
+    //Graph start time represents smalest time of visible graph
+    //this is important since graph is limited to numSamplesMax
+    //and we have elastic animation if user zoom out more than numSamplesMax
+    //So we need to filter spikes to show only spikes that have graph in background
+    
+    if (realNumberOfSamplesVisible > numSamplesMax) {
+        graphStartTime = currentTime - numSamplesMax * 1.0f/samplingRate;
+    }
+    
+   /* if(graphStartTime<0.0f)
+    {
+        graphStartTime = 0.0f;
+    }*/
+    
+    //Draw spikes
+    glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+    BOOL weAreInInterval = NO;
+    BBEvent * tempEvent;
+    
+    float sizeOfSquareX = scaleXY.x * 15;
+    float sizeOfSquareY = scaleXY.y *20;
+    
+    //go through all events
+    for (tempEvent in allEvents) {
+        if([tempEvent time]>graphStartTime && [tempEvent time]<realEndTime)
+        {
+            weAreInInterval = YES;//we are in visible interval
+            //reacalculate spikes to virtual GL x axis [-maxTimeSpan, 0]
+            float xValue = ([tempEvent time] -realEndTime)*(maxTimeSpan/virtualVisibleTimeSpan);
+            //recalculate Y axis with zoom and offset
+            int eventNumber = [tempEvent value];
+            float yValueOfNumberBackground = maxVoltsSpan/3;
+            [self setGLColor:[BYBGLView getEventColorWithIndex:eventNumber transparency:1.0f]];
+            //glColor4f(0.8, 0.8, 0.8, 1.0);
+            //draw event line
+            gl::drawLine(Vec2f(xValue, -maxVoltsSpan/2), Vec2f(xValue, maxVoltsSpan/2));
+            //draw event number background
+            //glColor4f(0.8, 0.0, 0.0, 1.0);
+            gl::drawSolidRect(Rectf(xValue-sizeOfSquareX,yValueOfNumberBackground-sizeOfSquareY,xValue+sizeOfSquareX,yValueOfNumberBackground+sizeOfSquareY));
+            
+            //Draw event number ---------------------------------------------
+            std::stringstream eventStream;
+            eventStream <<""<< eventNumber;
+            
+            //make it so that we can define measurements in pixels
+            gl::setMatricesWindow( Vec2i(self.frame.size.width, self.frame.size.height) );
+            
+            Vec2f xScaleTextPosition = Vec2f(0.,0.);
+            xScaleTextPosition.x =self.frame.size.width + 0.5*(xValue-sizeOfSquareX*0.5)/scaleXY.x ;//(self.frame.size.width - xScaleTextSize.x)/2.0;
+            xScaleTextPosition.y =0.5*0.5*(yValueOfNumberBackground+sizeOfSquareY*1.1)/scaleXY.y;//self.frame.size.height-23 + (mScaleFont->getAscent() / 2.0f);
+            
+            //make it black number of color background
+            gl::color( ColorA( 0.0, 0.0f, 0.0f, 1.0f ) );
+            
+            //draw text
+            mScaleFont->drawString(eventStream.str(), xScaleTextPosition);
+            
+            //return back perspective to time and voltage
+            mCam.setOrtho(-maxTimeSpan, -0.0f, -maxVoltsSpan/2.0f, maxVoltsSpan/2.0f, 1, 100);
+            gl::setMatrices( mCam );
+        }
+        else if(weAreInInterval)
+        {//if we pass last spike in visible interval
+            break;
+        }
+    }
+    
+    
+}
 
 //
 // Draw spikes of all spike trains
