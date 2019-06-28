@@ -20,8 +20,6 @@
 		1C3FC2FC203EE99600C28680 /* FFTRecordingsViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1C3FC2FB203EE99600C28680 /* FFTRecordingsViewController.mm */; };
 		1C9850672036E3830076997B /* fft@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C9850652036E3810076997B /* fft@2x.png */; };
 		1C9850682036E3830076997B /* fft.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C9850662036E3810076997B /* fft.png */; };
-		1CB1265C1F87DDFF00247389 /* ObjectiveDropboxOfficial.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CB1265B1F87DDFF00247389 /* ObjectiveDropboxOfficial.framework */; };
-		1CB1265D1F87DDFF00247389 /* ObjectiveDropboxOfficial.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1CB1265B1F87DDFF00247389 /* ObjectiveDropboxOfficial.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1CBD16121E72E6DC00F59AEF /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CBD16101E72E6DC00F59AEF /* Crashlytics.framework */; };
 		1CBD16131E72E6DC00F59AEF /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CBD16111E72E6DC00F59AEF /* Fabric.framework */; };
 		1CD05B9A1CFCEB1E00A83727 /* libCorePlot-CocoaTouch.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CD05B991CFCEB1E00A83727 /* libCorePlot-CocoaTouch.a */; };
@@ -237,6 +235,11 @@
 		24EBC1AE1997852D001D3392 /* TrialsDCMDTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 24EBC1AC1997852D001D3392 /* TrialsDCMDTableViewController.xib */; };
 		24EBC1B31997DD21001D3392 /* TrialActionsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 24EBC1B11997DD21001D3392 /* TrialActionsViewController.xib */; };
 		851897AF22BBDF15003C5D7F /* BBEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 851897AE22BBDF15003C5D7F /* BBEvent.m */; };
+		856E3E6F22C50D5700103E2A /* ObjectiveDropboxOfficial.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 856E3E6E22C50D5700103E2A /* ObjectiveDropboxOfficial.framework */; };
+		856E3E7122C50D7E00103E2A /* ObjectiveDropboxOfficial.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 856E3E7022C50D7E00103E2A /* ObjectiveDropboxOfficial.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		856E3E7622C62D7800103E2A /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 856E3E7422C62D7800103E2A /* logo.png */; };
+		856E3E7722C62D7800103E2A /* splash-background.png in Resources */ = {isa = PBXBuildFile; fileRef = 856E3E7522C62D7800103E2A /* splash-background.png */; };
+		856E3E7F22C6315C00103E2A /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 856E3E7E22C6315C00103E2A /* Launch Screen.storyboard */; };
 		85CE23EF2137DA650035AEC8 /* DemoAccessory.mm in Sources */ = {isa = PBXBuildFile; fileRef = 85CE23EC2137DA640035AEC8 /* DemoAccessory.mm */; };
 		85CE23F02137DA650035AEC8 /* DemoProtocol.mm in Sources */ = {isa = PBXBuildFile; fileRef = 85CE23EE2137DA640035AEC8 /* DemoProtocol.mm */; };
 		85CE23F22137DAB20035AEC8 /* ExternalAccessory.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85CE23F12137DAB20035AEC8 /* ExternalAccessory.framework */; };
@@ -269,7 +272,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				1CB1265D1F87DDFF00247389 /* ObjectiveDropboxOfficial.framework in Embed Frameworks */,
+				856E3E7122C50D7E00103E2A /* ObjectiveDropboxOfficial.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -291,7 +294,6 @@
 		1C3FC2FD203EE9B200C28680 /* FFTRecordingsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FFTRecordingsViewController.h; sourceTree = "<group>"; };
 		1C9850652036E3810076997B /* fft@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fft@2x.png"; sourceTree = "<group>"; };
 		1C9850662036E3810076997B /* fft.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fft.png; sourceTree = "<group>"; };
-		1CB1265B1F87DDFF00247389 /* ObjectiveDropboxOfficial.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ObjectiveDropboxOfficial.framework; path = Carthage/Build/iOS/ObjectiveDropboxOfficial.framework; sourceTree = "<group>"; };
 		1CBD16101E72E6DC00F59AEF /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		1CBD16111E72E6DC00F59AEF /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
 		1CD05B991CFCEB1E00A83727 /* libCorePlot-CocoaTouch.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libCorePlot-CocoaTouch.a"; sourceTree = "<group>"; };
@@ -693,6 +695,11 @@
 		24EBC1B11997DD21001D3392 /* TrialActionsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TrialActionsViewController.xib; sourceTree = "<group>"; };
 		851897AD22BBDF15003C5D7F /* BBEvent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BBEvent.h; sourceTree = "<group>"; };
 		851897AE22BBDF15003C5D7F /* BBEvent.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BBEvent.m; sourceTree = "<group>"; };
+		856E3E6E22C50D5700103E2A /* ObjectiveDropboxOfficial.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ObjectiveDropboxOfficial.framework; path = Carthage/Build/simulator/ObjectiveDropboxOfficial.framework; sourceTree = "<group>"; };
+		856E3E7022C50D7E00103E2A /* ObjectiveDropboxOfficial.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ObjectiveDropboxOfficial.framework; path = Carthage/Build/simulator/ObjectiveDropboxOfficial.framework; sourceTree = "<group>"; };
+		856E3E7422C62D7800103E2A /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo.png; sourceTree = "<group>"; };
+		856E3E7522C62D7800103E2A /* splash-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "splash-background.png"; sourceTree = "<group>"; };
+		856E3E7E22C6315C00103E2A /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		85CE23EB2137DA640035AEC8 /* DemoAccessory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoAccessory.h; sourceTree = "<group>"; };
 		85CE23EC2137DA640035AEC8 /* DemoAccessory.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DemoAccessory.mm; sourceTree = "<group>"; };
 		85CE23ED2137DA640035AEC8 /* DemoProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoProtocol.h; sourceTree = "<group>"; };
@@ -741,9 +748,9 @@
 				FADF26551596362F006C87BA /* UIKit.framework in Frameworks */,
 				FADF26571596362F006C87BA /* Foundation.framework in Frameworks */,
 				FADF26591596362F006C87BA /* CoreGraphics.framework in Frameworks */,
+				856E3E6F22C50D5700103E2A /* ObjectiveDropboxOfficial.framework in Frameworks */,
 				1CBD16121E72E6DC00F59AEF /* Crashlytics.framework in Frameworks */,
 				FADF265B1596362F006C87BA /* QuartzCore.framework in Frameworks */,
-				1CB1265C1F87DDFF00247389 /* ObjectiveDropboxOfficial.framework in Frameworks */,
 				FADF265D1596362F006C87BA /* OpenGLES.framework in Frameworks */,
 				FADF26611596362F006C87BA /* CoreVideo.framework in Frameworks */,
 				FADF26631596362F006C87BA /* AVFoundation.framework in Frameworks */,
@@ -1205,6 +1212,8 @@
 		2418FE731A83F57900662547 /* Launch */ = {
 			isa = PBXGroup;
 			children = (
+				856E3E7422C62D7800103E2A /* logo.png */,
+				856E3E7522C62D7800103E2A /* splash-background.png */,
 				2418FFC41A8406A600662547 /* Default-Landcape.png */,
 				2418FFC51A8406A600662547 /* Default-Landcape@2x.png */,
 				2418FFC61A8406A600662547 /* Default-Portrait.png */,
@@ -1469,6 +1478,7 @@
 		FADF26451596362E006C87BA = {
 			isa = PBXGroup;
 			children = (
+				856E3E7022C50D7E00103E2A /* ObjectiveDropboxOfficial.framework */,
 				2418FE5C1A83F4C600662547 /* Asset */,
 				FADF26681596362F006C87BA /* src */,
 				FADF26531596362F006C87BA /* Frameworks */,
@@ -1487,8 +1497,8 @@
 		FADF26531596362F006C87BA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				856E3E6E22C50D5700103E2A /* ObjectiveDropboxOfficial.framework */,
 				85CE23F12137DAB20035AEC8 /* ExternalAccessory.framework */,
-				1CB1265B1F87DDFF00247389 /* ObjectiveDropboxOfficial.framework */,
 				1CBD16101E72E6DC00F59AEF /* Crashlytics.framework */,
 				1CBD16111E72E6DC00F59AEF /* Fabric.framework */,
 				2490D73A1A927C1B00E1D5E9 /* HealthKit.framework */,
@@ -1541,6 +1551,7 @@
 				FADF26701596362F006C87BA /* Spike Recorder-Prefix.pch */,
 				24E1430B1B61407B00DA32B9 /* Log.h */,
 				24E1430C1B61407B00DA32B9 /* Log.m */,
+				856E3E7E22C6315C00103E2A /* Launch Screen.storyboard */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -1650,6 +1661,7 @@
 				2418FEC61A83F5D700662547 /* FileNeuron@2x.png in Resources */,
 				2418FEC11A83F5D700662547 /* dropbox.png in Resources */,
 				2418FEDA1A83F5D700662547 /* Stimulate.png in Resources */,
+				856E3E7722C62D7800103E2A /* splash-background.png in Resources */,
 				2418FECC1A83F5D700662547 /* nobeat@2x.png in Resources */,
 				2418FEE11A83F5D700662547 /* trash@2x.png in Resources */,
 				FA905A4C15AA8CF00013688B /* BBFileTableCell.xib in Resources */,
@@ -1683,6 +1695,7 @@
 				1CF7DB341F7988DF008F303E /* slider-default7-trackCrossedOver.png in Resources */,
 				2418FE5F1A83F4C600662547 /* beep.wav in Resources */,
 				247087C41A851774004C6B9B /* Icon-Small-50.png in Resources */,
+				856E3E7F22C6315C00103E2A /* Launch Screen.storyboard in Resources */,
 				2418FEDD1A83F5D700662547 /* ThresholdImage@2x.png in Resources */,
 				2418FEBC1A83F5D700662547 /* bluetooth@2x.png in Resources */,
 				1CF7DB331F7988DF008F303E /* slider-default7-trackBackground@2x.png in Resources */,
@@ -1716,6 +1729,7 @@
 				2418FECD1A83F5D700662547 /* Pause.png in Resources */,
 				1C3882BF2018844E00B0388B /* icon83-5@2x.png in Resources */,
 				2418FFCF1A8406A600662547 /* Default-Portrait@2x.png in Resources */,
+				856E3E7622C62D7800103E2A /* logo.png in Resources */,
 				2418FEB71A83F5D700662547 /* again.png in Resources */,
 				1C3882F6201B58D500B0388B /* MainStoryboard.storyboard in Resources */,
 				247087BD1A851774004C6B9B /* Icon-72.png in Resources */,
@@ -1977,7 +1991,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-1";
 				CINDER_PATH = /Users/stanislav/Desktop/Projects/Backup/Libraries/cinder_0.8.6_mac;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -1993,7 +2006,7 @@
 					"$(SRCROOT)",
 					"$(PROJECT_DIR)/libs",
 					"$(PROJECT_DIR)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
+					"$(PROJECT_DIR)/Carthage/Build/simulator",
 				);
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -2043,7 +2056,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-1";
 				CINDER_PATH = /Users/stanislav/Desktop/Projects/Backup/Libraries/cinder_0.8.6_mac;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -2060,7 +2072,7 @@
 					"$(SRCROOT)",
 					"$(PROJECT_DIR)/libs",
 					"$(PROJECT_DIR)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
+					"$(PROJECT_DIR)/Carthage/Build/simulator",
 				);
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
