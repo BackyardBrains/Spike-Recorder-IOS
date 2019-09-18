@@ -229,6 +229,10 @@
     [[BBAudioManager bbAudioManager] selectChannel:selectedChannel];
 }
 
+-(NSMutableArray *) getEvents
+{
+    return [[BBAudioManager bbAudioManager] getEvents];
+}
 
 //
 // It works with extended channel index
@@ -326,7 +330,7 @@
         [aFile setupChannels];//create name of channels without spike trains
         
         NSLog(@"URL: %@", [aFile fileURL]);
-        [bbAudioManager startRecording:[aFile fileURL]];
+        [bbAudioManager startRecording:aFile];
         recordingTime = 0.0f;
     }
 }

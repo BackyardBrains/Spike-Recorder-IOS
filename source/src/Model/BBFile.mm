@@ -10,6 +10,7 @@
 #import "BBSpike.h"
 #import "BBChannel.h"
 #import "BBSpikeTrain.h"
+#import "BBEvent.h"
 #import "tinyxml2.h"
 
 //#define  kDataID 1633969266
@@ -102,6 +103,15 @@ using namespace tinyxml2;
     _allChannels = [[NSMutableArray alloc] initWithCapacity:0];
     _allSpikes = [[NSMutableArray alloc] initWithCapacity:0];
     _allEvents = [[NSMutableArray alloc] initWithCapacity:0];
+    
+   /*
+    //debug events - test
+    BBEvent * tempEvent = [[BBEvent alloc] initWithValue:1 index:44100 andTime:1.0f];
+    [_allEvents addObject:tempEvent];
+    tempEvent = [[BBEvent alloc] initWithValue:2 index:2*44100 andTime:2.0f];
+    [_allEvents addObject:tempEvent];
+    tempEvent = [[BBEvent alloc] initWithValue:3 index:3*44100 andTime:3.0f];
+    [_allEvents addObject:tempEvent];*/
 }
 
 -(id) initWithUrl:(NSURL *) urlOfExistingFile
@@ -178,6 +188,7 @@ using namespace tinyxml2;
         
         _allSpikes = [[NSMutableArray alloc] initWithCapacity:0];
         _allEvents = [[NSMutableArray alloc] initWithCapacity:0];
+        
 
 	}
     

@@ -51,7 +51,7 @@
 
 @property (nonatomic, retain) NSMutableArray *allSpikes; //array of spike arrays (for every channel)
 @property (nonatomic, retain) NSMutableArray *allChannels; //array of BBChannel objects
-@property (nonatomic, retain) NSMutableArray *allEvents;
+@property (nonatomic, retain) NSMutableArray *allEvents; //array of BBEvent objects
 @property (nonatomic, retain) NSString *spikesFiltered; //Flag string FILE_SPIKE_SORTED/FILE_NOT_SPIKE_SORTED
 
 

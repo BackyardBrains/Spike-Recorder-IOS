@@ -12,6 +12,7 @@
 
 
 +(UIColor *) getSpikeTrainColorWithIndex:(int) iindex transparency:(float) transp;
++(UIColor *) getEventColorWithIndex:(int) iindex transparency:(float) transp;
 -(void) setGLColor:(UIColor *) theColor;
 
 @end

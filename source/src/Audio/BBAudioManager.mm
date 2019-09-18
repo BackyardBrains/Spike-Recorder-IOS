@@ -10,6 +10,7 @@
 #import "BBFile.h"
 #import "BBSpike.h"
 #import "BBSpikeTrain.h"
+#import "BBEvent.h"
 #import "BBChannel.h"
 #import <Accelerate/Accelerate.h>
 #import "BBECGAnalysis.h"
@@ -65,6 +66,8 @@ static BBAudioManager *bbAudioManager = nil;
     float _currentMin;
     float _currentMean;
     
+    //events
+    NSMutableArray * rtEvents;
 
    
     //ECG
@@ -258,6 +261,10 @@ static BBAudioManager *bbAudioManager = nil;
         currentFilterSettings = FILTER_SETTINGS_RAW;
         lpFilterCutoff = FILTER_LP_OFF;
         hpFilterCutoff = FILTER_HP_OFF;
+        
+        rtEvents = [[NSMutableArray alloc] initWithCapacity:0];
+        
+        
         [audioManager play];
         eaManager = [MyAppDelegate getEaManager];
     }
@@ -455,6 +462,20 @@ static BBAudioManager *bbAudioManager = nil;
     [self additionalProcessingOfInputData:data forNumOfFrames:numberOfFrames andNumChannels:numberOfChannels];
     ringBuffer->AddNewInterleavedFloatData(data, numberOfFrames, numberOfChannels);
 }
+
+- (void) addEvent:(int) eventType withOffset:(int) inOffset
+{
+    
+    BBEvent * tempEvent = [[BBEvent alloc] initWithValue:eventType index:inOffset+[self getVirtualTime]*_sourceSamplingRate andTime:[self getVirtualTime]+inOffset/_sourceSamplingRate];
+    if(recording)
+    {
+        [[_file allEvents] addObject:tempEvent];
+    }
+
+    [rtEvents addObject:tempEvent];
+    
+    
+}
 #pragma mark - Helper functions
 
 
@@ -511,6 +532,8 @@ static BBAudioManager *bbAudioManager = nil;
 {
     NSLog(@"resetBuffers\n");
     
+    rtEvents = [[NSMutableArray alloc] initWithCapacity:0];
+    
     delete ringBuffer;
     free(tempCalculationBuffer);
     //create new buffers
@@ -528,6 +551,7 @@ static BBAudioManager *bbAudioManager = nil;
 -(void) makeInputOutput
 {
      NSLog(@"makeInputOutput %p\n",audioManager);
+    _preciseVirtualTimeNumOfFrames = 0;
     
     if(externalAccessoryOn)
     {
@@ -541,6 +565,7 @@ static BBAudioManager *bbAudioManager = nil;
              }
              [self additionalProcessingOfInputData:data forNumOfFrames:numFrames andNumChannels:numChannels];
              ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
+             _preciseVirtualTimeNumOfFrames += numFrames;
          }];
     }
     else
@@ -555,6 +580,7 @@ static BBAudioManager *bbAudioManager = nil;
                 }
                 [self additionalProcessingOfInputData:data forNumOfFrames:numFrames andNumChannels:numChannels];
                 ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
+                _preciseVirtualTimeNumOfFrames += numFrames;
             }];
     }
 }
@@ -909,6 +935,7 @@ static BBAudioManager *bbAudioManager = nil;
     }
     else
     {
+        rtEvents = [[NSMutableArray alloc] initWithCapacity:0];
         ringBuffer->Clear();
     }
     [self makeInputOutput];
@@ -1002,8 +1029,9 @@ static BBAudioManager *bbAudioManager = nil;
 
 #pragma mark - Recording
 
-- (void)startRecording:(NSURL *)urlToFile
+- (void)startRecording:(BBFile *) aFile
 {
+    _file = aFile;
     // If we're already recording, skip out
     if (recording == true) {
         return;
@@ -1014,11 +1042,12 @@ static BBAudioManager *bbAudioManager = nil;
         
         // Grab a file writer. This takes care of the creation and management of the audio file.
         fileWriter = [[BBAudioFileWriter alloc]
-                      initWithAudioFileURL:urlToFile 
+                      initWithAudioFileURL:[aFile fileURL]
                       samplingRate:_sourceSamplingRate
                       numChannels:_sourceNumberOfChannels];
         
         // Replace the audio input function
+        [self resetVirtualTimeAndEvents];
         [self makeInputOutput];
         recording = true;
         
@@ -1490,6 +1519,30 @@ static BBAudioManager *bbAudioManager = nil;
     return [_file allChannels];
 }
 
+-(NSMutableArray *) getEvents
+{
+    
+    if(_file && playing)
+    {
+        return [_file allEvents];
+    }
+    else
+    {
+        float oldEventsTime = [self getVirtualTime]-(6*44100/_sourceSamplingRate)-0.1;
+        for(int i = [rtEvents count]-1;i>=0;i--)
+        {
+            BBEvent * currentEvent = [rtEvents objectAtIndex:i];
+            if([currentEvent time]<oldEventsTime)
+            {
+                [rtEvents removeObjectAtIndex:i];
+            }
+        }
+        return rtEvents;
+        
+    }
+    //return [[NSMutableArray alloc] initWithCapacity:0];
+}
+
 #pragma mark - Spikes
 
 -(NSMutableArray *) getSpikes
@@ -1504,13 +1557,30 @@ static BBAudioManager *bbAudioManager = nil;
     return nil;
 }
 
--(float) getTimeForSpikes
+-(float) getVirtualTime
 {
-   
-    return _preciseTimeOfLastData;
+   if(_file && playing)
+   {
+       return _preciseTimeOfLastData;
+   }
+   else
+   {
+       return (float)_preciseVirtualTimeNumOfFrames/(float)_sourceSamplingRate;
+   }
     
 }
 
+
+-(void) resetVirtualTimeAndEvents
+{
+    for (int i=0;i<[rtEvents count];i++)
+    {
+        BBEvent * rtEvent = [rtEvents objectAtIndex:i];
+        [rtEvent setIndex:([rtEvent index]-_preciseVirtualTimeNumOfFrames)];
+        [rtEvent setTime:((float)[rtEvent index]/(float)_sourceSamplingRate)];
+    }
+    _preciseVirtualTimeNumOfFrames=0.0f;
+}
 
 #pragma mark - Selection analysis
 

@@ -176,7 +176,7 @@
                         [currentTrial.file setupChannels];//create name of channels without spike trains
                         
                         NSLog(@"Start recording exp file URL: %@ time: %f", [currentTrial.file fileURL], currentTime);
-                        [bbAudioManager startRecording:[currentTrial.file fileURL]];
+                        [bbAudioManager startRecording:currentTrial.file ];
                         
                         currentTrial.startOfRecording = (float)self.getElapsedSeconds-expStartTime;                        stateOfExp = STATE_RECORDING_STARTED;
                     }

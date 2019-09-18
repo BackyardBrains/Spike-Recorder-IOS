@@ -37,6 +37,7 @@
 
 //MultichannelGLViewDelegate stuff
 -(void) selectChannel:(int) selectedChannel;
+-(NSMutableArray *) getEvents;
 
 //Config popup stuff
 -(void) setVisibilityForConfigButton:(BOOL) setVisible;

@@ -170,7 +170,7 @@ float RingBuffer::FetchFreshData2(float *outData, SInt64 numFrames, SInt64 which
     //This is patch that is used to get time of data as precise as possibile since otherwise
     //display of spike marks and waveform are not sinchronized
     //TODO: make timestamp of data part of this class
-    float tempTime = [[BBAudioManager bbAudioManager] getTimeForSpikes];
+    float tempTime = [[BBAudioManager bbAudioManager] getVirtualTime];
     //NSString * logString = [NSString stringWithFormat:@"Num of frames: %lld, which channel: %lld, stride: %lld", numFrames, whichChannel, stride];
     //NSLog(logString);
     if (mLastWrittenIndex[whichChannel] - numFrames >= 0) { // if we're requesting samples that won't go off the left end of the ring buffer, then go ahead and copy them all out.

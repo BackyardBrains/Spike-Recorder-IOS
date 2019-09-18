@@ -11,7 +11,7 @@
 @interface BBSpike : NSObject <NSCoding>
 
 @property float value;
-@property int index;
+@property long long index;
 @property float time;
 -(id) initWithValue:(float) inValue index:(int) inIndex andTime:(float) inTime;
 @end

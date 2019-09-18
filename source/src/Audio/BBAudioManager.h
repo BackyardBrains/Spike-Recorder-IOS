@@ -77,6 +77,8 @@
     bool playEKGBeep;
     int counterForEKGBeep;
     
+    UInt64 _preciseVirtualTimeNumOfFrames;
+    
 }
 
 @property (getter=samplingRate, readonly) float samplingRate;
@@ -127,7 +129,7 @@
 -(void) quitAllFunctions;
 - (void)startMonitoring;
 
-- (void)startRecording:(NSURL *)urlToFile;
+- (void)startRecording:(BBFile *) aFile;
 - (void)stopRecording;
 - (void)startThresholding:(UInt32)newNumPointsToSavePerThreshold;
 - (void)stopThresholding;
@@ -138,6 +140,7 @@
 - (float)fetchAudio:(float *)data numFrames:(UInt32)numFrames whichChannel:(UInt32)whichChannel stride:(UInt32)stride;
 - (float)fetchAudioForSelectedChannel:(float *)data numFrames:(UInt32)numFrames stride:(UInt32)stride;
 - (NSMutableArray *) getChannels;
+- (NSMutableArray *) getEvents;
 
 //Selection
 -(void) endSelection;
@@ -147,7 +150,7 @@
 - (NSMutableArray *) spikesCount;
 
 -(NSMutableArray *) getSpikes;
--(float) getTimeForSpikes;
+-(float) getVirtualTime;
 - (void)saveSettingsToUserDefaults;
 -(void) clearWaveform;
 
@@ -166,7 +169,7 @@
 -(void) switchToExternalDeviceWithChannels:(int)numberOfChannels andSampleRate:(int) inSampleRate;
 -(void) closeExternalDevice;
 -(void) addNewData:(float*)data frames:(int) numberOfFrames channels:(int) numberOfChannels;
-
+- (void) addEvent:(int) eventType withOffset:(int) inOffset;
 
 
 //FFT
