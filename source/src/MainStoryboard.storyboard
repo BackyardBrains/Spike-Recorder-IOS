@@ -1,20 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="EBf-gS-bmJ">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="EBf-gS-bmJ">
     <device id="retina5_9" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
-        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
-    <customFonts key="customFonts">
-        <array key="Helvetica.ttc">
-            <string>Helvetica-Bold</string>
-        </array>
-    </customFonts>
     <scenes>
         <!--View / Record-->
         <scene sceneID="Ugf-bq-l7j">
@@ -166,11 +160,12 @@
                         <segue destination="pde-FL-esI" kind="relationship" relationship="viewControllers" id="mEL-Cv-mPl"/>
                         <segue destination="Sxw-iJ-Ele" kind="relationship" relationship="viewControllers" id="H6u-z1-6q2"/>
                         <segue destination="lem-Ef-HZt" kind="relationship" relationship="viewControllers" id="uUo-Rh-qg3"/>
+                        <segue destination="skN-r6-F4d" kind="relationship" relationship="viewControllers" id="wUO-pi-NNL"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="KiD-ty-X6O" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-4679" y="-2769"/>
+            <point key="canvasLocation" x="-4887" y="-2856"/>
         </scene>
         <!--Threshold-->
         <scene sceneID="P9Q-u4-qDX">
@@ -199,7 +194,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="NgM-NC-Kob">
-                                <rect key="frame" x="67" y="658" width="42" height="39"/>
+                                <rect key="frame" x="66.666666666666671" y="658" width="42" height="39"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="42" id="ghB-pI-SOe"/>
                                     <constraint firstAttribute="height" constant="39" id="tya-Yz-bQN"/>
@@ -261,6 +256,73 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="f9S-8C-PO4" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-2532" y="-2361"/>
+        </scene>
+        <!--Experiments-->
+        <scene sceneID="I7M-x6-jeH">
+            <objects>
+                <tableViewController title="Experiments" id="gAn-pJ-r2f" customClass="BBExperimentsTableViewController" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="6sJ-sY-ZCA">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="ExperimentsCell" id="t3e-pe-mRp">
+                                <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="t3e-pe-mRp" id="4a1-fA-0a6">
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.666666666666664"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="gAn-pJ-r2f" id="ZU8-hW-5Ug"/>
+                            <outlet property="delegate" destination="gAn-pJ-r2f" id="RGa-VZ-xmd"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Choose experiment" id="bS7-7L-pe7"/>
+                    <connections>
+                        <segue destination="0lO-Pa-jXU" kind="show" identifier="openDcmdViewSegue" id="vJA-0I-LRz"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Tiy-oM-uLX" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-2615" y="-1054"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="hOC-ES-ems">
+            <objects>
+                <viewController id="0lO-Pa-jXU" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="cA3-G3-ect">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <viewLayoutGuide key="safeArea" id="s3X-zk-zsm"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="Y79-1L-yET"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="aZg-PL-edc" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1614" y="-1054"/>
+        </scene>
+        <!--Experiments Navigation-->
+        <scene sceneID="7st-Eb-D4W">
+            <objects>
+                <navigationController title="Experiments Navigation" id="skN-r6-F4d" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Settings" image="settings.png" id="bkf-gN-UUq"/>
+                    <navigationItem key="navigationItem" id="KGt-WG-R2E"/>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="xhM-mG-8Z0">
+                        <rect key="frame" x="0.0" y="44" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="gAn-pJ-r2f" kind="relationship" relationship="rootViewController" id="pf3-oN-C0b"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="0eD-bb-Zya" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-3487" y="-1054"/>
         </scene>
         <!--File Action View ControllerTBV-->
         <scene sceneID="RgI-Qf-gRZ">
@@ -914,6 +976,7 @@
         <image name="backbtn.png" width="40" height="40"/>
         <image name="configIcon.png" width="58" height="58"/>
         <image name="fft.png" width="58" height="58"/>
-        <image name="trash.png" width="25" height="25"/>
+        <image name="settings.png" width="30" height="30"/>
+        <image name="trash.png" width="3.9045553207397461" height="3.9045553207397461"/>
     </resources>
 </document>
