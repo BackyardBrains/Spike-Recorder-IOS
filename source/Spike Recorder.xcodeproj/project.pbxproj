@@ -235,7 +235,7 @@
 		24EBC1AE1997852D001D3392 /* TrialsDCMDTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 24EBC1AC1997852D001D3392 /* TrialsDCMDTableViewController.xib */; };
 		24EBC1B31997DD21001D3392 /* TrialActionsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 24EBC1B11997DD21001D3392 /* TrialActionsViewController.xib */; };
 		851897AF22BBDF15003C5D7F /* BBEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 851897AE22BBDF15003C5D7F /* BBEvent.m */; };
-		855CBE812332455F004E1BBA /* BBExperimentsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 855CBE802332455F004E1BBA /* BBExperimentsTableViewController.m */; };
+		855CBE812332455F004E1BBA /* BBExperimentsTableViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 855CBE802332455F004E1BBA /* BBExperimentsTableViewController.mm */; };
 		856E3E6F22C50D5700103E2A /* ObjectiveDropboxOfficial.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 856E3E6E22C50D5700103E2A /* ObjectiveDropboxOfficial.framework */; };
 		856E3E7122C50D7E00103E2A /* ObjectiveDropboxOfficial.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 856E3E7022C50D7E00103E2A /* ObjectiveDropboxOfficial.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		856E3E7622C62D7800103E2A /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 856E3E7422C62D7800103E2A /* logo.png */; };
@@ -697,7 +697,7 @@
 		851897AD22BBDF15003C5D7F /* BBEvent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BBEvent.h; sourceTree = "<group>"; };
 		851897AE22BBDF15003C5D7F /* BBEvent.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BBEvent.m; sourceTree = "<group>"; };
 		855CBE7F2332455F004E1BBA /* BBExperimentsTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BBExperimentsTableViewController.h; sourceTree = "<group>"; };
-		855CBE802332455F004E1BBA /* BBExperimentsTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BBExperimentsTableViewController.m; sourceTree = "<group>"; };
+		855CBE802332455F004E1BBA /* BBExperimentsTableViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BBExperimentsTableViewController.mm; sourceTree = "<group>"; };
 		856E3E6E22C50D5700103E2A /* ObjectiveDropboxOfficial.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ObjectiveDropboxOfficial.framework; path = Carthage/Build/simulator/ObjectiveDropboxOfficial.framework; sourceTree = "<group>"; };
 		856E3E7022C50D7E00103E2A /* ObjectiveDropboxOfficial.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ObjectiveDropboxOfficial.framework; path = Carthage/Build/simulator/ObjectiveDropboxOfficial.framework; sourceTree = "<group>"; };
 		856E3E7422C62D7800103E2A /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo.png; sourceTree = "<group>"; };
@@ -1429,7 +1429,7 @@
 				1CD05BA61CFD398400A83727 /* BBCommentDetailsCell.h */,
 				1CD05BA71CFD398400A83727 /* BBCommentDetailsCell.m */,
 				855CBE7F2332455F004E1BBA /* BBExperimentsTableViewController.h */,
-				855CBE802332455F004E1BBA /* BBExperimentsTableViewController.m */,
+				855CBE802332455F004E1BBA /* BBExperimentsTableViewController.mm */,
 			);
 			path = Tables;
 			sourceTree = "<group>";
@@ -1926,7 +1926,7 @@
 				2418FF321A83FD3700662547 /* DCMDExperimentViewController.mm in Sources */,
 				85CE23EF2137DA650035AEC8 /* DemoAccessory.mm in Sources */,
 				2418FF371A83FD3700662547 /* PlaybackViewController.mm in Sources */,
-				855CBE812332455F004E1BBA /* BBExperimentsTableViewController.m in Sources */,
+				855CBE812332455F004E1BBA /* BBExperimentsTableViewController.mm in Sources */,
 				2418FF151A83F79200662547 /* DSPAnalysis.mm in Sources */,
 				2418FF141A83F79200662547 /* BBECGAnalysis.mm in Sources */,
 				2418FF111A83F79200662547 /* BBAudioFileWriter.m in Sources */,
@@ -1997,7 +1997,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CINDER_PATH = /Users/stanislav/Desktop/Projects/Backup/Libraries/cinder_0.8.6_mac;
+				CINDER_PATH = "$(PROJECT_DIR)/libs/cinder_0.8.6_mac";
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_OBJC_ARC = NO;
@@ -2063,7 +2063,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CINDER_PATH = /Users/stanislav/Desktop/Projects/Backup/Libraries/cinder_0.8.6_mac;
+				CINDER_PATH = "$(PROJECT_DIR)/libs/cinder_0.8.6_mac";
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_OBJC_ARC = NO;
