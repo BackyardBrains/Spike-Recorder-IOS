@@ -48,6 +48,12 @@
     float pixelsPerMeter;
     BOOL isRotated;
     float retinaPonder;
+    bool firstTimeStimuly;//patch
+    CGFloat r;
+    CGFloat g;
+    CGFloat b;
+    BBFile * recordingFile;
+    float startTimeOfTrial;
 }
 
 @property (nonatomic, assign) id <DCMDGLDelegate> controllerDelegate;

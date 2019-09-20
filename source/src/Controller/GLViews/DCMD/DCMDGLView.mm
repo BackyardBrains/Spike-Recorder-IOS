@@ -16,9 +16,10 @@
 #define STATE_WHAIT_FOR_USER_INTERACTION 5
 
 
-#define START_RECORDING_SECONDS_BEFORE 2.0f
+#define START_RECORDING_SECONDS_BEFORE 0.0f
 #define WHAIT_WITH_MAX_ANGLE_SECONDS 2.0f
 
+#define NUMBER_OF_SEGMENTS_IN_ELPISE 100
 
 @implementation DCMDGLView
 
@@ -35,6 +36,7 @@
 //
 - (void)setup
 {
+    firstTimeStimuly = true;
     needStartTime = YES;
     trialIndex  = 0;
     startAngle = M_PI/360.0f;
@@ -45,6 +47,9 @@
     for(int i=0;i<[self.experiment.trials count];i++)
     {
         [trialIndexes addObject:[NSNumber numberWithInt:i]];
+        
+        //randomize colors
+        
     }
     pixelsPerMeter = [UIDeviceExt pixelsPerCentimeter] * 100.0f;
     NSUInteger count = [trialIndexes count];
@@ -76,38 +81,75 @@
             {
                 angle = maxAngle;
             }
+            
             //sizeOnScreen = 2.0f*tempTrial.distance*tanf(angle);
-            [tempTrial.angles addObject:[NSNumber numberWithFloat:(float)angle]];
+            [tempTrial.angles addObject:[NSNumber numberWithFloat:(float)angle*2.0]];
             [tempTrial.angles addObject:[NSNumber numberWithFloat:0.0f]];
             
         }
     }
     
+    /* UIColor * stimulusColor = [[UIColor alloc] initWithCGColor:[[UIColor blackColor] CGColor]];
+     [self colorFromHexString:self.experiment.color color:&stimulusColor];
+     const CGFloat *components = CGColorGetComponents(stimulusColor.CGColor);
+     
+     r = components[0];
+     g = components[1];
+     b = components[2];*/
     
     currentTrial = [self.experiment.trials objectAtIndex:[((NSNumber*)[trialIndexes objectAtIndex:trialIndex]) intValue]];
     currentSpeed = currentTrial.velocity;
     currentSize = currentTrial.size;
     
     
-    frameRate = 200;
+    frameRate = 120;
     [super setup];//this calls [self startAnimation]
     
     // Setup the camera
-	mCam.lookAt( Vec3f(0.0f, 0.0f, 40.0f), Vec3f::zero() );
+    mCam.lookAt( Vec3f(0.0f, 0.0f, 40.0f), Vec3f::zero() );
     mCam.setOrtho(0, 100, 0, 100, 1, 100);
     gl::setMatrices( mCam );
     //[self enableAntiAliasing:YES];
     [self calculateScale];
     retinaPonder = 1.0f;
-    if([[UIScreen mainScreen] respondsToSelector:@selector(scale)])
+    if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] && [[UIScreen mainScreen] scale]==2.0)
     {
-        retinaPonder = 1/((float)[[UIScreen mainScreen] scale]);
+        retinaPonder = 0.5;
     }
+    
+    
     
     [self calculateSizesForEllipseForTrial:currentTrial];
     // Make sure that we can autorotate 'n what not.
     self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-
+    
+    
+    
+    //start recording experiment (all trials together)
+    BBAudioManager *bbAudioManager = [BBAudioManager bbAudioManager];
+    if (bbAudioManager.recording == false) {
+        
+        //check if we have non-standard requirements for format and make custom wav
+        if([bbAudioManager sourceNumberOfChannels]>2 || [bbAudioManager sourceSamplingRate]!=44100.0f)
+        {
+            self.experiment.file = [[[BBFile alloc] initWav] autorelease];
+        }
+        else
+        {
+            //if everything is standard make .m4a file (it has beter compression )
+            self.experiment.file = [[[BBFile alloc] init] autorelease];
+        }
+        self.experiment.file.numberOfChannels = [bbAudioManager sourceNumberOfChannels];
+        self.experiment.file.samplingrate = [bbAudioManager sourceSamplingRate];
+        [self.experiment.file setupChannels];//create name of channels without spike trains
+        
+        // NSLog(@"Start recording exp file URL: %@ time: %f", [currentTrial.file fileURL], currentTime);
+        [bbAudioManager startRecording:self.experiment.file ];
+        expStartTime = self.getElapsedSeconds;
+    }
+    
+    
+    
 }
 
 
@@ -127,11 +169,11 @@
 //
 - (void)draw {
     
-   
+    
     if(self.experiment)
     {
-       
-
+        
+        
         gl::clear( Color( 1.0f, 1.0f, 1.0f ), true );
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
         // Look at it right
@@ -144,42 +186,39 @@
             gl::setMatrices( mCam );
             centerOfScreen = Vec2f(50.0f, 50.0f);
             needStartTime = NO;
-            expStartTime = self.getElapsedSeconds;
-            glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
+            
+            startTimeOfTrial = (float)self.getElapsedSeconds;
+            currentTrial.startOfTrialTimestamp = (float)self.getElapsedSeconds-expStartTime;
+            
+            UIColor * stimulusColor = [[UIColor alloc] initWithCGColor:[[UIColor blackColor] CGColor]];
+            [self colorFromHexString:currentTrial.color color:&stimulusColor];
+            const CGFloat *components = CGColorGetComponents(stimulusColor.CGColor);
+            
+            r = components[0];
+            g = components[1];
+            b = components[2];
+            glColor4f(r, g, b, 1.0f);
             [self calculateScale];
             NSLog(@"Setup start of experiment");
+            if(firstTimeStimuly)
+            {
+                [self calculateSizesForEllipseForTrial:currentTrial];
+                firstTimeStimuly = false;
+            }
         }
         
-//float fr = app::getFrameRate();
-        currentTime = (float)self.getElapsedSeconds-expStartTime;
+        //float fr = app::getFrameRate();
+        currentTime = (float)self.getElapsedSeconds-startTimeOfTrial;
         
         switch (stateOfExp) {
             case STATE_BLANK_WAIT:
                 
                 if(currentTime>(self.experiment.delayBetweenTrials-START_RECORDING_SECONDS_BEFORE ))
                 {
-                    BBAudioManager *bbAudioManager = [BBAudioManager bbAudioManager];
-                    if (bbAudioManager.recording == false) {
-                        
-                        //check if we have non-standard requirements for format and make custom wav
-                        if([bbAudioManager sourceNumberOfChannels]>2 || [bbAudioManager sourceSamplingRate]!=44100.0f)
-                        {
-                            currentTrial.file = [[[BBFile alloc] initWav] autorelease];
-                        }
-                        else
-                        {
-                            //if everything is standard make .m4a file (it has beter compression )
-                            currentTrial.file = [[[BBFile alloc] init] autorelease];
-                        }
-                        currentTrial.file.numberOfChannels = [bbAudioManager sourceNumberOfChannels];
-                        currentTrial.file.samplingrate = [bbAudioManager sourceSamplingRate];
-                        [currentTrial.file setupChannels];//create name of channels without spike trains
-                        
-                        NSLog(@"Start recording exp file URL: %@ time: %f", [currentTrial.file fileURL], currentTime);
-                        [bbAudioManager startRecording:currentTrial.file ];
-                        
-                        currentTrial.startOfRecording = (float)self.getElapsedSeconds-expStartTime;                        stateOfExp = STATE_RECORDING_STARTED;
-                    }
+                    currentTrial.file = self.experiment.file;
+                    
+                    stateOfExp = STATE_RECORDING_STARTED;
+                    
                 }
                 break;
                 
@@ -194,15 +233,15 @@
                 break;
             case STATE_STIMULATION_STARTED:
                 //NSLog(@"Stimulation Started");
-
+                
                 [currentTrial.angles replaceObjectAtIndex:indexOfAngle+1 withObject:[NSNumber numberWithFloat:(float)currentTime]];
                 if(!isRotated)
                 {
-                    gl::drawSolidEllipse( centerOfScreen, sizesForEllipse[indexOfAngle], sizesForEllipse[indexOfAngle+1] );
+                    gl::drawSolidEllipse( centerOfScreen, sizesForEllipse[indexOfAngle], sizesForEllipse[indexOfAngle+1] ,NUMBER_OF_SEGMENTS_IN_ELPISE);
                 }
                 else
                 {
-                    gl::drawSolidEllipse( centerOfScreen, sizesForEllipse[indexOfAngle+1], sizesForEllipse[indexOfAngle] );
+                    gl::drawSolidEllipse( centerOfScreen, sizesForEllipse[indexOfAngle+1], sizesForEllipse[indexOfAngle] , NUMBER_OF_SEGMENTS_IN_ELPISE);
                 }
                 
                 if((indexOfAngle+=2) == maxIndexOfAngleInTrial)
@@ -215,20 +254,20 @@
                 }
                 break;
             case STATE_WHAIT_AFTER_STIMULATION:
-               // NSLog(@"After stimulation");
-                [currentTrial.angles addObject:[NSNumber numberWithFloat:(float)angle]];
+                // NSLog(@"After stimulation");
+                [currentTrial.angles addObject:[NSNumber numberWithFloat:(float)angle*2.0]];
                 [currentTrial.angles addObject:[NSNumber numberWithFloat:(float)currentTime]];
-
                 
-
+                
+                
                 //Draw circle
                 if(!isRotated)
                 {
-                    gl::drawSolidEllipse( centerOfScreen, radiusXAxis, radiusYAxis );
+                    gl::drawSolidEllipse( centerOfScreen, radiusXAxis, radiusYAxis , NUMBER_OF_SEGMENTS_IN_ELPISE);
                 }
                 else
                 {
-                    gl::drawSolidEllipse( centerOfScreen, radiusYAxis, radiusXAxis );
+                    gl::drawSolidEllipse( centerOfScreen, radiusYAxis, radiusXAxis , NUMBER_OF_SEGMENTS_IN_ELPISE);
                 }
                 
                 if(currentTime> currentTrial.timeOfImpact + WHAIT_WITH_MAX_ANGLE_SECONDS)
@@ -237,33 +276,41 @@
                     //End of trial
                     NSLog(@"End of max angle whait. Time: %f", currentTime);
                     
-                    BBAudioManager *bbAudioManager = [BBAudioManager bbAudioManager];
-                    currentTrial.file.filelength = bbAudioManager.fileDuration;
-                    currentTrial.file.fileUsage = EXPERIMENT_FILE_USAGE;
-                    [bbAudioManager stopRecording];
-                    [currentTrial.file save];
                     
                     
-                    needStartTime = YES;
+                    
                     trialIndex++;
                     if(trialIndex>= [trialIndexes count])
                     {
                         stateOfExp = STATE_WHAIT_FOR_USER_INTERACTION;
+                        
                         //End of experiment
+                        
+                        BBAudioManager *bbAudioManager = [BBAudioManager bbAudioManager];
+                        self.experiment.file.filelength = bbAudioManager.fileDuration;
+                        self.experiment.file.fileUsage = EXPERIMENT_FILE_USAGE;
+                        [bbAudioManager stopRecording];
+                        [self.experiment.file save];
+                        
+                        
                         NSLog(@"End of experiment %@", self.experiment.name);
                         [self.controllerDelegate startSavingExperiment];
                         break;
                     }
+                    else
+                    {
+                        needStartTime = YES;
+                    }
                     currentTrial = [self.experiment.trials objectAtIndex:[((NSNumber*)[trialIndexes objectAtIndex:trialIndex]) intValue]];
- 
+                    
                     [self calculateSizesForEllipseForTrial:currentTrial];
                     stateOfExp = STATE_BLANK_WAIT;
                 }
                 break;
                 
             case STATE_WHAIT_FOR_USER_INTERACTION:
-            
-            break;
+                
+                break;
         }
         
         
@@ -285,7 +332,7 @@
     
     for(int i=trialIndex;i<[trialIndexes count];i++)
     {
-            [tempArrayOfTrialsToDelete addObject:[self.experiment.trials objectAtIndex:[((NSNumber*)[trialIndexes objectAtIndex:i]) intValue]]];
+        [tempArrayOfTrialsToDelete addObject:[self.experiment.trials objectAtIndex:[((NSNumber*)[trialIndexes objectAtIndex:i]) intValue]]];
     }
     for(int i=0;i<[tempArrayOfTrialsToDelete count];i++)
     {
@@ -305,6 +352,7 @@
     {
         //sizeOnScreen = 2.0f*tempTrial.distance*tanf(([[tempTrial.angles objectAtIndex:i] floatValue]/2.0f));
         sizeOnScreen = tempTrial.distance*tanf(([[tempTrial.angles objectAtIndex:i] floatValue]/2.0f));
+        // NSLog(@"[ang]%f - [m] %f - [pix] %f\n", (([[tempTrial.angles objectAtIndex:i] floatValue]/2.0f)/(2*M_PI))*360.0, sizeOnScreen, sizeOnScreen*pixelsPerMeter);
         sizesForEllipse[i] =sizeOnScreen*pixelsPerMeter*scaleXY.x;
         sizesForEllipse[i+1] =sizeOnScreen*pixelsPerMeter*scaleXY.y;
     }
@@ -324,7 +372,7 @@
     BBAudioManager *bbAudioManager = [BBAudioManager bbAudioManager];
     if (bbAudioManager.recording)
     {
-        currentTrial.file.fileUsage = EXPERIMENT_FILE_USAGE;
+        self.experiment.file.fileUsage = EXPERIMENT_FILE_USAGE;
         [bbAudioManager stopRecording];
     }
     [self.controllerDelegate userWantsInterupt];
@@ -345,11 +393,11 @@
     
     float windowHeight = self.frame.size.height;
     float windowWidth = self.frame.size.width;
-    if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] )
+    if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] && [[UIScreen mainScreen] scale]==2.0)
     {
-        float screenScale = [[UIScreen mainScreen] scale];
-        windowHeight *=  screenScale;
-        windowWidth *= screenScale;
+        //if it is retina
+        windowHeight += windowHeight;
+        windowWidth += windowWidth;
     }
     
     float worldLeft, worldTop, worldRight, worldBottom, worldNear, worldFar;
@@ -379,11 +427,11 @@
     float windowHeight = self.frame.size.height;
     float windowWidth = self.frame.size.width;
     
-    if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] )
+    if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] && [[UIScreen mainScreen] scale]==2.0)
     {
-        float screenScale = [[UIScreen mainScreen] scale];
-        windowHeight *=  screenScale;
-        windowWidth *= screenScale;
+        //if it is retina
+        windowHeight += windowHeight;
+        windowWidth += windowWidth;
     }
     
     float worldLeft, worldTop, worldRight, worldBottom, worldNear, worldFar;
@@ -412,6 +460,18 @@
 -(BBDCMDExperiment *) experiment
 {
     return _experiment;
+}
+
+- (BOOL) colorFromHexString:(NSString *)hexString color:(UIColor **) outColor{
+    unsigned rgbValue = 0;
+    NSScanner *scanner = [NSScanner scannerWithString:hexString];
+    [scanner setScanLocation:0]; // bypass '#' character
+    if([scanner scanHexInt:&rgbValue]==NO)
+    {
+        return NO;
+    }
+    *outColor = [UIColor colorWithRed:((rgbValue & 0xFF0000) >> 16)/255.0 green:((rgbValue & 0xFF00) >> 8)/255.0 blue:(rgbValue & 0xFF)/255.0 alpha:1.0];
+    return YES;
 }
 
 //dealloc

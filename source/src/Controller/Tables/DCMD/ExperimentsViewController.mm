@@ -16,13 +16,26 @@
 @implementation ExperimentsViewController
 @synthesize allExperiments = _allExperiments;
 @synthesize myNewExperiment = _myNewExperiment;
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-
+        
         _allExperiments = [[NSMutableArray alloc] initWithCapacity:0];
     }
+    return self;
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    
+    if(self = [super initWithCoder:aDecoder]) {
+        
+        
+        _allExperiments = [[NSMutableArray alloc] initWithCapacity:0];
+        
+    }
+    
     return self;
 }
 
@@ -30,21 +43,38 @@
 {
     self.title = @"Experiments";
     [super viewDidLoad];
+    self.expTableView  = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
+    [self.expTableView setAutoresizesSubviews:YES];
+    [self.expTableView setAutoresizingMask:
+     UIViewAutoresizingFlexibleWidth |
+     UIViewAutoresizingFlexibleHeight];
+    // must set delegate & dataSource, otherwise the the table will be empty and not responsive
     self.expTableView.delegate = self;
     self.expTableView.dataSource = self;
+    
+    
+    // add to canvas
+    [self.view addSubview:self.expTableView];
+    
 }
 
+- (void) willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+    self.expTableView.frame = self.view.bounds;
+    [self.expTableView reloadData];
+}
 
 -(void) viewWillAppear:(BOOL)animated
 {
-
+    self.expTableView.delegate = self;
+    self.expTableView.dataSource = self;
+    
     _allExperiments = [[NSMutableArray arrayWithArray:[BBDCMDExperiment allObjects]] retain];
     
     if (self.navigationItem.rightBarButtonItem==nil) {
         
         UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
-                                                                                 target:self
-                                                                                 action:@selector(createNewExperiment:)];
+                                                                                     target:self
+                                                                                     action:@selector(createNewExperiment:)];
         
         self.navigationItem.rightBarButtonItem = rightButton;
     }
@@ -57,7 +87,8 @@
 }
 
 - (void)dealloc {
-    [_expTableView release];
+    [self.expTableView release];
+    
     [super dealloc];
 }
 
@@ -112,7 +143,7 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         
-         BBDCMDExperiment * tempExperiment = (BBDCMDExperiment *)[_allExperiments objectAtIndex:indexPath.row];
+        BBDCMDExperiment * tempExperiment = (BBDCMDExperiment *)[_allExperiments objectAtIndex:indexPath.row];
         [_allExperiments removeObjectAtIndex:indexPath.row];
         for(int i=[[tempExperiment trials] count]-1;i>=0;i--)
         {
@@ -143,13 +174,13 @@
     BBDCMDExperiment * tempExperiment = (BBDCMDExperiment *)[_allExperiments objectAtIndex:indexPath.row];
     
     cell.textLabel.text = tempExperiment.name;
-   
+    
     
     // set the accessory view:
     cell.accessoryType =  UITableViewCellAccessoryDisclosureIndicator;
     
     return cell;
-
+    
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath

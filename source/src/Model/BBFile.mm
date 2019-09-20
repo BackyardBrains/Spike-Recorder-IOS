@@ -74,19 +74,19 @@ using namespace tinyxml2;
     
     if(isWav)
     {
-        [dateFormatter setDateFormat:@"'BYB Recording 'M'-'d'-'yyyy' 'h':'mm':'ss':'S a'.wav'"];
+        [dateFormatter setDateFormat:@"'BYB Recording 'M'-'d'-'yyyy'-'h'-'mm'-'ss'-'Sa'.wav'"];
     }
     else
     {
-        [dateFormatter setDateFormat:@"'BYB Recording 'M'-'d'-'yyyy' 'h':'mm':'ss':'S a'.m4a'"];
+        [dateFormatter setDateFormat:@"'BYB Recording 'M'-'d'-'yyyy'-'h'-'mm'-'ss'-'Sa'.m4a'"];
     }
     self.filename = [dateFormatter stringFromDate:self.date];
     NSLog(@"Filename: %@", self.filename);
     
-    [dateFormatter setDateFormat:@"'BYB Recording 'M'-'d'-'yyyy' 'h':'mm':'ss':'S a"];
+    [dateFormatter setDateFormat:@"'BYB Recording 'M'-'d'-'yyyy'-'h'-'mm'-'ss'-'Sa"];
     self.shortname = [dateFormatter stringFromDate:self.date];
     
-    [dateFormatter setDateFormat:@"M'/'d'/'yyyy',' h':'mm a"];
+    [dateFormatter setDateFormat:@"M'-'d'-'yyyy'-'h'-'mma"];
     self.subname = [dateFormatter stringFromDate:self.date];
     
     [dateFormatter release];
@@ -155,7 +155,7 @@ using namespace tinyxml2;
 		self.shortname = [onlyFilename stringByDeletingPathExtension];
 		NSLog(@"Shortname: %@", self.shortname);
         
-		[dateFormatter setDateFormat:@"M'/'d'/'yyyy',' h':'mm a"];
+        [dateFormatter setDateFormat:@"M'-'d'-'yyyy'-'h'-'mma"];
 		self.subname = [dateFormatter stringFromDate:self.date];
         
 		[dateFormatter release];

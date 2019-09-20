@@ -26,7 +26,7 @@
     NSArray *actionOptions;
     
 }
-   
+
 @end
 
 @implementation TrialActionsViewController
@@ -38,11 +38,11 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         actionOptions = [[NSArray arrayWithObjects:
-                         ACTION_GRAPH,
-                         ACTION_PLAY,
-                         ACTION_SORT,
-                         ACTION_SHARE,
-                         ACTION_DELETE, nil] retain];
+                          ACTION_GRAPH,
+                          ACTION_PLAY,
+                          ACTION_SORT,
+                          // ACTION_SHARE,
+                          ACTION_DELETE, nil] retain];
     }
     return self;
 }
@@ -80,6 +80,7 @@
                                               applicationActivities:nil] autorelease];
     
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        activities.popoverPresentationController.sourceView = self.view;
         [[[self parentViewController] parentViewController] presentViewController:activities animated:YES completion:nil];
         
     }
@@ -97,11 +98,11 @@
 {
     
     NSError *writeError = nil;
-
-    NSDictionary * expDictionary = [currentTrial createTrialDictionary];
+    
+    NSDictionary * expDictionary = [currentTrial createTrialDictionaryWithVersion:YES];
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:expDictionary options:NSJSONWritingPrettyPrinted error:&writeError];
     NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-
+    
     
     NSString* pathToFile = [self writeString:jsonString toTextFileWithName:@"trial.json"];
     [jsonString release];
@@ -175,7 +176,7 @@
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
     }
-
+    
     cell.textLabel.text = (NSString *)[actionOptions objectAtIndex:indexPath.row];
     
     
@@ -192,13 +193,13 @@
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
     
     if ([cell.textLabel.text isEqualToString:ACTION_GRAPH])
-	{
+    {
         if([currentTrial.file.spikesFiltered isEqualToString:FILE_SPIKE_SORTED] )
         {
             GraphDCMDTrialViewController * graphController = [[GraphDCMDTrialViewController alloc] initWithNibName:@"GraphDCMDTrialViewController" bundle:nil] ;
             
             graphController.currentTrial = currentTrial;
-           
+            
             [self.navigationController pushViewController:graphController animated:YES];
             [graphController release];
             
@@ -239,7 +240,7 @@
                     dispatch_async(dispatch_get_main_queue(), ^{
                         
                         [MBProgressHUD hideHUDForView:self.view animated:YES];
-                        SpikesAnalysisViewController *avc = [[SpikesAnalysisViewController alloc] initWithNibName:@"SpikesViewController" bundle:nil];
+                        SpikesAnalysisViewController *avc = [[SpikesAnalysisViewController alloc] init];
                         avc.bbfile = currentTrial.file;
                         avc.masterDelegate = self;
                         [self.navigationController pushViewController:avc animated:YES];
@@ -295,11 +296,11 @@
             MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
             hud.labelText = @"Applying...";
             dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-                    //Copy thresholds to all trials
-                    [self.masterDelegate applySameThresholdsToAllTrials:self.currentTrial];
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [MBProgressHUD hideHUDForView:self.view animated:YES];
-                    });
+                //Copy thresholds to all trials
+                [self.masterDelegate applySameThresholdsToAllTrials:self.currentTrial];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [MBProgressHUD hideHUDForView:self.view animated:YES];
+                });
             });
             
             
