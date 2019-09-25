@@ -9,7 +9,14 @@
 #import "ExperimentsViewController.h"
 
 #import "BBDCMDExperiment.h"
+#define SEGUE_TRIALS_TABLE_VIEW             @"openDcmdTrialsSegue"
+#define SEGUE_DCMD_SETUP_VIEW               @"openDcmdSetupSegue"
+#define SEGUE_START_DCMD_EXPERIMENT_VIEW    @"startExperimentViewSeque"
+
 @interface ExperimentsViewController ()
+{
+    BBDCMDExperiment* experimentToBeLoaded;
+}
 
 @end
 
@@ -96,33 +103,24 @@
 
 -(void) createNewExperiment:(id)sender
 {
-    ExperimentSetupViewController *expSt = [[ExperimentSetupViewController alloc] initWithNibName:@"ExperimentSetupViewController" bundle:nil];
+    //SEGUE_DCMD_SETUP_VIEW
     _myNewExperiment = [[BBDCMDExperiment alloc] init];
-    expSt.experiment = _myNewExperiment;
-    expSt.masterDelegate = self;
-    [self.navigationController pushViewController:expSt animated:YES];
-    [expSt release];
+    [self performSegueWithIdentifier:SEGUE_DCMD_SETUP_VIEW sender:self];
 }
 
 -(void) endOfSetup
 {
+    //SEGUE_START_DCMD_EXPERIMENT_VIEW
     [self.navigationController popViewControllerAnimated:NO];
-    DCMDExperimentViewController *expVC = [[DCMDExperimentViewController alloc] initWithNibName:@"DCMDExperimentViewController" bundle:nil];
-    expVC.experiment = _myNewExperiment;
-    expVC.masterDelegate = self;
-    expVC.hidesBottomBarWhenPushed = YES;
-    [self.navigationController pushViewController:expVC animated:YES];
-    [expVC release];
+    [self performSegueWithIdentifier:SEGUE_START_DCMD_EXPERIMENT_VIEW sender:self];
 }
 
 -(void) endOfExperiment
 {
     [self.navigationController popViewControllerAnimated:NO];
     [[self navigationController] setNavigationBarHidden:NO animated:YES];
-    TrialsDCMDTableViewController *trialsVC = [[TrialsDCMDTableViewController alloc] initWithNibName:@"TrialsDCMDTableViewController" bundle:nil];
-    trialsVC.experiment = _myNewExperiment;
-    [self.navigationController pushViewController:trialsVC animated:YES];
-    [trialsVC release];
+    experimentToBeLoaded = _myNewExperiment;
+    [self performSegueWithIdentifier:SEGUE_TRIALS_TABLE_VIEW sender:self];
 }
 
 #pragma mark - Table view code
@@ -186,12 +184,32 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [self removeAllTrialsThatAreNotSimulated:[_allExperiments objectAtIndex:indexPath.row]];
-    TrialsDCMDTableViewController *trialsVC = [[TrialsDCMDTableViewController alloc] initWithNibName:@"TrialsDCMDTableViewController" bundle:nil];
-    trialsVC.experiment = [_allExperiments objectAtIndex:indexPath.row];
-    [self.navigationController pushViewController:trialsVC animated:YES];
-    [trialsVC release];
+    experimentToBeLoaded = [_allExperiments objectAtIndex:indexPath.row];
+    [self performSegueWithIdentifier:SEGUE_TRIALS_TABLE_VIEW sender:self];
 }
 
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([[segue identifier] isEqualToString:SEGUE_TRIALS_TABLE_VIEW])
+    {
+        TrialsDCMDTableViewController *avc = (TrialsDCMDTableViewController *)segue.destinationViewController;
+        avc.experiment = experimentToBeLoaded;
+    }
+    if ([[segue identifier] isEqualToString:SEGUE_DCMD_SETUP_VIEW])
+    {
+        ExperimentSetupViewController *avc = (ExperimentSetupViewController *)segue.destinationViewController;
+        avc.experiment = _myNewExperiment;
+        avc.masterDelegate = self;
+    }
+    if ([[segue identifier] isEqualToString:SEGUE_START_DCMD_EXPERIMENT_VIEW])
+    {
+        DCMDExperimentViewController *avc = (DCMDExperimentViewController *)segue.destinationViewController;
+        avc.experiment = _myNewExperiment;
+        avc.masterDelegate = self;
+        avc.hidesBottomBarWhenPushed = YES;
+    }
+}
 
 
 -(void) removeAllTrialsThatAreNotSimulated:(BBDCMDExperiment *) experimentToClean

@@ -14,8 +14,12 @@
 #import "BBAnalysisManager.h"
 #import "GraphDCMDExperimentViewController.h"
 
+#define SEGUE_DCMD_TRIAL_ACTIONS_VIEW       @"DCMDtrialActionsViewSegue"
+#define SEGUE_DCMD_SHOW_EXPERIMENT_GRAPH    @"showDCMDExperimentGraphSegue"
 @interface TrialsDCMDTableViewController ()
-
+{
+    BBDCMDTrial * trialToBeOpened;
+}
 @end
 
 @implementation TrialsDCMDTableViewController
@@ -50,13 +54,13 @@
         NSMutableArray* buttons = [[NSMutableArray alloc] initWithCapacity:2];
         
         // create a standard save button
-        UIBarButtonItem *saveButton = [[UIBarButtonItem alloc]
+        UIBarButtonItem *shareButton = [[UIBarButtonItem alloc]
                                        initWithBarButtonSystemItem:UIBarButtonSystemItemAction
                                        target:self
                                        action:@selector(exportExperiment:)];
-        saveButton.style = UIBarButtonItemStyleBordered;
-        [buttons addObject:saveButton];
-        [saveButton release];
+        shareButton.style = UIBarButtonItemStyleBordered;
+        [buttons addObject:shareButton];
+        [shareButton release];
         
         // create a standard delete button with the trash icon
         UIBarButtonItem *graphButton = [[UIBarButtonItem alloc]
@@ -78,14 +82,31 @@
     [super viewWillAppear:animated];
 }
 
+
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([[segue identifier] isEqualToString:SEGUE_DCMD_TRIAL_ACTIONS_VIEW])
+    {
+        TrialActionsViewController *avc = (TrialActionsViewController *)segue.destinationViewController;
+        avc.currentTrial = trialToBeOpened;
+        avc.masterDelegate = self;
+    }
+    if ([[segue identifier] isEqualToString:SEGUE_DCMD_SHOW_EXPERIMENT_GRAPH])
+    {
+        GraphDCMDExperimentViewController *avc = (GraphDCMDExperimentViewController *)segue.destinationViewController;
+        avc.currentExperiment = _experiment;
+    }
+    
+}
+
+
+
+
 -(void) openGraph:(id) sender
 {
-    GraphDCMDExperimentViewController * graphController = [[GraphDCMDExperimentViewController alloc] initWithNibName:@"GraphDCMDExperimentViewController" bundle:nil] ;
-    
-    graphController.currentExperiment = _experiment;
-    
-    [self.navigationController pushViewController:graphController animated:YES];
-    [graphController release];
+    //SEGUE_DCMD_SHOW_EXPERIMENT_GRAPH
+    [self performSegueWithIdentifier:SEGUE_DCMD_SHOW_EXPERIMENT_GRAPH sender:self];
 }
 
 
@@ -120,6 +141,13 @@
                                              applicationActivities:nil] autorelease];
     
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        if([activities respondsToSelector:@selector(popoverPresentationController)])
+        {
+            //iOS8
+            activities.popoverPresentationController.barButtonItem = self.navigationItem.rightBarButtonItem;
+            activities.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionUp;
+            //.sourceView = self.view;
+        }
         [[[self parentViewController] parentViewController] presentViewController:activities animated:YES completion:nil];
         
     }
@@ -259,12 +287,9 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    TrialActionsViewController *trialSt = [[TrialActionsViewController alloc] initWithNibName:@"TrialActionsViewController" bundle:nil];
-
-    trialSt.currentTrial = [_experiment.trials objectAtIndex:indexPath.row];
-    trialSt.masterDelegate = self;
-    [self.navigationController pushViewController:trialSt animated:YES];
-    [trialSt release];
+    trialToBeOpened = [_experiment.trials objectAtIndex:indexPath.row];
+    [self performSegueWithIdentifier:SEGUE_DCMD_TRIAL_ACTIONS_VIEW sender:self];
+    
 }
 
 #pragma mark - TrialActionsDelegate code
