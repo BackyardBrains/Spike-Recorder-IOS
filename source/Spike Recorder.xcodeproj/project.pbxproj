@@ -236,6 +236,10 @@
 		24EBC1B31997DD21001D3392 /* TrialActionsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 24EBC1B11997DD21001D3392 /* TrialActionsViewController.xib */; };
 		851897AF22BBDF15003C5D7F /* BBEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 851897AE22BBDF15003C5D7F /* BBEvent.m */; };
 		855CBE812332455F004E1BBA /* BBExperimentsTableViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 855CBE802332455F004E1BBA /* BBExperimentsTableViewController.mm */; };
+		855F6679235755E0008143FC /* ProductIds.plist in Resources */ = {isa = PBXBuildFile; fileRef = 855F6678235755E0008143FC /* ProductIds.plist */; };
+		855F667D2357598A008143FC /* StoreManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 855F667C2357598A008143FC /* StoreManager.m */; };
+		855F668023575B3E008143FC /* Section.m in Sources */ = {isa = PBXBuildFile; fileRef = 855F667F23575B3E008143FC /* Section.m */; };
+		855F668323575EC9008143FC /* StoreObserver.m in Sources */ = {isa = PBXBuildFile; fileRef = 855F668223575EC9008143FC /* StoreObserver.m */; };
 		856E3E6F22C50D5700103E2A /* ObjectiveDropboxOfficial.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 856E3E6E22C50D5700103E2A /* ObjectiveDropboxOfficial.framework */; };
 		856E3E7122C50D7E00103E2A /* ObjectiveDropboxOfficial.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 856E3E7022C50D7E00103E2A /* ObjectiveDropboxOfficial.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		856E3E7622C62D7800103E2A /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 856E3E7422C62D7800103E2A /* logo.png */; };
@@ -244,6 +248,7 @@
 		85CE23EF2137DA650035AEC8 /* DemoAccessory.mm in Sources */ = {isa = PBXBuildFile; fileRef = 85CE23EC2137DA640035AEC8 /* DemoAccessory.mm */; };
 		85CE23F02137DA650035AEC8 /* DemoProtocol.mm in Sources */ = {isa = PBXBuildFile; fileRef = 85CE23EE2137DA640035AEC8 /* DemoProtocol.mm */; };
 		85CE23F22137DAB20035AEC8 /* ExternalAccessory.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85CE23F12137DAB20035AEC8 /* ExternalAccessory.framework */; };
+		85D160FB233BB86A00BE00A7 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85D160FA233BB86A00BE00A7 /* StoreKit.framework */; };
 		FA49A7B015D9C352002A78EC /* BBFileViewControllerTBV.plist in Resources */ = {isa = PBXBuildFile; fileRef = FA49A7AF15D9C352002A78EC /* BBFileViewControllerTBV.plist */; };
 		FA90598A15A9F4E20013688B /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = FA90598915A9F4E20013688B /* libsqlite3.0.dylib */; };
 		FA905A4815AA8BBA0013688B /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA905A4715AA8BBA0013688B /* Security.framework */; };
@@ -698,6 +703,13 @@
 		851897AE22BBDF15003C5D7F /* BBEvent.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BBEvent.m; sourceTree = "<group>"; };
 		855CBE7F2332455F004E1BBA /* BBExperimentsTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BBExperimentsTableViewController.h; sourceTree = "<group>"; };
 		855CBE802332455F004E1BBA /* BBExperimentsTableViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BBExperimentsTableViewController.mm; sourceTree = "<group>"; };
+		855F6678235755E0008143FC /* ProductIds.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = ProductIds.plist; sourceTree = "<group>"; };
+		855F667B2357598A008143FC /* StoreManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StoreManager.h; sourceTree = "<group>"; };
+		855F667C2357598A008143FC /* StoreManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = StoreManager.m; sourceTree = "<group>"; };
+		855F667E23575B3E008143FC /* Section.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Section.h; sourceTree = "<group>"; };
+		855F667F23575B3E008143FC /* Section.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Section.m; sourceTree = "<group>"; };
+		855F668123575EC9008143FC /* StoreObserver.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StoreObserver.h; sourceTree = "<group>"; };
+		855F668223575EC9008143FC /* StoreObserver.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = StoreObserver.m; sourceTree = "<group>"; };
 		856E3E6E22C50D5700103E2A /* ObjectiveDropboxOfficial.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ObjectiveDropboxOfficial.framework; path = Carthage/Build/simulator/ObjectiveDropboxOfficial.framework; sourceTree = "<group>"; };
 		856E3E7022C50D7E00103E2A /* ObjectiveDropboxOfficial.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ObjectiveDropboxOfficial.framework; path = Carthage/Build/simulator/ObjectiveDropboxOfficial.framework; sourceTree = "<group>"; };
 		856E3E7422C62D7800103E2A /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo.png; sourceTree = "<group>"; };
@@ -708,6 +720,7 @@
 		85CE23ED2137DA640035AEC8 /* DemoProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoProtocol.h; sourceTree = "<group>"; };
 		85CE23EE2137DA640035AEC8 /* DemoProtocol.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DemoProtocol.mm; sourceTree = "<group>"; };
 		85CE23F12137DAB20035AEC8 /* ExternalAccessory.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ExternalAccessory.framework; path = System/Library/Frameworks/ExternalAccessory.framework; sourceTree = SDKROOT; };
+		85D160FA233BB86A00BE00A7 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		FA49A7AF15D9C352002A78EC /* BBFileViewControllerTBV.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = BBFileViewControllerTBV.plist; sourceTree = "<group>"; };
 		FA90598915A9F4E20013688B /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = usr/lib/libsqlite3.0.dylib; sourceTree = SDKROOT; };
 		FA905A4715AA8BBA0013688B /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
@@ -741,6 +754,7 @@
 				85CE23F22137DAB20035AEC8 /* ExternalAccessory.framework in Frameworks */,
 				247ED9BE193DEC0800871BAC /* libz.dylib in Frameworks */,
 				248C8EC118E5D90500307C4C /* ImageIO.framework in Frameworks */,
+				85D160FB233BB86A00BE00A7 /* StoreKit.framework in Frameworks */,
 				248C8EBF18E5D8FC00307C4C /* MobileCoreServices.framework in Frameworks */,
 				FA905A7C15AA8F370013688B /* MessageUI.framework in Frameworks */,
 				FA905A7A15AA8F0C0013688B /* CFNetwork.framework in Frameworks */,
@@ -1469,6 +1483,19 @@
 			path = templates;
 			sourceTree = "<group>";
 		};
+		855F667A2357594F008143FC /* App Store */ = {
+			isa = PBXGroup;
+			children = (
+				855F667B2357598A008143FC /* StoreManager.h */,
+				855F667C2357598A008143FC /* StoreManager.m */,
+				855F667E23575B3E008143FC /* Section.h */,
+				855F667F23575B3E008143FC /* Section.m */,
+				855F668123575EC9008143FC /* StoreObserver.h */,
+				855F668223575EC9008143FC /* StoreObserver.m */,
+			);
+			path = "App Store";
+			sourceTree = "<group>";
+		};
 		85CE23EA2137DA000035AEC8 /* accessory */ = {
 			isa = PBXGroup;
 			children = (
@@ -1502,6 +1529,7 @@
 		FADF26531596362F006C87BA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				85D160FA233BB86A00BE00A7 /* StoreKit.framework */,
 				856E3E6E22C50D5700103E2A /* ObjectiveDropboxOfficial.framework */,
 				85CE23F12137DAB20035AEC8 /* ExternalAccessory.framework */,
 				1CBD16101E72E6DC00F59AEF /* Crashlytics.framework */,
@@ -1533,6 +1561,7 @@
 		FADF26681596362F006C87BA /* src */ = {
 			isa = PBXGroup;
 			children = (
+				855F667A2357594F008143FC /* App Store */,
 				85CE23EA2137DA000035AEC8 /* accessory */,
 				2418FF1A1A83FD3700662547 /* Controller */,
 				2418FEFB1A83F79200662547 /* Audio */,
@@ -1557,6 +1586,7 @@
 				24E1430B1B61407B00DA32B9 /* Log.h */,
 				24E1430C1B61407B00DA32B9 /* Log.m */,
 				856E3E7E22C6315C00103E2A /* Launch Screen.storyboard */,
+				855F6678235755E0008143FC /* ProductIds.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -1615,6 +1645,9 @@
 						SystemCapabilities = {
 							com.apple.HealthKit = {
 								enabled = 0;
+							};
+							com.apple.InAppPurchase = {
+								enabled = 1;
 							};
 							com.apple.WAC = {
 								enabled = 0;
@@ -1769,6 +1802,7 @@
 				1C3882C720188A4C00B0388B /* portrait-1536-2048.png in Resources */,
 				247087C71A851774004C6B9B /* Icon-Small@2x.png in Resources */,
 				1CF7DB3A1F7988DF008F303E /* slider-metal-track.png in Resources */,
+				855F6679235755E0008143FC /* ProductIds.plist in Resources */,
 				2418FED71A83F5D700662547 /* spectrum@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1854,6 +1888,7 @@
 				2418FEF91A83F6C800662547 /* BBSpike.m in Sources */,
 				2418FF7A1A83FDD500662547 /* BBChannelSelectionTableViewController.m in Sources */,
 				2418FF361A83FD3700662547 /* MyAppDelegate.mm in Sources */,
+				855F668323575EC9008143FC /* StoreObserver.m in Sources */,
 				2418FF7B1A83FDD500662547 /* BBFileActionViewControllerTBV.mm in Sources */,
 				2418FF621A83FDA100662547 /* ISIGraphCollectionViewCell.m in Sources */,
 				2418FF971A83FE1200662547 /* AverageSpikeGraphView.mm in Sources */,
@@ -1927,11 +1962,13 @@
 				85CE23EF2137DA650035AEC8 /* DemoAccessory.mm in Sources */,
 				2418FF371A83FD3700662547 /* PlaybackViewController.mm in Sources */,
 				855CBE812332455F004E1BBA /* BBExperimentsTableViewController.mm in Sources */,
+				855F668023575B3E008143FC /* Section.m in Sources */,
 				2418FF151A83F79200662547 /* DSPAnalysis.mm in Sources */,
 				2418FF141A83F79200662547 /* BBECGAnalysis.mm in Sources */,
 				2418FF111A83F79200662547 /* BBAudioFileWriter.m in Sources */,
 				1CF7DB3E1F7988DF008F303E /* NMRangeSlider.m in Sources */,
 				2418FF981A83FE1200662547 /* BYBGLView.mm in Sources */,
+				855F667D2357598A008143FC /* StoreManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
