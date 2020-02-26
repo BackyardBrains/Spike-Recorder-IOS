@@ -104,7 +104,7 @@
         self.message = error.localizedDescription;
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            [[NSNotificationCenter defaultCenter] postNotificationName:PCSPurchaseNotification object:self];
+            //[[NSNotificationCenter defaultCenter] postNotificationName:PCSPurchaseNotification object:self];
         });
     }
 }
@@ -118,7 +118,7 @@
         self.message = [NSString stringWithFormat:@"There are no restorable purchases.\nOnly previously bought non-consumable products and auto-renewable subscriptions can be restored."];
         
         dispatch_async(dispatch_get_main_queue(), ^{
-            [[NSNotificationCenter defaultCenter] postNotificationName:PCSPurchaseNotification object:self];
+            //[[NSNotificationCenter defaultCenter] postNotificationName:PCSPurchaseNotification object:self];
         });
     }
 }
@@ -147,7 +147,7 @@
     // Do not send any notifications when the user cancels the purchase.
     if (transaction.error.code != SKErrorPaymentCancelled) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [[NSNotificationCenter defaultCenter] postNotificationName:PCSPurchaseNotification object:self];
+           // [[NSNotificationCenter defaultCenter] postNotificationName:PCSPurchaseNotification object:self];
         });
     }
     
@@ -163,7 +163,7 @@
     NSLog(@"Restore content for %@.", transaction.payment.productIdentifier);
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        [[NSNotificationCenter defaultCenter] postNotificationName:PCSPurchaseNotification object:self];
+        //[[NSNotificationCenter defaultCenter] postNotificationName:PCSPurchaseNotification object:self];
     });
     
     // Finishes the restored transaction.

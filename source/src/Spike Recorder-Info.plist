@@ -76,7 +76,7 @@
 	<key>LSSupportsOpeningDocumentsInPlace</key>
 	<false/>
 	<key>NSCameraUsageDescription</key>
-	<string>We don't need camera.</string>
+	<string>We don&apos;t need camera.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Application is using microphone and microphone jack to connect to SpikerBox product</string>
 	<key>UIApplicationExitsOnSuspend</key>
@@ -99,7 +99,7 @@
 	<string>UIStatusBarStyleDefault</string>
 	<key>UISupportedExternalAccessoryProtocols</key>
 	<array>
-		<string>com.silabs.demo</string>
+		<string>com.backyardbrains.sbpro</string>
 	</array>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>

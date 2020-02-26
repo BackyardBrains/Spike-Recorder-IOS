@@ -14,6 +14,7 @@
 #import <StoreKit/StoreKit.h>
 //#import "AppConfiguration.h"
 
+
 typedef NS_ENUM(NSInteger, PCSPurchaseStatus) {
     PCSPurchaseFailed, // Indicates that the purchase was unsuccessful.
     PCSPPurchaseSucceeded, // Indicates that the purchase was successful.
@@ -23,9 +24,9 @@ typedef NS_ENUM(NSInteger, PCSPurchaseStatus) {
     PCSPurchaseStatusNone // The PCSPurchase notification has not occured yet. This is the default value.
 };
 
-NSString *const PCSProductRequestNotification = @"ProductRequestNotification";
-NSString *const PCSPurchaseNotification = @"PurchaseNotification";
-NSString *const PCSRestoredWasCalledNotification = @"restoredWasCalledNotification";
+//NSString *const PCSProductRequestNotification = @"ProductRequestNotification";
+//NSString *const PCSPurchaseNotification = @"PurchaseNotification";
+//NSString *const PCSRestoredWasCalledNotification = @"restoredWasCalledNotification";
 
 @interface StoreObserver : NSObject <SKPaymentTransactionObserver>
 + (StoreObserver *)sharedInstance;

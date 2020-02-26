@@ -240,11 +240,12 @@
 		855F667D2357598A008143FC /* StoreManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 855F667C2357598A008143FC /* StoreManager.m */; };
 		855F668023575B3E008143FC /* Section.m in Sources */ = {isa = PBXBuildFile; fileRef = 855F667F23575B3E008143FC /* Section.m */; };
 		855F668323575EC9008143FC /* StoreObserver.m in Sources */ = {isa = PBXBuildFile; fileRef = 855F668223575EC9008143FC /* StoreObserver.m */; };
-		856E3E6F22C50D5700103E2A /* ObjectiveDropboxOfficial.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 856E3E6E22C50D5700103E2A /* ObjectiveDropboxOfficial.framework */; };
-		856E3E7122C50D7E00103E2A /* ObjectiveDropboxOfficial.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 856E3E7022C50D7E00103E2A /* ObjectiveDropboxOfficial.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		856E3E7622C62D7800103E2A /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 856E3E7422C62D7800103E2A /* logo.png */; };
 		856E3E7722C62D7800103E2A /* splash-background.png in Resources */ = {isa = PBXBuildFile; fileRef = 856E3E7522C62D7800103E2A /* splash-background.png */; };
 		856E3E7F22C6315C00103E2A /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 856E3E7E22C6315C00103E2A /* Launch Screen.storyboard */; };
+		8586320123BE21A000D6BC5A /* ObjectiveDropboxOfficial.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 858631FD23BE1EC500D6BC5A /* ObjectiveDropboxOfficial.framework */; };
+		8586320223BF4F2000D6BC5A /* ObjectiveDropboxOfficial.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 858631FD23BE1EC500D6BC5A /* ObjectiveDropboxOfficial.framework */; };
+		8586320323BF4F2000D6BC5A /* ObjectiveDropboxOfficial.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 858631FD23BE1EC500D6BC5A /* ObjectiveDropboxOfficial.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		85CE23EF2137DA650035AEC8 /* DemoAccessory.mm in Sources */ = {isa = PBXBuildFile; fileRef = 85CE23EC2137DA640035AEC8 /* DemoAccessory.mm */; };
 		85CE23F02137DA650035AEC8 /* DemoProtocol.mm in Sources */ = {isa = PBXBuildFile; fileRef = 85CE23EE2137DA640035AEC8 /* DemoProtocol.mm */; };
 		85CE23F22137DAB20035AEC8 /* ExternalAccessory.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85CE23F12137DAB20035AEC8 /* ExternalAccessory.framework */; };
@@ -272,13 +273,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		1CB1265E1F87DDFF00247389 /* Embed Frameworks */ = {
+		8586320423BF4F2100D6BC5A /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				856E3E7122C50D7E00103E2A /* ObjectiveDropboxOfficial.framework in Embed Frameworks */,
+				8586320323BF4F2000D6BC5A /* ObjectiveDropboxOfficial.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -710,11 +711,10 @@
 		855F667F23575B3E008143FC /* Section.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Section.m; sourceTree = "<group>"; };
 		855F668123575EC9008143FC /* StoreObserver.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StoreObserver.h; sourceTree = "<group>"; };
 		855F668223575EC9008143FC /* StoreObserver.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = StoreObserver.m; sourceTree = "<group>"; };
-		856E3E6E22C50D5700103E2A /* ObjectiveDropboxOfficial.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ObjectiveDropboxOfficial.framework; path = Carthage/Build/simulator/ObjectiveDropboxOfficial.framework; sourceTree = "<group>"; };
-		856E3E7022C50D7E00103E2A /* ObjectiveDropboxOfficial.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ObjectiveDropboxOfficial.framework; path = Carthage/Build/simulator/ObjectiveDropboxOfficial.framework; sourceTree = "<group>"; };
 		856E3E7422C62D7800103E2A /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo.png; sourceTree = "<group>"; };
 		856E3E7522C62D7800103E2A /* splash-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "splash-background.png"; sourceTree = "<group>"; };
 		856E3E7E22C6315C00103E2A /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
+		858631FD23BE1EC500D6BC5A /* ObjectiveDropboxOfficial.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ObjectiveDropboxOfficial.framework; path = Carthage/Build/IOS/ObjectiveDropboxOfficial.framework; sourceTree = "<group>"; };
 		85CE23EB2137DA640035AEC8 /* DemoAccessory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoAccessory.h; sourceTree = "<group>"; };
 		85CE23EC2137DA640035AEC8 /* DemoAccessory.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DemoAccessory.mm; sourceTree = "<group>"; };
 		85CE23ED2137DA640035AEC8 /* DemoProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoProtocol.h; sourceTree = "<group>"; };
@@ -753,11 +753,13 @@
 			files = (
 				85CE23F22137DAB20035AEC8 /* ExternalAccessory.framework in Frameworks */,
 				247ED9BE193DEC0800871BAC /* libz.dylib in Frameworks */,
+				8586320123BE21A000D6BC5A /* ObjectiveDropboxOfficial.framework in Frameworks */,
 				248C8EC118E5D90500307C4C /* ImageIO.framework in Frameworks */,
 				85D160FB233BB86A00BE00A7 /* StoreKit.framework in Frameworks */,
 				248C8EBF18E5D8FC00307C4C /* MobileCoreServices.framework in Frameworks */,
 				FA905A7C15AA8F370013688B /* MessageUI.framework in Frameworks */,
 				FA905A7A15AA8F0C0013688B /* CFNetwork.framework in Frameworks */,
+				8586320223BF4F2000D6BC5A /* ObjectiveDropboxOfficial.framework in Frameworks */,
 				FA905A4815AA8BBA0013688B /* Security.framework in Frameworks */,
 				FA90598A15A9F4E20013688B /* libsqlite3.0.dylib in Frameworks */,
 				FAAC8E7D15A3738D003EB28A /* Accelerate.framework in Frameworks */,
@@ -765,7 +767,6 @@
 				FADF26551596362F006C87BA /* UIKit.framework in Frameworks */,
 				FADF26571596362F006C87BA /* Foundation.framework in Frameworks */,
 				FADF26591596362F006C87BA /* CoreGraphics.framework in Frameworks */,
-				856E3E6F22C50D5700103E2A /* ObjectiveDropboxOfficial.framework in Frameworks */,
 				1CBD16121E72E6DC00F59AEF /* Crashlytics.framework in Frameworks */,
 				FADF265B1596362F006C87BA /* QuartzCore.framework in Frameworks */,
 				FADF265D1596362F006C87BA /* OpenGLES.framework in Frameworks */,
@@ -1510,7 +1511,7 @@
 		FADF26451596362E006C87BA = {
 			isa = PBXGroup;
 			children = (
-				856E3E7022C50D7E00103E2A /* ObjectiveDropboxOfficial.framework */,
+				858631FD23BE1EC500D6BC5A /* ObjectiveDropboxOfficial.framework */,
 				2418FE5C1A83F4C600662547 /* Asset */,
 				FADF26681596362F006C87BA /* src */,
 				FADF26531596362F006C87BA /* Frameworks */,
@@ -1530,7 +1531,6 @@
 			isa = PBXGroup;
 			children = (
 				85D160FA233BB86A00BE00A7 /* StoreKit.framework */,
-				856E3E6E22C50D5700103E2A /* ObjectiveDropboxOfficial.framework */,
 				85CE23F12137DAB20035AEC8 /* ExternalAccessory.framework */,
 				1CBD16101E72E6DC00F59AEF /* Crashlytics.framework */,
 				1CBD16111E72E6DC00F59AEF /* Fabric.framework */,
@@ -1618,8 +1618,8 @@
 				FADF264E1596362F006C87BA /* Resources */,
 				1CBD16141E72E71400F59AEF /* ShellScript */,
 				1CB126581F86C91200247389 /* ShellScript */,
-				1CB1265E1F87DDFF00247389 /* Embed Frameworks */,
 				1CB1265F1F8BE20700247389 /* ShellScript */,
+				8586320423BF4F2100D6BC5A /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1816,7 +1816,6 @@
 			files = (
 			);
 			inputPaths = (
-				"${PROJECT_DIR}/Carthage/Build/iOS/ObjectiveDropboxOfficial.framework",
 			);
 			outputPaths = (
 			);
@@ -2049,7 +2048,7 @@
 					"$(SRCROOT)",
 					"$(PROJECT_DIR)/libs",
 					"$(PROJECT_DIR)",
-					"$(PROJECT_DIR)/Carthage/Build/simulator",
+					"$(PROJECT_DIR)/Carthage/Build/IOS",
 				);
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
@@ -2061,6 +2060,7 @@
 				HEADER_SEARCH_PATHS = (
 					"$(CINDER_PATH)/include",
 					"$(CINDER_PATH)/boost",
+					"$(PROJECT_DIR)/Carthage/Build/IOS/ObjectiveDropboxOfficial.framework/Headers",
 				);
 				INFOPLIST_FILE = "src/Spike Recorder-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
@@ -2116,7 +2116,7 @@
 					"$(SRCROOT)",
 					"$(PROJECT_DIR)/libs",
 					"$(PROJECT_DIR)",
-					"$(PROJECT_DIR)/Carthage/Build/simulator",
+					"$(PROJECT_DIR)/Carthage/Build/IOS",
 				);
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
@@ -2129,6 +2129,7 @@
 				HEADER_SEARCH_PATHS = (
 					"$(CINDER_PATH)/include",
 					"$(CINDER_PATH)/boost",
+					"$(PROJECT_DIR)/Carthage/Build/IOS/ObjectiveDropboxOfficial.framework/Headers",
 				);
 				INFOPLIST_FILE = "src/Spike Recorder-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.2;

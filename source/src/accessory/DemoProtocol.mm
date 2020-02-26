@@ -94,7 +94,7 @@ static  EAInputBlock inputBlock;
 
 -(void) initProtocol
 {
-     [super initWithProtocol:@"com.silabs.demo"];
+     [super initWithProtocol:@"com.backyardbrains.sbpro"];
     weAreInsideEscapeSequence = false;
     messageBufferIndex =0;
     escapeSequenceDetectorIndex = 0;
