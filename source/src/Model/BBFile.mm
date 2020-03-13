@@ -12,6 +12,7 @@
 #import "BBSpikeTrain.h"
 #import "BBEvent.h"
 #import "tinyxml2.h"
+#import "ZipArchive.h"
 
 //#define  kDataID 1633969266
 
@@ -348,6 +349,95 @@ using namespace tinyxml2;
     [super saveWithoutArrays];
 }
 
+-(NSString * ) saveWithArraysToArchieve
+{
+    [self renameIfNeeded];
+    [super saveWithoutArrays];
+    NSString *eventsPath = @"";
+    if( [self.spikesFiltered isEqualToString:FILE_SPIKE_SORTED] || [_allEvents count]>0 )
+    {
+        NSError *error;
+        NSMutableString *fileContentString = [NSMutableString stringWithString:@"# Marker IDs can be arbitrary strings.\n# Marker ID,    Time (in s)\n"];
+        
+       
+        //[fileContentString appendFormat:@"Name.... %@\n", accessory.name];
+
+        eventsPath = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject] stringByAppendingPathComponent:[NSString stringWithFormat:@"%@-events.txt",self.shortname]];
+       
+        //save events
+        if([_allEvents count]>0)
+        {
+            for(int i=0;i<[_allEvents count];i++)
+            {
+                BBEvent * tempEvent = [_allEvents objectAtIndex:i];
+                [fileContentString appendFormat:@"%d,\t%f\n", tempEvent.value, tempEvent.time];
+            }
+        }
+        
+        //save spikes
+        if([self.spikesFiltered isEqualToString:FILE_SPIKE_SORTED])
+        {
+            int neuronCount = 0;
+            for(int channelIndex = 0;channelIndex<self.numberOfChannels;channelIndex++)
+            {
+                BBChannel * tempChannel = [[self allChannels] objectAtIndex:channelIndex];
+                //NSMutableArray * currentChannelSpikes = [[self allSpikes] objectAtIndex:channelIndex];
+                for(int spikeIndex = 0;spikeIndex<[tempChannel.spikeTrains count];spikeIndex++)
+                {
+                    BBSpikeTrain * tempSpikeTrain = [tempChannel.spikeTrains objectAtIndex:spikeIndex];
+
+                    for(int i=0;i<[tempSpikeTrain.spikes count];i++)
+                    {
+                        BBSpike * tempSpike = (BBSpike *) [tempSpikeTrain.spikes objectAtIndex:i];
+                        //_ch0_neuron0,    3.8111
+                        [fileContentString appendFormat:@"_ch%d_neuron%d,\t%f\n", channelIndex,neuronCount,tempSpike.time];
+                    }//spikes loop
+                    //save threshold
+                    //_neuron0threshhig1275,    0.0000
+                    //_neuron0threshlow206,    0.0000
+                    //multiply value with 32768 to convert from float [-1,1] interval to integer [-32768,32768]
+                    [fileContentString appendFormat:@"_neuron%dthreshhig%d,\t0.0000\n", neuronCount,(int)(tempSpikeTrain.firstThreshold*32768)];
+                    [fileContentString appendFormat:@"_neuron%dthreshlow%d,\t0.0000\n", neuronCount,(int)(tempSpikeTrain.secondThreshold*32768)];
+                    neuronCount++;
+                }//spike train loop
+            }//channel loop
+        }//FILE_SPIKE_SORTED
+
+        [fileContentString writeToFile:eventsPath atomically:YES encoding:NSUTF8StringEncoding error:&error];
+        
+        NSMutableArray * arrayOfFiles = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
+        [arrayOfFiles addObject:[[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingPathComponent:self.filename]];
+        [arrayOfFiles addObject:eventsPath];
+        
+        
+        NSString * pathToReturn =  [self createZipArchiveWithFiles:arrayOfFiles andName:[NSString stringWithFormat:@"%@.zip",self.shortname]];
+        return pathToReturn;
+    }//end of if we have anything to save
+    else
+    {
+        return [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingPathComponent:self.filename];
+    }
+}
+
+- (NSString*) createZipArchiveWithFiles:(NSArray*)files andName:(NSString*)nameOFile
+{
+    ZipArchive* zip = [[[ZipArchive alloc] init] autorelease];
+    NSArray *paths = NSSearchPathForDirectoriesInDomains
+    (NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *zipPath = [NSString stringWithFormat:@"%@/%@",
+                         [paths objectAtIndex:0], nameOFile] ;
+    
+    
+    [zip CreateZipFile2:zipPath];
+    for (NSString* file in files) {
+        [zip addFileToZip:file newname:[file lastPathComponent]];
+        
+    }
+    [zip CloseZipFile2];
+    return zipPath;
+}
+
+
 //
 // Check if we can save file with original name or we have already file with same name.
 // If we find file with same name add index number
@@ -368,7 +458,8 @@ using namespace tinyxml2;
     NSString * newNameFromShortName = [NSString stringWithFormat:@"%@.%@", newShortString, [[self fileURL] pathExtension]];
     //check if name of the file is different than shortname
     //if yes than make it same
-    if(![newNameFromShortName isEqualToString:[[self filename] stringByDeletingPathExtension]])
+
+    if(![newNameFromShortName isEqualToString:[self filename]])
     {
         
         // If there's a file with same filename

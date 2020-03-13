@@ -256,9 +256,11 @@
         NSMutableArray *theFilenames = [[NSMutableArray alloc] init];
 		for (BBFile *thisFile in self.files)
         {
-            [thisFile saveWithoutArrays];
+            //[thisFile saveWithoutArrays];
+            NSString * pathStringToFile = [thisFile saveWithArraysToArchieve];
            // NSURL * url = [thisFile prepareBYBFile];
-            [theFilenames addObject:[NSURL fileURLWithPath:[[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingPathComponent:thisFile.filename]]];
+            [theFilenames addObject:[NSURL fileURLWithPath:pathStringToFile]];
+            //[theFilenames addObject:[NSURL fileURLWithPath:[[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingPathComponent:thisFile.filename]]];
         }
         UIActivityViewController * activities = [[[UIActivityViewController alloc]
                                                  initWithActivityItems:theFilenames
