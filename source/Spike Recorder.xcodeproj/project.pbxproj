@@ -235,6 +235,7 @@
 		24EBC1AE1997852D001D3392 /* TrialsDCMDTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 24EBC1AC1997852D001D3392 /* TrialsDCMDTableViewController.xib */; };
 		24EBC1B31997DD21001D3392 /* TrialActionsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 24EBC1B11997DD21001D3392 /* TrialActionsViewController.xib */; };
 		851897AF22BBDF15003C5D7F /* BBEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 851897AE22BBDF15003C5D7F /* BBEvent.m */; };
+		852AB58A241BD4940010C846 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 852AB589241BD4940010C846 /* StoreKit.framework */; };
 		855CBE812332455F004E1BBA /* BBExperimentsTableViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 855CBE802332455F004E1BBA /* BBExperimentsTableViewController.mm */; };
 		855F6679235755E0008143FC /* ProductIds.plist in Resources */ = {isa = PBXBuildFile; fileRef = 855F6678235755E0008143FC /* ProductIds.plist */; };
 		855F667D2357598A008143FC /* StoreManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 855F667C2357598A008143FC /* StoreManager.m */; };
@@ -249,7 +250,6 @@
 		85CE23EF2137DA650035AEC8 /* DemoAccessory.mm in Sources */ = {isa = PBXBuildFile; fileRef = 85CE23EC2137DA640035AEC8 /* DemoAccessory.mm */; };
 		85CE23F02137DA650035AEC8 /* DemoProtocol.mm in Sources */ = {isa = PBXBuildFile; fileRef = 85CE23EE2137DA640035AEC8 /* DemoProtocol.mm */; };
 		85CE23F22137DAB20035AEC8 /* ExternalAccessory.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85CE23F12137DAB20035AEC8 /* ExternalAccessory.framework */; };
-		85D160FB233BB86A00BE00A7 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85D160FA233BB86A00BE00A7 /* StoreKit.framework */; };
 		FA49A7B015D9C352002A78EC /* BBFileViewControllerTBV.plist in Resources */ = {isa = PBXBuildFile; fileRef = FA49A7AF15D9C352002A78EC /* BBFileViewControllerTBV.plist */; };
 		FA90598A15A9F4E20013688B /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = FA90598915A9F4E20013688B /* libsqlite3.0.dylib */; };
 		FA905A4815AA8BBA0013688B /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA905A4715AA8BBA0013688B /* Security.framework */; };
@@ -702,6 +702,7 @@
 		24EBC1B11997DD21001D3392 /* TrialActionsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TrialActionsViewController.xib; sourceTree = "<group>"; };
 		851897AD22BBDF15003C5D7F /* BBEvent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BBEvent.h; sourceTree = "<group>"; };
 		851897AE22BBDF15003C5D7F /* BBEvent.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BBEvent.m; sourceTree = "<group>"; };
+		852AB589241BD4940010C846 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		855CBE7F2332455F004E1BBA /* BBExperimentsTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BBExperimentsTableViewController.h; sourceTree = "<group>"; };
 		855CBE802332455F004E1BBA /* BBExperimentsTableViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BBExperimentsTableViewController.mm; sourceTree = "<group>"; };
 		855F6678235755E0008143FC /* ProductIds.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = ProductIds.plist; sourceTree = "<group>"; };
@@ -720,7 +721,6 @@
 		85CE23ED2137DA640035AEC8 /* DemoProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoProtocol.h; sourceTree = "<group>"; };
 		85CE23EE2137DA640035AEC8 /* DemoProtocol.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DemoProtocol.mm; sourceTree = "<group>"; };
 		85CE23F12137DAB20035AEC8 /* ExternalAccessory.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ExternalAccessory.framework; path = System/Library/Frameworks/ExternalAccessory.framework; sourceTree = SDKROOT; };
-		85D160FA233BB86A00BE00A7 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		FA49A7AF15D9C352002A78EC /* BBFileViewControllerTBV.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = BBFileViewControllerTBV.plist; sourceTree = "<group>"; };
 		FA90598915A9F4E20013688B /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = usr/lib/libsqlite3.0.dylib; sourceTree = SDKROOT; };
 		FA905A4715AA8BBA0013688B /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
@@ -755,7 +755,6 @@
 				247ED9BE193DEC0800871BAC /* libz.dylib in Frameworks */,
 				8586320123BE21A000D6BC5A /* ObjectiveDropboxOfficial.framework in Frameworks */,
 				248C8EC118E5D90500307C4C /* ImageIO.framework in Frameworks */,
-				85D160FB233BB86A00BE00A7 /* StoreKit.framework in Frameworks */,
 				248C8EBF18E5D8FC00307C4C /* MobileCoreServices.framework in Frameworks */,
 				FA905A7C15AA8F370013688B /* MessageUI.framework in Frameworks */,
 				FA905A7A15AA8F0C0013688B /* CFNetwork.framework in Frameworks */,
@@ -769,6 +768,7 @@
 				FADF26591596362F006C87BA /* CoreGraphics.framework in Frameworks */,
 				1CBD16121E72E6DC00F59AEF /* Crashlytics.framework in Frameworks */,
 				FADF265B1596362F006C87BA /* QuartzCore.framework in Frameworks */,
+				852AB58A241BD4940010C846 /* StoreKit.framework in Frameworks */,
 				FADF265D1596362F006C87BA /* OpenGLES.framework in Frameworks */,
 				FADF26611596362F006C87BA /* CoreVideo.framework in Frameworks */,
 				FADF26631596362F006C87BA /* AVFoundation.framework in Frameworks */,
@@ -1530,7 +1530,7 @@
 		FADF26531596362F006C87BA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				85D160FA233BB86A00BE00A7 /* StoreKit.framework */,
+				852AB589241BD4940010C846 /* StoreKit.framework */,
 				85CE23F12137DAB20035AEC8 /* ExternalAccessory.framework */,
 				1CBD16101E72E6DC00F59AEF /* Crashlytics.framework */,
 				1CBD16111E72E6DC00F59AEF /* Fabric.framework */,
@@ -1643,6 +1643,9 @@
 						DevelopmentTeam = MLGRKD657P;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
 							com.apple.HealthKit = {
 								enabled = 0;
 							};
