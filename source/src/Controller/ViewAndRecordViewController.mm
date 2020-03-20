@@ -10,6 +10,7 @@
 
 #import "ViewAndRecordViewController.h"
 #import "FFTViewController.h"
+#import "ConfigViewController.h"
 
 @interface ViewAndRecordViewController()
 {
@@ -362,7 +363,7 @@
 
 -(void) setVisibilityForConfigButton:(BOOL) setVisible
 {
-    self.configButton.hidden = !setVisible;
+    self.configButton.hidden = NO;//!setVisible;
     
     int filterSettings = [[BBAudioManager bbAudioManager] currentFilterSettings];
     if(filterSettings == FILTER_SETTINGS_EEG || filterSettings == FILTER_SETTINGS_RAW || filterSettings == FILTER_SETTINGS_CUSTOM || [[BBAudioManager bbAudioManager] externalAccessoryOn])
@@ -377,6 +378,39 @@
 }
 
 - (IBAction)configButtonPressed:(id)sender {
+    
+
+    if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
+    {
+        ConfigViewController *controller = [[ConfigViewController alloc] initWithNibName:@"ConfigViewController" bundle:nil];
+        //controller.masterDelegate = self;
+        controller.modalPresentationStyle = UIModalPresentationPopover;
+        controller.preferredContentSize = CGSizeMake(600, 250);
+        
+        // configure the Popover presentation controller
+        popControllerIpad = [controller popoverPresentationController];
+        
+        popControllerIpad.delegate = self;
+        popControllerIpad.permittedArrowDirections = 0;
+        CGRect sourceRect = CGRectZero;
+        sourceRect.origin.x = CGRectGetMidX(self.view.bounds)-self.view.frame.origin.x/2.0;
+        sourceRect.origin.y = CGRectGetMidY(self.view.bounds)-self.view.frame.origin.y/2.0;
+        popControllerIpad.sourceRect =  sourceRect;
+        popControllerIpad.sourceView = self.view;
+        [self presentViewController:controller animated:YES completion:nil];
+        
+    }
+    else
+    {
+        ConfigViewController *controller = [[ConfigViewController alloc] initWithNibName:@"ConfigViewController" bundle:nil];
+        [self presentViewController:controller animated:YES completion:nil];
+    }
+    
+    
+    
+    
+    
+    /*
     // grab the view controller we want to show
     ChooseFilterTypeViewController *controller = [[ChooseFilterTypeViewController alloc] initWithNibName:@"ChooseFilterTypeViewController" bundle:nil];
     // present the controller
@@ -406,6 +440,7 @@
     
     // in case we don't have a bar button as reference
     [self presentViewController:controller animated:YES completion:nil];
+     */
 }
 
 

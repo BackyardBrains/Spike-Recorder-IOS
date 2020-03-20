@@ -235,15 +235,25 @@
 		24EBC1AE1997852D001D3392 /* TrialsDCMDTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 24EBC1AC1997852D001D3392 /* TrialsDCMDTableViewController.xib */; };
 		24EBC1B31997DD21001D3392 /* TrialActionsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 24EBC1B11997DD21001D3392 /* TrialActionsViewController.xib */; };
 		851897AF22BBDF15003C5D7F /* BBEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 851897AE22BBDF15003C5D7F /* BBEvent.m */; };
+		8526365F241ED2D7000755F6 /* Comic-Book.otf in Resources */ = {isa = PBXBuildFile; fileRef = 8526365B241ED2D7000755F6 /* Comic-Book.otf */; };
+		85263660241ED2D7000755F6 /* Comic-Book-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 8526365C241ED2D7000755F6 /* Comic-Book-Bold.otf */; };
+		85263661241ED2D7000755F6 /* Comic-Book-Bold-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 8526365D241ED2D7000755F6 /* Comic-Book-Bold-Italic.otf */; };
+		85263662241ED2D7000755F6 /* Comic-Book-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 8526365E241ED2D7000755F6 /* Comic-Book-Italic.otf */; };
+		85263665241FF1DD000755F6 /* SelectChannelColor.m in Sources */ = {isa = PBXBuildFile; fileRef = 85263664241FF1DD000755F6 /* SelectChannelColor.m */; };
 		852AB58A241BD4940010C846 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 852AB589241BD4940010C846 /* StoreKit.framework */; };
 		855CBE812332455F004E1BBA /* BBExperimentsTableViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 855CBE802332455F004E1BBA /* BBExperimentsTableViewController.mm */; };
 		855F6679235755E0008143FC /* ProductIds.plist in Resources */ = {isa = PBXBuildFile; fileRef = 855F6678235755E0008143FC /* ProductIds.plist */; };
 		855F667D2357598A008143FC /* StoreManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 855F667C2357598A008143FC /* StoreManager.m */; };
 		855F668023575B3E008143FC /* Section.m in Sources */ = {isa = PBXBuildFile; fileRef = 855F667F23575B3E008143FC /* Section.m */; };
 		855F668323575EC9008143FC /* StoreObserver.m in Sources */ = {isa = PBXBuildFile; fileRef = 855F668223575EC9008143FC /* StoreObserver.m */; };
+		8569F7952421566900EA9990 /* ChannelColorsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8569F7932421566900EA9990 /* ChannelColorsTableViewCell.m */; };
+		8569F7962421566900EA9990 /* ChannelColorsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8569F7942421566900EA9990 /* ChannelColorsTableViewCell.xib */; };
 		856E3E7622C62D7800103E2A /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 856E3E7422C62D7800103E2A /* logo.png */; };
 		856E3E7722C62D7800103E2A /* splash-background.png in Resources */ = {isa = PBXBuildFile; fileRef = 856E3E7522C62D7800103E2A /* splash-background.png */; };
 		856E3E7F22C6315C00103E2A /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 856E3E7E22C6315C00103E2A /* Launch Screen.storyboard */; };
+		8580C84F241E72660033BF2E /* ConfigViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8580C84D241E72660033BF2E /* ConfigViewController.mm */; };
+		8580C850241E72660033BF2E /* ConfigViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8580C84E241E72660033BF2E /* ConfigViewController.xib */; };
+		8580C856241E77420033BF2E /* SelectFilterPresetView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8580C855241E77420033BF2E /* SelectFilterPresetView.m */; };
 		8586320123BE21A000D6BC5A /* ObjectiveDropboxOfficial.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 858631FD23BE1EC500D6BC5A /* ObjectiveDropboxOfficial.framework */; };
 		8586320223BF4F2000D6BC5A /* ObjectiveDropboxOfficial.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 858631FD23BE1EC500D6BC5A /* ObjectiveDropboxOfficial.framework */; };
 		8586320323BF4F2000D6BC5A /* ObjectiveDropboxOfficial.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 858631FD23BE1EC500D6BC5A /* ObjectiveDropboxOfficial.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -702,6 +712,12 @@
 		24EBC1B11997DD21001D3392 /* TrialActionsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TrialActionsViewController.xib; sourceTree = "<group>"; };
 		851897AD22BBDF15003C5D7F /* BBEvent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BBEvent.h; sourceTree = "<group>"; };
 		851897AE22BBDF15003C5D7F /* BBEvent.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BBEvent.m; sourceTree = "<group>"; };
+		8526365B241ED2D7000755F6 /* Comic-Book.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Comic-Book.otf"; sourceTree = "<group>"; };
+		8526365C241ED2D7000755F6 /* Comic-Book-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Comic-Book-Bold.otf"; sourceTree = "<group>"; };
+		8526365D241ED2D7000755F6 /* Comic-Book-Bold-Italic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Comic-Book-Bold-Italic.otf"; sourceTree = "<group>"; };
+		8526365E241ED2D7000755F6 /* Comic-Book-Italic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Comic-Book-Italic.otf"; sourceTree = "<group>"; };
+		85263663241FF1DD000755F6 /* SelectChannelColor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SelectChannelColor.h; sourceTree = "<group>"; };
+		85263664241FF1DD000755F6 /* SelectChannelColor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SelectChannelColor.m; sourceTree = "<group>"; };
 		852AB589241BD4940010C846 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		855CBE7F2332455F004E1BBA /* BBExperimentsTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BBExperimentsTableViewController.h; sourceTree = "<group>"; };
 		855CBE802332455F004E1BBA /* BBExperimentsTableViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BBExperimentsTableViewController.mm; sourceTree = "<group>"; };
@@ -712,9 +728,17 @@
 		855F667F23575B3E008143FC /* Section.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Section.m; sourceTree = "<group>"; };
 		855F668123575EC9008143FC /* StoreObserver.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StoreObserver.h; sourceTree = "<group>"; };
 		855F668223575EC9008143FC /* StoreObserver.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = StoreObserver.m; sourceTree = "<group>"; };
+		8569F7922421566900EA9990 /* ChannelColorsTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChannelColorsTableViewCell.h; sourceTree = "<group>"; };
+		8569F7932421566900EA9990 /* ChannelColorsTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChannelColorsTableViewCell.m; sourceTree = "<group>"; };
+		8569F7942421566900EA9990 /* ChannelColorsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ChannelColorsTableViewCell.xib; sourceTree = "<group>"; };
 		856E3E7422C62D7800103E2A /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo.png; sourceTree = "<group>"; };
 		856E3E7522C62D7800103E2A /* splash-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "splash-background.png"; sourceTree = "<group>"; };
 		856E3E7E22C6315C00103E2A /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
+		8580C84C241E72660033BF2E /* ConfigViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ConfigViewController.h; sourceTree = "<group>"; };
+		8580C84D241E72660033BF2E /* ConfigViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ConfigViewController.mm; sourceTree = "<group>"; };
+		8580C84E241E72660033BF2E /* ConfigViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConfigViewController.xib; sourceTree = "<group>"; };
+		8580C854241E77420033BF2E /* SelectFilterPresetView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SelectFilterPresetView.h; sourceTree = "<group>"; };
+		8580C855241E77420033BF2E /* SelectFilterPresetView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SelectFilterPresetView.m; sourceTree = "<group>"; };
 		858631FD23BE1EC500D6BC5A /* ObjectiveDropboxOfficial.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ObjectiveDropboxOfficial.framework; path = Carthage/Build/IOS/ObjectiveDropboxOfficial.framework; sourceTree = "<group>"; };
 		85CE23EB2137DA640035AEC8 /* DemoAccessory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoAccessory.h; sourceTree = "<group>"; };
 		85CE23EC2137DA640035AEC8 /* DemoAccessory.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DemoAccessory.mm; sourceTree = "<group>"; };
@@ -1183,6 +1207,7 @@
 		2418FE5C1A83F4C600662547 /* Asset */ = {
 			isa = PBXGroup;
 			children = (
+				8526365A241ED2D7000755F6 /* fonts */,
 				241C8AF51B3201B800CEFCEE /* templates */,
 				2418FE881A83F5D700662547 /* Images */,
 				2418FE601A83F57900662547 /* Icons */,
@@ -1383,6 +1408,10 @@
 				2418FF301A83FD3700662547 /* ViewAndRecordViewController.mm */,
 				1CE5E0331F7453080016E7D9 /* ChooseFilterTypeViewController.h */,
 				1CE5E0341F7453080016E7D9 /* ChooseFilterTypeViewController.mm */,
+				8580C84C241E72660033BF2E /* ConfigViewController.h */,
+				8580C84D241E72660033BF2E /* ConfigViewController.mm */,
+				8569F7922421566900EA9990 /* ChannelColorsTableViewCell.h */,
+				8569F7932421566900EA9990 /* ChannelColorsTableViewCell.m */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -1393,6 +1422,10 @@
 				1CF7DB041F7988DF008F303E /* NMRangeSlider */,
 				2418FF3D1A83FD6700662547 /* BYBHandleButton.h */,
 				2418FF3E1A83FD6700662547 /* BYBHandleButton.mm */,
+				8580C854241E77420033BF2E /* SelectFilterPresetView.h */,
+				8580C855241E77420033BF2E /* SelectFilterPresetView.m */,
+				85263663241FF1DD000755F6 /* SelectChannelColor.h */,
+				85263664241FF1DD000755F6 /* SelectChannelColor.m */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -1482,6 +1515,17 @@
 				241C8AF61B3201B800CEFCEE /* template.xml */,
 			);
 			path = templates;
+			sourceTree = "<group>";
+		};
+		8526365A241ED2D7000755F6 /* fonts */ = {
+			isa = PBXGroup;
+			children = (
+				8526365B241ED2D7000755F6 /* Comic-Book.otf */,
+				8526365C241ED2D7000755F6 /* Comic-Book-Bold.otf */,
+				8526365D241ED2D7000755F6 /* Comic-Book-Bold-Italic.otf */,
+				8526365E241ED2D7000755F6 /* Comic-Book-Italic.otf */,
+			);
+			path = fonts;
 			sourceTree = "<group>";
 		};
 		855F667A2357594F008143FC /* App Store */ = {
@@ -1601,7 +1645,9 @@
 				1CE5E0351F7453080016E7D9 /* ChooseFilterTypeViewController.xib */,
 				24E6D8A71A011EE0006C8CED /* FilterSettingsViewController.xib */,
 				FA905A4B15AA8CF00013688B /* BBFileTableCell.xib */,
+				8580C84E241E72660033BF2E /* ConfigViewController.xib */,
 				1C3882F5201B58D500B0388B /* MainStoryboard.storyboard */,
+				8569F7942421566900EA9990 /* ChannelColorsTableViewCell.xib */,
 			);
 			name = Boards;
 			sourceTree = "<group>";
@@ -1702,6 +1748,7 @@
 				2418FEC61A83F5D700662547 /* FileNeuron@2x.png in Resources */,
 				2418FEC11A83F5D700662547 /* dropbox.png in Resources */,
 				2418FEDA1A83F5D700662547 /* Stimulate.png in Resources */,
+				8580C850241E72660033BF2E /* ConfigViewController.xib in Resources */,
 				856E3E7722C62D7800103E2A /* splash-background.png in Resources */,
 				2418FECC1A83F5D700662547 /* nobeat@2x.png in Resources */,
 				2418FEE11A83F5D700662547 /* trash@2x.png in Resources */,
@@ -1711,6 +1758,7 @@
 				2418FFD21A8406A600662547 /* Screenshot-1242x2208.png in Resources */,
 				24EBC1B31997DD21001D3392 /* TrialActionsViewController.xib in Resources */,
 				1C9850682036E3830076997B /* fft.png in Resources */,
+				85263662241ED2D7000755F6 /* Comic-Book-Italic.otf in Resources */,
 				2418FEC31A83F5D700662547 /* ecg.png in Resources */,
 				1C3882C52018890300B0388B /* landscape-2048-1536.png in Resources */,
 				1C3882CE2018AF8B00B0388B /* landcape-2208-1242.png in Resources */,
@@ -1718,9 +1766,11 @@
 				1C3882C92018AB5900B0388B /* Screenshot@2x-1.png in Resources */,
 				241C8AF71B3201B800CEFCEE /* template.xml in Resources */,
 				1C3882C12018863400B0388B /* landscape-1024-768.png in Resources */,
+				8569F7962421566900EA9990 /* ChannelColorsTableViewCell.xib in Resources */,
 				247087C61A851774004C6B9B /* Icon-Small.png in Resources */,
 				245B1847199172D200943684 /* ExperimentsViewController.xib in Resources */,
 				247087BA1A851774004C6B9B /* Icon-60.png in Resources */,
+				8526365F241ED2D7000755F6 /* Comic-Book.otf in Resources */,
 				24BB8365199E7D0C00C12932 /* GraphDCMDTrialViewController.xib in Resources */,
 				247087C01A851774004C6B9B /* Icon-76@2x.png in Resources */,
 				1CF7DB3C1F7988DF008F303E /* slider-metal-trackBackground.png in Resources */,
@@ -1743,6 +1793,7 @@
 				1C9850672036E3830076997B /* fft@2x.png in Resources */,
 				1CE5E0371F7453080016E7D9 /* ChooseFilterTypeViewController.xib in Resources */,
 				2418FFD11A8406A600662547 /* Screenshot-750x1334.png in Resources */,
+				85263661241ED2D7000755F6 /* Comic-Book-Bold-Italic.otf in Resources */,
 				2418FEBF1A83F5D700662547 /* checkmark.png in Resources */,
 				1CD05BA51CFD02EE00A83727 /* BBFileDetailsViewCell.xib in Resources */,
 				2418FEDC1A83F5D700662547 /* ThresholdImage.png in Resources */,
@@ -1771,6 +1822,7 @@
 				1C3882BF2018844E00B0388B /* icon83-5@2x.png in Resources */,
 				2418FFCF1A8406A600662547 /* Default-Portrait@2x.png in Resources */,
 				856E3E7622C62D7800103E2A /* logo.png in Resources */,
+				85263660241ED2D7000755F6 /* Comic-Book-Bold.otf in Resources */,
 				2418FEB71A83F5D700662547 /* again.png in Resources */,
 				1C3882F6201B58D500B0388B /* MainStoryboard.storyboard in Resources */,
 				247087BD1A851774004C6B9B /* Icon-72.png in Resources */,
@@ -1896,6 +1948,7 @@
 				2418FF971A83FE1200662547 /* AverageSpikeGraphView.mm in Sources */,
 				2418FF601A83FDA100662547 /* GraphDCMDTrialViewController.mm in Sources */,
 				1C3FC2FC203EE99600C28680 /* FFTRecordingsViewController.mm in Sources */,
+				8569F7952421566900EA9990 /* ChannelColorsTableViewCell.m in Sources */,
 				2418FF3F1A83FD6700662547 /* BYBHandleButton.mm in Sources */,
 				2418FF801A83FDD500662547 /* ExperimentsMenuTableViewCell.m in Sources */,
 				2418FF121A83F79200662547 /* BBAudioManager.mm in Sources */,
@@ -1911,10 +1964,12 @@
 				2470879C1A851063004C6B9B /* ioapi.c in Sources */,
 				2470879E1A851063004C6B9B /* mztools.c in Sources */,
 				851897AF22BBDF15003C5D7F /* BBEvent.m in Sources */,
+				8580C84F241E72660033BF2E /* ConfigViewController.mm in Sources */,
 				247087A01A851063004C6B9B /* unzip.c in Sources */,
 				247087A21A851063004C6B9B /* zip.c in Sources */,
 				2470879A1A85105A004C6B9B /* UIDeviceExt.m in Sources */,
 				247087821A85104D004C6B9B /* NSNumber-SQLitePersistence.m in Sources */,
+				8580C856241E77420033BF2E /* SelectFilterPresetView.m in Sources */,
 				247087841A85104D004C6B9B /* NSObject-ClassName.m in Sources */,
 				247087861A85104D004C6B9B /* NSObject-MissingKV.m in Sources */,
 				247087881A85104D004C6B9B /* NSObject-SQLitePersistence.m in Sources */,
@@ -1925,6 +1980,7 @@
 				247087901A85104D004C6B9B /* NSString-UppercaseFirst.m in Sources */,
 				247087921A85104D004C6B9B /* SQLiteInstanceManager.m in Sources */,
 				247087941A85104D004C6B9B /* SQLitePersistentObject.m in Sources */,
+				85263665241FF1DD000755F6 /* SelectChannelColor.m in Sources */,
 				247087961A85104D004C6B9B /* UIColor-SQLitePersistentObject.m in Sources */,
 				247087981A85104D004C6B9B /* UIImage-SQLitePersistence.m in Sources */,
 				2470875D1A85102F004C6B9B /* NVAllpassFilter.m in Sources */,
