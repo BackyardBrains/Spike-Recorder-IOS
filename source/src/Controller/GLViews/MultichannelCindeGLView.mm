@@ -1117,15 +1117,15 @@
 
 -(void) drawEvents
 {
-     float currentTime = timeForSincDrawing ;
     
-     NSMutableArray * allEvents = [dataSourceDelegate getEvents];
+    
+    float currentTime = timeForSincDrawing ;
+    
+    NSMutableArray * allEvents = [dataSourceDelegate getEvents];
     
     
     float realNumberOfSamplesVisible = numSamplesVisible;
-    /*if (realNumberOfSamplesVisible > numSamplesMax) {
-     realNumberOfSamplesVisible = numSamplesMax;
-     }*/
+    
     if (realNumberOfSamplesVisible < numSamplesMin) {
         realNumberOfSamplesVisible = numSamplesMin;
     }
@@ -1146,47 +1146,56 @@
         graphStartTime = currentTime - numSamplesMax * 1.0f/samplingRate;
     }
     
-   /* if(graphStartTime<0.0f)
-    {
-        graphStartTime = 0.0f;
-    }*/
     
-    //Draw spikes
+    
+
     glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
     BOOL weAreInInterval = NO;
     BBEvent * tempEvent;
     
-    float sizeOfSquareX = scaleXY.x * 15;
-    float sizeOfSquareY = scaleXY.y *20;
-    
+    float sizeOfSquareX = 8;
+    float sizeOfSquareY = 10;
+    //make it so that we can define measurements in pixels
+    gl::setMatricesWindow( Vec2i(self.frame.size.width, self.frame.size.height) );
+    float lastPositionOfSquareX = -1000;
+    float lastPositionOfSquareY = -1000;
     //go through all events
     for (tempEvent in allEvents) {
         if([tempEvent time]>graphStartTime && [tempEvent time]<realEndTime)
         {
             weAreInInterval = YES;//we are in visible interval
             //reacalculate spikes to virtual GL x axis [-maxTimeSpan, 0]
-            float xValue = ([tempEvent time] -realEndTime)*(maxTimeSpan/virtualVisibleTimeSpan);
+            float xValue = self.frame.size.width+ self.frame.size.width * (([tempEvent time] -realEndTime)/virtualVisibleTimeSpan);
+            
             //recalculate Y axis with zoom and offset
             int eventNumber = [tempEvent value];
-            float yValueOfNumberBackground = maxVoltsSpan/3;
+            float yValueOfNumberBackground = self.frame.size.height/3;
+            
+            //check if event marks will overlap
+            if(abs(xValue-lastPositionOfSquareX)<(2*(sizeOfSquareX+1)))
+            {
+                if(abs(yValueOfNumberBackground-lastPositionOfSquareY)<sizeOfSquareY)
+                {
+                    yValueOfNumberBackground = lastPositionOfSquareY+2*sizeOfSquareY+1;
+                }
+            }
+            
             [self setGLColor:[BYBGLView getEventColorWithIndex:eventNumber transparency:1.0f]];
-            //glColor4f(0.8, 0.8, 0.8, 1.0);
+
             //draw event line
-            gl::drawLine(Vec2f(xValue, -maxVoltsSpan/2), Vec2f(xValue, maxVoltsSpan/2));
+            gl::drawLine(Vec2f(xValue, -self.frame.size.height), Vec2f(xValue, self.frame.size.height));
             //draw event number background
-            //glColor4f(0.8, 0.0, 0.0, 1.0);
-            gl::drawSolidRect(Rectf(xValue-sizeOfSquareX,yValueOfNumberBackground-sizeOfSquareY,xValue+sizeOfSquareX,yValueOfNumberBackground+sizeOfSquareY));
+        gl::drawSolidRect(Rectf(xValue-sizeOfSquareX,yValueOfNumberBackground-sizeOfSquareY,xValue+sizeOfSquareX,yValueOfNumberBackground+sizeOfSquareY));
             
             //Draw event number ---------------------------------------------
             std::stringstream eventStream;
             eventStream <<""<< eventNumber;
             
-            //make it so that we can define measurements in pixels
-            gl::setMatricesWindow( Vec2i(self.frame.size.width, self.frame.size.height) );
+           
             
             Vec2f xScaleTextPosition = Vec2f(0.,0.);
-            xScaleTextPosition.x =self.frame.size.width + 0.5*(xValue-sizeOfSquareX*0.5)/scaleXY.x ;//(self.frame.size.width - xScaleTextSize.x)/2.0;
-            xScaleTextPosition.y =0.5*0.5*(yValueOfNumberBackground+sizeOfSquareY*1.1)/scaleXY.y;//self.frame.size.height-23 + (mScaleFont->getAscent() / 2.0f);
+            xScaleTextPosition.x =xValue-sizeOfSquareX*0.5;
+            xScaleTextPosition.y =yValueOfNumberBackground+sizeOfSquareY*0.5;
             
             //make it black number of color background
             gl::color( ColorA( 0.0, 0.0f, 0.0f, 1.0f ) );
@@ -1194,9 +1203,8 @@
             //draw text
             mScaleFont->drawString(eventStream.str(), xScaleTextPosition);
             
-            //return back perspective to time and voltage
-            mCam.setOrtho(-maxTimeSpan, -0.0f, -maxVoltsSpan/2.0f, maxVoltsSpan/2.0f, 1, 100);
-            gl::setMatrices( mCam );
+            lastPositionOfSquareX = xValue;
+            lastPositionOfSquareY = yValueOfNumberBackground;
         }
         else if(weAreInInterval)
         {//if we pass last spike in visible interval
@@ -1204,7 +1212,9 @@
         }
     }
     
-    
+    //return back perspective to time and voltage
+    mCam.setOrtho(-maxTimeSpan, -0.0f, -maxVoltsSpan/2.0f, maxVoltsSpan/2.0f, 1, 100);
+    gl::setMatrices( mCam );
 }
 
 //

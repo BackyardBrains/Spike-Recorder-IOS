@@ -363,7 +363,7 @@
 
 -(void) setVisibilityForConfigButton:(BOOL) setVisible
 {
-    self.configButton.hidden = NO;//!setVisible;
+    self.configButton.hidden = !setVisible;
     
     int filterSettings = [[BBAudioManager bbAudioManager] currentFilterSettings];
     if(filterSettings == FILTER_SETTINGS_EEG || filterSettings == FILTER_SETTINGS_RAW || filterSettings == FILTER_SETTINGS_CUSTOM || [[BBAudioManager bbAudioManager] externalAccessoryOn])
@@ -379,7 +379,7 @@
 
 - (IBAction)configButtonPressed:(id)sender {
     
-
+/*
     if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
     {
         ConfigViewController *controller = [[ConfigViewController alloc] initWithNibName:@"ConfigViewController" bundle:nil];
@@ -406,11 +406,11 @@
         [self presentViewController:controller animated:YES completion:nil];
     }
     
+    */
     
     
     
     
-    /*
     // grab the view controller we want to show
     ChooseFilterTypeViewController *controller = [[ChooseFilterTypeViewController alloc] initWithNibName:@"ChooseFilterTypeViewController" bundle:nil];
     // present the controller
@@ -440,7 +440,7 @@
     
     // in case we don't have a bar button as reference
     [self presentViewController:controller animated:YES completion:nil];
-     */
+    
 }
 
 

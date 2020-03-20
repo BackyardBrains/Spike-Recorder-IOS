@@ -2,10 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>UIAppFonts</key>
-	<array>
-		<string>Comic-Book-Bold-Italic.otf</string>
-	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
@@ -55,7 +51,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>3.0.11</string>
+	<string>3.0.12</string>
 	<key>Fabric</key>
 	<dict>
 		<key>APIKey</key>
@@ -80,9 +76,13 @@
 	<key>LSSupportsOpeningDocumentsInPlace</key>
 	<false/>
 	<key>NSCameraUsageDescription</key>
-	<string>We don&apos;t need camera.</string>
+	<string>We don't need camera.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Application is using microphone and microphone jack to connect to SpikerBox product</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Comic-Book-Bold-Italic.otf</string>
+	</array>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>audio</string>
