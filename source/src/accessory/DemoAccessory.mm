@@ -170,9 +170,13 @@
             [[_session outputStream] setDelegate:self];
             [[_session outputStream] scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
             [[_session outputStream] open];
+            
+            [self setupProtocol];
         } else {
             [self addDebugString:@"Failed opening session\n"];
         }
+        
+        
     }
 }
 
@@ -264,6 +268,11 @@
     if ([protocolStrings containsObject:_protocol]) {
         [self closeSession];
     }
+}
+
+- (void) setupProtocol
+{
+    //init all things that you need
 }
 
 @end

@@ -558,6 +558,13 @@ static BBAudioManager *bbAudioManager = nil;
         // Replace the input block with the old input block, where we just save an in-memory copy of the audio.
         [eaManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
          {
+             if([eaManager shouldRestartDevice])
+             {
+                 [self switchToExternalDeviceWithChannels:[eaManager numberOfChannels] andSampleRate:[eaManager sampleRate]];
+                 [eaManager deviceRestarted];
+                 return;
+             }
+             
              if(ringBuffer == NULL)
              {
                  NSLog(@"/n/n ERROR in Input block %p", self);
@@ -566,6 +573,7 @@ static BBAudioManager *bbAudioManager = nil;
              [self additionalProcessingOfInputData:data forNumOfFrames:numFrames andNumChannels:numChannels];
              ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
              _preciseVirtualTimeNumOfFrames += numFrames;
+             
          }];
     }
     else

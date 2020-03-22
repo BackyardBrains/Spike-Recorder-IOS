@@ -53,6 +53,9 @@ const uint8_t kHeaderBytes[] = {0xCA, 0x5C};
     std::string firmwareVersion;
     std::string hardwareVersion;
     std::string hardwareType;
+    int currentAddOnBoard;
+    bool _restartDevice;
+
     
 }
 static  EAInputBlock inputBlock;
@@ -88,6 +91,8 @@ static  EAInputBlock inputBlock;
         escapeSequenceDetectorIndex = 0;
         _samplingRate = 10000;
         _numberOfChannels = 2;
+        currentAddOnBoard = BOARD_WITH_EVENT_INPUTS;
+        _restartDevice = false;
     }
     return self;
 }
@@ -100,7 +105,15 @@ static  EAInputBlock inputBlock;
     escapeSequenceDetectorIndex = 0;
     _samplingRate = 10000;
     _numberOfChannels = 2;
+    
 }
+
+- (void) setupProtocol
+{
+    [self askForBoardType];
+    
+}
+
 
 // Adds protocol header to payload, then queues the packet on the accessory
 - (void)queuePacket:(uint8_t *)payload length:(NSUInteger)len
@@ -112,35 +125,6 @@ static  EAInputBlock inputBlock;
     [self queueTxData:packet];
 }
 
-- (void)getGpioState;
-{
-    uint8_t cmd[PROTOCOL_PAYLOAD_SIZE] = {P1_CMD_GET_GPIO, 0, 0, 0, 0, 0};
-
-    [self queuePacket:cmd length:sizeof(cmd)];
-}
-
-- (void)setGpioState:(uint8_t)gpio
-{
-    uint8_t cmd[PROTOCOL_PAYLOAD_SIZE] = {P1_CMD_SET_GPIO, 0, 0, 0, 0, 0};
-
-    cmd[1] = gpio;
-
-    [self queuePacket:cmd length:sizeof(cmd)];
-    [self addDebugString:[NSString stringWithFormat:@"setGpio: %x\n", gpio]];
-}
-
-- (void)setCapVolume:(uint8_t)volume andRelease:(uint8_t)release
-{
-    uint8_t cmd[PROTOCOL_PAYLOAD_SIZE] = {P1_CMD_SET_CAP_VOLUME, 0, 0, 0, 0, 0};
-
-    cmd[1] = volume;
-    cmd[2] = release ? 1 : 0;
-    self.capVolumeState = volume;
-    
-    [self queuePacket:cmd length:sizeof(cmd)];
-    [self addDebugString:[NSString stringWithFormat:@"setCapVolume: %d: %d\n", volume, release]];
-}
-
 - (void)sendCommandGetAdc
 {
     uint8_t cmd[PROTOCOL_PAYLOAD_SIZE] = {P1_CMD_GET_ADC, 0, 0, 0, 0, 0};
@@ -148,61 +132,15 @@ static  EAInputBlock inputBlock;
     [self queuePacket:cmd length:sizeof(cmd)];
 }
 
-- (void)receiveResponseGetAdc:(uint8_t *)buf
+-(void) askForBoardType
 {
-    int adc = buf[2] * 256 + buf[1];
-    if (adc < 0) {
-        adc = 0;
-    }
-    self.adcValue = adc;
-    //NSLog(@"%i",adc);
-    //[self addDebugString:[NSString stringWithFormat:@"ADC= %d\n", self.adcValue]];
+    //uint8_t cmd[PROTOCOL_PAYLOAD_SIZE] = {P1_CMD_GET_ADC, 0, 0, 0, 0, 0};
+    NSString *s = @"board:;/n";
+    const char *c = [s UTF8String];
+    [self queuePacket:(uint8_t*)c length:[s length]];
+    
 }
 
-- (void)receiveResponseGpio:(uint8_t *)buf
-{
-    self.ledState = buf[1];
-    [self addDebugString:[NSString stringWithFormat:@"GPIO: %x\n", self.ledState]];
-}
-
-- (void)receiveResponseCapVolume:(uint8_t *)buf
-{
-    self.capVolumeState = buf[1];
-    [self addDebugString:[NSString stringWithFormat:@"SLIDER: %d\n", buf[1]]];
-}
-
-// This function is called for each response packet received
-- (void)processPacket:(uint8_t *)payload length:(NSUInteger)len
-{
-    NSLog(@"Size %i",(unsigned long)len);
-    // Process packet payload received from the accessory
-    switch (payload[0])
-    {
-    case P1_RSP_RET_ACC_REV: // Accessory Ready
-        // AccStatus = buf[1];
-        // AccMajor = buf[2];
-        // AccMinor = buf[3];
-        // AccRev = buf[4];
-        // BoardID = buf[5];
-        break;
-
-    case P1_RSP_RET_GPIO: // Return GPIO
-        [self receiveResponseGpio:payload];
-        break;
-
-    case P1_RSP_RET_ADC: // Return ADC
-        [self receiveResponseGetAdc:payload];
-        break;
-
-    case P1_RSP_RET_CAP_VOLUME: // Cap Volume
-        [self receiveResponseCapVolume:payload];
-        break;
-
-    default: // Unknown response, ignore packet
-            NSLog(@"Unknown");
-        break;
-    }
-}
 
 // Gathers a complete protocol packet from the input stream
 - (void)processRxBytes:(uint8_t *)bytes length:(NSUInteger)len
@@ -220,7 +158,7 @@ static  EAInputBlock inputBlock;
     if(numOfFrames>0)
     {
        // [[BBAudioManager bbAudioManager] addNewData:obuffer frames:numOfFrames channels:2];
-        self.inputBlock(obuffer,numOfFrames, 2);
+        self.inputBlock(obuffer,numOfFrames, _numberOfChannels);
     }
         //
     //}
@@ -326,7 +264,7 @@ static  EAInputBlock inputBlock;
                     
                     
                     numberOfParsedChannels++;
-                    if(numberOfParsedChannels>2)
+                    if(numberOfParsedChannels>_numberOfChannels)
                     {
                         //we have more data in frame than we need
                         //something is wrong with this frame
@@ -604,27 +542,26 @@ static  EAInputBlock inputBlock;
     if(typeOfMessage == "BRD")
     {
        
-     /*   currentAddOnBoard = (int)((unsigned int)valueOfMessage[0]-48);
+        currentAddOnBoard = (int)((unsigned int)valueOfMessage[0]-48);
         if(currentAddOnBoard == BOARD_WITH_ADDITIONAL_INPUTS)
         {
-            //if(_samplingRate != 7500)
-            //{
+
             _samplingRate = 5000;
             _numberOfChannels  =4;
-            restartDevice = true;
-            //}
+            _restartDevice = true;
+            
         }
         else if(currentAddOnBoard == BOARD_WITH_HAMMER)
         {
             _samplingRate = 5000;
             _numberOfChannels  =3;
-            restartDevice = true;
+            _restartDevice = true;
         }
         else if(currentAddOnBoard == BOARD_WITH_JOYSTICK)
         {
             _samplingRate = 5000;
             _numberOfChannels  =3;
-            restartDevice = true;
+            _restartDevice = true;
         }
         else
         {
@@ -634,9 +571,9 @@ static  EAInputBlock inputBlock;
             {
                 _samplingRate = 10000;
                 _numberOfChannels  =2;
-                restartDevice = true;
+                _restartDevice = true;
             }
-        }*/
+        }
     }
     if(typeOfMessage == "RTR")
     {
@@ -660,11 +597,24 @@ static  EAInputBlock inputBlock;
     
 }
 
+- (int) numberOfChannels
+{
+    return _numberOfChannels;
+}
 
+- (int) sampleRate
+{
+    return _samplingRate;
+}
 
-
-
-
+- (bool) shouldRestartDevice
+{
+    return _restartDevice;
+}
+-(void) deviceRestarted
+{
+    _restartDevice = false;
+}
 
 
 
