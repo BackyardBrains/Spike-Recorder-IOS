@@ -385,7 +385,10 @@ using namespace tinyxml2;
                 for(int spikeIndex = 0;spikeIndex<[tempChannel.spikeTrains count];spikeIndex++)
                 {
                     BBSpikeTrain * tempSpikeTrain = [tempChannel.spikeTrains objectAtIndex:spikeIndex];
-
+                    if([tempSpikeTrain.spikes count]==0)
+                    {
+                        continue;
+                    }
                     for(int i=0;i<[tempSpikeTrain.spikes count];i++)
                     {
                         BBSpike * tempSpike = (BBSpike *) [tempSpikeTrain.spikes objectAtIndex:i];

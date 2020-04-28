@@ -606,6 +606,8 @@ static BBAudioManager *bbAudioManager = nil;
         [self filterData:data numFrames:numFrames numChannels:numChannels];
     }
     
+    //[self filterData:data numFrames:numFrames numChannels:numChannels];
+    
     if (recording)
     {
         [fileWriter writeNewAudio:data numFrames:numFrames numChannels:numChannels];

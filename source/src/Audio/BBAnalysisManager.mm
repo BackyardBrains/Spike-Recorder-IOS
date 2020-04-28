@@ -236,8 +236,8 @@ static BBAnalysisManager *bbAnalysisManager = nil;
     //sort array of STDs
     std::sort(stdArray, stdArray + numberOfBins, std::greater<float>());
     //take value that is greater than 40% STDs
-    float sig = 2 * stdArray[(int)ceil(((float)numberOfBins)*0.4)];
-    float negsig = -1* sig;
+    float sigOriginal = stdArray[(int)ceil(((float)numberOfBins)*0.4)];
+    float negsigOriginal = -1* sigOriginal;
     
     //make maximal bins for faster processing
     lengthOfBin = (BUFFER_SIZE/aFile.numberOfChannels);
@@ -270,6 +270,20 @@ static BBAnalysisManager *bbAnalysisManager = nil;
                    1,
                    lengthOfBin);
         
+        float averageOfSegment = 0;
+        
+        //calculate average for signals with offset
+        vDSP_meanv(tempCalculationBuffer, 1, &averageOfSegment,numberOfFramesRead) ;
+        
+        float sig = sigOriginal+averageOfSegment;
+        float negsig = negsigOriginal+averageOfSegment;
+        /*if(channelIndex==2)
+        {
+            for(isample=0;isample<numberOfFramesRead;isample++)
+            {
+                NSLog(@"%f",tempCalculationBuffer[isample]);
+            }
+        }*/
         for(isample=0;isample<numberOfFramesRead;isample++)
         {
             //determine state of positive schmitt trigger
@@ -278,7 +292,7 @@ static BBAnalysisManager *bbAnalysisManager = nil;
                 schmitPosState =kSchmittON;
                 maxPeakValue = -1000.0;
             }
-            else if(schmitPosState == kSchmittON && tempCalculationBuffer[isample]<0)
+            else if(schmitPosState == kSchmittON && tempCalculationBuffer[isample]<averageOfSegment)
             {
                 schmitPosState = kSchmittOFF;
                 BBSpike * tempSpike = [[BBSpike alloc] initWithValue:maxPeakValue index:maxPeakIndex andTime:((float)maxPeakIndex)/aFile.samplingrate];
@@ -292,7 +306,7 @@ static BBAnalysisManager *bbAnalysisManager = nil;
                 schmitNegState =kSchmittON;
                 minPeakValue = 1000.0;
             }
-            else if(schmitNegState == kSchmittON && tempCalculationBuffer[isample]>0)
+            else if(schmitNegState == kSchmittON && tempCalculationBuffer[isample]>averageOfSegment)
             {
                 schmitNegState = kSchmittOFF;
                 BBSpike * tempSpike = [[BBSpike alloc] initWithValue:minPeakValue index:minPeakIndex andTime:((float)minPeakIndex)/aFile.samplingrate];
