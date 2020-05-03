@@ -7,16 +7,24 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "NMRangeSlider.h"
+#import "SelectFilterPresetView.h"
 NS_ASSUME_NONNULL_BEGIN
+@protocol ConfigViewControllerDelegate;
+@interface ConfigViewController : UIViewController <UITableViewDataSource, UITableViewDelegate,UITextFieldDelegate,UITextViewDelegate,FilterPresetDelegateProtocol>
 
-@interface ConfigViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
-
-@property (retain, nonatomic) IBOutlet UITextField *lowTI;
-@property (retain, nonatomic) IBOutlet UITextField *highTI;
-@property (retain, nonatomic) IBOutlet UISegmentedControl *selectNotchFilter;
-@property (retain, nonatomic) IBOutlet UITableView *channelsTableView;
-
+        @property (retain, nonatomic) IBOutlet SelectFilterPresetView *filterPresetSelection;
+        @property (retain, nonatomic) IBOutlet UITextField *lowTI;
+        @property (retain, nonatomic) IBOutlet UITextField *highTI;
+        @property (retain, nonatomic) IBOutlet UISegmentedControl *selectNotchFilter;
+        @property (retain, nonatomic) IBOutlet UITableView *channelsTableView;
+        @property (nonatomic, assign) id <ConfigViewControllerDelegate> masterDelegate;
+        @property (retain, nonatomic) IBOutlet NMRangeSlider *rangeSelector;
+        - (IBAction)closeVIewTap:(id)sender;
+        - (IBAction)rangeSelectrorValueChanged:(id)sender;
+        -(void) setupFilters;
 @end
-
+@protocol ConfigViewControllerDelegate <NSObject>
+        -(void) finishedWithConfiguration;
+@end
 NS_ASSUME_NONNULL_END

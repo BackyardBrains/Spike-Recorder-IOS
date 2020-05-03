@@ -12,9 +12,9 @@
 #import "MultichannelCindeGLView.h"
 #import "ChooseFilterTypeViewController.h"
 #import "FilterSettingsViewController.h"
+#import "ConfigViewController.h"
 
-
-@interface ViewAndRecordViewController : CCGLTouchViewController <MultichannelGLViewDelegate, UIPopoverPresentationControllerDelegate, ChooseFilterTypeDelegateProtocol, BBFilterConfigDelegate>
+@interface ViewAndRecordViewController : CCGLTouchViewController <MultichannelGLViewDelegate, UIPopoverPresentationControllerDelegate, ChooseFilterTypeDelegateProtocol, ConfigViewControllerDelegate, BBFilterConfigDelegate>
 {
     UIPopoverPresentationController *popController;
     UIPopoverPresentationController * popControllerIpad;

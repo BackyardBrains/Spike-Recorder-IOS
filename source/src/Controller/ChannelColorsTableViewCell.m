@@ -9,10 +9,17 @@
 #import "ChannelColorsTableViewCell.h"
 
 @implementation ChannelColorsTableViewCell
-
+@synthesize colorChooser;
 - (void)awakeFromNib {
     [super awakeFromNib];
     // Initialization code
+    
+    colorChooser.nameLabel.text = @"test";
+}
+
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    //colorChooser is nil here
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
@@ -22,7 +29,7 @@
 }
 
 - (void)dealloc {
-    [_colorChooser release];
+    [colorChooser release];
     [super dealloc];
 }
 @end

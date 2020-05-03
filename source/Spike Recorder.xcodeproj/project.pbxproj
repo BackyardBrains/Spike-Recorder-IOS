@@ -234,6 +234,9 @@
 		24E6D8A91A011EE0006C8CED /* FilterSettingsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 24E6D8A71A011EE0006C8CED /* FilterSettingsViewController.xib */; };
 		24EBC1AE1997852D001D3392 /* TrialsDCMDTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 24EBC1AC1997852D001D3392 /* TrialsDCMDTableViewController.xib */; };
 		24EBC1B31997DD21001D3392 /* TrialActionsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 24EBC1B11997DD21001D3392 /* TrialActionsViewController.xib */; };
+		850258BF245C8ABC006F9927 /* close.png in Resources */ = {isa = PBXBuildFile; fileRef = 850258BD245C8ABC006F9927 /* close.png */; };
+		850258C0245C8ABC006F9927 /* close@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 850258BE245C8ABC006F9927 /* close@2x.png */; };
+		850258C3245DC55F006F9927 /* FilterSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 850258C2245DC55F006F9927 /* FilterSettings.m */; };
 		851897AF22BBDF15003C5D7F /* BBEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 851897AE22BBDF15003C5D7F /* BBEvent.m */; };
 		8526365F241ED2D7000755F6 /* Comic-Book.otf in Resources */ = {isa = PBXBuildFile; fileRef = 8526365B241ED2D7000755F6 /* Comic-Book.otf */; };
 		85263660241ED2D7000755F6 /* Comic-Book-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 8526365C241ED2D7000755F6 /* Comic-Book-Bold.otf */; };
@@ -710,6 +713,10 @@
 		24E6D8A71A011EE0006C8CED /* FilterSettingsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FilterSettingsViewController.xib; sourceTree = "<group>"; };
 		24EBC1AC1997852D001D3392 /* TrialsDCMDTableViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TrialsDCMDTableViewController.xib; sourceTree = "<group>"; };
 		24EBC1B11997DD21001D3392 /* TrialActionsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TrialActionsViewController.xib; sourceTree = "<group>"; };
+		850258BD245C8ABC006F9927 /* close.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = close.png; sourceTree = "<group>"; };
+		850258BE245C8ABC006F9927 /* close@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "close@2x.png"; sourceTree = "<group>"; };
+		850258C1245DC55F006F9927 /* FilterSettings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FilterSettings.h; sourceTree = "<group>"; };
+		850258C2245DC55F006F9927 /* FilterSettings.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FilterSettings.m; sourceTree = "<group>"; };
 		851897AD22BBDF15003C5D7F /* BBEvent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BBEvent.h; sourceTree = "<group>"; };
 		851897AE22BBDF15003C5D7F /* BBEvent.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BBEvent.m; sourceTree = "<group>"; };
 		8526365B241ED2D7000755F6 /* Comic-Book.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Comic-Book.otf"; sourceTree = "<group>"; };
@@ -1280,6 +1287,8 @@
 		2418FE881A83F5D700662547 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				850258BD245C8ABC006F9927 /* close.png */,
+				850258BE245C8ABC006F9927 /* close@2x.png */,
 				2418FE891A83F5D700662547 /* again.png */,
 				2418FE8A1A83F5D700662547 /* again@2x.png */,
 				2418FE8B1A83F5D700662547 /* backbtn.png */,
@@ -1347,6 +1356,8 @@
 				2418FEF31A83F6C800662547 /* BBSpikeTrain.m */,
 				851897AD22BBDF15003C5D7F /* BBEvent.h */,
 				851897AE22BBDF15003C5D7F /* BBEvent.m */,
+				850258C1245DC55F006F9927 /* FilterSettings.h */,
+				850258C2245DC55F006F9927 /* FilterSettings.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1813,6 +1824,7 @@
 				2418FFD01A8406A600662547 /* Screenshot-568h.png in Resources */,
 				247087BE1A851774004C6B9B /* Icon-72@2x.png in Resources */,
 				247087C11A851774004C6B9B /* Icon-Small-40.png in Resources */,
+				850258C0245C8ABC006F9927 /* close@2x.png in Resources */,
 				1CD05BAA1CFD398400A83727 /* BBCommentDetailsCell.xib in Resources */,
 				1CF7DB311F7988DF008F303E /* slider-default7-track@2x.png in Resources */,
 				2418FFCE1A8406A600662547 /* Default-Portrait.png in Resources */,
@@ -1854,6 +1866,7 @@
 				1CF7DB391F7988DF008F303E /* slider-metal-handle@2x.png in Resources */,
 				24EBC1AE1997852D001D3392 /* TrialsDCMDTableViewController.xib in Resources */,
 				2418FECA1A83F5D700662547 /* inputicon@2x.png in Resources */,
+				850258BF245C8ABC006F9927 /* close.png in Resources */,
 				1C3882C720188A4C00B0388B /* portrait-1536-2048.png in Resources */,
 				247087C71A851774004C6B9B /* Icon-Small@2x.png in Resources */,
 				1CF7DB3A1F7988DF008F303E /* slider-metal-track.png in Resources */,
@@ -1914,6 +1927,7 @@
 				24E1430D1B61407B00DA32B9 /* Log.m in Sources */,
 				247087011A850FF6004C6B9B /* CCGLTouchAppDelegate.mm in Sources */,
 				247087031A850FF6004C6B9B /* CCGLTouchView.mm in Sources */,
+				850258C3245DC55F006F9927 /* FilterSettings.m in Sources */,
 				247087051A850FF6004C6B9B /* CCGLTouchViewController.mm in Sources */,
 				2418FEF71A83F6C800662547 /* BBFile.mm in Sources */,
 				2418FEF41A83F6C800662547 /* BBChannel.m in Sources */,
