@@ -1,0 +1,73 @@
+{
+    "config": {
+        "version":"1.0",
+        "boards":[
+            {
+                "uniqueName": "HBSBPRO",
+                "userFriendlyFullName":"Heart and Brains SpikerBox Pro",
+                "userFriendlyShortName":"H&B SpikerBox Pro",
+                "hardwareComProtocolType": "serial",
+                "bybProtocolType": "FBF",
+                "bybProtocolVersion": "1.0",
+                "maxSampleRate":"10000",
+                "maxNumberOfChannels":"2",
+                "defaultTimeScale":"0.1",
+                "defaultGain":"1.0",
+                "sampleRateIsFunctionOfNumberOfChannels":0,
+                "miniOSAppVersion":"3.0.0",
+                "minAndroidAppVersion":"1.0.0",
+                "minWinAppVersion":"1.0.0",
+                "minMacAppVersion":"1.0.0",
+                "minLinuxAppVersion":"1.0.0",
+                
+            },
+            {
+                "uniqueName": "MUSCLESB",
+                "userFriendlyFullName":"Muscle SpikerBox Pro",
+                "userFriendlyShortName":"Muscle SpikerBox Pro",
+                "hardwareComProtocolType": "iap2,hid",
+                "bybProtocolType": "FBF",
+                "bybProtocolVersion": "1.0",
+                "maxSampleRate":"10000",
+                "maxNumberOfChannels":"2",
+                "defaultTimeScale":"0.1",
+                "defaultGain":"1.0",
+                "sampleRateIsFunctionOfNumberOfChannels":0,
+                "miniOSAppVersion":"3.0.0",
+                "minAndroidAppVersion":"1.0.0",
+                "minWinAppVersion":"1.0.0",
+                "minMacAppVersion":"1.0.0",
+                "minLinuxAppVersion":"1.0.0",
+                "hid":{
+                    "VID":"0x2E73",
+                    "PID":"0x1"
+                }
+            },
+            {
+                "uniqueName": "NEURONSB",
+                "userFriendlyFullName":"Neuron SpikerBox Pro",
+                "userFriendlyShortName":"Neuron SpikerBox Pro",
+                "hardwareComProtocolType": "iap2,hid",
+                "bybProtocolType": "FBF",
+                "bybProtocolVersion": "1.0",
+                "maxSampleRate":"10000",
+                "maxNumberOfChannels":"2",
+                "defaultTimeScale":"0.1",
+                "defaultGain":"1.0",
+                "sampleRateIsFunctionOfNumberOfChannels":0,
+                "miniOSAppVersion":"3.0.0",
+                "minAndroidAppVersion":"1.0.0",
+                "minWinAppVersion":"1.0.0",
+                "minMacAppVersion":"1.0.0",
+                "minLinuxAppVersion":"1.0.0",
+                "hid":{
+                    "VID":"0x2E73",
+                    "PID":"0x2"
+                }
+            }
+        
+        ]
+        
+        
+    }
+}

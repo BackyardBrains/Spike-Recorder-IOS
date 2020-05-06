@@ -15,6 +15,7 @@
 #import <Accelerate/Accelerate.h>
 #import "BBECGAnalysis.h"
 #import "MyAppDelegate.h"
+#import "BoardsConfigManager.h"
 
 //#define RING_BUFFER_SIZE 524288
 #define LENGTH_OF_EKG_BEEP_IN_SAMPLES 4851//0.11*44100
@@ -29,6 +30,7 @@ static BBAudioManager *bbAudioManager = nil;
     __block BBAudioFileReader *fileReader;
     DSPThreshold *dspThresholder;
     DSPAnalysis *dspAnalizer;
+    BoardsConfigManager * boardsConfigManager;
     dispatch_queue_t seekingQueue;
     float _threshold;
     float _selectionStartTime;
@@ -267,6 +269,8 @@ static BBAudioManager *bbAudioManager = nil;
         
         [audioManager play];
         eaManager = [MyAppDelegate getEaManager];
+        
+        boardsConfigManager = [[BoardsConfigManager alloc] init];
     }
     
     return self;

@@ -237,6 +237,8 @@
 		850258BF245C8ABC006F9927 /* close.png in Resources */ = {isa = PBXBuildFile; fileRef = 850258BD245C8ABC006F9927 /* close.png */; };
 		850258C0245C8ABC006F9927 /* close@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 850258BE245C8ABC006F9927 /* close@2x.png */; };
 		850258C3245DC55F006F9927 /* FilterSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 850258C2245DC55F006F9927 /* FilterSettings.m */; };
+		850258C6245F57E3006F9927 /* InputDeviceConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 850258C5245F57E3006F9927 /* InputDeviceConfig.m */; };
+		850258C9245F5E71006F9927 /* ExpansionBoardConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 850258C8245F5E71006F9927 /* ExpansionBoardConfig.m */; };
 		851897AF22BBDF15003C5D7F /* BBEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 851897AE22BBDF15003C5D7F /* BBEvent.m */; };
 		8526365F241ED2D7000755F6 /* Comic-Book.otf in Resources */ = {isa = PBXBuildFile; fileRef = 8526365B241ED2D7000755F6 /* Comic-Book.otf */; };
 		85263660241ED2D7000755F6 /* Comic-Book-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 8526365C241ED2D7000755F6 /* Comic-Book-Bold.otf */; };
@@ -260,6 +262,9 @@
 		8586320123BE21A000D6BC5A /* ObjectiveDropboxOfficial.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 858631FD23BE1EC500D6BC5A /* ObjectiveDropboxOfficial.framework */; };
 		8586320223BF4F2000D6BC5A /* ObjectiveDropboxOfficial.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 858631FD23BE1EC500D6BC5A /* ObjectiveDropboxOfficial.framework */; };
 		8586320323BF4F2000D6BC5A /* ObjectiveDropboxOfficial.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 858631FD23BE1EC500D6BC5A /* ObjectiveDropboxOfficial.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		858FACF52463106300EAC87A /* ChannelConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 858FACF42463106300EAC87A /* ChannelConfig.m */; };
+		858FACF8246312E400EAC87A /* board-config.json in Resources */ = {isa = PBXBuildFile; fileRef = 858FACF7246312E400EAC87A /* board-config.json */; };
+		858FACFB2463137B00EAC87A /* BoardsConfigManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 858FACFA2463137B00EAC87A /* BoardsConfigManager.m */; };
 		85CE23EF2137DA650035AEC8 /* DemoAccessory.mm in Sources */ = {isa = PBXBuildFile; fileRef = 85CE23EC2137DA640035AEC8 /* DemoAccessory.mm */; };
 		85CE23F02137DA650035AEC8 /* DemoProtocol.mm in Sources */ = {isa = PBXBuildFile; fileRef = 85CE23EE2137DA640035AEC8 /* DemoProtocol.mm */; };
 		85CE23F22137DAB20035AEC8 /* ExternalAccessory.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85CE23F12137DAB20035AEC8 /* ExternalAccessory.framework */; };
@@ -717,6 +722,10 @@
 		850258BE245C8ABC006F9927 /* close@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "close@2x.png"; sourceTree = "<group>"; };
 		850258C1245DC55F006F9927 /* FilterSettings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FilterSettings.h; sourceTree = "<group>"; };
 		850258C2245DC55F006F9927 /* FilterSettings.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FilterSettings.m; sourceTree = "<group>"; };
+		850258C4245F57E3006F9927 /* InputDeviceConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = InputDeviceConfig.h; sourceTree = "<group>"; };
+		850258C5245F57E3006F9927 /* InputDeviceConfig.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = InputDeviceConfig.m; sourceTree = "<group>"; };
+		850258C7245F5E71006F9927 /* ExpansionBoardConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExpansionBoardConfig.h; sourceTree = "<group>"; };
+		850258C8245F5E71006F9927 /* ExpansionBoardConfig.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExpansionBoardConfig.m; sourceTree = "<group>"; };
 		851897AD22BBDF15003C5D7F /* BBEvent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BBEvent.h; sourceTree = "<group>"; };
 		851897AE22BBDF15003C5D7F /* BBEvent.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BBEvent.m; sourceTree = "<group>"; };
 		8526365B241ED2D7000755F6 /* Comic-Book.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Comic-Book.otf"; sourceTree = "<group>"; };
@@ -747,6 +756,11 @@
 		8580C854241E77420033BF2E /* SelectFilterPresetView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SelectFilterPresetView.h; sourceTree = "<group>"; };
 		8580C855241E77420033BF2E /* SelectFilterPresetView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SelectFilterPresetView.m; sourceTree = "<group>"; };
 		858631FD23BE1EC500D6BC5A /* ObjectiveDropboxOfficial.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ObjectiveDropboxOfficial.framework; path = Carthage/Build/IOS/ObjectiveDropboxOfficial.framework; sourceTree = "<group>"; };
+		858FACF32463106300EAC87A /* ChannelConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChannelConfig.h; sourceTree = "<group>"; };
+		858FACF42463106300EAC87A /* ChannelConfig.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChannelConfig.m; sourceTree = "<group>"; };
+		858FACF7246312E400EAC87A /* board-config.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "board-config.json"; sourceTree = "<group>"; };
+		858FACF92463137B00EAC87A /* BoardsConfigManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BoardsConfigManager.h; sourceTree = "<group>"; };
+		858FACFA2463137B00EAC87A /* BoardsConfigManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BoardsConfigManager.m; sourceTree = "<group>"; };
 		85CE23EB2137DA640035AEC8 /* DemoAccessory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoAccessory.h; sourceTree = "<group>"; };
 		85CE23EC2137DA640035AEC8 /* DemoAccessory.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DemoAccessory.mm; sourceTree = "<group>"; };
 		85CE23ED2137DA640035AEC8 /* DemoProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoProtocol.h; sourceTree = "<group>"; };
@@ -1214,6 +1228,7 @@
 		2418FE5C1A83F4C600662547 /* Asset */ = {
 			isa = PBXGroup;
 			children = (
+				858FACF62463126000EAC87A /* config */,
 				8526365A241ED2D7000755F6 /* fonts */,
 				241C8AF51B3201B800CEFCEE /* templates */,
 				2418FE881A83F5D700662547 /* Images */,
@@ -1358,6 +1373,14 @@
 				851897AE22BBDF15003C5D7F /* BBEvent.m */,
 				850258C1245DC55F006F9927 /* FilterSettings.h */,
 				850258C2245DC55F006F9927 /* FilterSettings.m */,
+				850258C4245F57E3006F9927 /* InputDeviceConfig.h */,
+				850258C5245F57E3006F9927 /* InputDeviceConfig.m */,
+				850258C7245F5E71006F9927 /* ExpansionBoardConfig.h */,
+				850258C8245F5E71006F9927 /* ExpansionBoardConfig.m */,
+				858FACF32463106300EAC87A /* ChannelConfig.h */,
+				858FACF42463106300EAC87A /* ChannelConfig.m */,
+				858FACF92463137B00EAC87A /* BoardsConfigManager.h */,
+				858FACFA2463137B00EAC87A /* BoardsConfigManager.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1550,6 +1573,14 @@
 				855F668223575EC9008143FC /* StoreObserver.m */,
 			);
 			path = "App Store";
+			sourceTree = "<group>";
+		};
+		858FACF62463126000EAC87A /* config */ = {
+			isa = PBXGroup;
+			children = (
+				858FACF7246312E400EAC87A /* board-config.json */,
+			);
+			path = config;
 			sourceTree = "<group>";
 		};
 		85CE23EA2137DA000035AEC8 /* accessory */ = {
@@ -1847,6 +1878,7 @@
 				2418FEC21A83F5D700662547 /* dropbox@2x.png in Resources */,
 				2418FED61A83F5D700662547 /* spectrum.png in Resources */,
 				2418FEB91A83F5D700662547 /* backbtn.png in Resources */,
+				858FACF8246312E400EAC87A /* board-config.json in Resources */,
 				2418FECF1A83F5D700662547 /* Play.png in Resources */,
 				2418FEBE1A83F5D700662547 /* charticon@2x.png in Resources */,
 				2489D8201992284500C00A9C /* ExperimentSetupViewController.xib in Resources */,
@@ -1939,6 +1971,7 @@
 				2418FEF61A83F6C800662547 /* BBDCMDTrial.mm in Sources */,
 				2418FF5D1A83FDA100662547 /* CrossCorrViewController.m in Sources */,
 				2418FF7E1A83FDD500662547 /* BBFileViewControllerTBV.mm in Sources */,
+				850258C9245F5E71006F9927 /* ExpansionBoardConfig.m in Sources */,
 				2418FF9D1A83FE1200662547 /* MultichannelCindeGLView.mm in Sources */,
 				2418FF631A83FDA100662547 /* ISIGraphViewController.mm in Sources */,
 				2418FEF51A83F6C800662547 /* BBDCMDExperiment.mm in Sources */,
@@ -1981,9 +2014,11 @@
 				8580C84F241E72660033BF2E /* ConfigViewController.mm in Sources */,
 				247087A01A851063004C6B9B /* unzip.c in Sources */,
 				247087A21A851063004C6B9B /* zip.c in Sources */,
+				858FACFB2463137B00EAC87A /* BoardsConfigManager.m in Sources */,
 				2470879A1A85105A004C6B9B /* UIDeviceExt.m in Sources */,
 				247087821A85104D004C6B9B /* NSNumber-SQLitePersistence.m in Sources */,
 				8580C856241E77420033BF2E /* SelectFilterPresetView.m in Sources */,
+				850258C6245F57E3006F9927 /* InputDeviceConfig.m in Sources */,
 				247087841A85104D004C6B9B /* NSObject-ClassName.m in Sources */,
 				247087861A85104D004C6B9B /* NSObject-MissingKV.m in Sources */,
 				247087881A85104D004C6B9B /* NSObject-SQLitePersistence.m in Sources */,
@@ -2035,6 +2070,7 @@
 				2418FF371A83FD3700662547 /* PlaybackViewController.mm in Sources */,
 				855CBE812332455F004E1BBA /* BBExperimentsTableViewController.mm in Sources */,
 				855F668023575B3E008143FC /* Section.m in Sources */,
+				858FACF52463106300EAC87A /* ChannelConfig.m in Sources */,
 				2418FF151A83F79200662547 /* DSPAnalysis.mm in Sources */,
 				2418FF141A83F79200662547 /* BBECGAnalysis.mm in Sources */,
 				2418FF111A83F79200662547 /* BBAudioFileWriter.m in Sources */,
