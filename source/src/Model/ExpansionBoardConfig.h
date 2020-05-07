@@ -20,6 +20,10 @@ NS_ASSUME_NONNULL_BEGIN
     @property int currentNumOfChannels;
     @property float defaultTimeScale;
     @property float defaultGain;
+    @property bool expansionBoardSupportedByThisPlatform;
+    @property (nonatomic, copy) NSString* productURL;
+    @property (nonatomic, copy) NSString* helpURL;
+    @property (nonatomic, copy) NSString* iconURL;
     @property (nonatomic, strong) NSMutableArray *channels;
 @end
 

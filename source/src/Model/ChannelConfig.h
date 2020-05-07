@@ -14,6 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
     @property (nonatomic, copy) NSString* userFriendlyFullName;
     @property (nonatomic, copy) NSString* userFriendlyShortName;
     @property bool activeByDefault;
+    @property bool filtered;
 @end
 
 NS_ASSUME_NONNULL_END

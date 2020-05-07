@@ -56,12 +56,12 @@
         NSDictionary *results = object;
         NSDictionary * config = [results valueForKey:@"config"];
         NSString *versionOfJSON = [config valueForKey:@"version"];
+[boardsConfig removeAllObjects];//should be cleaned at the end of parsing when we are sure that we have new data
         if([versionOfJSON isEqualToString:@"1.0"])
         {
             int ret  = [self parseConfigJSonV1_0:config];
             return ret;
         }
-        
     }
     else
     {
@@ -77,7 +77,6 @@
     
     for(int boardIndex =0;boardIndex<[allBoards count];boardIndex++)
     {
-        [boardsConfig removeAllObjects];
         InputDeviceConfig * newBoard = [[InputDeviceConfig alloc] init];
         NSDictionary * oneBoardJSON = [allBoards objectAtIndex:boardIndex];
         if(oneBoardJSON)
@@ -129,20 +128,153 @@
             newBoard.userFriendlyShortName = [oneBoardJSON valueForKey:@"userFriendlyShortName"];
             newBoard.minAppVersion = [oneBoardJSON valueForKey:@"miniOSAppVersion"];
 
+            newBoard.productURL = [oneBoardJSON valueForKey:@"productURL"];
+            newBoard.helpURL = [oneBoardJSON valueForKey:@"helpURL"];
+            newBoard.firmwareUpdateUrl = [oneBoardJSON valueForKey:@"firmwareUpdateUrl"];
+            newBoard.iconURL = [oneBoardJSON valueForKey:@"iconURL"];
+            
+            //"supportedPlatforms":"android,win,mac,linux",
+            NSString *supportedPlatforms = [oneBoardJSON valueForKey:@"supportedPlatforms"];
+            newBoard.inputDevicesSupportedByThisPlatform = [[supportedPlatforms lowercaseString] containsString:@"ios"];
+            
+            NSDictionary * filterJSON = [oneBoardJSON valueForKey:@"filter"];
+            if(filterJSON)
+            {
+                
+            }
+            else
+            {
+                
+            }
+            newBoard.filterSettings.signalType
+            /*"filter":{
+                "signalType":"neuronSignal",
+                "lowPassON":1,
+                "lowPassCutoff":"2500.0",
+                "highPassON":1,
+                "highPassCutoff":"1.0"
+                "notchFilterState":"notch60Hz"
+            },*/
+            
+            //parse main channels
+            NSMutableArray *allMainChannelsJSON = [oneBoardJSON valueForKey:@"channels"];
+            [newBoard.channels removeAllObjects];
+            if(allMainChannelsJSON)
+            {
+                for(int channelIndex=0;channelIndex<[allMainChannelsJSON count];channelIndex++)
+                {
+                    ChannelConfig * newChannel= [[ChannelConfig alloc] init];
+                    NSDictionary * oneChannelJSON = [allMainChannelsJSON objectAtIndex:channelIndex];
+                    newChannel.userFriendlyFullName = [oneChannelJSON valueForKey:@"userFriendlyFullName"];
+                    newChannel.userFriendlyShortName = [oneChannelJSON valueForKey:@"userFriendlyShortName"];
+                    newChannel.activeByDefault = [[oneChannelJSON valueForKey:@"activeByDefault"] boolValue];
+                    newChannel.filtered = [[oneChannelJSON valueForKey:@"filtered"] boolValue];
+                    
+                    [newBoard.channels addObject:newChannel];
+                }
+            }
+
+             //@property (nonatomic, strong) NSMutableArray *expansionBoards;//configuration for expansion boards
+            NSMutableArray *allExpansionBoardsJSON = [oneBoardJSON valueForKey:@"expansionBoards"];
+            [newBoard.expansionBoards removeAllObjects];
+            if(allExpansionBoardsJSON)
+            {
+                for(int ebIndex=0;ebIndex<[allExpansionBoardsJSON count];ebIndex++)
+                {
+                    ExpansionBoardConfig * newExpansionBoard= [[ExpansionBoardConfig alloc] init];
+                    NSDictionary * oneEBJSON = [allExpansionBoardsJSON objectAtIndex:ebIndex];
+                    
+                    newExpansionBoard.boardType = [oneEBJSON valueForKey:@"boardType"];
+                    newExpansionBoard.userFriendlyFullName = [oneEBJSON valueForKey:@"userFriendlyFullName"];
+                    newExpansionBoard.userFriendlyShortName = [oneEBJSON valueForKey:@"userFriendlyShortName"];
+                    
+                    NSString *supportedPlatformsForBoards = [oneEBJSON valueForKey:@"supportedPlatforms"];
+                    newExpansionBoard.expansionBoardSupportedByThisPlatform = [[supportedPlatformsForBoards lowercaseString] containsString:@"ios"];
+                    
+                    tempString  = [oneEBJSON valueForKey:@"maxNumberOfChannels"];
+                    if(tempString)
+                    {
+                        if([tempString intValue])
+                        {
+                            newExpansionBoard.maxNumberOfChannels = [tempString intValue];
+                        }
+                    }
+                    
+                    newExpansionBoard.productURL = [oneEBJSON valueForKey:@"productURL"];
+                    newExpansionBoard.helpURL = [oneEBJSON valueForKey:@"helpURL"];
+                    newExpansionBoard.iconURL = [oneEBJSON valueForKey:@"iconURL"];
+                    
+                    tempString  = [oneEBJSON valueForKey:@"maxSampleRate"];
+                    if(tempString)
+                    {
+                        if([tempString intValue])
+                        {
+                            newExpansionBoard.maxSampleRate = [tempString intValue];
+                        }
+                    }
+                    else
+                    {
+                        newExpansionBoard.maxSampleRate = newBoard.maxSampleRate;
+                    }
+                    
+                    
+                    tempString  = [oneEBJSON valueForKey:@"defaultTimeScale"];
+                    if(tempString)
+                    {
+                        if([tempString floatValue])
+                        {
+                            newExpansionBoard.defaultTimeScale = [tempString floatValue];
+                        }
+                    }
+                    else
+                    {
+                        newExpansionBoard.defaultTimeScale = newBoard.defaultTimeScale;
+                    }
+                    
+                    tempString  = [oneEBJSON valueForKey:@"defaultGain"];
+                    if(tempString)
+                    {
+                        if([tempString floatValue])
+                        {
+                            newExpansionBoard.defaultGain = [tempString floatValue];
+                        }
+                    }
+                    else
+                    {
+                        newExpansionBoard.defaultGain = newBoard.defaultGain;
+                    }
+                    
+                   
+                    //parse main channels
+                    NSMutableArray *allEBChannelsJSON = [oneEBJSON valueForKey:@"channels"];
+                    [newExpansionBoard.channels removeAllObjects];
+                    if(allEBChannelsJSON)
+                    {
+                        for(int channelIndex=0;channelIndex<[allEBChannelsJSON count];channelIndex++)
+                        {
+                            ChannelConfig * newChannel= [[ChannelConfig alloc] init];
+                            NSDictionary * oneChannelJSON = [allEBChannelsJSON objectAtIndex:channelIndex];
+                            newChannel.userFriendlyFullName = [oneChannelJSON valueForKey:@"userFriendlyFullName"];
+                            newChannel.userFriendlyShortName = [oneChannelJSON valueForKey:@"userFriendlyShortName"];
+                            newChannel.activeByDefault = [[oneChannelJSON valueForKey:@"activeByDefault"] boolValue];
+                            newChannel.filtered = [[oneChannelJSON valueForKey:@"filtered"] boolValue];
+                            
+                            [newExpansionBoard.channels addObject:newChannel];
+                        }
+                    }
+                    
+                    [newBoard.expansionBoards addObject:newExpansionBoard];
+                }
+            }
             
             
             
-            
-            
-    
             
            /* @property FilterSettings* filterSettings;//default filter settings
 
             @property int currentSampleRate;
             @property int currentNumOfChannels;
-
-            @property (nonatomic, strong) NSMutableArray *expansionBoards;//configuration for expansion boards
-            @property (nonatomic, strong) NSMutableArray *channels;*/
+*/
             
             [boardsConfig addObject:newBoard];
         }

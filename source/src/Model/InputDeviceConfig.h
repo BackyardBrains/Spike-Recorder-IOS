@@ -17,7 +17,11 @@ NS_ASSUME_NONNULL_BEGIN
     @property (nonatomic, copy) NSString* hardwareComProtocolType;//serial, hid, mfi
     @property (nonatomic, copy) NSString* bybProtocolType;//currently just default
     @property (nonatomic, copy) NSString* bybProtocolVersion;//currently just one version
-
+    @property (nonatomic, copy) NSString* productURL;//currently just one version
+    @property (nonatomic, copy) NSString* helpURL;//currently just one version
+    @property (nonatomic, copy) NSString* firmwareUpdateUrl;//currently just one version
+    @property (nonatomic, copy) NSString* iconURL;//currently just one version
+    @property bool inputDevicesSupportedByThisPlatform;
     @property FilterSettings* filterSettings;//default filter settings
     @property float maxSampleRate;
     @property int maxNumberOfChannels;
