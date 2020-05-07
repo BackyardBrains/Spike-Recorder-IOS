@@ -16,7 +16,7 @@
     if ((self = [super init])) {
         expansionBoards = [[NSMutableArray alloc] initWithCapacity:0];
         channels = [[NSMutableArray alloc] initWithCapacity:0];
-        filterSettings = [[FilterSettings alloc] init];
+        filterSettings = [[FilterSettings alloc] initWithTypicalValuesForSignalType:customSignalType];
     }
     
     return self;

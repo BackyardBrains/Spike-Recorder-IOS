@@ -40,7 +40,7 @@ typedef enum NotchFilterState
     @property NotchFilterState notchFilterState;
 
 -(id) initWithSignalType:(SignalType) inSignalTypeValue lowPassON:(bool) inLowPassON lowPassCutoff:(float) inLowPassCutoff highPassON:(bool) inHighPassON highPassCutoff:(float) inHighPassCutoff notchFilterState:(NotchFilterState) inNotchFilterState;
--(void) initWithTypicalValuesForSignalType:(SignalType) inSignalTypeValue;
+-(id) initWithTypicalValuesForSignalType:(SignalType) inSignalTypeValue;
 @end
 
 NS_ASSUME_NONNULL_END

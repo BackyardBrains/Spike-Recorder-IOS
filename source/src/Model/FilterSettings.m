@@ -30,74 +30,77 @@
         return self;
     }
 
-    -(void) initWithTypicalValuesForSignalType:(SignalType) inSignalTypeValue
+    -(id) initWithTypicalValuesForSignalType:(SignalType) inSignalTypeValue
     {
-        switch (inSignalTypeValue) {
-            case eegSignal:
-                signalType = eegSignal;
-                lowPassON = true;
-                lowPassCutoff = 50;
-                highPassON = true;
-                highPassCutoff = 1;
-                notchFilterState = notch60Hz;
-                break;
-            case ecgSignal:
-                signalType = ecgSignal;
-                lowPassON = true;
-                lowPassCutoff = 120;
-                highPassON = true;
-                highPassCutoff = 1;
-                notchFilterState = notch60Hz;
-                break;
-            case emgSignal:
-                signalType = emgSignal;
-                lowPassON = true;
-                lowPassCutoff = 2500;
-                highPassON = true;
-                highPassCutoff = 70;
-                notchFilterState = notchOff;
-                break;
-            case plantSignal:
-                signalType = plantSignal;
-                lowPassON = true;
-                lowPassCutoff = 5;
-                highPassON = false;
-                highPassCutoff =0;
-                notchFilterState = notch60Hz;
-                break;
-            case neuronSignal:
-                signalType = neuronSignal;
-                lowPassON = true;
-                lowPassCutoff = 5000;
-                highPassON = true;
-                highPassCutoff = 1;
-                notchFilterState = notch60Hz;
-                break;
-            case eogSignal:
-                signalType = eogSignal;
-                lowPassON = true;
-                lowPassCutoff = 50;
-                highPassON = true;
-                highPassCutoff = 1;
-                notchFilterState = notch60Hz;
-                break;
-            case ergSignal:
-                signalType = ergSignal;
-                lowPassON = true;
-                lowPassCutoff = 300;
-                highPassON = true;
-                highPassCutoff = 1;
-                notchFilterState = notch60Hz;
-                break;
-            default:
-                signalType = customSignalType;
-                lowPassON = false;
-                lowPassCutoff = 5000;
-                highPassON = false;
-                highPassCutoff = 0;
-                notchFilterState = notchOff;
-                break;
-        }
+         if ((self = [super init])) {
+                    switch (inSignalTypeValue) {
+                        case eegSignal:
+                            signalType = eegSignal;
+                            lowPassON = true;
+                            lowPassCutoff = 50;
+                            highPassON = true;
+                            highPassCutoff = 1;
+                            notchFilterState = notch60Hz;
+                            break;
+                        case ecgSignal:
+                            signalType = ecgSignal;
+                            lowPassON = true;
+                            lowPassCutoff = 120;
+                            highPassON = true;
+                            highPassCutoff = 1;
+                            notchFilterState = notch60Hz;
+                            break;
+                        case emgSignal:
+                            signalType = emgSignal;
+                            lowPassON = true;
+                            lowPassCutoff = 2500;
+                            highPassON = true;
+                            highPassCutoff = 70;
+                            notchFilterState = notchOff;
+                            break;
+                        case plantSignal:
+                            signalType = plantSignal;
+                            lowPassON = true;
+                            lowPassCutoff = 5;
+                            highPassON = false;
+                            highPassCutoff =0;
+                            notchFilterState = notch60Hz;
+                            break;
+                        case neuronSignal:
+                            signalType = neuronSignal;
+                            lowPassON = true;
+                            lowPassCutoff = 5000;
+                            highPassON = true;
+                            highPassCutoff = 1;
+                            notchFilterState = notch60Hz;
+                            break;
+                        case eogSignal:
+                            signalType = eogSignal;
+                            lowPassON = true;
+                            lowPassCutoff = 50;
+                            highPassON = true;
+                            highPassCutoff = 1;
+                            notchFilterState = notch60Hz;
+                            break;
+                        case ergSignal:
+                            signalType = ergSignal;
+                            lowPassON = true;
+                            lowPassCutoff = 300;
+                            highPassON = true;
+                            highPassCutoff = 1;
+                            notchFilterState = notch60Hz;
+                            break;
+                        default:
+                            signalType = customSignalType;
+                            lowPassON = false;
+                            lowPassCutoff = 5000;
+                            highPassON = false;
+                            highPassCutoff = 0;
+                            notchFilterState = notchOff;
+                            break;
+                    }
+         }
+        return self;
     }
 
     - (void)dealloc {

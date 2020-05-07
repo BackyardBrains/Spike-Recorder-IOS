@@ -138,23 +138,46 @@
             newBoard.inputDevicesSupportedByThisPlatform = [[supportedPlatforms lowercaseString] containsString:@"ios"];
             
             NSDictionary * filterJSON = [oneBoardJSON valueForKey:@"filter"];
+
+            newBoard.filterSettings.signalType = customSignalType;
             if(filterJSON)
             {
+                NSString * signalTypeJSON = [filterJSON valueForKey:@"signalType"];
                 
-            }
-            else
-            {
+                if(signalTypeJSON)
+                {
+                    NSArray *signalTypeValues = [NSArray arrayWithObjects:@"customSignalType", @"eegSignal", @"emgSignal", @"plantSignal", @"neuronSignal", @"ergSignal", @"eogSignal", @"ecgSignal", nil];
+                    
+                    for(int  i=0;i<[signalTypeValues count];i++)
+                    {
+                        if([signalTypeJSON containsString:[signalTypeValues objectAtIndex:i]])
+                        {
+                            newBoard.filterSettings.signalType = i;
+                            break;
+                        }
+                    }
+                }
                 
+                newBoard.filterSettings.lowPassON = [[filterJSON valueForKey:@"lowPassON"] boolValue];
+                newBoard.filterSettings.lowPassCutoff = [[filterJSON valueForKey:@"lowPassCutoff"] floatValue];
+                newBoard.filterSettings.highPassON = [[filterJSON valueForKey:@"highPassON"] boolValue];
+                newBoard.filterSettings.highPassCutoff = [[filterJSON valueForKey:@"highPassCutoff"] floatValue];
+                
+                
+                NSArray *notchFilterValues = [NSArray arrayWithObjects:@"notchOff", @"notch60Hz", @"notch50Hz", nil];
+                NSString * notchFilterStateJSON = [filterJSON valueForKey:@"notchFilterState"];
+                if(notchFilterStateJSON)
+                {
+                    for(int  i=0;i<[notchFilterValues count];i++)
+                    {
+                        if([notchFilterStateJSON containsString:[notchFilterValues objectAtIndex:i]])
+                        {
+                            newBoard.filterSettings.notchFilterState = i;
+                            break;
+                        }
+                    }
+                }
             }
-            newBoard.filterSettings.signalType
-            /*"filter":{
-                "signalType":"neuronSignal",
-                "lowPassON":1,
-                "lowPassCutoff":"2500.0",
-                "highPassON":1,
-                "highPassCutoff":"1.0"
-                "notchFilterState":"notch60Hz"
-            },*/
             
             //parse main channels
             NSMutableArray *allMainChannelsJSON = [oneBoardJSON valueForKey:@"channels"];
