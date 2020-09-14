@@ -245,6 +245,7 @@
 		85263661241ED2D7000755F6 /* Comic-Book-Bold-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 8526365D241ED2D7000755F6 /* Comic-Book-Bold-Italic.otf */; };
 		85263662241ED2D7000755F6 /* Comic-Book-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 8526365E241ED2D7000755F6 /* Comic-Book-Italic.otf */; };
 		85263665241FF1DD000755F6 /* SelectChannelColor.m in Sources */ = {isa = PBXBuildFile; fileRef = 85263664241FF1DD000755F6 /* SelectChannelColor.m */; };
+		85274D0D2464743D003561CE /* readme-config.txt in Resources */ = {isa = PBXBuildFile; fileRef = 85274D0C2464743D003561CE /* readme-config.txt */; };
 		852AB58A241BD4940010C846 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 852AB589241BD4940010C846 /* StoreKit.framework */; };
 		855CBE812332455F004E1BBA /* BBExperimentsTableViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 855CBE802332455F004E1BBA /* BBExperimentsTableViewController.mm */; };
 		855F6679235755E0008143FC /* ProductIds.plist in Resources */ = {isa = PBXBuildFile; fileRef = 855F6678235755E0008143FC /* ProductIds.plist */; };
@@ -734,6 +735,7 @@
 		8526365E241ED2D7000755F6 /* Comic-Book-Italic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Comic-Book-Italic.otf"; sourceTree = "<group>"; };
 		85263663241FF1DD000755F6 /* SelectChannelColor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SelectChannelColor.h; sourceTree = "<group>"; };
 		85263664241FF1DD000755F6 /* SelectChannelColor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SelectChannelColor.m; sourceTree = "<group>"; };
+		85274D0C2464743D003561CE /* readme-config.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "readme-config.txt"; sourceTree = "<group>"; };
 		852AB589241BD4940010C846 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		855CBE7F2332455F004E1BBA /* BBExperimentsTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BBExperimentsTableViewController.h; sourceTree = "<group>"; };
 		855CBE802332455F004E1BBA /* BBExperimentsTableViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BBExperimentsTableViewController.mm; sourceTree = "<group>"; };
@@ -1579,6 +1581,7 @@
 			isa = PBXGroup;
 			children = (
 				858FACF7246312E400EAC87A /* board-config.json */,
+				85274D0C2464743D003561CE /* readme-config.txt */,
 			);
 			path = config;
 			sourceTree = "<group>";
@@ -1841,6 +1844,7 @@
 				2418FEDC1A83F5D700662547 /* ThresholdImage.png in Resources */,
 				24DBA92A197709DF00AEDE86 /* FFTViewController.xib in Resources */,
 				247087C21A851774004C6B9B /* Icon-Small-40@2x.png in Resources */,
+				85274D0D2464743D003561CE /* readme-config.txt in Resources */,
 				1C3882C32018879400B0388B /* portrait-768-1024.png in Resources */,
 				2418FEBB1A83F5D700662547 /* bluetooth.png in Resources */,
 				247087C51A851774004C6B9B /* Icon-Small-50@2x.png in Resources */,

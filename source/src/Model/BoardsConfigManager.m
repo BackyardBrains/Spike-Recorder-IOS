@@ -290,15 +290,6 @@
                 }
             }
             
-            
-            
-            
-           /* @property FilterSettings* filterSettings;//default filter settings
-
-            @property int currentSampleRate;
-            @property int currentNumOfChannels;
-*/
-            
             [boardsConfig addObject:newBoard];
         }
     }

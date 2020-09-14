@@ -430,7 +430,7 @@ static BBAudioManager *bbAudioManager = nil;
 }
 
 #pragma mark - External accessory MFi
-
+//TODO: add type (name) of accessory that will be key for configuration. Remove sample rate and channel
 -(void) switchToExternalDeviceWithChannels:(int)numberOfChannels andSampleRate:(int) inSampleRate
 {
     [self stopAllInputOutput];
@@ -559,7 +559,6 @@ static BBAudioManager *bbAudioManager = nil;
     
     if(externalAccessoryOn)
     {
-        // Replace the input block with the old input block, where we just save an in-memory copy of the audio.
         [eaManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
          {
              if([eaManager shouldRestartDevice])

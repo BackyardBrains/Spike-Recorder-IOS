@@ -314,7 +314,7 @@
         <scene sceneID="7st-Eb-D4W">
             <objects>
                 <navigationController title="Experiments Navigation" id="skN-r6-F4d" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Settings" image="settings.png" id="bkf-gN-UUq"/>
+                    <tabBarItem key="tabBarItem" title="Experiments" image="settings.png" id="bkf-gN-UUq" userLabel="Experiments"/>
                     <navigationItem key="navigationItem" id="KGt-WG-R2E"/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="xhM-mG-8Z0">
