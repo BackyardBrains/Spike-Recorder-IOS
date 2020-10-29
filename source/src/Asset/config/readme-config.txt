@@ -19,7 +19,7 @@ This file explains structure of input device/board configuration JSON
         "bybProtocolVersion": "1.0",
 
         "maxSampleRate":"10000",
-        //maximal sample rate that device can produce at any configuration of channels. Some devices have lower sample rate when multiple channels are active
+        //maximal sample rate that device can produce at any configuration of channels. Some devices have lower sample rate when multiple channels are active 
 
         "maxNumberOfChannels":"2",
         "defaultTimeScale":"0.1",
