@@ -27,6 +27,7 @@
 // Adds a string to the end of a debug log.
 - (void)addDebugString:(NSString *)string
 {
+    NSLog(@"%@\n", string);
 #ifdef DEBUG_MFI
     [_debugString appendString:string];
 #endif
@@ -89,7 +90,6 @@
             break;
         }
     }
-
 }
 
 // Stream delegate handles events from both streams.

@@ -5,8 +5,8 @@
 
 #import "MyAppDelegate.h"
 #import "BBAudioFileReader.h"
-#import <Fabric/Fabric.h>
-#import <Crashlytics/Crashlytics.h>
+//#import <Fabric/Fabric.h>
+//#import <Crashlytics/Crashlytics.h>
 #import <ObjectiveDropboxOfficial/ObjectiveDropboxOfficial.h>
 
 
@@ -38,7 +38,7 @@ static DemoProtocol *demoProtocol;
 //
 - (void)launch
 {
-    [Fabric with:@[[Crashlytics class]]];
+    //[Fabric with:@[[Crashlytics class]]];
     
     tabBarController = (UITabBarController *)self.window.rootViewController;
     tabBarController.delegate = self;

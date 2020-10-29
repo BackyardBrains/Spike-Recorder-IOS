@@ -28,7 +28,6 @@
 - (bool)isConnected;
 - (id)initWithProtocol:(NSString *)protocol;
 - (void)queueTxData:(NSData *)data;
-
 - (void)addDebugString:(NSString *)string;
 - (void) setupProtocol;
 

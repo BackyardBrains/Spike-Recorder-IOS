@@ -573,6 +573,7 @@ static BBAudioManager *bbAudioManager = nil;
                  NSLog(@"/n/n ERROR in Input block %p", self);
                  return;
              }
+             
              [self additionalProcessingOfInputData:data forNumOfFrames:numFrames andNumChannels:numChannels];
              ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
              _preciseVirtualTimeNumOfFrames += numFrames;
@@ -1495,7 +1496,6 @@ static BBAudioManager *bbAudioManager = nil;
 
 - (float)fetchAudio:(float *)data numFrames:(UInt32)numFrames whichChannel:(UInt32)whichChannel stride:(UInt32)stride
 {
-    
     if(whichChannel>=_sourceNumberOfChannels)
     {
         return 0.0f;
@@ -1523,6 +1523,7 @@ static BBAudioManager *bbAudioManager = nil;
 
 - (float)fetchAudioForSelectedChannel:(float *)data numFrames:(UInt32)numFrames stride:(UInt32)stride
 {
+   
     return [self fetchAudio:data numFrames:numFrames whichChannel:_selectedChannel stride:stride];
     
 }

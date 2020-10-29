@@ -20,8 +20,6 @@
 		1C3FC2FC203EE99600C28680 /* FFTRecordingsViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1C3FC2FB203EE99600C28680 /* FFTRecordingsViewController.mm */; };
 		1C9850672036E3830076997B /* fft@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C9850652036E3810076997B /* fft@2x.png */; };
 		1C9850682036E3830076997B /* fft.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C9850662036E3810076997B /* fft.png */; };
-		1CBD16121E72E6DC00F59AEF /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CBD16101E72E6DC00F59AEF /* Crashlytics.framework */; };
-		1CBD16131E72E6DC00F59AEF /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CBD16111E72E6DC00F59AEF /* Fabric.framework */; };
 		1CD05B9A1CFCEB1E00A83727 /* libCorePlot-CocoaTouch.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CD05B991CFCEB1E00A83727 /* libCorePlot-CocoaTouch.a */; };
 		1CD05B9D1CFCFEF700A83727 /* BBFileDetailsTableViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1CD05B9C1CFCFEF700A83727 /* BBFileDetailsTableViewController.mm */; };
 		1CD05BA41CFD02EE00A83727 /* BBFileDetailsViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 1CD05BA21CFD02EE00A83727 /* BBFileDetailsViewCell.m */; };
@@ -320,8 +318,6 @@
 		1C3FC2FD203EE9B200C28680 /* FFTRecordingsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FFTRecordingsViewController.h; sourceTree = "<group>"; };
 		1C9850652036E3810076997B /* fft@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fft@2x.png"; sourceTree = "<group>"; };
 		1C9850662036E3810076997B /* fft.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fft.png; sourceTree = "<group>"; };
-		1CBD16101E72E6DC00F59AEF /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
-		1CBD16111E72E6DC00F59AEF /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
 		1CD05B991CFCEB1E00A83727 /* libCorePlot-CocoaTouch.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libCorePlot-CocoaTouch.a"; sourceTree = "<group>"; };
 		1CD05B9B1CFCFEF700A83727 /* BBFileDetailsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BBFileDetailsTableViewController.h; sourceTree = "<group>"; };
 		1CD05B9C1CFCFEF700A83727 /* BBFileDetailsTableViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BBFileDetailsTableViewController.mm; sourceTree = "<group>"; };
@@ -813,7 +809,6 @@
 				FADF26551596362F006C87BA /* UIKit.framework in Frameworks */,
 				FADF26571596362F006C87BA /* Foundation.framework in Frameworks */,
 				FADF26591596362F006C87BA /* CoreGraphics.framework in Frameworks */,
-				1CBD16121E72E6DC00F59AEF /* Crashlytics.framework in Frameworks */,
 				FADF265B1596362F006C87BA /* QuartzCore.framework in Frameworks */,
 				852AB58A241BD4940010C846 /* StoreKit.framework in Frameworks */,
 				FADF265D1596362F006C87BA /* OpenGLES.framework in Frameworks */,
@@ -822,7 +817,6 @@
 				FADF26651596362F006C87BA /* CoreMedia.framework in Frameworks */,
 				FADF26671596362F006C87BA /* CoreText.framework in Frameworks */,
 				1CD05B9A1CFCEB1E00A83727 /* libCorePlot-CocoaTouch.a in Frameworks */,
-				1CBD16131E72E6DC00F59AEF /* Fabric.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1621,8 +1615,6 @@
 			children = (
 				852AB589241BD4940010C846 /* StoreKit.framework */,
 				85CE23F12137DAB20035AEC8 /* ExternalAccessory.framework */,
-				1CBD16101E72E6DC00F59AEF /* Crashlytics.framework */,
-				1CBD16111E72E6DC00F59AEF /* Fabric.framework */,
 				2490D73A1A927C1B00E1D5E9 /* HealthKit.framework */,
 				2418FDA11A83F14700662547 /* libs */,
 				247ED9BD193DEC0800871BAC /* libz.dylib */,
@@ -1707,7 +1699,6 @@
 				FADF264C1596362F006C87BA /* Sources */,
 				FADF264D1596362F006C87BA /* Frameworks */,
 				FADF264E1596362F006C87BA /* Resources */,
-				1CBD16141E72E71400F59AEF /* ShellScript */,
 				1CB126581F86C91200247389 /* ShellScript */,
 				1CB1265F1F8BE20700247389 /* ShellScript */,
 				8586320423BF4F2100D6BC5A /* Embed Frameworks */,
@@ -1939,19 +1930,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "echo \"Target architectures: $ARCHS\"\n\nAPP_PATH=\"${TARGET_BUILD_DIR}/${WRAPPER_NAME}\"\n\nfind \"$APP_PATH\" -name '*.framework' -type d | while read -r FRAMEWORK\ndo\nFRAMEWORK_EXECUTABLE_NAME=$(defaults read \"$FRAMEWORK/Info.plist\" CFBundleExecutable)\nFRAMEWORK_EXECUTABLE_PATH=\"$FRAMEWORK/$FRAMEWORK_EXECUTABLE_NAME\"\necho \"Executable is $FRAMEWORK_EXECUTABLE_PATH\"\necho $(lipo -info \"$FRAMEWORK_EXECUTABLE_PATH\")\n\nFRAMEWORK_TMP_PATH=\"$FRAMEWORK_EXECUTABLE_PATH-tmp\"\n\n# remove simulator's archs if location is not simulator's directory\ncase \"${TARGET_BUILD_DIR}\" in\n*\"iphonesimulator\")\necho \"No need to remove archs\"\n;;\n*)\nif $(lipo \"$FRAMEWORK_EXECUTABLE_PATH\" -verify_arch \"i386\") ; then\nlipo -output \"$FRAMEWORK_TMP_PATH\" -remove \"i386\" \"$FRAMEWORK_EXECUTABLE_PATH\"\necho \"i386 architecture removed\"\nrm \"$FRAMEWORK_EXECUTABLE_PATH\"\nmv \"$FRAMEWORK_TMP_PATH\" \"$FRAMEWORK_EXECUTABLE_PATH\"\nfi\nif $(lipo \"$FRAMEWORK_EXECUTABLE_PATH\" -verify_arch \"x86_64\") ; then\nlipo -output \"$FRAMEWORK_TMP_PATH\" -remove \"x86_64\" \"$FRAMEWORK_EXECUTABLE_PATH\"\necho \"x86_64 architecture removed\"\nrm \"$FRAMEWORK_EXECUTABLE_PATH\"\nmv \"$FRAMEWORK_TMP_PATH\" \"$FRAMEWORK_EXECUTABLE_PATH\"\nfi\n;;\nesac\n\necho \"Completed for executable $FRAMEWORK_EXECUTABLE_PATH\"\necho $(lipo -info \"$FRAMEWORK_EXECUTABLE_PATH\")\n\ndone\n";
-		};
-		1CBD16141E72E71400F59AEF /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PROJECT_DIR}/Fabric.framework/run\" 03339903a5ebeb0ce572431bcfc3c9dd25e5b2cc 12af8aa46a61c6e8a0c88262775a28d224d8c0560648e612ae2c03218190e162\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
