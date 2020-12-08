@@ -37,13 +37,15 @@
                         "userFriendlyFullName":"EEG/ECG Channel 1",
                         "userFriendlyShortName":"EEG/ECG Ch. 1",
                         "activeByDefault":1,
-                        "filtered":1
+                        "filtered":1,
+                        "calibrationCoef":1.0
                     },
                     {
                         "userFriendlyFullName":"EEG/ECG Channel 2",
                         "userFriendlyShortName":"EEG/ECG Ch. 2",
                         "activeByDefault":0,
-                        "filtered":1
+                        "filtered":1,
+                        "calibrationCoef":1.0
                     }
                 ],
                 "expansionBoards":[
@@ -71,13 +73,15 @@
                                 "userFriendlyFullName":"EEG/ECG Channel 3",
                                 "userFriendlyShortName":"EEG/ECG Ch. 3",
                                 "activeByDefault":0,
-                                "filtered":1
+                                "filtered":1,
+                                "calibrationCoef":1.0
                             },
                             {
                                 "userFriendlyFullName":"EEG/ECG Channel 4",
                                 "userFriendlyShortName":"EEG/ECG Ch. 4",
                                 "activeByDefault":0,
-                                "filtered":0
+                                "filtered":0,
+                                "calibrationCoef":1.0
                             }
                         ]
                     },
@@ -98,7 +102,8 @@
                                 "userFriendlyFullName":"Hammer channel",
                                 "userFriendlyShortName":"Hammer ch.",
                                 "activeByDefault":1,
-                                "filtered":0
+                                "filtered":0,
+                                "calibrationCoef":1.0
                             }
                         ]
                     },
@@ -119,7 +124,8 @@
                                 "userFriendlyFullName":"Joystick EMG channel",
                                 "userFriendlyShortName":"Joystick EMG",
                                 "activeByDefault":1,
-                                "filtered":0
+                                "filtered":0,
+                                "calibrationCoef":1.0
                             }
                         ]
                     }
@@ -164,13 +170,15 @@
                         "userFriendlyFullName":"EMG Channel 1",
                         "userFriendlyShortName":"EMG Ch. 1",
                         "activeByDefault":1,
-                        "filtered":1
+                        "filtered":1,
+                        "calibrationCoef":1.0
                     },
                     {
                         "userFriendlyFullName":"EMG Channel 2",
                         "userFriendlyShortName":"EMG Ch. 2",
                         "activeByDefault":0,
-                        "filtered":1
+                        "filtered":1,
+                        "calibrationCoef":1.0
                     }
                 ],
                 "expansionBoards":[
@@ -198,13 +206,15 @@
                                 "userFriendlyFullName":"EMG Channel 3",
                                 "userFriendlyShortName":"EMG Ch. 3",
                                 "activeByDefault":1,
-                                "filtered":0
+                                "filtered":0,
+                                "calibrationCoef":1.0
                             },
                             {
                                 "userFriendlyFullName":"EMG Channel 4",
                                 "userFriendlyShortName":"EMG Ch. 4",
                                 "activeByDefault":0,
-                                "filtered":0
+                                "filtered":0,
+                                "calibrationCoef":1.0
                             }
                         ]
                     },
@@ -225,7 +235,8 @@
                                 "userFriendlyFullName":"Hammer channel",
                                 "userFriendlyShortName":"Hammer ch.",
                                 "activeByDefault":1,
-                                "filtered":0
+                                "filtered":0,
+                                "calibrationCoef":1.0
                             }
                         ]
                     },
@@ -246,7 +257,8 @@
                                 "userFriendlyFullName":"Joystick EMG channel",
                                 "userFriendlyShortName":"Joystick EMG",
                                 "activeByDefault":1,
-                                "filtered":0
+                                "filtered":0,
+                                "calibrationCoef":1.0
                             }
                         ]
                     }
@@ -291,13 +303,15 @@
                         "userFriendlyFullName":"Neuron Channel 1",
                         "userFriendlyShortName":"Neuron Ch. 1",
                         "activeByDefault":1,
-                        "filtered":1
+                        "filtered":1,
+                        "calibrationCoef":1.0
                     },
                     {
                         "userFriendlyFullName":"Neuron Channel 2",
                         "userFriendlyShortName":"Neuron Ch. 2",
                         "activeByDefault":0,
-                        "filtered":1
+                        "filtered":1,
+                        "calibrationCoef":1.0
                     }
                 ],
                 "expansionBoards":[
@@ -322,13 +336,15 @@
                                 "userFriendlyFullName":"Neuron Channel 3",
                                 "userFriendlyShortName":"Neuron Ch. 3",
                                 "activeByDefault":1,
-                                "filtered":0
+                                "filtered":0,
+                                "calibrationCoef":1.0
                             },
                             {
                                 "userFriendlyFullName":"Neuron Channel 4",
                                 "userFriendlyShortName":"Neuron Ch. 4",
                                 "activeByDefault":0,
-                                "filtered":0
+                                "filtered":0,
+                                "calibrationCoef":1.0
                             }
                         ]
                     },
@@ -349,7 +365,8 @@
                                 "userFriendlyFullName":"Hammer channel",
                                 "userFriendlyShortName":"Hammer ch.",
                                 "activeByDefault":1,
-                                "filtered":0
+                                "filtered":0,
+                                "calibrationCoef":1.0
                             }
                         ]
                     },
@@ -370,7 +387,8 @@
                                 "userFriendlyFullName":"Joystick EMG channel",
                                 "userFriendlyShortName":"Joystick EMG.",
                                 "activeByDefault":1,
-                                "filtered":0
+                                "filtered":0,
+                                "calibrationCoef":1.0
                             }
                         ]
                     }

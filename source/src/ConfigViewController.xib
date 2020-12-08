@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina6_1" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17126"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -47,12 +45,12 @@
                 </button>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1CP-hm-8gO" customClass="SelectFilterPresetView">
                     <rect key="frame" x="32" y="114" width="350" height="80"/>
+                    <viewLayoutGuide key="safeArea" id="kzt-C2-dXI"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="350" id="9aF-ep-xA2"/>
                         <constraint firstAttribute="height" constant="80" id="V50-53-9cq"/>
                     </constraints>
-                    <viewLayoutGuide key="safeArea" id="kzt-C2-dXI"/>
                 </view>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Set cutoff frequencies for filter" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wBc-b1-rUE">
                     <rect key="frame" x="70.5" y="194" width="273.5" height="22"/>
@@ -61,7 +59,7 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="43" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="f1i-rG-Z9J">
-                    <rect key="frame" x="299" y="255" width="100" height="30"/>
+                    <rect key="frame" x="299" y="255" width="100" height="34"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="100" id="1iw-nN-HC5"/>
                     </constraints>
@@ -70,7 +68,7 @@
                     <textInputTraits key="textInputTraits" keyboardType="decimalPad"/>
                 </textField>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PW8-Dg-OsW" customClass="NMRangeSlider">
-                    <rect key="frame" x="15" y="287" width="384" height="45"/>
+                    <rect key="frame" x="15" y="291" width="384" height="45"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <color key="tintColor" red="1" green="0.64876736219999998" blue="0.27073673190000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                     <constraints>
@@ -81,7 +79,7 @@
                     </connections>
                 </view>
                 <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="67" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="SJl-2v-Rqe">
-                    <rect key="frame" x="15" y="255" width="100" height="30"/>
+                    <rect key="frame" x="15" y="255" width="100" height="34"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="100" id="BVT-ye-dz0"/>
                     </constraints>
@@ -102,7 +100,7 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="dcp-6q-oGZ">
-                    <rect key="frame" x="98" y="346" width="218" height="29"/>
+                    <rect key="frame" x="90.5" y="350" width="233" height="32"/>
                     <segments>
                         <segment title="No Notch"/>
                         <segment title="50 Hz"/>
@@ -111,11 +109,12 @@
                     <color key="tintColor" red="1" green="0.57637232540000005" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                 </segmentedControl>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="wWI-VZ-bVH">
-                    <rect key="frame" x="10" y="394" width="404" height="468"/>
-                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <rect key="frame" x="10" y="401" width="404" height="461"/>
                     <viewLayoutGuide key="safeArea" id="VoC-tE-PFk"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                 </tableView>
             </subviews>
+            <viewLayoutGuide key="safeArea" id="Q5M-cg-NOt"/>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="wBc-b1-rUE" firstAttribute="top" secondItem="1CP-hm-8gO" secondAttribute="bottom" id="293-p1-kre"/>
@@ -143,7 +142,6 @@
                 <constraint firstItem="wWI-VZ-bVH" firstAttribute="bottom" secondItem="Q5M-cg-NOt" secondAttribute="bottom" id="xFP-kp-lsz"/>
                 <constraint firstItem="uQT-hK-Oy4" firstAttribute="top" secondItem="Q5M-cg-NOt" secondAttribute="top" constant="15" id="zEw-qV-1W6"/>
             </constraints>
-            <viewLayoutGuide key="safeArea" id="Q5M-cg-NOt"/>
             <point key="canvasLocation" x="47.826086956521742" y="37.5"/>
         </view>
     </objects>

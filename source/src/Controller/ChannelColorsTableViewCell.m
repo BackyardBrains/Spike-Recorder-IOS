@@ -10,11 +10,13 @@
 
 @implementation ChannelColorsTableViewCell
 @synthesize colorChooser;
+@synthesize channelConfig;
 - (void)awakeFromNib {
     [super awakeFromNib];
     // Initialization code
-    
-    colorChooser.nameLabel.text = @"test";
+    [colorChooser initMainUIElements];
+    colorChooser.delegate = self;
+    //colorChooser.nameLabel.text = @"test";
 }
 
 - (void)layoutSubviews {
@@ -28,8 +30,17 @@
     // Configure the view for the selected state
 }
 
+-(void) setToColorIndex:(int) newColorIndex
+{
+    colorChooser.selectedColorIndex = newColorIndex;
+}
+-(void) channelColorChanged
+{
+    [self.colorDelegate channelColorChanged:channelConfig cell:self];
+}
 - (void)dealloc {
     [colorChooser release];
+    [channelConfig release];
     [super dealloc];
 }
 @end

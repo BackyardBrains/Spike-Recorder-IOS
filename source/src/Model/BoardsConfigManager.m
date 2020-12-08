@@ -47,10 +47,7 @@
         NSLog(@"ERROR: JSON board config is not formated correctly: %@",[error userInfo]);
 
     }
-    
-    // the originating poster wants to deal with dictionaries;
-    // assuming you do too then something like this is the first
-    // validation step:
+
     if([object isKindOfClass:[NSDictionary class]])
     {
         NSDictionary *results = object;
@@ -281,6 +278,7 @@
                             newChannel.userFriendlyShortName = [oneChannelJSON valueForKey:@"userFriendlyShortName"];
                             newChannel.activeByDefault = [[oneChannelJSON valueForKey:@"activeByDefault"] boolValue];
                             newChannel.filtered = [[oneChannelJSON valueForKey:@"filtered"] boolValue];
+                            newChannel.calibrationCoef = [[oneChannelJSON valueForKey:@"calibrationCoef"] floatValue];
                             
                             [newExpansionBoard.channels addObject:newChannel];
                         }

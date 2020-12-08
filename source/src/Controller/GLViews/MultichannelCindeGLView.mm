@@ -346,7 +346,7 @@
             
             //override settings if it is not app startup. Use from BBAudioManager
             //made so that threshold and real time screen can share vertical scale
-            if(!([[BBAudioManager bbAudioManager] maxVoltageVisible]<0))
+            if([[BBAudioManager bbAudioManager] maxVoltageVisible]!=MAX_VOLTAGE_NOT_SET)
             {
                 numVoltsVisible[i] = [[BBAudioManager bbAudioManager] maxVoltageVisible];
             }
@@ -374,7 +374,7 @@
             numVoltsVisible[i] = [[defaults valueForKey:@"numVoltsVisible"] floatValue];
             //override settings if it is not app startup. Use from BBAudioManager
             //made so that threshold and real time screen can share vertical scale
-            if(!([[BBAudioManager bbAudioManager] maxVoltageVisible]<0))
+            if([[BBAudioManager bbAudioManager] maxVoltageVisible]!=MAX_VOLTAGE_NOT_SET)
             {
                 numVoltsVisible[i] = [[BBAudioManager bbAudioManager] maxVoltageVisible];
             }

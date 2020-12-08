@@ -18,9 +18,10 @@
 #import "NVLowpassFilter.h"
 #import "NVNotchFilter.h"
 #import "DemoProtocol.h"
+#import "InputDevice.h"
+#import "ChannelConfig.h"
 
 #define RESETUP_SCREEN_NOTIFICATION @"resetupScreenNotification"
-#define FILTER_PARAMETERS_CHANGED @"filterParametersChanged"
 #define MAX_NUMBER_OF_FFT_SEC 6.0f
 
 #define AM_CARRIER_FREQUENCY 5000.0
@@ -34,6 +35,8 @@
 
 #define FILTER_LP_OFF 10000000
 #define FILTER_HP_OFF 0
+
+#define MAX_VOLTAGE_NOT_SET -1
 
 @class BBFile;
 
@@ -56,8 +59,8 @@
     NVHighpassFilter * HPFilter;
     NVLowpassFilter * LPFilter;
     NVNotchFilter * NotchFilter;
-    BOOL notchIsOn;
-    
+    BOOL notch50HzIsOn;
+    BOOL notch60HzIsOn;
     
     NVNotchFilter * amDetectionNotchFilter;
     NVLowpassFilter * amDetectionLPFilter;
@@ -119,11 +122,17 @@
 @property (readonly) BOOL rtSpikeSorting;
 @property BOOL seeking;
 @property BOOL amDemodulationIsON;
-
+@property NSMutableArray* availableInputDevices;
 @property int currentFilterSettings;
 
 -(int) getLPFilterCutoff;
--(int) getHPFilterCutoff; 
+-(int) getHPFilterCutoff;
+-(BOOL) isNotchON;
+-(BOOL) is60HzNotchON;
+-(BOOL) is50HzNotchON;
+-(void) turnON60HzNotch;
+-(void) turnON50HzNotch;
+-(void) turnOFFNotchFilters;
 
 + (BBAudioManager *) bbAudioManager;
 -(void) quitAllFunctions;
@@ -156,7 +165,16 @@
 
 -(void) setSeekTime:(float) newTime;
 
-
+//Input device connect/disconnect
+-(int) indexOfCurrentlyActiveDevice;
+-(InputDevice*) currentlyActiveInputDevice;
+-(NSArray* ) currentlyAvailableInputChannels;
+-(BOOL) activateFirstInstanceOfInputDeviceWithUniqueName:(NSString *) uniqueName;
+-(void) addNewInputDevice:(InputDevice *) newInputDevice;
+-(void) removeInputDevice:(InputDevice *) inputDeviceToRemove;
+-(void) deactivateInputDevice:(InputDevice *) inputDeviceToDeactivate;
+-(BOOL) activateChannelWithConfig:(ChannelConfig *) channelConfigToActivate;
+-(BOOL) deactivateChannelWithConfig:(ChannelConfig *) channelConfigToDeactivate;
 
 //Bluetooth
 -(void) switchToBluetoothWithChannels:(int) channelConfiguration andSampleRate:(int) inSampleRate;
@@ -202,8 +220,6 @@
 @property (readonly) BOOL heartBeatPresent;
 
 @property float maxVoltageVisible;
-
--(void) setFilterSettings:(int) newFilterSettings;
 
 -(void) setFilterLPCutoff:(int) newLPCuttof hpCutoff:(int)newHPCutoff;
 

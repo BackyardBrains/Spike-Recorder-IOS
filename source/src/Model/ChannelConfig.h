@@ -14,7 +14,10 @@ NS_ASSUME_NONNULL_BEGIN
     @property (nonatomic, copy) NSString* userFriendlyFullName;
     @property (nonatomic, copy) NSString* userFriendlyShortName;
     @property bool activeByDefault;
+    @property bool currentlyActive;
     @property bool filtered;
+    @property NSInteger colorIndex;
+    @property float calibrationCoef;
 @end
 
 NS_ASSUME_NONNULL_END

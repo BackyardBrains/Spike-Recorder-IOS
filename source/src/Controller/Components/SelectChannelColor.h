@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
-
+@protocol SelectChannelColorViewDelegate;
 @interface SelectChannelColor : UIView
 {
     NSMutableArray * _buttons;
@@ -18,7 +18,12 @@ NS_ASSUME_NONNULL_BEGIN
 }
 @property int selectedColorIndex;
 @property UILabel *nameLabel;
+@property (nonatomic, assign) id <SelectChannelColorViewDelegate> delegate;
+-(void) initMainUIElements;
+@end
 
+@protocol SelectChannelColorViewDelegate <NSObject>
+        -(void) channelColorChanged;
 @end
 
 NS_ASSUME_NONNULL_END

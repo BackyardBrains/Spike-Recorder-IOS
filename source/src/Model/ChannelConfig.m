@@ -9,10 +9,14 @@
 #import "ChannelConfig.h"
 
 @implementation ChannelConfig
+@synthesize colorIndex;
+@synthesize calibrationCoef;
+@synthesize currentlyActive;
 - (id)init {
     if ((self = [super init])) {
-        
-        
+        colorIndex = 1;
+        calibrationCoef = 1.0;
+        currentlyActive = NO;
     }
     
     return self;

@@ -30,8 +30,6 @@
 		1CD05BAA1CFD398400A83727 /* BBCommentDetailsCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1CD05BA81CFD398400A83727 /* BBCommentDetailsCell.xib */; };
 		1CE5E02A1F742E730016E7D9 /* configIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CE5E0281F742E730016E7D9 /* configIcon.png */; };
 		1CE5E02B1F742E730016E7D9 /* configIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CE5E0291F742E730016E7D9 /* configIcon@2x.png */; };
-		1CE5E0361F7453080016E7D9 /* ChooseFilterTypeViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1CE5E0341F7453080016E7D9 /* ChooseFilterTypeViewController.mm */; };
-		1CE5E0371F7453080016E7D9 /* ChooseFilterTypeViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1CE5E0351F7453080016E7D9 /* ChooseFilterTypeViewController.xib */; };
 		1CF7DB2E1F7988DF008F303E /* slider-default7-handle.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CF7DB111F7988DF008F303E /* slider-default7-handle.png */; };
 		1CF7DB2F1F7988DF008F303E /* slider-default7-handle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CF7DB121F7988DF008F303E /* slider-default7-handle@2x.png */; };
 		1CF7DB301F7988DF008F303E /* slider-default7-track.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CF7DB131F7988DF008F303E /* slider-default7-track.png */; };
@@ -112,7 +110,6 @@
 		2418FF171A83F79200662547 /* WavManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FF0E1A83F79200662547 /* WavManager.mm */; };
 		2418FF321A83FD3700662547 /* DCMDExperimentViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FF1E1A83FD3700662547 /* DCMDExperimentViewController.mm */; };
 		2418FF341A83FD3700662547 /* FFTViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FF221A83FD3700662547 /* FFTViewController.mm */; };
-		2418FF351A83FD3700662547 /* FilterSettingsViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FF241A83FD3700662547 /* FilterSettingsViewController.mm */; };
 		2418FF361A83FD3700662547 /* MyAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FF261A83FD3700662547 /* MyAppDelegate.mm */; };
 		2418FF371A83FD3700662547 /* PlaybackViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FF281A83FD3700662547 /* PlaybackViewController.mm */; };
 		2418FF381A83FD3700662547 /* SpikesAnalysisViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FF2A1A83FD3700662547 /* SpikesAnalysisViewController.mm */; };
@@ -231,7 +228,6 @@
 		24D697BA1A6FF3EB00108D78 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 24D697B91A6FF3EB00108D78 /* Images.xcassets */; };
 		24DBA92A197709DF00AEDE86 /* FFTViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 24DBA928197709DF00AEDE86 /* FFTViewController.xib */; };
 		24E1430D1B61407B00DA32B9 /* Log.m in Sources */ = {isa = PBXBuildFile; fileRef = 24E1430C1B61407B00DA32B9 /* Log.m */; };
-		24E6D8A91A011EE0006C8CED /* FilterSettingsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 24E6D8A71A011EE0006C8CED /* FilterSettingsViewController.xib */; };
 		24EBC1AE1997852D001D3392 /* TrialsDCMDTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 24EBC1AC1997852D001D3392 /* TrialsDCMDTableViewController.xib */; };
 		24EBC1B31997DD21001D3392 /* TrialActionsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 24EBC1B11997DD21001D3392 /* TrialActionsViewController.xib */; };
 		850258BF245C8ABC006F9927 /* close.png in Resources */ = {isa = PBXBuildFile; fileRef = 850258BD245C8ABC006F9927 /* close.png */; };
@@ -266,6 +262,7 @@
 		858FACF52463106300EAC87A /* ChannelConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 858FACF42463106300EAC87A /* ChannelConfig.m */; };
 		858FACF8246312E400EAC87A /* board-config.json in Resources */ = {isa = PBXBuildFile; fileRef = 858FACF7246312E400EAC87A /* board-config.json */; };
 		858FACFB2463137B00EAC87A /* BoardsConfigManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 858FACFA2463137B00EAC87A /* BoardsConfigManager.m */; };
+		8592F48225533793006DCAA0 /* InputDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 8592F48125533793006DCAA0 /* InputDevice.m */; };
 		85CE23EF2137DA650035AEC8 /* DemoAccessory.mm in Sources */ = {isa = PBXBuildFile; fileRef = 85CE23EC2137DA640035AEC8 /* DemoAccessory.mm */; };
 		85CE23F02137DA650035AEC8 /* DemoProtocol.mm in Sources */ = {isa = PBXBuildFile; fileRef = 85CE23EE2137DA640035AEC8 /* DemoProtocol.mm */; };
 		85CE23F22137DAB20035AEC8 /* ExternalAccessory.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85CE23F12137DAB20035AEC8 /* ExternalAccessory.framework */; };
@@ -333,9 +330,6 @@
 		1CD05BA81CFD398400A83727 /* BBCommentDetailsCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BBCommentDetailsCell.xib; sourceTree = "<group>"; };
 		1CE5E0281F742E730016E7D9 /* configIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = configIcon.png; sourceTree = "<group>"; };
 		1CE5E0291F742E730016E7D9 /* configIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "configIcon@2x.png"; sourceTree = "<group>"; };
-		1CE5E0331F7453080016E7D9 /* ChooseFilterTypeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChooseFilterTypeViewController.h; sourceTree = "<group>"; };
-		1CE5E0341F7453080016E7D9 /* ChooseFilterTypeViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ChooseFilterTypeViewController.mm; sourceTree = "<group>"; };
-		1CE5E0351F7453080016E7D9 /* ChooseFilterTypeViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ChooseFilterTypeViewController.xib; path = Controller/ChooseFilterTypeViewController.xib; sourceTree = "<group>"; };
 		1CF7DB111F7988DF008F303E /* slider-default7-handle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "slider-default7-handle.png"; sourceTree = "<group>"; };
 		1CF7DB121F7988DF008F303E /* slider-default7-handle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "slider-default7-handle@2x.png"; sourceTree = "<group>"; };
 		1CF7DB131F7988DF008F303E /* slider-default7-track.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "slider-default7-track.png"; sourceTree = "<group>"; };
@@ -600,8 +594,6 @@
 		2418FF1E1A83FD3700662547 /* DCMDExperimentViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DCMDExperimentViewController.mm; sourceTree = "<group>"; };
 		2418FF211A83FD3700662547 /* FFTViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFTViewController.h; sourceTree = "<group>"; };
 		2418FF221A83FD3700662547 /* FFTViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FFTViewController.mm; sourceTree = "<group>"; };
-		2418FF231A83FD3700662547 /* FilterSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FilterSettingsViewController.h; sourceTree = "<group>"; };
-		2418FF241A83FD3700662547 /* FilterSettingsViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FilterSettingsViewController.mm; sourceTree = "<group>"; };
 		2418FF251A83FD3700662547 /* MyAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyAppDelegate.h; sourceTree = "<group>"; };
 		2418FF261A83FD3700662547 /* MyAppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MyAppDelegate.mm; sourceTree = "<group>"; };
 		2418FF271A83FD3700662547 /* PlaybackViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaybackViewController.h; sourceTree = "<group>"; };
@@ -716,7 +708,6 @@
 		24DBA928197709DF00AEDE86 /* FFTViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FFTViewController.xib; sourceTree = "<group>"; };
 		24E1430B1B61407B00DA32B9 /* Log.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Log.h; sourceTree = "<group>"; };
 		24E1430C1B61407B00DA32B9 /* Log.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Log.m; sourceTree = "<group>"; };
-		24E6D8A71A011EE0006C8CED /* FilterSettingsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FilterSettingsViewController.xib; sourceTree = "<group>"; };
 		24EBC1AC1997852D001D3392 /* TrialsDCMDTableViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TrialsDCMDTableViewController.xib; sourceTree = "<group>"; };
 		24EBC1B11997DD21001D3392 /* TrialActionsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TrialActionsViewController.xib; sourceTree = "<group>"; };
 		850258BD245C8ABC006F9927 /* close.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = close.png; sourceTree = "<group>"; };
@@ -763,6 +754,8 @@
 		858FACF7246312E400EAC87A /* board-config.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "board-config.json"; sourceTree = "<group>"; };
 		858FACF92463137B00EAC87A /* BoardsConfigManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BoardsConfigManager.h; sourceTree = "<group>"; };
 		858FACFA2463137B00EAC87A /* BoardsConfigManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BoardsConfigManager.m; sourceTree = "<group>"; };
+		8592F48025533793006DCAA0 /* InputDevice.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = InputDevice.h; sourceTree = "<group>"; };
+		8592F48125533793006DCAA0 /* InputDevice.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = InputDevice.m; sourceTree = "<group>"; };
 		85CE23EB2137DA640035AEC8 /* DemoAccessory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoAccessory.h; sourceTree = "<group>"; };
 		85CE23EC2137DA640035AEC8 /* DemoAccessory.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DemoAccessory.mm; sourceTree = "<group>"; };
 		85CE23ED2137DA640035AEC8 /* DemoProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoProtocol.h; sourceTree = "<group>"; };
@@ -1383,6 +1376,8 @@
 				858FACF42463106300EAC87A /* ChannelConfig.m */,
 				858FACF92463137B00EAC87A /* BoardsConfigManager.h */,
 				858FACFA2463137B00EAC87A /* BoardsConfigManager.m */,
+				8592F48025533793006DCAA0 /* InputDevice.h */,
+				8592F48125533793006DCAA0 /* InputDevice.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1430,8 +1425,6 @@
 				2418FF221A83FD3700662547 /* FFTViewController.mm */,
 				1C3FC2FD203EE9B200C28680 /* FFTRecordingsViewController.h */,
 				1C3FC2FB203EE99600C28680 /* FFTRecordingsViewController.mm */,
-				2418FF231A83FD3700662547 /* FilterSettingsViewController.h */,
-				2418FF241A83FD3700662547 /* FilterSettingsViewController.mm */,
 				2418FF251A83FD3700662547 /* MyAppDelegate.h */,
 				2418FF261A83FD3700662547 /* MyAppDelegate.mm */,
 				2418FF271A83FD3700662547 /* PlaybackViewController.h */,
@@ -1442,8 +1435,6 @@
 				2418FF2E1A83FD3700662547 /* ThresholdViewController.mm */,
 				2418FF2F1A83FD3700662547 /* ViewAndRecordViewController.h */,
 				2418FF301A83FD3700662547 /* ViewAndRecordViewController.mm */,
-				1CE5E0331F7453080016E7D9 /* ChooseFilterTypeViewController.h */,
-				1CE5E0341F7453080016E7D9 /* ChooseFilterTypeViewController.mm */,
 				8580C84C241E72660033BF2E /* ConfigViewController.h */,
 				8580C84D241E72660033BF2E /* ConfigViewController.mm */,
 				8569F7922421566900EA9990 /* ChannelColorsTableViewCell.h */,
@@ -1687,8 +1678,6 @@
 				1CD05BA81CFD398400A83727 /* BBCommentDetailsCell.xib */,
 				1CD05BA31CFD02EE00A83727 /* BBFileDetailsViewCell.xib */,
 				24DBA928197709DF00AEDE86 /* FFTViewController.xib */,
-				1CE5E0351F7453080016E7D9 /* ChooseFilterTypeViewController.xib */,
-				24E6D8A71A011EE0006C8CED /* FilterSettingsViewController.xib */,
 				FA905A4B15AA8CF00013688B /* BBFileTableCell.xib */,
 				8580C84E241E72660033BF2E /* ConfigViewController.xib */,
 				1C3882F5201B58D500B0388B /* MainStoryboard.storyboard */,
@@ -1826,7 +1815,6 @@
 				2418FFD31A8406A600662547 /* Screenshot@2x.png in Resources */,
 				247087BB1A851774004C6B9B /* Icon-60@2x.png in Resources */,
 				2418FEC41A83F5D700662547 /* ecg@2x.png in Resources */,
-				24E6D8A91A011EE0006C8CED /* FilterSettingsViewController.xib in Resources */,
 				FA9A665B15BB19B000CF1697 /* SettingsDefaults.plist in Resources */,
 				1CF7DB341F7988DF008F303E /* slider-default7-trackCrossedOver.png in Resources */,
 				2418FE5F1A83F4C600662547 /* beep.wav in Resources */,
@@ -1836,7 +1824,6 @@
 				2418FEBC1A83F5D700662547 /* bluetooth@2x.png in Resources */,
 				1CF7DB331F7988DF008F303E /* slider-default7-trackBackground@2x.png in Resources */,
 				1C9850672036E3830076997B /* fft@2x.png in Resources */,
-				1CE5E0371F7453080016E7D9 /* ChooseFilterTypeViewController.xib in Resources */,
 				2418FFD11A8406A600662547 /* Screenshot-750x1334.png in Resources */,
 				85263661241ED2D7000755F6 /* Comic-Book-Bold-Italic.otf in Resources */,
 				2418FEBF1A83F5D700662547 /* checkmark.png in Resources */,
@@ -2029,7 +2016,6 @@
 				2470878A1A85104D004C6B9B /* NSString-NumberStuff.m in Sources */,
 				2470878C1A85104D004C6B9B /* NSString-SQLiteColumnName.m in Sources */,
 				2470878E1A85104D004C6B9B /* NSString-SQLitePersistence.m in Sources */,
-				1CE5E0361F7453080016E7D9 /* ChooseFilterTypeViewController.mm in Sources */,
 				247087901A85104D004C6B9B /* NSString-UppercaseFirst.m in Sources */,
 				247087921A85104D004C6B9B /* SQLiteInstanceManager.m in Sources */,
 				247087941A85104D004C6B9B /* SQLitePersistentObject.m in Sources */,
@@ -2040,6 +2026,7 @@
 				2470875F1A85102F004C6B9B /* NVBandpassFilter.m in Sources */,
 				247087611A85102F004C6B9B /* NVBandpassQPeakGainFilter.m in Sources */,
 				247087781A851044004C6B9B /* MBProgressHUD.m in Sources */,
+				8592F48225533793006DCAA0 /* InputDevice.m in Sources */,
 				247087631A85102F004C6B9B /* NVHighpassFilter.m in Sources */,
 				241C8AF41B31EEEA00CEFCEE /* tinyxml2.mm in Sources */,
 				247087721A85103D004C6B9B /* FPPopoverController.m in Sources */,
@@ -2064,7 +2051,6 @@
 				2418FF0F1A83F79200662547 /* BBAnalysisManager.mm in Sources */,
 				2418FF821A83FDD500662547 /* TrialActionsViewController.mm in Sources */,
 				2418FF5C1A83FDA100662547 /* ColumnHeaderCollectionViewCell.m in Sources */,
-				2418FF351A83FD3700662547 /* FilterSettingsViewController.mm in Sources */,
 				2418FF5B1A83FDA100662547 /* AverageSpikeGraphViewController.mm in Sources */,
 				2418FF161A83F79200662547 /* DSPThreshold.mm in Sources */,
 				2418FF3B1A83FD3700662547 /* ViewAndRecordViewController.mm in Sources */,

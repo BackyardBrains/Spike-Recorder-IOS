@@ -363,6 +363,7 @@
 
 -(void) setVisibilityForConfigButton:(BOOL) setVisible
 {
+    setVisible = YES;
     self.configButton.hidden = !setVisible;
     //self.configButton.hidden = NO;
     int filterSettings = [[BBAudioManager bbAudioManager] currentFilterSettings];
@@ -379,7 +380,7 @@
 
 - (IBAction)configButtonPressed:(id)sender {
     
-/*
+
     if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
     {
         ConfigViewController *controller = [[ConfigViewController alloc] initWithNibName:@"ConfigViewController" bundle:nil];
@@ -405,43 +406,7 @@
         ConfigViewController *controller = [[ConfigViewController alloc] initWithNibName:@"ConfigViewController" bundle:nil];
         controller.masterDelegate = self;
         [self presentViewController:controller animated:YES completion:nil];
-    }
-    
- 
-    */
-    
-    
-   
-    // grab the view controller we want to show
-    ChooseFilterTypeViewController *controller = [[ChooseFilterTypeViewController alloc] initWithNibName:@"ChooseFilterTypeViewController" bundle:nil];
-    // present the controller
-    // on iPad, this will be a Popover
-    // on iPhone, this will be an action sheet
-    controller.modalPresentationStyle = UIModalPresentationPopover;
-    controller.preferredContentSize = CGSizeMake(200, 275);
-    controller.delegate = self;
-    
-    // configure the Popover presentation controller
-    popController = [controller popoverPresentationController];
-    popController.backgroundColor = [UIColor whiteColor];
-    popController.delegate = self;
-    
-    popController.sourceView = self.configButton;
-    if (UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation) && (!( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )))
-    {
-        popController.permittedArrowDirections = UIPopoverArrowDirectionLeft;
-        
-        popController.sourceRect =  CGRectMake(self.configButton.bounds.origin.x, 0, configButton.bounds.size.width, configButton.bounds.size.height);
-    }
-    else
-    {
-        popController.permittedArrowDirections = UIPopoverArrowDirectionUp;
-        popController.sourceRect =  CGRectMake(self.configButton.bounds.origin.x, self.configButton.bounds.origin.y, configButton.bounds.size.width, configButton.bounds.size.height);
-    }
-    
-    // in case we don't have a bar button as reference
-    [self presentViewController:controller animated:YES completion:nil];
-    
+    }  
 }
 
 
@@ -485,41 +450,6 @@
  return UIModalPresentationNone;
 }
 
-- (void)endSelectionOfFilters:(int) filterType
-{
-    [self dismissViewControllerAnimated:YES completion:^void () {
-        if(filterType == FILTER_SETTINGS_CUSTOM)
-        {
-            if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-            {
-                FilterSettingsViewController *controller = [[FilterSettingsViewController alloc] initWithNibName:@"FilterSettingsViewController" bundle:nil];
-                controller.masterDelegate = self;
-                controller.modalPresentationStyle = UIModalPresentationPopover;
-                controller.preferredContentSize = CGSizeMake(600, 250);
-                controller.masterDelegate = self;
-                
-                // configure the Popover presentation controller
-                 popControllerIpad = [controller popoverPresentationController];
-                
-                popControllerIpad.delegate = self;
-                popControllerIpad.permittedArrowDirections = 0;
-                CGRect sourceRect = CGRectZero;
-                sourceRect.origin.x = CGRectGetMidX(self.view.bounds)-self.view.frame.origin.x/2.0;
-                sourceRect.origin.y = CGRectGetMidY(self.view.bounds)-self.view.frame.origin.y/2.0;
-                popControllerIpad.sourceRect =  sourceRect;
-                popControllerIpad.sourceView = self.view;
-                [self presentViewController:controller animated:YES completion:nil];
-                
-            }
-            else
-            {
-                   FilterSettingsViewController *controller = [[FilterSettingsViewController alloc] initWithNibName:@"FilterSettingsViewController" bundle:nil];
-                    controller.masterDelegate = self;
-                    [self presentViewController:controller animated:YES completion:nil];
-            }
-        }
-    }];
-}
 
 //
 // Used for custom filter view

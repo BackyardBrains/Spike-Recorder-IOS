@@ -17,14 +17,26 @@
 @synthesize nameLabel;
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.
+- (id)init {
+    if ((self = [super initWithFrame:[[UIScreen mainScreen] bounds]])) {
+        
+    }
+    return self;
+}
+
+-(void) initMainUIElements
+{
+    nameLabel = [[UILabel alloc] init];
+}
+
 - (void)drawRect:(CGRect)rect
 {
     _buttons = [[NSMutableArray alloc] initWithCapacity:0];
     for (int buttonIndex=0;buttonIndex<NUMBER_OF_BUTTONS;buttonIndex++)
     {
-        
-        nameLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, rect.size.width, 20)];
-        nameLabel.text = @"Channel name (this can be longer)";
+        nameLabel.frame = CGRectMake(0, 0, rect.size.width, 20);
+        //nameLabel = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, rect.size.width, 20)];
+        //nameLabel.text = @"Channel name (this can be longer)";
         nameLabel.font = [UIFont fontWithName:@"ComicBook-BoldItalic" size:16.0f]; //custom font
         nameLabel.numberOfLines = 1;
         nameLabel.baselineAdjustment = YES;
@@ -56,7 +68,7 @@
         [self addSubview:button];
  
     }
-    _selectedColorIndex = 0;
+    //_selectedColorIndex = 0;
     [self drawMarkOnButtonForIndex:_selectedColorIndex];
     
 }
@@ -65,7 +77,7 @@
 {
     _selectedColorIndex = ((UIButton*)sender).tag;
     [self drawMarkOnButtonForIndex:_selectedColorIndex];
-    //[self.delegate endSelectionOfFilterPreset:self.selectedType];
+    [self.delegate channelColorChanged];
 }
 
 -(void) drawMarkOnButtonForIndex:(int) indexOfButton
@@ -99,30 +111,33 @@
 //Change color of spike marks according to index
 -(UIColor *) setColorWithIndex:(int) iindex transparency:(float) transp
 {
-    iindex = iindex%7;
-    switch (iindex) {
-        case 0:
-            return [UIColor blackColor];
-            break;
-        case 1:
-            return [UIColor colorWithRed:0.45882352941f green:0.98039215686f blue:0.32156862745f alpha:transp];
-            break;
-        case 2:
-            return [UIColor colorWithRed:0.92156862745f green:0.2f blue:0.26666666666f alpha:transp];
-            break;
-        case 3:
-             return [UIColor colorWithRed:0.90588235294f green:0.98039215686f blue:0.45882352941f alpha:transp];
-            break;
-        case 4:
-            return [UIColor colorWithRed:0.94509803921f green:0.56470588235f blue:0.39607843137f alpha:transp];
-            break;
-        case 5:
-            return [UIColor colorWithRed:0.55294117647f green:0.89803921568f blue:0.47843137254f alpha:transp];
-            break;
-        case 6:
-            return [UIColor colorWithRed:0.3294117647f green:0.73725490196f blue:0.77647058823f alpha:transp];
-            break;
+    if(iindex==0)
+    {
+        return [UIColor blackColor];
     }
-    return [UIColor blackColor];
+    else
+    {
+        iindex = iindex%6;
+        switch (iindex) {
+            case 1:
+                return [UIColor colorWithRed:0.45882352941f green:0.98039215686f blue:0.32156862745f alpha:transp];
+                break;
+            case 2:
+                return [UIColor colorWithRed:0.92156862745f green:0.2f blue:0.26666666666f alpha:transp];
+                break;
+            case 3:
+                 return [UIColor colorWithRed:0.90588235294f green:0.98039215686f blue:0.45882352941f alpha:transp];
+                break;
+            case 4:
+                return [UIColor colorWithRed:0.94509803921f green:0.56470588235f blue:0.39607843137f alpha:transp];
+                break;
+            case 5:
+                return [UIColor colorWithRed:0.55294117647f green:0.89803921568f blue:0.47843137254f alpha:transp];
+                break;
+            default:
+                return [UIColor colorWithRed:0.3294117647f green:0.73725490196f blue:0.77647058823f alpha:transp];
+                break;
+        }
+    }
 }
 @end

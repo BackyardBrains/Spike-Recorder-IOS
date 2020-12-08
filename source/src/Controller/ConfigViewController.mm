@@ -7,8 +7,13 @@
 //
 
 #import "ConfigViewController.h"
-#import "ChannelColorsTableViewCell.h"
 #import "BBAudioManager.h"
+#import "ChannelConfig.h"
+
+#define SEGMENTED_NOTCH_NO_FILTER_INDEX 0
+#define SEGMENTED_NOTCH_50_HZ_INDEX 1
+#define SEGMENTED_NOTCH_60_HZ_INDEX 2
+
 @interface ConfigViewController ()
 {
     double SLIDER_VALUE_MAX;
@@ -37,6 +42,8 @@
     channelsTableView.delegate = self;
     channelsTableView.allowsSelection = false;
 
+    filterPresetSelection.delegate = self;
+    
     [self setupFilters];
     [self addCustomKeyboard];
 }
@@ -49,10 +56,10 @@
     ZERRO_NEGATIVE_OFFSET = 0.1;
 
     REAL_VALUE_MIN = 1;
-    REAL_VALUE_MAX = 500;
+    REAL_VALUE_MAX = [[BBAudioManager bbAudioManager] sourceSamplingRate]*0.499999999;
     
     SLIDER_VALUE_MIN = log(REAL_VALUE_MIN);
-    SLIDER_VALUE_MAX = log(REAL_VALUE_MAX);//[[BBAudioManager bbAudioManager] sourceSamplingRate]*0.29999999;
+    SLIDER_VALUE_MAX = log(REAL_VALUE_MAX);
     self.rangeSelector.minimumValue = SLIDER_VALUE_MIN-ZERRO_NEGATIVE_OFFSET;
     self.rangeSelector.maximumValue = SLIDER_VALUE_MAX;
     self.rangeSelector.minimumRange = 0;//between handles
@@ -84,6 +91,22 @@
     
     [self rangeSelectrorValueChanged:self.rangeSelector];
     
+    if([[BBAudioManager bbAudioManager] isNotchON])
+    {
+        if([[BBAudioManager bbAudioManager] is60HzNotchON])
+        {
+            selectNotchFilter.selectedSegmentIndex = SEGMENTED_NOTCH_60_HZ_INDEX;
+        }
+        else
+        {
+            selectNotchFilter.selectedSegmentIndex = SEGMENTED_NOTCH_50_HZ_INDEX;
+        }
+    }
+    else
+    {
+        selectNotchFilter.selectedSegmentIndex = SEGMENTED_NOTCH_NO_FILTER_INDEX;
+    }
+    
     
     UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(makeKeyboardDisapear)];
     // prevents the scroll view from swallowing up the touch event of child buttons
@@ -113,11 +136,74 @@
 //from FilterPresetType.h from FilterPresetDelegateProtocol
 - (void)endSelectionOfFilterPreset:(FilterPresetType) filterType
 {
+    switch (filterType) {
+        case ecgPreset:
+            [self setLPValue: 100.0 HPValue:1.0 notch:SEGMENTED_NOTCH_60_HZ_INDEX];
+            break;
+        case eegPreset:
+            [self setLPValue: 50.0 HPValue:0.0 notch:SEGMENTED_NOTCH_60_HZ_INDEX];
+            break;
+        case emgPreset:
+            [self setLPValue: 2500.0 HPValue:70.1 notch:SEGMENTED_NOTCH_60_HZ_INDEX];
+            break;
+        case plantPreset:
+            [self setLPValue: 5.0 HPValue:0.0 notch:SEGMENTED_NOTCH_60_HZ_INDEX];
+            break;
+        case neuronPreset:
+            [self setLPValue: 5000.1 HPValue:1.0 notch:SEGMENTED_NOTCH_60_HZ_INDEX];
+            break;
+        default:
+            [self setLPValue: 5000.0 HPValue:1.0 notch:SEGMENTED_NOTCH_60_HZ_INDEX];
+            break;
+    }
+}
+
+-(void) setLPValue:(float) lpValue HPValue:(float) hpValue notch:(int) notchType
+{
+        if(hpValue > REAL_VALUE_MAX)
+        {
+            hpValue = REAL_VALUE_MAX;
+        }
+        if(hpValue<1.0)
+        {
+            self.rangeSelector.lowerValue =  SLIDER_VALUE_MIN-ZERRO_NEGATIVE_OFFSET;
+        }
+        else
+        {
+            self.rangeSelector.lowerValue = log(hpValue);
+        }
+    
+        if(lpValue > REAL_VALUE_MAX)
+        {
+            lpValue = REAL_VALUE_MAX;
+        }
+        if(lpValue<1.0)
+        {
+            self.rangeSelector.upperValue =  SLIDER_VALUE_MIN-ZERRO_NEGATIVE_OFFSET;
+        }
+        else
+        {
+            self.rangeSelector.upperValue = log(lpValue);
+        }
+    
+    if(notchType>SEGMENTED_NOTCH_60_HZ_INDEX)
+    {
+        notchType = SEGMENTED_NOTCH_60_HZ_INDEX;
+    }
+    if(notchType<SEGMENTED_NOTCH_NO_FILTER_INDEX)
+    {
+        notchType = SEGMENTED_NOTCH_NO_FILTER_INDEX;
+    }
+    selectNotchFilter.selectedSegmentIndex = notchType;
+    
+    [self fillFilterTextFromSlider];
     
 }
 
+
 -(BOOL) setSliderValuesFromTI
 {
+    [filterPresetSelection deselectAll];
     NSNumber * tempNumber = [[[NSNumber alloc] initWithFloat:0.0f] autorelease];
     if([self stringIsNumeric:self.lowTI.text andNumber:&tempNumber] && ([tempNumber floatValue] >= 0.0f) && ([tempNumber floatValue]<=REAL_VALUE_MAX))
     {
@@ -190,10 +276,8 @@
 }
 
 
-
-
-- (IBAction)rangeSelectrorValueChanged:(id)sender {
-    
+-(void) fillFilterTextFromSlider
+{
     if(self.rangeSelector.lowerValue<0.0)
     {
         self.lowTI.text = [NSString stringWithFormat:@"%d",0];
@@ -212,6 +296,57 @@
         self.highTI.text =  [NSString stringWithFormat:@"%d",(int)exp(self.rangeSelector.upperValue)];
     }
 }
+
+- (IBAction)rangeSelectrorValueChanged:(id)sender {
+    
+    [filterPresetSelection deselectAll];
+    [self fillFilterTextFromSlider];
+    
+}
+
+-(void) saveFilterValues
+{
+    int lowPass = 0;
+    int highPass = 0;
+    
+    if(self.rangeSelector.lowerValue<0.0)
+    {
+        highPass = FILTER_HP_OFF;
+    }
+    else
+    {
+        highPass = (int)exp(self.rangeSelector.lowerValue);
+    }
+    
+    if(self.rangeSelector.upperValue<0.0)
+    {
+        lowPass = 0;
+    }
+    else
+    {
+        lowPass = (int)exp(self.rangeSelector.upperValue);
+    }
+    if(lowPass>=REAL_VALUE_MAX)
+    {
+        lowPass = FILTER_LP_OFF;
+    }
+    [[BBAudioManager bbAudioManager] setFilterLPCutoff:lowPass hpCutoff:highPass];
+    
+    if (selectNotchFilter.selectedSegmentIndex == SEGMENTED_NOTCH_NO_FILTER_INDEX)
+    {
+        [[BBAudioManager bbAudioManager] turnOFFNotchFilters];
+    }
+    else if(selectNotchFilter.selectedSegmentIndex == SEGMENTED_NOTCH_50_HZ_INDEX)
+    {
+        [[BBAudioManager bbAudioManager] turnON50HzNotch];
+    }
+    else if(selectNotchFilter.selectedSegmentIndex == SEGMENTED_NOTCH_60_HZ_INDEX)
+    {
+        [[BBAudioManager bbAudioManager] turnON60HzNotch];
+    }
+    
+}
+
 
 #pragma mark - Keyboard stuff
 
@@ -236,7 +371,7 @@
 #pragma mark - Channels Table view delegate
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [[BBAudioManager bbAudioManager] sourceNumberOfChannels];;
+    return [[[BBAudioManager bbAudioManager] currentlyAvailableInputChannels] count];
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -247,7 +382,11 @@
         cell = [tableView dequeueReusableCellWithIdentifier:@"iChannelColorsTableViewCell"];
        
     }
-    cell.colorChooser.nameLabel.text = [NSString stringWithFormat:@"Channel %ld", (long)indexPath.row];
+    ChannelConfig * tempChannelConfig = (ChannelConfig *)[[[BBAudioManager bbAudioManager] currentlyAvailableInputChannels] objectAtIndex:indexPath.row];
+    [cell setToColorIndex:[tempChannelConfig colorIndex]];
+    cell.channelConfig = tempChannelConfig;
+    cell.colorDelegate = self;
+    cell.colorChooser.nameLabel.text = [tempChannelConfig userFriendlyFullName];
 
     if (channelsTableView.contentSize.height < channelsTableView.frame.size.height) {
         channelsTableView.scrollEnabled = NO;
@@ -261,6 +400,36 @@
 {
     return 80;
 }
+
+// ChannelColorsTableViewCell Protocol
+-(void) channelColorChanged:(ChannelConfig*) config cell:(ChannelColorsTableViewCell*) cell
+{
+    if(config.currentlyActive && cell.colorChooser.selectedColorIndex != 0)
+    {
+        //if we will not turn OFF the channel just change the color of active channel
+        config.colorIndex = cell.colorChooser.selectedColorIndex;
+    }
+    else
+    {
+        //turn ON/OFF channel
+        BOOL changeOfChannelWentOK = false;
+        if(config.currentlyActive && cell.colorChooser.selectedColorIndex == 0)
+        {
+            changeOfChannelWentOK = [[BBAudioManager bbAudioManager] deactivateChannelWithConfig:config];
+        }
+        if(!config.currentlyActive && cell.colorChooser.selectedColorIndex != 0)
+        {
+            changeOfChannelWentOK = [[BBAudioManager bbAudioManager] activateChannelWithConfig:config];
+        }
+        
+        if(changeOfChannelWentOK)
+        {
+            //refresh table, some channels disappear in meantime
+        }
+    }
+    
+    
+}
 /*
 #pragma mark - Navigation
 
@@ -273,6 +442,10 @@
 
 
 - (IBAction)closeVIewTap:(id)sender {
+    //save all filter values
+    [self saveFilterValues];
+    
+    
     [_masterDelegate finishedWithConfiguration];
 }
 

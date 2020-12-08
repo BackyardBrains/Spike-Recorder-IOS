@@ -25,6 +25,7 @@ NS_ASSUME_NONNULL_BEGIN
     @property (nonatomic, copy) NSString* helpURL;
     @property (nonatomic, copy) NSString* iconURL;
     @property (nonatomic, strong) NSMutableArray *channels;
+    @property bool currentlyActive;
 @end
 
 NS_ASSUME_NONNULL_END

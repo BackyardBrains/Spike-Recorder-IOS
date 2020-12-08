@@ -27,6 +27,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
     @property FilterPresetType selectedType;
     @property(nonatomic,assign) id <FilterPresetDelegateProtocol> delegate;
+    -(void) deselectAll;
 
 @end
 

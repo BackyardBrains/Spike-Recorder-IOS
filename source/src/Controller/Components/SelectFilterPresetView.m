@@ -10,6 +10,7 @@
 #define ROUND_BUTTON_WIDTH_HEIGHT 60
 #define SPACE_BETWEEN_BUTTONS 11
 #define NUMBER_OF_BUTTONS 5
+#define UNSELECT_ALL_INDEX 100
 @implementation SelectFilterPresetView
 
 
@@ -44,12 +45,7 @@
             default:
                 break;
         }
-        for (NSString *familyName in [UIFont familyNames]){
-            NSLog(@"Family name: %@", familyName);
-            for (NSString *fontName in [UIFont fontNamesForFamilyName:familyName]) {
-                NSLog(@"--Font name: %@", fontName);
-            }
-        }
+        
         [button addTarget:self action:@selector(roundButtonDidTap:) forControlEvents:UIControlEventTouchUpInside];
         button.titleLabel.font = [UIFont fontWithName:@"ComicBook-BoldItalic" size:16.0f];
         [button setTitleColor:[UIColor orangeColor] forState:UIControlStateNormal];
@@ -70,6 +66,12 @@
         
         [self addSubview:button];
     }
+}
+
+-(void) deselectAll
+{
+    self.selectedType = UNSELECT_ALL_INDEX;
+    [self selectOnlyOne];
 }
 
 -(void) roundButtonDidTap:(id) sender

@@ -8,8 +8,14 @@
 
 #import <Foundation/Foundation.h>
 #import "FilterSettings.h"
-NS_ASSUME_NONNULL_BEGIN
+#import "ExpansionBoardConfig.h"
 
+#define HARDWARE_PROTOCOL_TYPE_LOCAL    @"local"
+#define HARDWARE_PROTOCOL_TYPE_HID      @"hid"
+#define HARDWARE_PROTOCOL_TYPE_SERIAL   @"serial"
+#define HARDWARE_PROTOCOL_TYPE_MFI      @"mfi"
+
+NS_ASSUME_NONNULL_BEGIN
 
 @interface InputDeviceConfig : NSObject
 
@@ -35,6 +41,7 @@ NS_ASSUME_NONNULL_BEGIN
     @property (nonatomic, copy) NSString* minAppVersion;//minimum version of BYB application for current platform
     @property (nonatomic, strong) NSMutableArray *expansionBoards;//configuration for expansion boards
     @property (nonatomic, strong) NSMutableArray *channels;
+    @property ExpansionBoardConfig * connectedExpansionBoard;
 
 //default time scale
 //default gain
@@ -42,6 +49,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 //-(id) initWithSignalType:(SignalType) inSignalTypeValue lowPassON:(bool) inLowPassON lowPassCutoff:(float) inLowPassCutoff highPassON:(bool) inHighPassON highPassCutoff:(float) inHighPassCutoff notchFilterState:(NotchFilterState) inNotchFilterState;
 //-(void) initWithTypicalValuesForSignalType:(SignalType) inSignalTypeValue;
+-(BOOL) isBasedOnComProtocol:(NSString *) commProtocolToCheck;
 @end
 
 NS_ASSUME_NONNULL_END

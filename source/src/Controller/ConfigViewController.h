@@ -9,9 +9,10 @@
 #import <UIKit/UIKit.h>
 #import "NMRangeSlider.h"
 #import "SelectFilterPresetView.h"
+#import "ChannelColorsTableViewCell.h"
 NS_ASSUME_NONNULL_BEGIN
 @protocol ConfigViewControllerDelegate;
-@interface ConfigViewController : UIViewController <UITableViewDataSource, UITableViewDelegate,UITextFieldDelegate,UITextViewDelegate,FilterPresetDelegateProtocol>
+@interface ConfigViewController : UIViewController <UITableViewDataSource, UITableViewDelegate,UITextFieldDelegate,UITextViewDelegate,FilterPresetDelegateProtocol, ChannelColorsTableViewCellDelegate>
 
         @property (retain, nonatomic) IBOutlet SelectFilterPresetView *filterPresetSelection;
         @property (retain, nonatomic) IBOutlet UITextField *lowTI;
