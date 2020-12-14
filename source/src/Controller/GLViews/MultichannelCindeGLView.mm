@@ -136,14 +136,9 @@
        // autorangeTimer = [NSTimer scheduledTimerWithTimeInterval:2.5 target:self selector:@selector(stopAutorange) userInfo:nil repeats:NO];
     }
     
-    if([[BBAudioManager bbAudioManager] btOn])
-    {
-      //  maxNumberOfChannels = [[BBBTManager btManager] maxNumberOfChannelsForDevice];
-    }
-    else
-    {
-        maxNumberOfChannels = newNumberOfChannels;
-    }
+    
+    maxNumberOfChannels = newNumberOfChannels;
+    
     
     firstDrawAfterChannelChange = YES;
     NSLog(@"!!!!!!!!!Setup num of channel");
@@ -239,7 +234,7 @@
 
         int tempMask = 1;
         channelsConfiguration = 0;
-        for(int k=0;k<[[BBAudioManager bbAudioManager] sourceNumberOfChannels];k++)
+        for(int k=0;k<[[BBAudioManager bbAudioManager] numberOfActiveChannels];k++)
         {
             channelsConfiguration = channelsConfiguration | (tempMask<<k);
         }
@@ -610,7 +605,7 @@
         
         if([dataSourceDelegate respondsToSelector:@selector(setVisibilityForConfigButton:)])
         {
-            [dataSourceDelegate setVisibilityForConfigButton:[[BBAudioManager bbAudioManager] amDemodulationIsON] || [[BBAudioManager bbAudioManager] externalAccessoryOn]];
+            [dataSourceDelegate setVisibilityForConfigButton:[[BBAudioManager bbAudioManager] amDemodulationIsON] || [[BBAudioManager bbAudioManager] externalAccessoryIsActive]];
         }
 
         // this pair of lines is the standard way to clear the screen in OpenGL
@@ -1725,54 +1720,33 @@
             //select channel
             if(selectedChannel!=grabbedHandleIndex)
             {
-                
-                
-                if([self channelActive:grabbedHandleIndex])
-                {
-                    selectedChannel = grabbedHandleIndex;
-                    if ([dataSourceDelegate respondsToSelector:@selector(selectChannel:)]) {
-                        
-                        //Calculate compressed selected channel for AudioManager
-                        
-                        int compressedSelectedChannel = 0;
-                        for(int i =0;i<maxNumberOfChannels;i++)
-                        {
-                            if(i==grabbedHandleIndex)
-                            {
-                                break;
-                            }
-                            if([self channelActive:i])
-                            {
-                                compressedSelectedChannel++;
-                            }
-                        }
-                        //Select channel on audio manager
-                        NSLog(@"%d - selected handle: %d", compressedSelectedChannel, grabbedHandleIndex);
-                        [dataSourceDelegate selectChannel:compressedSelectedChannel];
-                    }
-                
-                }
-                else
-                {
-                    if([dataSourceDelegate respondsToSelector:@selector(addChannel:)])
+                selectedChannel = grabbedHandleIndex;
+                if ([dataSourceDelegate respondsToSelector:@selector(selectChannel:)]) {
+                    
+                    //Calculate compressed selected channel for AudioManager
+                    
+                    int compressedSelectedChannel = 0;
+                    for(int i =0;i<maxNumberOfChannels;i++)
                     {
-                        [dataSourceDelegate addChannel:grabbedHandleIndex];
+                        if(i==grabbedHandleIndex)
+                        {
+                            break;
+                        }
+                        if([self channelActive:i])
+                        {
+                            compressedSelectedChannel++;
+                        }
                     }
+                    //Select channel on audio manager
+                    NSLog(@"%d - selected handle: %d", compressedSelectedChannel, grabbedHandleIndex);
+                    [dataSourceDelegate selectChannel:compressedSelectedChannel];
                 }
             }
-        
         }
         
        
         
-        //Remove channel X button
-        if([self checkIntesectionWithRemoveButton:glWorldTouchPos])
-        {
-            if([dataSourceDelegate respondsToSelector:@selector(removeChannel:)])
-            {
-                [dataSourceDelegate removeChannel:selectedChannel];
-            }
-        }
+       
         
         //if we are not moving channels check if need to make interval selection or threshold
         if(!weAreHoldingHandle)

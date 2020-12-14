@@ -49,7 +49,7 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     
-    [[BBAudioManager bbAudioManager] startMonitoring];
+    //[[BBAudioManager bbAudioManager] startMonitoring];
 
     if(glView)
     {
@@ -67,7 +67,7 @@
     
     NSLog(@"ViewAndRecord - set number of channesl");
     
-    [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels ] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
+    [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] numberOfActiveChannels ] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
     
     NSLog(@"ViewAndRecord - start animation");
 	
@@ -81,7 +81,7 @@
     //Set all channels to active
     UInt8 configurationOfChannels = 0;
     int tempMask = 1;
-    for(int i=0;i<[[BBAudioManager bbAudioManager] sourceNumberOfChannels];i++)
+    for(int i=0;i<[[BBAudioManager bbAudioManager] numberOfActiveChannels];i++)
     {
         configurationOfChannels = configurationOfChannels | (tempMask<<i);
     }
@@ -99,9 +99,11 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate:) name:UIApplicationWillTerminateNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showUnknownMfiDevice:) name:CAN_NOT_FIND_CONFIG_FOR_DEVICE object:nil];
     
     [glView startAnimation];
 }
+
 
 - (void)viewDidAppear:(BOOL)animated
 {
@@ -120,6 +122,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillTerminateNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillResignActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:CAN_NOT_FIND_CONFIG_FOR_DEVICE object:nil];
     [super viewWillDisappear:animated];
 }
 
@@ -164,7 +167,7 @@
         [self initConstrainsForGLView];
     }
     
-    [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
+    [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] numberOfActiveChannels] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
     glView.mode = MultichannelGLViewModeView;
     
     
@@ -179,7 +182,7 @@
     //Set all channels to active
     UInt8 configurationOfChannels = 0;
     int tempMask = 1;
-    for(int i=0;i<[[BBAudioManager bbAudioManager] sourceNumberOfChannels];i++)
+    for(int i=0;i<[[BBAudioManager bbAudioManager] numberOfActiveChannels];i++)
     {
         configurationOfChannels = configurationOfChannels | (tempMask<<i);
     }
@@ -234,23 +237,6 @@
 {
     return [[BBAudioManager bbAudioManager] getEvents];
 }
-
-//
-// It works with extended channel index
-//
-- (void) removeChannel:(int) chanelIndex
-{
-    //used to add remove BT multichannel
-}
-
-//
-// Add channel
-//
-- (void) addChannel:(int) chanelIndex
-{
-    //used to add remove BT multichannel
-}
-
 
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
@@ -317,7 +303,7 @@
     if (bbAudioManager.recording == false) {
         
         //check if we have non-standard requirements for format and make custom wav
-        if([bbAudioManager sourceNumberOfChannels]>2 || [bbAudioManager sourceSamplingRate]!=44100.0f)
+        if([bbAudioManager numberOfActiveChannels]>2 || [bbAudioManager sourceSamplingRate]!=44100.0f)
         {
             aFile = [[BBFile alloc] initWav];
         }
@@ -326,7 +312,7 @@
             //if everything is standard make .m4a file (it has beter compression )
             aFile = [[BBFile alloc] init];
         }
-        aFile.numberOfChannels = [bbAudioManager sourceNumberOfChannels];
+        aFile.numberOfChannels = [bbAudioManager numberOfActiveChannels];
         aFile.samplingrate = [bbAudioManager sourceSamplingRate];
         [aFile setupChannels];//create name of channels without spike trains
         
@@ -367,7 +353,7 @@
     self.configButton.hidden = !setVisible;
     //self.configButton.hidden = NO;
     int filterSettings = [[BBAudioManager bbAudioManager] currentFilterSettings];
-    if(filterSettings == FILTER_SETTINGS_EEG || filterSettings == FILTER_SETTINGS_RAW || filterSettings == FILTER_SETTINGS_CUSTOM || [[BBAudioManager bbAudioManager] externalAccessoryOn])
+    if(filterSettings == FILTER_SETTINGS_EEG || filterSettings == FILTER_SETTINGS_RAW || filterSettings == FILTER_SETTINGS_CUSTOM || [[BBAudioManager bbAudioManager] externalAccessoryIsActive])
     {
         self.fftButton.hidden = !setVisible;
     }
@@ -465,6 +451,33 @@
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
     UIViewController *controller = [storyboard instantiateViewControllerWithIdentifier:@"fftViewID"];
     [self presentViewController:controller animated:YES completion:nil];
+}
+
+#pragma mark - Alerts for user
+
+-(void) showUnknownMfiDevice:(NSNotification *) notification
+{
+    NSString *detailsText = [NSString stringWithFormat:@"App does not have info about connected device. Please connect to internet and restart application to update device info. (Device Model: %@)", (NSString*) notification.object];
+    UIAlertController *alertView = [UIAlertController alertControllerWithTitle:@"Can not recognize device" message:detailsText preferredStyle:UIAlertControllerStyleAlert];
+    [alertView addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action)
+                            {
+                                // OK button tappped. Do nothing
+                                [self dismissViewControllerAnimated:YES completion:^{
+                                }];
+                            }]];
+    
+    //make so that on iPad alert is displayed in the center of the screen
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+    {
+        CGRect rectForWindow;
+        alertView.popoverPresentationController.sourceView = self.view;
+        alertView.popoverPresentationController.permittedArrowDirections = 0;
+        rectForWindow = CGRectMake(self.view.bounds.size.width/2, self.view.bounds.size.height/2, 1, 1);
+        alertView.popoverPresentationController.sourceRect = rectForWindow;
+    }
+
+    // Present action sheet.
+    [self presentViewController:alertView animated:YES completion:nil];
 }
 
 #pragma mark - Memory management

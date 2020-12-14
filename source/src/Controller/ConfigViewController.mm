@@ -106,15 +106,19 @@
     {
         selectNotchFilter.selectedSegmentIndex = SEGMENTED_NOTCH_NO_FILTER_INDEX;
     }
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshScreen) name:RESETUP_SCREEN_NOTIFICATION object:nil];
     
-    
-    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(makeKeyboardDisapear)];
-    // prevents the scroll view from swallowing up the touch event of child buttons
-    tapGesture.cancelsTouchesInView = NO;
-    [self.view addGestureRecognizer:tapGesture];
-    [tapGesture release];
-    
-    
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:RESETUP_SCREEN_NOTIFICATION object:nil];
 }
 
 -(void) addCustomKeyboard
@@ -130,6 +134,12 @@
     keyboardToolbar.items = @[flexBarButton, doneBarButton];
     self.lowTI.inputAccessoryView = keyboardToolbar;
     self.highTI.inputAccessoryView = keyboardToolbar;
+    
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(makeKeyboardDisapear)];
+    // prevents the scroll view from swallowing up the touch event of child buttons
+    tapGesture.cancelsTouchesInView = NO;
+    [self.view addGestureRecognizer:tapGesture];
+    [tapGesture release];
 }
 #pragma mark - Filter settings
 
@@ -413,6 +423,7 @@
     {
         //turn ON/OFF channel
         BOOL changeOfChannelWentOK = false;
+        config.colorIndex = cell.colorChooser.selectedColorIndex;
         if(config.currentlyActive && cell.colorChooser.selectedColorIndex == 0)
         {
             changeOfChannelWentOK = [[BBAudioManager bbAudioManager] deactivateChannelWithConfig:config];
@@ -421,14 +432,23 @@
         {
             changeOfChannelWentOK = [[BBAudioManager bbAudioManager] activateChannelWithConfig:config];
         }
-        
-        if(changeOfChannelWentOK)
+        if(cell.colorChooser.selectedColorIndex!=0)
         {
-            //refresh table, some channels disappear in meantime
+           config.colorIndex = cell.colorChooser.selectedColorIndex;
         }
+        [self refreshScreen];
     }
-    
-    
+}
+
+-(void) refreshScreen
+{
+    [ self refreshChannels];
+    [self setupFilters];
+}
+
+-(void) refreshChannels
+{
+    [channelsTableView reloadData];
 }
 /*
 #pragma mark - Navigation

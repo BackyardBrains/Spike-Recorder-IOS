@@ -33,6 +33,7 @@
 -(void) setToColorIndex:(int) newColorIndex
 {
     colorChooser.selectedColorIndex = newColorIndex;
+    [colorChooser setNeedsDisplay];
 }
 -(void) channelColorChanged
 {

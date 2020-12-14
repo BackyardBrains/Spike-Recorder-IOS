@@ -3,15 +3,15 @@
         "version":"1.0",
         "boards":[
             {
-                "uniqueName": "HBSBPRO",
+                "uniqueName": "H&B SB Pro V1.0",
                 "userFriendlyFullName":"Heart and Brains SpikerBox Pro",
                 "userFriendlyShortName":"H&B SpikerBox Pro",
-                "hardwareComProtocolType": "serial",
+                "hardwareComProtocolType": "iap2,serial",
                 "bybProtocolType": "BYB1",
                 "bybProtocolVersion": "1.0",
                 "maxSampleRate":"1000",
                 "maxNumberOfChannels":"2",
-                "supportedPlatforms":"android,win,mac,linux",
+                "supportedPlatforms":"android,win,mac,linux,ios",
                 "productURL":"https://backyardbrains.com/products/heartAndBrainSpikerBox",
                 "helpURL":"https://backyardbrains.com/products/heartAndBrainSpikerBox",
                 "firmwareUpdateUrl":"https://backyardbrains.com/products/firmwares/sbpro/compatibility.xml",

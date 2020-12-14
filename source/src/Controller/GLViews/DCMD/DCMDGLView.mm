@@ -130,7 +130,7 @@
     if (bbAudioManager.recording == false) {
         
         //check if we have non-standard requirements for format and make custom wav
-        if([bbAudioManager sourceNumberOfChannels]>2 || [bbAudioManager sourceSamplingRate]!=44100.0f)
+        if([bbAudioManager numberOfActiveChannels]>2 || [bbAudioManager sourceSamplingRate]!=44100.0f)
         {
             self.experiment.file = [[[BBFile alloc] initWav] autorelease];
         }
@@ -139,7 +139,7 @@
             //if everything is standard make .m4a file (it has beter compression )
             self.experiment.file = [[[BBFile alloc] init] autorelease];
         }
-        self.experiment.file.numberOfChannels = [bbAudioManager sourceNumberOfChannels];
+        self.experiment.file.numberOfChannels = [bbAudioManager numberOfActiveChannels];
         self.experiment.file.samplingrate = [bbAudioManager sourceSamplingRate];
         [self.experiment.file setupChannels];//create name of channels without spike trains
         

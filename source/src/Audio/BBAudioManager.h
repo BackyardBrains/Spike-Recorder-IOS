@@ -22,6 +22,7 @@
 #import "ChannelConfig.h"
 
 #define RESETUP_SCREEN_NOTIFICATION @"resetupScreenNotification"
+#define CAN_NOT_FIND_CONFIG_FOR_DEVICE @"canNotFindConfigForDevice"
 #define MAX_NUMBER_OF_FFT_SEC 6.0f
 
 #define AM_CARRIER_FREQUENCY 5000.0
@@ -84,11 +85,10 @@
     
 }
 
-@property (getter=samplingRate, readonly) float samplingRate;
-@property (getter=numberOfChannels, readonly) int numberOfChannels;
 
 @property (getter=sourceSamplingRate, readonly) float sourceSamplingRate;
-@property (getter=sourceNumberOfChannels, readonly) int sourceNumberOfChannels;
+-(int) numberOfSourceChannels;
+-(int) numberOfActiveChannels;
 
 @property UInt32 numTriggersInThresholdHistory;
 
@@ -116,7 +116,6 @@
 @property (readonly) BOOL selecting;
 @property (readonly) BOOL playing;
 @property (readonly) BOOL btOn;
-@property (readonly) BOOL externalAccessoryOn;
 @property (readonly) BOOL FFTOn;
 @property (readonly) BOOL ECGOn;
 @property (readonly) BOOL rtSpikeSorting;
@@ -136,7 +135,7 @@
 
 + (BBAudioManager *) bbAudioManager;
 -(void) quitAllFunctions;
-- (void)startMonitoring;
+//- (void)startMonitoring;
 
 - (void)startRecording:(BBFile *) aFile;
 - (void)stopRecording;
@@ -176,17 +175,18 @@
 -(BOOL) activateChannelWithConfig:(ChannelConfig *) channelConfigToActivate;
 -(BOOL) deactivateChannelWithConfig:(ChannelConfig *) channelConfigToDeactivate;
 
-//Bluetooth
--(void) switchToBluetoothWithChannels:(int) channelConfiguration andSampleRate:(int) inSampleRate;
--(void) closeBluetooth;
+//select which one is selected on UI
 -(void) selectChannel:(int) selectedChannel;
--(int) numberOfFramesBuffered;
+
 
 
 //Mfi
--(void) switchToExternalDeviceWithChannels:(int)numberOfChannels andSampleRate:(int) inSampleRate;
--(void) closeExternalDevice;
--(void) addNewData:(float*)data frames:(int) numberOfFrames channels:(int) numberOfChannels;
+-(void) addMfiDeviceWithModelNumber:(NSString *) modelNumber andSerial:(NSString *) serialNum;
+-(BOOL) externalAccessoryIsActive;
+
+-(void) removeMfiDeviceWithModelNumber:(NSString *) modelNumber andSerial:(NSString *) serialNum;
+
+
 - (void) addEvent:(int) eventType withOffset:(int) inOffset;
 
 

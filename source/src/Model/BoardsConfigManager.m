@@ -23,6 +23,18 @@
     return self;
 }
 
+-(InputDeviceConfig *) getDeviceConfigForUniqueName:(NSString *) uniqueName
+{
+    for (int i=0;i<[boardsConfig count];i++)
+    {
+        InputDeviceConfig * tempConfig = (InputDeviceConfig*) [boardsConfig objectAtIndex:i];
+        if([tempConfig.uniqueName isEqualToString:uniqueName])
+        {
+            return tempConfig;
+        }
+    }
+    return nil;
+}
 -(int) loadLocalConfig
 {
     //_pathToFile = [[urlToFile path] retain];

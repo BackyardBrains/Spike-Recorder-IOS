@@ -83,8 +83,7 @@ typedef enum {
     - (float) fetchDataToDisplay:(float *)data numFrames:(UInt32)numFrames whichChannel:(UInt32)whichChannel;
 
 @optional
-    -(void) removeChannel:(int) chanelIndex;
-    - (void) addChannel:(int) chanelIndex;
+
     -(void) selectChannel:(int) selectedChannel;//set selected channel
     - (NSMutableArray *) getChannels;//get channels from BBfile object
     - (NSMutableArray *) getEvents;//get events from BBfile object

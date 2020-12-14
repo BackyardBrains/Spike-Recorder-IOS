@@ -104,7 +104,7 @@ static  EAInputBlock inputBlock;
     messageBufferIndex =0;
     escapeSequenceDetectorIndex = 0;
     _samplingRate = 10000;
-    _numberOfChannels = 2;
+    _numberOfChannels = 2; //TODO:Make this dynamic from config file
     
 }
 
@@ -157,7 +157,7 @@ static  EAInputBlock inputBlock;
     
     if(numOfFrames>0)
     {
-       // [[BBAudioManager bbAudioManager] addNewData:obuffer frames:numOfFrames channels:2];
+       
         self.inputBlock(obuffer,numOfFrames, _numberOfChannels);
     }
         //

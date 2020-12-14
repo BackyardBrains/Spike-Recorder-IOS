@@ -59,7 +59,7 @@
         [self initConstrainsForGLView];
     }
     glView.mode = MultichannelGLViewModeThresholding;
-    [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels ] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
+    [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] numberOfActiveChannels ] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
     [[BBAudioManager bbAudioManager] startThresholding:8192];
 
     // set our view controller's prop that will hold a pointer to our newly created CCGLTouchView
@@ -145,7 +145,7 @@
     }
     
     glView.mode = MultichannelGLViewModeThresholding;
-    [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels ] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
+    [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] numberOfActiveChannels ] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
     [[BBAudioManager bbAudioManager] startThresholding:8192];
     
     
