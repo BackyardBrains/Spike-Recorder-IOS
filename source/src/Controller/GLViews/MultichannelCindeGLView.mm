@@ -100,10 +100,7 @@
     self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     
     // Set up our font, which we'll use to display the unit scales
-    
-  
-    
-   
+
     mFont = Font("Helvetica", 18);//36/retinaScaling);
     mScaleFont = gl::TextureFont::create( mFont );
     
@@ -130,27 +127,13 @@
 - (void)setNumberOfChannels:(int) newNumberOfChannels samplingRate:(float) newSamplingRate andDataSource:(id <MultichannelGLViewDelegate>) newDataSource
 {
     
-    if(self.mode != MultichannelGLViewModeThresholding)
-    {
-       // autorangeActive = YES;
-       // autorangeTimer = [NSTimer scheduledTimerWithTimeInterval:2.5 target:self selector:@selector(stopAutorange) userInfo:nil repeats:NO];
-    }
-    
-    
     maxNumberOfChannels = newNumberOfChannels;
     
     
     firstDrawAfterChannelChange = YES;
     NSLog(@"!!!!!!!!!Setup num of channel");
     [self stopAnimation];
-    
-  //  if(newNumberOfChannels<2)
-  //  {
-  //      debugMultichannelOnSingleChannel = YES;
-  //      newNumberOfChannels = 3;
-  //  }
-    
-    
+
     samplingRate = newSamplingRate;
     numberOfChannels = newNumberOfChannels;
     
@@ -158,7 +141,6 @@
     {
         multichannel = YES;
     }
-    
     
     // Setup display vectors. Every PolyLine2f is one waveform
     if(displayVectors!=nil)
@@ -651,7 +633,8 @@
         {
             if([self channelActive:channelIndex])
             {
-                [self setColorWithIndex:channelIndex transparency:1.0f];
+                int colorIndex = [[BBAudioManager bbAudioManager] getColorIndexForActiveChannelIndex:channelIndex];
+                [self setColorWithIndex:colorIndex transparency:1.0f];
                 gl::draw(displayVectors[realIndexOfChannel]);
                 realIndexOfChannel++;
             }
@@ -950,7 +933,7 @@
                 gl::color( ColorA( 0.0, 1.0f, 0.0f, 1.0f ) );
                 mScaleFont->drawString(rmstream.str(), textPosition);
             
-                //[self setColorWithIndex:i transparency:1.0f];
+
                 [self setGLColor:[BYBGLView getSpikeTrainColorWithIndex:i/2 transparency:1.0f]];
                 gl::drawSolidEllipse( Vec2f(xPositionOfBackground+10, yPositionOfBackground+heightOfOneRow*0.5), 5,5, 40 );
                 
@@ -1054,7 +1037,9 @@
             }
 
              //draw handle for active channels
-            [self setColorWithIndex:indexOfChannel transparency:1.0f];
+            int colorIndex = [[BBAudioManager bbAudioManager] getColorIndexForActiveChannelIndex:indexOfChannel];
+            [self setColorWithIndex:colorIndex transparency:1.0f];
+
             if(self.mode == MultichannelGLViewModeView || [self channelActive:indexOfChannel])
             {
                 gl::drawSolidEllipse( Vec2f(centerOfCircleX, yOffsets[indexOfChannel]), radiusXAxis, radiusYAxis, 1000 );
@@ -1072,14 +1057,17 @@
             if([self channelActive:indexOfChannel])
             {
             
-                [self setColorWithIndex:indexOfChannel transparency:transparencyForAxis];
+                int colorIndex2 = [[BBAudioManager bbAudioManager] getColorIndexForActiveChannelIndex:indexOfChannel];
+                [self setColorWithIndex:colorIndex2 transparency:transparencyForAxis];
+     
                 glLineWidth(2.0f);
                 gl::drawLine(Vec2f(centerOfCircleX, yOffsets[indexOfChannel]), Vec2f(0.0f, yOffsets[indexOfChannel]));
             }
             glLineWidth(1.0f);
             
-            
-            [self setColorWithIndex:indexOfChannel transparency:1.0f];
+            int colorIndex3 = [[BBAudioManager bbAudioManager] getColorIndexForActiveChannelIndex:indexOfChannel];
+            [self setColorWithIndex:colorIndex3 transparency:1.0];
+       
             //draw holow unselected handle
             if(indexOfChannel!=selectedChannel)
             {
@@ -2059,11 +2047,10 @@
 //Change color of spike marks according to index
 -(void) setColorWithIndex:(int) iindex transparency:(float) transp
 {
-    iindex = iindex%5;
+   /* iindex = iindex%5;
     switch (iindex) {
         case 0:
             glColor4f(0.0f, 1.0f, 0.0f, transp);
-            
             break;
         case 1:
             glColor4f(1.0f, 0.011764705882352941f, 0.011764705882352941f, transp);
@@ -2078,7 +2065,28 @@
             glColor4f(1.0f, 0.0f, 1.0f, transp);
             break;
     }
+    */
     
+    switch (iindex) {
+        case 1:
+            glColor4f(0.45882352941f,0.98039215686f,0.32156862745f,transp);
+            break;
+        case 2:
+            glColor4f(0.92156862745f,0.2f,0.26666666666f,transp);
+            break;
+        case 3:
+            glColor4f(0.90588235294f,0.98039215686f,0.45882352941f,transp);
+            break;
+        case 4:
+            glColor4f(0.94509803921f,0.56470588235f,0.39607843137f,transp);
+            break;
+        case 5:
+            glColor4f(0.55294117647f,0.89803921568f,0.47843137254f,transp);
+            break;
+        default:
+            glColor4f(0.3294117647f,0.73725490196f,0.77647058823f,transp);
+            break;
+    }
 }
 
 

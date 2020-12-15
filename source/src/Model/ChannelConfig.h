@@ -18,6 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
     @property bool filtered;
     @property NSInteger colorIndex;
     @property float calibrationCoef;
+    @property bool channelIsCalibrated;
 @end
 
 NS_ASSUME_NONNULL_END

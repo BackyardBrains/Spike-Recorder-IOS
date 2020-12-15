@@ -28,7 +28,7 @@ This file explains structure of input device/board configuration JSON
         "helpURL":"https://backyardbrains.com/products/musclespikerboxpro",
         "iconURL":"",
         "firmwareUpdateUrl":"https://backyardbrains.com/products/firmwares/sbpro/compatibility.xml",
-        "defaultGain":"1.0",
+        "defaultAmplitudeScale":"1.0",
         "sampleRateIsFunctionOfNumberOfChannels":0,
         "miniOSAppVersion":"3.0.0",
         "minAndroidAppVersion":"1.0.0",
@@ -80,7 +80,7 @@ This file explains structure of input device/board configuration JSON
         "iconURL":"",
         "maxNumberOfChannels":"2",
         "defaultTimeScale":"0.1",
-        "defaultGain":"1.0",
+        "defaultAmplitudeScale":"1.0",
         "channels":[
         {
         "userFriendlyFullName":"EMG Channel 3",
@@ -107,7 +107,7 @@ This file explains structure of input device/board configuration JSON
         "helpURL":"https://backyardbrains.com/products/ReflexHammer",
         "iconURL":"",
         "defaultTimeScale":"0.1",
-        "defaultGain":"1.0",
+        "defaultAmplitudeScale":"1.0",
         "channels":[
         {
         "userFriendlyFullName":"Hammer channel",
@@ -128,7 +128,7 @@ This file explains structure of input device/board configuration JSON
         "helpURL":"",
         "iconURL":"",
         "defaultTimeScale":"0.1",
-        "defaultGain":"1.0",
+        "defaultAmplitudeScale":"1.0",
         "channels":[
         {
         "userFriendlyFullName":"Joystick EMG channel",

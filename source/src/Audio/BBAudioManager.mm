@@ -98,6 +98,7 @@ static BBAudioManager *bbAudioManager = nil;
     NSMutableArray * currentDeviceAvailableInputChannels;
     uint16_t activeChannels;
     float * extractedChannelsBuffer;
+    int activeChannelColorIndex[16];
 }
 
 @property BOOL playing;
@@ -288,8 +289,8 @@ static BBAudioManager *bbAudioManager = nil;
     inpDevConf.maxNumberOfChannels = audioManager.numInputChannels;
     inpDevConf.hardwareComProtocolType = HARDWARE_PROTOCOL_TYPE_LOCAL;
     inpDevConf.inputDevicesSupportedByThisPlatform = YES;
-    //inpDevConf.defaultTimeScale = ;
-    //inpDevConf.defaultGain = ;
+    inpDevConf.defaultTimeScale = 1.0;
+    inpDevConf.defaultAmplitudeScale = 1.0;
     inpDevConf.sampleRateIsFunctionOfNumberOfChannels = NO;
     inpDevConf.minAppVersion = @"1.0.0";
     
@@ -534,22 +535,9 @@ static BBAudioManager *bbAudioManager = nil;
     inputDeviceToActivate.currentlyActive = YES;
    
 
-    // ------ set filters according to config ------
     
-    currentFilterSettings = FILTER_SETTINGS_CUSTOM;
-    int tempLowPassCutoff = FILTER_LP_OFF;
-    if(devConf.filterSettings.lowPassON)
-    {
-        tempLowPassCutoff = devConf.filterSettings.lowPassCutoff;
-    }
     
-    int tempHighPassCutoff = FILTER_HP_OFF;
-    if(devConf.filterSettings.highPassON)
-    {
-        tempHighPassCutoff = devConf.filterSettings.highPassCutoff;
-    }
     
-    [self setFilterLPCutoff:tempLowPassCutoff hpCutoff:tempHighPassCutoff];
     
     
     
@@ -643,6 +631,24 @@ static BBAudioManager *bbAudioManager = nil;
         rtEvents = [[NSMutableArray alloc] initWithCapacity:0];
         ringBuffer->Clear();
     }
+    // ------ set filters according to config ------
+    
+    currentFilterSettings = FILTER_SETTINGS_CUSTOM;
+    int tempLowPassCutoff = FILTER_LP_OFF;
+    if(devConf.filterSettings.lowPassON)
+    {
+        tempLowPassCutoff = devConf.filterSettings.lowPassCutoff;
+    }
+    
+    int tempHighPassCutoff = FILTER_HP_OFF;
+    if(devConf.filterSettings.highPassON)
+    {
+        tempHighPassCutoff = devConf.filterSettings.highPassCutoff;
+    }
+    lpFilterCutoff = tempLowPassCutoff;
+    hpFilterCutoff = tempHighPassCutoff;
+    [self updateFilters];
+    
     // ------ activate inputs and outputs ------
     [[NSNotificationCenter defaultCenter] postNotificationName:RESETUP_SCREEN_NOTIFICATION object:self];
     [self startAquiringInputs:inputDeviceToActivate];
@@ -692,6 +698,7 @@ static BBAudioManager *bbAudioManager = nil;
     _sourceSamplingRate = tempSamplingRate;
     _numberOfSourceChannels = numberOfAvailableChannels;
     [self resetBuffers];
+    [self updateFilters];
    
     // ------ activate inputs and outputs ------
     [[NSNotificationCenter defaultCenter] postNotificationName:RESETUP_SCREEN_NOTIFICATION object:self];
@@ -704,10 +711,11 @@ static BBAudioManager *bbAudioManager = nil;
 }
 
 
--(void) extractActiveChannelsFormData:(float *) data withNumberOfFrames:(UInt32) numFrames numberOfChannels:(UInt32) numChannels
+-(void) extractActiveChannelsFormData:(float **) datain withNumberOfFrames:(UInt32) numFrames numberOfChannels:(UInt32) numChannels
 {
     
     int goalNumberOfChannels = [self numberOfActiveChannels];
+    float * data = *datain;
     if(numChannels==goalNumberOfChannels)
     {
         return;
@@ -731,7 +739,7 @@ static BBAudioManager *bbAudioManager = nil;
         indexForChannelBit = indexForChannelBit<<1;
     }
     
-    data = extractedChannelsBuffer;
+    (*datain) = extractedChannelsBuffer;
 }
 
 -(void) startAquiringInputs:(InputDevice *) inputDeviceToActivate
@@ -743,7 +751,7 @@ static BBAudioManager *bbAudioManager = nil;
     {
         [eaManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
          {
-            [self extractActiveChannelsFormData:data withNumberOfFrames:numFrames numberOfChannels:[self numberOfSourceChannels]];
+            [self extractActiveChannelsFormData:&data withNumberOfFrames:numFrames numberOfChannels:[self numberOfSourceChannels]];
              if([eaManager shouldRestartDevice])
              {
                  [self updateMfiDeviceParameters];
@@ -767,7 +775,7 @@ static BBAudioManager *bbAudioManager = nil;
             // Replace the input block with the old input block, where we just save an in-memory copy of the audio.
             [audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
             {
-                [self extractActiveChannelsFormData:data withNumberOfFrames:numFrames numberOfChannels:[self numberOfSourceChannels]];
+                [self extractActiveChannelsFormData:&data withNumberOfFrames:numFrames numberOfChannels:[self numberOfSourceChannels]];
                 if(ringBuffer == NULL)
                 {
                     NSLog(@"/n/n ERROR in Input block %p/n/n", self);
@@ -925,13 +933,15 @@ static BBAudioManager *bbAudioManager = nil;
     uint16_t mask = 1;
     InputDevice * currInputDevice = [self currentlyActiveInputDevice];
     InputDeviceConfig* devConf = (InputDeviceConfig*)[currInputDevice config];
-   
+    int colorArrayIndex = 0;
     for (int i =0;i<[devConf.channels count];i++)
     {
         ChannelConfig * tempChannel = (ChannelConfig *) devConf.channels[i];
         if(tempChannel.currentlyActive)
         {
             activeChannels = activeChannels | mask;
+            activeChannelColorIndex[colorArrayIndex] = tempChannel.colorIndex;
+            colorArrayIndex++;
         }
         mask = mask<<1;
     }
@@ -944,12 +954,47 @@ static BBAudioManager *bbAudioManager = nil;
             if(tempChannel.currentlyActive)
             {
                 activeChannels = activeChannels | mask;
+                activeChannelColorIndex[colorArrayIndex] = tempChannel.colorIndex;
+                colorArrayIndex++;
             }
             mask = mask<<1;
         }
     }
 }
 
+-(void) updateColorOfActiveChannels
+{
+    InputDevice * currInputDevice = [self currentlyActiveInputDevice];
+    InputDeviceConfig* devConf = (InputDeviceConfig*)[currInputDevice config];
+    int colorArrayIndex = 0;
+    for (int i =0;i<[devConf.channels count];i++)
+    {
+        ChannelConfig * tempChannel = (ChannelConfig *) devConf.channels[i];
+        if(tempChannel.currentlyActive)
+        {
+            activeChannelColorIndex[colorArrayIndex] = tempChannel.colorIndex;
+            colorArrayIndex++;
+        }
+    }
+
+    if(devConf.connectedExpansionBoard)
+    {
+        for (int i =0;i<[devConf.connectedExpansionBoard.channels count];i++)
+        {
+            ChannelConfig * tempChannel = (ChannelConfig *) devConf.connectedExpansionBoard.channels[i];
+            if(tempChannel.currentlyActive)
+            {
+                activeChannelColorIndex[colorArrayIndex] = tempChannel.colorIndex;
+                colorArrayIndex++;
+            }
+        }
+    }
+}
+
+-(int) getColorIndexForActiveChannelIndex:(int) indexOfChannel
+{
+    return activeChannelColorIndex[indexOfChannel];
+}
 
 -(BOOL) activateChannelWithConfig:(ChannelConfig *) channelConfigToActivate
 {
@@ -1058,6 +1103,11 @@ static BBAudioManager *bbAudioManager = nil;
         [[NSNotificationCenter defaultCenter] postNotificationName:CAN_NOT_FIND_CONFIG_FOR_DEVICE object:modelNumber];
         return;
     }
+    
+    DemoProtocol * mfiAccessory = [MyAppDelegate getEaManager];
+    newConfig.currentSampleRate = newConfig.maxSampleRate;
+    newConfig.currentNumOfChannels = [newConfig.channels count];
+    [mfiAccessory setSampleRate:newConfig.currentSampleRate andNumberOfChannels:newConfig.currentNumOfChannels];
     //add device to available devices and start emediately
     InputDevice * newInputDevice = [[InputDevice alloc] initWithConfig:newConfig];
     newInputDevice.uniqueInstanceID = serialNum;
@@ -1110,27 +1160,12 @@ static BBAudioManager *bbAudioManager = nil;
     }];
 }
 
--(void) getChannelsConfig
-{
-    if([self externalAccessoryIsActive])
-    {
-    
-    }
-    else
-    {
-        _sourceSamplingRate =  audioManager.samplingRate;
-         NSLog(@"Get source channel config sampling rate: %f", _sourceSamplingRate);
-        _numberOfSourceChannels = audioManager.numInputChannels;
-        NSLog(@"Get source number of channels: %d", _numberOfSourceChannels);
-    }
-}
 
 -(void) resetupAudioInputs
 {
     NSLog(@"resetupAudioInputs - BBAudioManager\n");
     if(!playing && audioManager)
     {
-
         [self addLocalInputDeviceToInputDevices];
         [[NSNotificationCenter defaultCenter] postNotificationName:RESETUP_SCREEN_NOTIFICATION object:self];
     }
@@ -1309,31 +1344,41 @@ static BBAudioManager *bbAudioManager = nil;
 {
     notch50HzIsOn = NO;
     notch60HzIsOn = YES;
-    NotchFilter = [[NVNotchFilter alloc] initWithSamplingRate:_sourceSamplingRate];
-    NotchFilter.centerFrequency = 60.0;
-    NotchFilter.q = 1.0  ;
+    notchFilters = [[NSMutableArray alloc] initWithCapacity:0];
+    for(int i=0;i<[self numberOfActiveChannels];i++)
+    {
+        NVNotchFilter * NotchFilter = [[NVNotchFilter alloc] initWithSamplingRate:_sourceSamplingRate];
+        NotchFilter.centerFrequency = 60.0;
+        NotchFilter.q = 1.0  ;
+        [notchFilters addObject:NotchFilter];
+    }
 }
 
 -(void) turnON50HzNotch
 {
     notch50HzIsOn = YES;
     notch60HzIsOn = NO;
-    NotchFilter = [[NVNotchFilter alloc] initWithSamplingRate:_sourceSamplingRate];
-    NotchFilter.centerFrequency = 50.0;
-    NotchFilter.q = 1.0  ;
+    notchFilters = [[NSMutableArray alloc] initWithCapacity:0];
+    for(int i=0;i<[self numberOfActiveChannels];i++)
+    {
+        NVNotchFilter * NotchFilter = [[NVNotchFilter alloc] initWithSamplingRate:_sourceSamplingRate];
+        NotchFilter.centerFrequency = 50.0;
+        NotchFilter.q = 1.0  ;
+        [notchFilters addObject:NotchFilter];
+    }
 }
 
 -(void) turnOFFNotchFilters
 {
     notch50HzIsOn = NO;
     notch60HzIsOn = NO;
-    NotchFilter = nil;
+    notchFilters = [[NSMutableArray alloc] initWithCapacity:0];
 }
 
 -(void) filterData:(float *)newData numFrames:(UInt32)thisNumFrames numChannels:(UInt32)thisNumChannels
 {
     ChannelConfig * tempChannelConfig;
-    if(LPFilter || HPFilter || [self isNotchON])
+    if([lpFilters count]>0 || [hpFilters count]>0 || [notchFilters count]>0)
     {
             for(int i=0;i<thisNumChannels;i++)
             {
@@ -1349,17 +1394,17 @@ static BBAudioManager *bbAudioManager = nil;
                                    1,
                                    thisNumFrames);
                         //
-                        if(HPFilter)
+                        if([hpFilters count]>0)
                         {
-                            [HPFilter filterData:tempResamplingBuffer numFrames:thisNumFrames numChannels:1];
+                           [[hpFilters objectAtIndex:i] filterData:tempResamplingBuffer numFrames:thisNumFrames numChannels:1];
                         }
-                        if(LPFilter)
+                        if([lpFilters count]>0)
                         {
-                            [LPFilter filterData:tempResamplingBuffer numFrames:thisNumFrames numChannels:1];
+                            [[lpFilters objectAtIndex:i] filterData:tempResamplingBuffer numFrames:thisNumFrames numChannels:1];
                         }
                         if([self isNotchON])
                         {
-                            [NotchFilter filterData:tempResamplingBuffer numFrames:thisNumFrames numChannels:1];
+                            [[notchFilters objectAtIndex:i] filterData:tempResamplingBuffer numFrames:thisNumFrames numChannels:1];
                         }
                         
                         vDSP_vsadd(tempResamplingBuffer,
@@ -1394,6 +1439,22 @@ static BBAudioManager *bbAudioManager = nil;
 -(int) getLPFilterCutoff {return lpFilterCutoff;}
 -(int) getHPFilterCutoff {return hpFilterCutoff;}
 
+-(void) updateFilters
+{
+    [self setFilterLPCutoff:[self getLPFilterCutoff] hpCutoff:[self getHPFilterCutoff]];
+    if([self is50HzNotchON])
+    {
+        [self turnON50HzNotch];
+    }
+    else if([self is60HzNotchON])
+    {
+        [self turnON60HzNotch];
+    }
+    else
+    {
+        [self turnOFFNotchFilters];
+    }
+}
 
 -(void) setFilterLPCutoff:(int) newLPCuttof hpCutoff:(int)newHPCutoff
 {
@@ -1401,29 +1462,38 @@ static BBAudioManager *bbAudioManager = nil;
     lpFilterCutoff = newLPCuttof;
     hpFilterCutoff = newHPCutoff;
 
+    hpFilters = [[NSMutableArray alloc] initWithCapacity:0];
+    lpFilters = [[NSMutableArray alloc] initWithCapacity:0];
     
     if(lpFilterCutoff != FILTER_LP_OFF)
     {
-        LPFilter= [[NVLowpassFilter alloc] initWithSamplingRate:_sourceSamplingRate];
-        LPFilter.cornerFrequency = lpFilterCutoff;
-        LPFilter.Q = 0.4f;
+        for(int i=0;i<[self numberOfActiveChannels];i++)
+        {
+            NVLowpassFilter * LPFilter= [[NVLowpassFilter alloc] initWithSamplingRate:_sourceSamplingRate];
+            LPFilter.cornerFrequency = lpFilterCutoff;
+            LPFilter.Q = 0.4f;
+            [lpFilters addObject:LPFilter];
+        }
     }
     else
     {
-        LPFilter = nil;
+        lpFilters = [[NSMutableArray alloc] initWithCapacity:0];
     }
     
     if(hpFilterCutoff != FILTER_HP_OFF)
     {
         float tempFilterValue = newHPCutoff;
-
-        HPFilter = [[NVHighpassFilter alloc] initWithSamplingRate:_sourceSamplingRate];
-        HPFilter.cornerFrequency = tempFilterValue;
-        HPFilter.Q = 0.40f;
+        for(int i=0;i<[self numberOfActiveChannels];i++)
+        {
+            NVHighpassFilter* HPFilter = [[NVHighpassFilter alloc] initWithSamplingRate:_sourceSamplingRate];
+            HPFilter.cornerFrequency = tempFilterValue;
+            HPFilter.Q = 0.40f;
+            [hpFilters addObject:HPFilter];
+        }
     }
     else
     {
-        HPFilter = nil;
+        hpFilters = [[NSMutableArray alloc] initWithCapacity:0];
     }
 
 }
@@ -1962,7 +2032,7 @@ static BBAudioManager *bbAudioManager = nil;
 {
     float maxNumOfSeconds = MAX_NUMBER_OF_FFT_SEC;
     [self quitAllFunctions];
-    [self getChannelsConfig];
+
     //Try to make under 1Hz resolution
     //if it is too much than limit it to samplingRate/2^11
     uint32_t log2n = log2f((float)_sourceSamplingRate);

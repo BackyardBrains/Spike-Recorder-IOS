@@ -34,7 +34,7 @@ NS_ASSUME_NONNULL_BEGIN
     @property int currentSampleRate;
     @property int currentNumOfChannels;
     @property float defaultTimeScale;
-    @property float defaultGain;
+    @property float defaultAmplitudeScale;
     @property bool sampleRateIsFunctionOfNumberOfChannels;
     @property (nonatomic, copy) NSString* userFriendlyFullName;
     @property (nonatomic, copy) NSString* userFriendlyShortName;

@@ -121,12 +121,12 @@
                 }
             }
             
-            tempString  = [oneBoardJSON valueForKey:@"defaultGain"];
+            tempString  = [oneBoardJSON valueForKey:@"defaultAmplitudeScale"];
             if(tempString)
             {
                 if([tempString floatValue])
                 {
-                    newBoard.defaultGain = [tempString floatValue];
+                    newBoard.defaultAmplitudeScale = [tempString floatValue];
                 }
             }
             
@@ -201,7 +201,8 @@
                     newChannel.userFriendlyShortName = [oneChannelJSON valueForKey:@"userFriendlyShortName"];
                     newChannel.activeByDefault = [[oneChannelJSON valueForKey:@"activeByDefault"] boolValue];
                     newChannel.filtered = [[oneChannelJSON valueForKey:@"filtered"] boolValue];
-                    
+                    newChannel.calibrationCoef = [[oneChannelJSON valueForKey:@"calibrationCoef"] floatValue];
+                    newChannel.channelIsCalibrated = [[oneChannelJSON valueForKey:@"channelIsCalibrated"] boolValue];
                     [newBoard.channels addObject:newChannel];
                 }
             }
@@ -263,17 +264,17 @@
                         newExpansionBoard.defaultTimeScale = newBoard.defaultTimeScale;
                     }
                     
-                    tempString  = [oneEBJSON valueForKey:@"defaultGain"];
+                    tempString  = [oneEBJSON valueForKey:@"defaultAmplitudeScale"];
                     if(tempString)
                     {
                         if([tempString floatValue])
                         {
-                            newExpansionBoard.defaultGain = [tempString floatValue];
+                            newExpansionBoard.defaultAmplitudeScale = [tempString floatValue];
                         }
                     }
                     else
                     {
-                        newExpansionBoard.defaultGain = newBoard.defaultGain;
+                        newExpansionBoard.defaultAmplitudeScale = newBoard.defaultAmplitudeScale;
                     }
                     
                    
@@ -291,7 +292,7 @@
                             newChannel.activeByDefault = [[oneChannelJSON valueForKey:@"activeByDefault"] boolValue];
                             newChannel.filtered = [[oneChannelJSON valueForKey:@"filtered"] boolValue];
                             newChannel.calibrationCoef = [[oneChannelJSON valueForKey:@"calibrationCoef"] floatValue];
-                            
+                            newChannel.channelIsCalibrated = [[oneChannelJSON valueForKey:@"channelIsCalibrated"] boolValue];
                             [newExpansionBoard.channels addObject:newChannel];
                         }
                     }

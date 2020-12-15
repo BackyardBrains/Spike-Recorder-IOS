@@ -108,6 +108,12 @@ static  EAInputBlock inputBlock;
     
 }
 
+-(void) setSampleRate:(int) inSampleRate andNumberOfChannels:(int) inNumberOfChannels
+{
+    _samplingRate = inSampleRate;
+    _numberOfChannels = inNumberOfChannels;
+}
+
 - (void) setupProtocol
 {
     [self askForBoardType];

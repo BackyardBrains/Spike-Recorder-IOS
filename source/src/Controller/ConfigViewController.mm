@@ -418,6 +418,7 @@
     {
         //if we will not turn OFF the channel just change the color of active channel
         config.colorIndex = cell.colorChooser.selectedColorIndex;
+        [[BBAudioManager bbAudioManager] updateColorOfActiveChannels];
     }
     else
     {

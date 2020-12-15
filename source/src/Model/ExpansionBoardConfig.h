@@ -19,7 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
     @property int currentSampleRate;
     @property int currentNumOfChannels;
     @property float defaultTimeScale;
-    @property float defaultGain;
+    @property float defaultAmplitudeScale;
     @property bool expansionBoardSupportedByThisPlatform;
     @property (nonatomic, copy) NSString* productURL;
     @property (nonatomic, copy) NSString* helpURL;

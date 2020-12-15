@@ -57,9 +57,10 @@
     BOOL playing;
     
     //Filtering
-    NVHighpassFilter * HPFilter;
-    NVLowpassFilter * LPFilter;
-    NVNotchFilter * NotchFilter;
+    NSMutableArray * hpFilters;
+    NSMutableArray * lpFilters;
+    NSMutableArray * notchFilters;
+    
     BOOL notch50HzIsOn;
     BOOL notch60HzIsOn;
     
@@ -174,7 +175,8 @@
 -(void) deactivateInputDevice:(InputDevice *) inputDeviceToDeactivate;
 -(BOOL) activateChannelWithConfig:(ChannelConfig *) channelConfigToActivate;
 -(BOOL) deactivateChannelWithConfig:(ChannelConfig *) channelConfigToDeactivate;
-
+-(int) getColorIndexForActiveChannelIndex:(int) indexOfChannel;
+-(void) updateColorOfActiveChannels;
 //select which one is selected on UI
 -(void) selectChannel:(int) selectedChannel;
 
