@@ -13,12 +13,14 @@
 @synthesize calibrationCoef;
 @synthesize channelIsCalibrated;
 @synthesize currentlyActive;
+@synthesize defaultVoltageScale;
 - (id)init {
     if ((self = [super init])) {
         colorIndex = 1;
         calibrationCoef = 1.0;
         channelIsCalibrated = false;
         currentlyActive = NO;
+        defaultVoltageScale = 0.1;
     }
     
     return self;

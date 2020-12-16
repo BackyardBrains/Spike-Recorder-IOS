@@ -11,12 +11,13 @@
                 "bybProtocolVersion": "1.0",
                 "maxSampleRate":"1000",
                 "maxNumberOfChannels":"2",
+                "sampleResolution":10,
                 "supportedPlatforms":"android,win,mac,linux,ios",
                 "productURL":"https://backyardbrains.com/products/heartAndBrainSpikerBox",
                 "helpURL":"https://backyardbrains.com/products/heartAndBrainSpikerBox",
                 "firmwareUpdateUrl":"https://backyardbrains.com/products/firmwares/sbpro/compatibility.xml",
                 "iconURL":"",
-                "defaultTimeScale":"0.1",
+                "defaultTimeScale":"2.0",
                 "defaultAmplitudeScale":"1.0",
                 "sampleRateIsFunctionOfNumberOfChannels":0,
                 "miniOSAppVersion":"3.0.0",
@@ -39,7 +40,8 @@
                         "activeByDefault":1,
                         "filtered":1,
                         "calibrationCoef":1.0,
-                        "channelIsCalibrated":1
+                        "channelIsCalibrated":1,
+                        "defaultVoltageScale":0.3
                     },
                     {
                         "userFriendlyFullName":"EEG/ECG Channel 2",
@@ -47,7 +49,8 @@
                         "activeByDefault":0,
                         "filtered":1,
                         "calibrationCoef":1.0,
-                        "channelIsCalibrated":1
+                        "channelIsCalibrated":1,
+                        "defaultVoltageScale":5.0
                     }
                 ],
                 "expansionBoards":[
@@ -77,7 +80,8 @@
                                 "activeByDefault":0,
                                 "filtered":1,
                                 "calibrationCoef":1.0,
-                                "channelIsCalibrated":1
+                                "channelIsCalibrated":1,
+                                "defaultVoltageScale":0.1
                             },
                             {
                                 "userFriendlyFullName":"EEG/ECG Channel 4",
@@ -85,7 +89,8 @@
                                 "activeByDefault":0,
                                 "filtered":0,
                                 "calibrationCoef":1.0,
-                                "channelIsCalibrated":1
+                                "channelIsCalibrated":1,
+                                "defaultVoltageScale":0.1
                             }
                         ]
                     },
@@ -108,7 +113,8 @@
                                 "activeByDefault":1,
                                 "filtered":0,
                                 "calibrationCoef":1.0,
-                                "channelIsCalibrated":1
+                                "channelIsCalibrated":1,
+                                "defaultVoltageScale":0.1
                             }
                         ]
                     },
@@ -131,7 +137,8 @@
                                 "activeByDefault":1,
                                 "filtered":0,
                                 "calibrationCoef":1.0,
-                                "channelIsCalibrated":1
+                                "channelIsCalibrated":1,
+                                "defaultVoltageScale":0.1
                             }
                         ]
                     }
@@ -146,6 +153,7 @@
                 "bybProtocolVersion": "1.0",
                 "maxSampleRate":"10000",
                 "maxNumberOfChannels":"2",
+                "sampleResolution":10,
                 "defaultTimeScale":"0.1",
                 "supportedPlatforms":"android,ios,win,mac,linux",
                 "productURL":"https://backyardbrains.com/products/musclespikerboxpro",
@@ -178,7 +186,8 @@
                         "activeByDefault":1,
                         "filtered":1,
                         "calibrationCoef":1.0,
-                        "channelIsCalibrated":1
+                        "channelIsCalibrated":1,
+                        "defaultVoltageScale":0.1
                     },
                     {
                         "userFriendlyFullName":"EMG Channel 2",
@@ -186,7 +195,8 @@
                         "activeByDefault":0,
                         "filtered":1,
                         "calibrationCoef":1.0,
-                        "channelIsCalibrated":1
+                        "channelIsCalibrated":1,
+                        "defaultVoltageScale":0.1
                     }
                 ],
                 "expansionBoards":[
@@ -216,7 +226,8 @@
                                 "activeByDefault":1,
                                 "filtered":0,
                                 "calibrationCoef":1.0,
-                                "channelIsCalibrated":1
+                                "channelIsCalibrated":1,
+                                "defaultVoltageScale":0.1
                             },
                             {
                                 "userFriendlyFullName":"EMG Channel 4",
@@ -224,7 +235,8 @@
                                 "activeByDefault":0,
                                 "filtered":0,
                                 "calibrationCoef":1.0,
-                                "channelIsCalibrated":1
+                                "channelIsCalibrated":1,
+                                "defaultVoltageScale":0.1
                             }
                         ]
                     },
@@ -247,7 +259,8 @@
                                 "activeByDefault":1,
                                 "filtered":0,
                                 "calibrationCoef":1.0,
-                                "channelIsCalibrated":1
+                                "channelIsCalibrated":1,
+                                "defaultVoltageScale":0.1
                             }
                         ]
                     },
@@ -270,7 +283,8 @@
                                 "activeByDefault":1,
                                 "filtered":0,
                                 "calibrationCoef":1.0,
-                                "channelIsCalibrated":1
+                                "channelIsCalibrated":1,
+                                "defaultVoltageScale":0.1
                             }
                         ]
                     }
@@ -285,6 +299,7 @@
                 "bybProtocolVersion": "1.0",
                 "maxSampleRate":"10000",
                 "maxNumberOfChannels":"2",
+                "sampleResolution":10,
                 "supportedPlatforms":"android,ios,win,mac,linux",
                 "productURL":"https://backyardbrains.com/products/neuronspikerboxpro",
                 "helpURL":"https://backyardbrains.com/products/neuronspikerboxpro",
@@ -317,7 +332,8 @@
                         "activeByDefault":1,
                         "filtered":1,
                         "calibrationCoef":1.0,
-                        "channelIsCalibrated":1
+                        "channelIsCalibrated":1,
+                        "defaultVoltageScale":0.1
                     },
                     {
                         "userFriendlyFullName":"Neuron Channel 2",
@@ -325,7 +341,8 @@
                         "activeByDefault":0,
                         "filtered":1,
                         "calibrationCoef":1.0,
-                        "channelIsCalibrated":1
+                        "channelIsCalibrated":1,
+                        "defaultVoltageScale":0.1
                     }
                 ],
                 "expansionBoards":[
@@ -352,7 +369,8 @@
                                 "activeByDefault":1,
                                 "filtered":0,
                                 "calibrationCoef":1.0,
-                                "channelIsCalibrated":1
+                                "channelIsCalibrated":1,
+                                "defaultVoltageScale":0.1
                             },
                             {
                                 "userFriendlyFullName":"Neuron Channel 4",
@@ -360,7 +378,8 @@
                                 "activeByDefault":0,
                                 "filtered":0,
                                 "calibrationCoef":1.0,
-                                "channelIsCalibrated":1
+                                "channelIsCalibrated":1,
+                                "defaultVoltageScale":0.1
                             }
                         ]
                     },
@@ -383,7 +402,8 @@
                                 "activeByDefault":1,
                                 "filtered":0,
                                 "calibrationCoef":1.0,
-                                "channelIsCalibrated":1
+                                "channelIsCalibrated":1,
+                                "defaultVoltageScale":0.1
                             }
                         ]
                     },
@@ -406,7 +426,8 @@
                                 "activeByDefault":1,
                                 "filtered":0,
                                 "calibrationCoef":1.0,
-                                "channelIsCalibrated":1
+                                "channelIsCalibrated":1,
+                                "defaultVoltageScale":0.1
                             }
                         ]
                     }

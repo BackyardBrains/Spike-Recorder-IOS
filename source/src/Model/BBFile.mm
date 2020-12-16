@@ -96,8 +96,8 @@ using namespace tinyxml2;
     self.fileUsage = NORMAL_FILE_USAGE;
     // Grab the sampling rate from NSUserDefaults
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    self.samplingrate   = [[BBAudioManager bbAudioManager] samplingRate];
-    //        self.samplingrate = [[Novocaine audioManager] samplingrate];
+    self.samplingrate   = [[BBAudioManager bbAudioManager] sourceSamplingRate];
+
     self.gain           = [[defaults valueForKey:@"gain"] floatValue];
     self.spikesFiltered = FILE_NOT_SPIKE_SORTED;
     self.numberOfChannels = 0;

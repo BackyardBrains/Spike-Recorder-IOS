@@ -50,6 +50,7 @@ const uint8_t kHeaderBytes[] = {0xCA, 0x5C};
     int escapeSequenceDetectorIndex;
     int _samplingRate;
     int _numberOfChannels;
+    int _halfTheSampleVoltageRange;
     std::string firmwareVersion;
     std::string hardwareVersion;
     std::string hardwareType;
@@ -105,13 +106,22 @@ static  EAInputBlock inputBlock;
     escapeSequenceDetectorIndex = 0;
     _samplingRate = 10000;
     _numberOfChannels = 2; //TODO:Make this dynamic from config file
+    _halfTheSampleVoltageRange = 512;
     
 }
 
--(void) setSampleRate:(int) inSampleRate andNumberOfChannels:(int) inNumberOfChannels
+-(void) setSampleRate:(int) inSampleRate numberOfChannels:(int) inNumberOfChannels andResolution:(int) resolution;
 {
     _samplingRate = inSampleRate;
     _numberOfChannels = inNumberOfChannels;
+    if(resolution>0)
+    {
+        _halfTheSampleVoltageRange = (int) (pow(2,resolution)/2.0);
+    }
+    else
+    {
+        _halfTheSampleVoltageRange = 512;
+    }
 }
 
 - (void) setupProtocol
@@ -278,7 +288,7 @@ static  EAInputBlock inputBlock;
                         break;//continue as if we have new frame
                     }
                     
-                    obuffer[obufferIndex++] = ((float)(writeInteger-512))/512.0;
+                    obuffer[obufferIndex++] = ((float)(writeInteger-_halfTheSampleVoltageRange))/((float)_halfTheSampleVoltageRange);
                     
                     
                     if([self areWeAtTheEndOfFrame])

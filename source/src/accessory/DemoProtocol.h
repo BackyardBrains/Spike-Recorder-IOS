@@ -34,7 +34,7 @@ typedef void (^EAInputBlock)(float *data, UInt32 numFrames, UInt32 numChannels);
 //+ (EAInputBlock)getInputBlock;
 -(void) initProtocol;
 @property (atomic, copy) EAInputBlock inputBlock;
--(void) setSampleRate:(int) inSampleRate andNumberOfChannels:(int) inNumberOfChannels;
+-(void) setSampleRate:(int) inSampleRate numberOfChannels:(int) inNumberOfChannels andResolution:(int) resolution;
 
 
 

@@ -19,6 +19,8 @@ NS_ASSUME_NONNULL_BEGIN
     @property NSInteger colorIndex;
     @property float calibrationCoef;
     @property bool channelIsCalibrated;
+    @property float defaultVoltageScale;
+
 @end
 
 NS_ASSUME_NONNULL_END

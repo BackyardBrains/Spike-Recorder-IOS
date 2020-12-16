@@ -59,7 +59,6 @@ typedef enum {
     
 }
 
-@property (assign) int channelsConfiguration;
 @property (assign) MultichannelGLViewMode mode;
 @property (nonatomic, assign) BOOL rtConfigurationActive;
 -(void) autorangeSelectedChannel;
@@ -69,7 +68,8 @@ typedef enum {
 - (void)saveSettings:(BOOL)useThresholdSettings;
 - (void)loadSettings:(BOOL)useThresholdSettings;
 - (void)setNumberOfChannels:(int) newNumberOfChannels samplingRate:(float) newSamplingRate andDataSource:(id <MultichannelGLViewDelegate>) newDataSource;
-
+-(void) setCurrentTimeScale:(float) timeScaleToSet;
+-(void) setCurrentVoltageScaleToDefault;
 @end
 
 

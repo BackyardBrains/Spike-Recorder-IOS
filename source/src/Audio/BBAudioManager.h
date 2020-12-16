@@ -23,6 +23,7 @@
 
 #define RESETUP_SCREEN_NOTIFICATION @"resetupScreenNotification"
 #define CAN_NOT_FIND_CONFIG_FOR_DEVICE @"canNotFindConfigForDevice"
+#define NEW_DEVICE_ACTIVATED @"newDeviceActivated"
 #define MAX_NUMBER_OF_FFT_SEC 6.0f
 
 #define AM_CARRIER_FREQUENCY 5000.0
@@ -177,6 +178,8 @@
 -(BOOL) deactivateChannelWithConfig:(ChannelConfig *) channelConfigToDeactivate;
 -(int) getColorIndexForActiveChannelIndex:(int) indexOfChannel;
 -(void) updateColorOfActiveChannels;
+-(float) getDefaultTimeScale;
+-(float) getVoltageScaleForChannelIndex:(int)indexOfChannel;
 //select which one is selected on UI
 -(void) selectChannel:(int) selectedChannel;
 

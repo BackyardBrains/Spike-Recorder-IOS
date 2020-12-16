@@ -94,6 +94,7 @@
             newBoard.hardwareComProtocolType = [oneBoardJSON valueForKey:@"hardwareComProtocolType"];
             newBoard.bybProtocolType = [oneBoardJSON valueForKey:@"bybProtocolType"];
             newBoard.bybProtocolVersion = [oneBoardJSON valueForKey:@"bybProtocolVersion"];
+            newBoard.sampleResolution = [[oneBoardJSON valueForKey:@"sampleResolution"] intValue];
             NSString * tempString  = [oneBoardJSON valueForKey:@"maxSampleRate"];
             if(tempString)
             {
@@ -203,6 +204,8 @@
                     newChannel.filtered = [[oneChannelJSON valueForKey:@"filtered"] boolValue];
                     newChannel.calibrationCoef = [[oneChannelJSON valueForKey:@"calibrationCoef"] floatValue];
                     newChannel.channelIsCalibrated = [[oneChannelJSON valueForKey:@"channelIsCalibrated"] boolValue];
+                    newChannel.defaultVoltageScale = [[oneChannelJSON valueForKey:@"defaultVoltageScale"] floatValue];
+                    
                     [newBoard.channels addObject:newChannel];
                 }
             }
@@ -293,6 +296,7 @@
                             newChannel.filtered = [[oneChannelJSON valueForKey:@"filtered"] boolValue];
                             newChannel.calibrationCoef = [[oneChannelJSON valueForKey:@"calibrationCoef"] floatValue];
                             newChannel.channelIsCalibrated = [[oneChannelJSON valueForKey:@"channelIsCalibrated"] boolValue];
+                            newChannel.defaultVoltageScale = [[oneChannelJSON valueForKey:@"defaultVoltageScale"] floatValue];
                             [newExpansionBoard.channels addObject:newChannel];
                         }
                     }

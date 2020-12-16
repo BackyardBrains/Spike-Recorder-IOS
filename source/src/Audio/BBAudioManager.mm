@@ -97,6 +97,7 @@ static BBAudioManager *bbAudioManager = nil;
     NSMutableArray * availableInputChannels;
     NSMutableArray * currentDeviceAvailableInputChannels;
     uint16_t activeChannels;
+    NSMutableArray * currentDeviceActiveInputChannels;
     float * extractedChannelsBuffer;
     int activeChannelColorIndex[16];
 }
@@ -176,6 +177,7 @@ static BBAudioManager *bbAudioManager = nil;
     if (self = [super init])
     {
         boardsConfigManager = [[BoardsConfigManager alloc] init];
+        
         eaManager = [MyAppDelegate getEaManager];
         extractedChannelsBuffer = (float *)calloc(SIZE_OF_MAX_SAMPLES_FOR_ALL_CHANNELS, sizeof(float));
         
@@ -289,7 +291,7 @@ static BBAudioManager *bbAudioManager = nil;
     inpDevConf.maxNumberOfChannels = audioManager.numInputChannels;
     inpDevConf.hardwareComProtocolType = HARDWARE_PROTOCOL_TYPE_LOCAL;
     inpDevConf.inputDevicesSupportedByThisPlatform = YES;
-    inpDevConf.defaultTimeScale = 1.0;
+    inpDevConf.defaultTimeScale = 2.0;
     inpDevConf.defaultAmplitudeScale = 1.0;
     inpDevConf.sampleRateIsFunctionOfNumberOfChannels = NO;
     inpDevConf.minAppVersion = @"1.0.0";
@@ -349,6 +351,7 @@ static BBAudioManager *bbAudioManager = nil;
     
     availableInputDevices = [[NSMutableArray alloc] initWithCapacity:0];
     availableInputChannels = [[NSMutableArray alloc] initWithCapacity:0];
+    currentDeviceActiveInputChannels = [[NSMutableArray alloc] initWithCapacity:0];
     currentDeviceAvailableInputChannels = [[NSMutableArray alloc] initWithCapacity:0];
     //create input device config for standard input (microphone)
     [self addLocalInputDeviceToInputDevices];
@@ -533,13 +536,7 @@ static BBAudioManager *bbAudioManager = nil;
     InputDevice* inputDeviceToActivate = (InputDevice*)[availableInputDevices objectAtIndex:indexOfDevice];
     InputDeviceConfig* devConf = (InputDeviceConfig*)[inputDeviceToActivate config];
     inputDeviceToActivate.currentlyActive = YES;
-   
 
-    
-    
-    
-    
-    
     
     //----- set color for chanels ------
     
@@ -651,6 +648,7 @@ static BBAudioManager *bbAudioManager = nil;
     
     // ------ activate inputs and outputs ------
     [[NSNotificationCenter defaultCenter] postNotificationName:RESETUP_SCREEN_NOTIFICATION object:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:NEW_DEVICE_ACTIVATED object:self];
     [self startAquiringInputs:inputDeviceToActivate];
 }
 
@@ -843,6 +841,17 @@ static BBAudioManager *bbAudioManager = nil;
 
 }
 
+-(float) getDefaultTimeScale
+{
+    InputDevice * tempInputDevice = [self currentlyActiveInputDevice];
+    return tempInputDevice.config.defaultTimeScale;
+}
+
+-(float) getVoltageScaleForChannelIndex:(int)indexOfChannel
+{
+    ChannelConfig* tempChannelConfig = [currentDeviceActiveInputChannels objectAtIndex:indexOfChannel];
+    return tempChannelConfig.defaultVoltageScale;
+}
 #pragma mark - Channels code
 
 //Note:
@@ -931,6 +940,7 @@ static BBAudioManager *bbAudioManager = nil;
 {
     activeChannels = 0;
     uint16_t mask = 1;
+    [currentDeviceActiveInputChannels removeAllObjects];
     InputDevice * currInputDevice = [self currentlyActiveInputDevice];
     InputDeviceConfig* devConf = (InputDeviceConfig*)[currInputDevice config];
     int colorArrayIndex = 0;
@@ -942,6 +952,7 @@ static BBAudioManager *bbAudioManager = nil;
             activeChannels = activeChannels | mask;
             activeChannelColorIndex[colorArrayIndex] = tempChannel.colorIndex;
             colorArrayIndex++;
+            [currentDeviceActiveInputChannels addObject:tempChannel];
         }
         mask = mask<<1;
     }
@@ -956,6 +967,7 @@ static BBAudioManager *bbAudioManager = nil;
                 activeChannels = activeChannels | mask;
                 activeChannelColorIndex[colorArrayIndex] = tempChannel.colorIndex;
                 colorArrayIndex++;
+                [currentDeviceActiveInputChannels addObject:tempChannel];
             }
             mask = mask<<1;
         }
@@ -1107,7 +1119,8 @@ static BBAudioManager *bbAudioManager = nil;
     DemoProtocol * mfiAccessory = [MyAppDelegate getEaManager];
     newConfig.currentSampleRate = newConfig.maxSampleRate;
     newConfig.currentNumOfChannels = [newConfig.channels count];
-    [mfiAccessory setSampleRate:newConfig.currentSampleRate andNumberOfChannels:newConfig.currentNumOfChannels];
+   
+    [mfiAccessory setSampleRate:newConfig.currentSampleRate numberOfChannels:newConfig.currentNumOfChannels andResolution:newConfig.sampleResolution];
     //add device to available devices and start emediately
     InputDevice * newInputDevice = [[InputDevice alloc] initWithConfig:newConfig];
     newInputDevice.uniqueInstanceID = serialNum;

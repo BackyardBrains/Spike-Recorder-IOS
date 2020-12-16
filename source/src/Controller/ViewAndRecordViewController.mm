@@ -57,11 +57,16 @@
     }
     else
     {
+        //this will execute just first time the app is opened
         glView = [[MultichannelCindeGLView alloc] initWithFrame:self.view.frame];
         [self.view addSubview:glView];
         [self.view sendSubviewToBack:glView];        
         [self initConstrainsForGLView];
+     
     }
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reSetupScreen:) name:RESETUP_SCREEN_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newDeviceActivated:) name:NEW_DEVICE_ACTIVATED object:nil];
+    
     [self setGLView:glView];
     glView.mode = MultichannelGLViewModeView;
     
@@ -76,18 +81,6 @@
     doubleTap.numberOfTapsRequired = 2;
     [glView addGestureRecognizer:doubleTap];
  
-    NSLog(@"ViewAndRecord - set active channels");
-        
-    //Set all channels to active
-    UInt8 configurationOfChannels = 0;
-    int tempMask = 1;
-    for(int i=0;i<[[BBAudioManager bbAudioManager] numberOfActiveChannels];i++)
-    {
-        configurationOfChannels = configurationOfChannels | (tempMask<<i);
-    }
-    glView.channelsConfiguration = configurationOfChannels;
-
-    
     NSLog(@"ViewAndRecord -add notifications");
 
     CGRect stopButtonRect = CGRectMake(self.stopButton.frame.origin.x, -self.stopButton.frame.size.height, self.stopButton.frame.size.width, self.stopButton.frame.size.height);
@@ -95,7 +88,7 @@
     
     [super viewWillAppear:animated];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reSetupScreen) name:RESETUP_SCREEN_NOTIFICATION object:nil];
+  
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate:) name:UIApplicationWillTerminateNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
@@ -119,6 +112,7 @@
     [glView saveSettings:FALSE]; // save non-threshold settings
 
     [[NSNotificationCenter defaultCenter] removeObserver:self name:RESETUP_SCREEN_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NEW_DEVICE_ACTIVATED object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillTerminateNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillResignActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
@@ -151,7 +145,17 @@
 
 #pragma mark - Init/Reset
 
--(void) reSetupScreen
+-(void) newDeviceActivated:(id) object
+{
+    float currentDefaultTimescale = [[BBAudioManager bbAudioManager] getDefaultTimeScale];
+    if(glView)
+    {
+        [glView setCurrentTimeScale:currentDefaultTimescale];
+        [glView setCurrentVoltageScaleToDefault];
+    }
+}
+
+-(void) reSetupScreen:(id) object
 {
     NSLog(@"Resetup screen - View And Record View Controller");
     if(glView)
@@ -179,14 +183,6 @@
     [self setGLView:glView];
     [glView startAnimation];
     
-    //Set all channels to active
-    UInt8 configurationOfChannels = 0;
-    int tempMask = 1;
-    for(int i=0;i<[[BBAudioManager bbAudioManager] numberOfActiveChannels];i++)
-    {
-        configurationOfChannels = configurationOfChannels | (tempMask<<i);
-    }
-    glView.channelsConfiguration = configurationOfChannels;
 }
 
 - (void)setGLView:(MultichannelCindeGLView *)view
