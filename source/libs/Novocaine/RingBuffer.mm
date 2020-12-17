@@ -311,7 +311,7 @@ float RingBuffer::Min(const SInt64 whichChannel)
 
 void RingBuffer::Clear()
 {
-    NSLog(@"\nClear Ring Buffer\n");
+    NSLog(@"Clear Ring Buffer");
 	for (int i=0; i < mNumChannels; ++i) {
         atomic_set(&mLastWrittenIndex[i], 0);
         atomic_set(&mLastReadIndex[i], 0);

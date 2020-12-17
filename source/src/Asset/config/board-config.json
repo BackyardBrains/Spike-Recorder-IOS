@@ -291,6 +291,51 @@
                 ]
             },
             {
+                "uniqueName": "AMMOD",
+                "userFriendlyFullName":"Spiker Box via audio cable",
+                "userFriendlyShortName":"Spiker Box via audio cable",
+                "hardwareComProtocolType": "local",
+                "bybProtocolType": "",
+                "bybProtocolVersion": "",
+                "maxSampleRate":"44100",
+                "maxNumberOfChannels":"1",
+                "sampleResolution":0,
+                "defaultTimeScale":"4",
+                "supportedPlatforms":"android,ios,win,mac,linux",
+                "productURL":"https://backyardbrains.com/",
+                "helpURL":"https://backyardbrains.com/",
+                "iconURL":"",
+                "firmwareUpdateUrl":"",
+                "defaultAmplitudeScale":"1.0",
+                "sampleRateIsFunctionOfNumberOfChannels":0,
+                "miniOSAppVersion":"3.0.0",
+                "minAndroidAppVersion":"1.0.0",
+                "minWinAppVersion":"1.0.0",
+                "minMacAppVersion":"1.0.0",
+                "minLinuxAppVersion":"1.0.0",
+                "filter":{
+                    "signalType":"emgSignal,ekgSignal",
+                    "lowPassON":1,
+                    "lowPassCutoff":"500.0",
+                    "highPassON":0,
+                    "highPassCutoff":"0",
+                    "notchFilterState":"notch60Hz"
+                },
+                "channels":[
+                    {
+                        "userFriendlyFullName":"SpikerBox Channel 1",
+                        "userFriendlyShortName":"SpikerBox Ch. 1",
+                        "activeByDefault":1,
+                        "filtered":1,
+                        "calibrationCoef":1.0,
+                        "channelIsCalibrated":0,
+                        "defaultVoltageScale":0.1
+                    }
+                ],
+                "expansionBoards":[
+                ]
+            },
+            {
                 "uniqueName": "NEURONSB",
                 "userFriendlyFullName":"Neuron SpikerBox Pro",
                 "userFriendlyShortName":"Neuron SpikerBox Pro",

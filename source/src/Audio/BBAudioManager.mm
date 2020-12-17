@@ -26,6 +26,8 @@
 #define LOCAL_AUDIO_DEVICE_UNIQUE_NAME @"LOCMIC"
 #define LOCAL_MICROPHONE_SHORT_NAME @"Microphone"
 #define UNIQUE_INSTANCE_ID_OF_MICROPHONE @"localmicrophone"
+#define UNIQUE_NAME_OF_AM_MODULATED_INPUT @"AMMOD"
+#define UNIQUE_INSTANCE_ID_OF_AM_MODULATED_SIGNAL @"ammodulatedsignal"
 
 #define SIZE_OF_MAX_SAMPLES_FOR_ALL_CHANNELS 20000
 
@@ -100,6 +102,10 @@ static BBAudioManager *bbAudioManager = nil;
     NSMutableArray * currentDeviceActiveInputChannels;
     float * extractedChannelsBuffer;
     int activeChannelColorIndex[16];
+    
+    BOOL shouldTurnONAMModulation;
+    dispatch_queue_t serialQueue ;
+
 }
 
 @property BOOL playing;
@@ -176,6 +182,8 @@ static BBAudioManager *bbAudioManager = nil;
 {
     if (self = [super init])
     {
+        
+        serialQueue = dispatch_queue_create("com.blah.queue", DISPATCH_QUEUE_SERIAL);
         boardsConfigManager = [[BoardsConfigManager alloc] init];
         
         eaManager = [MyAppDelegate getEaManager];
@@ -228,6 +236,7 @@ static BBAudioManager *bbAudioManager = nil;
         FFTOn = false;
         ECGOn = false;
         rtSpikeSorting = false;
+        shouldTurnONAMModulation = false;
         
         currentFilterSettings = FILTER_SETTINGS_RAW;
         lpFilterCutoff = FILTER_LP_OFF;
@@ -322,7 +331,7 @@ static BBAudioManager *bbAudioManager = nil;
     {
         InputDevice * tempInputDevice  = [availableInputDevices objectAtIndex:i];
         
-        if([tempInputDevice.config.uniqueName isEqualToString:LOCAL_AUDIO_DEVICE_UNIQUE_NAME])
+        if([tempInputDevice.config.uniqueName isEqualToString:LOCAL_AUDIO_DEVICE_UNIQUE_NAME] || [tempInputDevice.config.uniqueName isEqualToString:UNIQUE_NAME_OF_AM_MODULATED_INPUT])
         {
             inputDeviceThatWeFound = tempInputDevice;
             [availableInputDevices removeObject:tempInputDevice];
@@ -524,10 +533,13 @@ static BBAudioManager *bbAudioManager = nil;
             ((ChannelConfig*) tempConfig.channels[i]).currentlyActive = NO;
             ((ChannelConfig*) tempConfig.channels[i]).colorIndex = 0;
         }
-        for (int i =0;i<[tempConfig.connectedExpansionBoard.channels count];i++)
+        if(tempConfig.connectedExpansionBoard)
         {
-            ((ChannelConfig*) tempConfig.connectedExpansionBoard.channels[i]).currentlyActive = NO;
-            ((ChannelConfig*) tempConfig.connectedExpansionBoard.channels[i]).colorIndex = 0;
+            for (int i =0;i<[tempConfig.connectedExpansionBoard.channels count];i++)
+            {
+                ((ChannelConfig*) tempConfig.connectedExpansionBoard.channels[i]).currentlyActive = NO;
+                ((ChannelConfig*) tempConfig.connectedExpansionBoard.channels[i]).colorIndex = 0;
+            }
         }
     }
     
@@ -773,6 +785,12 @@ static BBAudioManager *bbAudioManager = nil;
             // Replace the input block with the old input block, where we just save an in-memory copy of the audio.
             [audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
             {
+                [self checkIfWeHaveAMModulatedFirstChannelWithData:data numFrames:numFrames numChannels:numChannels];
+                if(self.amDemodulationIsON)
+                {
+                    //demodulate and extract just first channel
+                    [self demodulateAMSignalAndExtractFirstChannelFromData:data numberOfFrames:numFrames numChannels:numChannels];
+                }
                 [self extractActiveChannelsFormData:&data withNumberOfFrames:numFrames numberOfChannels:[self numberOfSourceChannels]];
                 if(ringBuffer == NULL)
                 {
@@ -1179,8 +1197,14 @@ static BBAudioManager *bbAudioManager = nil;
     NSLog(@"resetupAudioInputs - BBAudioManager\n");
     if(!playing && audioManager)
     {
-        [self addLocalInputDeviceToInputDevices];
-        [[NSNotificationCenter defaultCenter] postNotificationName:RESETUP_SCREEN_NOTIFICATION object:self];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            //dispatch_async(serialQueue, ^{
+                [self addLocalInputDeviceToInputDevices];
+                [self activateFirstInstanceOfInputDeviceWithUniqueName:LOCAL_AUDIO_DEVICE_UNIQUE_NAME];
+                [[NSNotificationCenter defaultCenter] postNotificationName:RESETUP_SCREEN_NOTIFICATION object:self];
+            //});
+        });
+        
     }
 }
 
@@ -1209,13 +1233,13 @@ static BBAudioManager *bbAudioManager = nil;
 //
 -(void) additionalProcessingOfInputData:(float *) data forNumOfFrames:(UInt32) numFrames andNumChannels:(UInt32) numChannels
 {
-    [self amDemodulationOfData:data numFrames:numFrames numChannels:numChannels];
+    /*[self amDemodulationOfData:data numFrames:numFrames numChannels:numChannels];
     
     if(self.amDemodulationIsON)//TODO:WHat is this? Just filtering in the same way as normal channels
     {
         [self filterData:data numFrames:numFrames numChannels:numChannels];
     }
-    
+    */
     [self filterData:data numFrames:numFrames numChannels:numChannels];
     
     if (recording)
@@ -1247,9 +1271,149 @@ static BBAudioManager *bbAudioManager = nil;
     {
         [[BBAnalysisManager bbAnalysisManager] findSpikesInRTForData:data numberOfFrames:numFrames numberOfChannel:numChannels selectedChannel:_selectedChannel];
     }
+    
+    
 }
 
 
+-(void) checkIfWeHaveAMModulatedFirstChannelWithData:(float *)inData numFrames:(UInt32) inNumFrames numChannels:(UInt32) inNumChannels
+{
+    //calculate RMS for original signal
+    float zero = 0.0f;
+    //get first channel
+    vDSP_vsadd(inData,
+               inNumChannels,
+               &zero,
+               tempResamplingBuffer,
+               1,
+               inNumFrames);
+    
+    //low pass at 6000Hz
+    [amDetectionLPFilter filterData:tempResamplingBuffer numFrames:inNumFrames numChannels:1];
+    
+    //calc. RMS before demodulation
+    float rms;
+    vDSP_rmsqv(tempResamplingBuffer,1,&rms,inNumFrames);
+    rmsOfOriginalSignal = rmsOfOriginalSignal*0.9+rms*0.1;
+    
+    //Notch out 5000Hz carier
+    [amDetectionNotchFilter filterData:tempResamplingBuffer numFrames:inNumFrames numChannels:1];
+    
+    //calc. RMS after Notch filter
+    vDSP_rmsqv(tempResamplingBuffer,1,&rms,inNumFrames);
+    rmsOfNotchedSignal = rmsOfNotchedSignal*0.9 + rms*0.1;
+    
+    NSLog(@"a/b: %f",rmsOfOriginalSignal/rmsOfNotchedSignal);
+    //If RMS of the signal without carier is at least 3 times smaller than
+    //with carrier than we have carrier present in original signal
+    if(rmsOfNotchedSignal*3<rmsOfOriginalSignal)
+    {
+       
+        if(!self.amDemodulationIsON)
+        {
+            shouldTurnONAMModulation = true;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                //dispatch_async(serialQueue, ^{
+                    NSLog(@"Start AM modulation!!!!!");
+                    [self turnONAMModulation];
+                //});
+            });
+        }
+    }
+    else
+    {
+        shouldTurnONAMModulation = false;
+        if(self.amDemodulationIsON)
+        {
+            //turn OFF AM modulation
+            dispatch_async(dispatch_get_main_queue(), ^{
+                //dispatch_async(serialQueue, ^{
+                    NSLog(@"Stop AM Modulation!!!!!");
+                    self.amDemodulationIsON = false;
+                    InputDevice * amDevice = [self getInputDeviceWithUniqueName:UNIQUE_NAME_OF_AM_MODULATED_INPUT];
+                    InputDevice * micDevice = [self getInputDeviceWithUniqueName:LOCAL_AUDIO_DEVICE_UNIQUE_NAME];
+                    if(amDevice)
+                    {
+                        if(micDevice==nil)
+                        {
+                            [self addLocalInputDeviceToInputDevices];
+                            [self activateFirstInstanceOfInputDeviceWithUniqueName:LOCAL_AUDIO_DEVICE_UNIQUE_NAME];
+                        }
+                        [self removeInputDevice:amDevice];
+                    }
+                    else
+                    {
+                        if(micDevice)
+                        {
+                            [self activateFirstInstanceOfInputDeviceWithUniqueName:LOCAL_AUDIO_DEVICE_UNIQUE_NAME];
+                        }
+                        else
+                        {
+                            [self addLocalInputDeviceToInputDevices];
+                            [self activateFirstInstanceOfInputDeviceWithUniqueName:LOCAL_AUDIO_DEVICE_UNIQUE_NAME];
+                        }
+                    }
+                    
+                    
+                //});
+            });
+        }
+    }
+}
+
+
+-(void) turnONAMModulation
+{
+    shouldTurnONAMModulation = false;
+    //turn ON AM modulation
+    self.amDemodulationIsON = true;
+    
+    InputDeviceConfig * newDeviceConfig = [boardsConfigManager getDeviceConfigForUniqueName:UNIQUE_NAME_OF_AM_MODULATED_INPUT];
+    newDeviceConfig.maxSampleRate = [self sourceSamplingRate];
+    newDeviceConfig.currentSampleRate = [self sourceSamplingRate];
+    newDeviceConfig.currentNumOfChannels = 1;
+    newDeviceConfig.maxNumberOfChannels = 1;
+    
+    InputDevice * newInputDevice = [[InputDevice alloc] initWithConfig:newDeviceConfig];
+    newInputDevice.uniqueInstanceID = UNIQUE_INSTANCE_ID_OF_AM_MODULATED_SIGNAL;
+    //add AM modulated input to available input devices
+    
+    InputDevice * inputDeviceThatWeFound = nil;
+    for(int i=0;i<[availableInputDevices count];i++)
+    {
+        InputDevice * tempInputDevice  = [availableInputDevices objectAtIndex:i];
+        
+        if([tempInputDevice.config.uniqueName isEqualToString:LOCAL_AUDIO_DEVICE_UNIQUE_NAME])
+        {
+            inputDeviceThatWeFound = tempInputDevice;
+            [availableInputDevices removeObject:tempInputDevice];
+        }
+    }
+    
+    
+    [availableInputDevices addObject:newInputDevice];
+    [self updateAvailableInputChannels];
+    [self activateFirstInstanceOfInputDeviceWithUniqueName:UNIQUE_NAME_OF_AM_MODULATED_INPUT];
+}
+
+
+-(void) demodulateAMSignalAndExtractFirstChannelFromData:(float *) newData numberOfFrames:(UInt32) thisNumFrames numChannels:(UInt32) thisNumChannels
+{
+    vDSP_vabs(newData, 1, newData, 1, thisNumChannels*thisNumFrames);
+
+    float offset = 0;
+    vDSP_vsadd(newData,
+               1,
+               &offset,
+               newData,
+               1,
+               thisNumFrames);
+    //this will filter all channels together?! at 500Hz cutoff
+    [filterAMStage1 filterData:newData numFrames:thisNumFrames numChannels:thisNumChannels];
+    [filterAMStage2 filterData:newData numFrames:thisNumFrames numChannels:thisNumChannels];
+    [filterAMStage3 filterData:newData numFrames:thisNumFrames numChannels:thisNumChannels];
+}
+/*
 -(void) amDemodulationOfData:(float *)newData numFrames:(UInt32) thisNumFrames numChannels:(UInt32) thisNumChannels
 {
     if(thisNumChannels<3)
@@ -1263,24 +1427,31 @@ static BBAudioManager *bbAudioManager = nil;
                    tempResamplingBuffer,
                    1,
                    thisNumFrames);
+        
+        //low pass at 6000Hz
         [amDetectionLPFilter filterData:tempResamplingBuffer numFrames:thisNumFrames numChannels:1];
         
+        //calc. RMS before demodulation
         float rms;
         vDSP_rmsqv(tempResamplingBuffer,1,&rms,thisNumFrames);
         rmsOfOriginalSignal = rmsOfOriginalSignal*0.9+rms*0.1;
         
+        //Notch out 5000Hz carier
+        [amDetectionNotchFilter filterData:tempResamplingBuffer numFrames:thisNumFrames numChannels:1];
         
-       [amDetectionNotchFilter filterData:tempResamplingBuffer numFrames:thisNumFrames numChannels:1];
-        //calculate RMS after Notch filter
-       vDSP_rmsqv(tempResamplingBuffer,1,&rms,thisNumFrames);
-       rmsOfNotchedSignal = rmsOfNotchedSignal*0.9 + rms*0.1;
+        //calc. RMS after Notch filter
+        vDSP_rmsqv(tempResamplingBuffer,1,&rms,thisNumFrames);
+        rmsOfNotchedSignal = rmsOfNotchedSignal*0.9 + rms*0.1;
         
         //NSLog(@"a/b: %f",rmsOfOriginalSignal/rmsOfNotchedSignal);
+        //If RMS of the signal without carier is at least 3 times smaller than
+        //with carrier than we have carrier present in original signal
         if(rmsOfNotchedSignal*3<rmsOfOriginalSignal)
         {
             self.amDemodulationIsON = true;
             vDSP_vabs(newData, 1, newData, 1, thisNumChannels*thisNumFrames);
 
+            //this will filter all channels together?! at 500Hz cutoff
             [filterAMStage1 filterData:newData numFrames:thisNumFrames numChannels:thisNumChannels];
             [filterAMStage2 filterData:newData numFrames:thisNumFrames numChannels:thisNumChannels];
             [filterAMStage3 filterData:newData numFrames:thisNumFrames numChannels:thisNumChannels];
@@ -1338,7 +1509,7 @@ static BBAudioManager *bbAudioManager = nil;
         }
     }
 }
-
+*/
 -(BOOL) isNotchON
 {
     return notch50HzIsOn || notch60HzIsOn;
