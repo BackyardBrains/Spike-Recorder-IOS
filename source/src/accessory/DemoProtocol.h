@@ -40,7 +40,7 @@ typedef void (^EAInputBlock)(float *data, UInt32 numFrames, UInt32 numChannels);
 
 - (void)sendCommandGetAdc;
 - (void) askForBoardType;
-
+-(int) getCurrentExpansionBoard;
 - (int) numberOfChannels;
 - (int) sampleRate;
 - (bool) shouldRestartDevice;

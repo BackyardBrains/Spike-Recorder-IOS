@@ -151,7 +151,7 @@ static  EAInputBlock inputBlock;
 -(void) askForBoardType
 {
     //uint8_t cmd[PROTOCOL_PAYLOAD_SIZE] = {P1_CMD_GET_ADC, 0, 0, 0, 0, 0};
-    NSString *s = @"board:;/n";
+    NSString *s = @"board:;\n";
     const char *c = [s UTF8String];
     [self queuePacket:(uint8_t*)c length:[s length]];
     
@@ -161,7 +161,7 @@ static  EAInputBlock inputBlock;
 // Gathers a complete protocol packet from the input stream
 - (void)processRxBytes:(uint8_t *)bytes length:(NSUInteger)len
 {
-    NSLog(@"Main length %i",(int)len);
+    //NSLog(@"Main length %i",(int)len);
     //if(inputBlock!=nil)
     //{
         for(int i=0;i<len;i++)
@@ -171,11 +171,11 @@ static  EAInputBlock inputBlock;
     
     int numOfFrames = [self processData:bytes withSize:len];
     
-    if(numOfFrames>0)
-    {
+    //if(numOfFrames>0)
+    //{
        
         self.inputBlock(obuffer,numOfFrames, _numberOfChannels);
-    }
+    //}
         //
     //}
     
@@ -205,9 +205,6 @@ static  EAInputBlock inputBlock;
         else
         {
             circularBuffer[cBufHead++] = buffer[i];
-            //uint debugMSB  = ((uint)(buffer[i])) & 0xFF;
-            //std::cout<<"M: " << debugMSB<<"\n";
-            
             if(cBufHead>=SIZE_OF_CIRC_BUFFER)
             {
                 cBufHead = 0;
@@ -219,6 +216,7 @@ static  EAInputBlock inputBlock;
     {
         return -1;
     }
+   
     uint LSB;
     uint MSB;
     bool haveData = true;
@@ -284,6 +282,8 @@ static  EAInputBlock inputBlock;
                     {
                         //we have more data in frame than we need
                         //something is wrong with this frame
+                        
+                        
                         numberOfFrames--;
                         break;//continue as if we have new frame
                     }
@@ -517,6 +517,8 @@ static  EAInputBlock inputBlock;
 
 -(void) executeOneMessageWithType: (std::string) typeOfMessage  value:(std::string) valueOfMessage offset: (int) offsetin
 {
+    NSLog(@"Execute message type: %@, value: %@", [NSString stringWithCString:typeOfMessage.c_str()
+                                                                     encoding:[NSString defaultCStringEncoding]], [NSString stringWithCString:valueOfMessage.c_str()encoding:[NSString defaultCStringEncoding]]);
 
     if(typeOfMessage == "FWV")
     {
@@ -557,7 +559,7 @@ static  EAInputBlock inputBlock;
     }
     if(typeOfMessage == "BRD")
     {
-       
+        NSLog(@"Exp board detected");
         currentAddOnBoard = (int)((unsigned int)valueOfMessage[0]-48);
         if(currentAddOnBoard == BOARD_WITH_ADDITIONAL_INPUTS)
         {
@@ -569,6 +571,7 @@ static  EAInputBlock inputBlock;
         }
         else if(currentAddOnBoard == BOARD_WITH_HAMMER)
         {
+            NSLog(@"Hammer detected");
             _samplingRate = 5000;
             _numberOfChannels  =3;
             _restartDevice = true;
@@ -581,14 +584,10 @@ static  EAInputBlock inputBlock;
         }
         else
         {
+            _samplingRate = 5000;
+            _numberOfChannels  =2;
+            _restartDevice = true;
             
-            
-            if(_samplingRate != 10000)
-            {
-                _samplingRate = 10000;
-                _numberOfChannels  =2;
-                _restartDevice = true;
-            }
         }
     }
     if(typeOfMessage == "RTR")
@@ -611,6 +610,11 @@ static  EAInputBlock inputBlock;
         //TODO: implement maximum number of channels
     }
     
+}
+
+-(int) getCurrentExpansionBoard
+{
+    return currentAddOnBoard;
 }
 
 - (int) numberOfChannels

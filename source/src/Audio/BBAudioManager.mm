@@ -515,6 +515,7 @@ static BBAudioManager *bbAudioManager = nil;
         return;
     }
     */
+    NSLog(@"activateInputDeviceAtIndex");
     // ------ stop all functions ------
     
     [self quitAllFunctions];
@@ -577,13 +578,13 @@ static BBAudioManager *bbAudioManager = nil;
             {
                 ((ChannelConfig*) devConf.connectedExpansionBoard.channels[i]).colorIndex = colorIndex;
                 colorIndex = colorIndex+1;
-                ((ChannelConfig*) devConf.channels[i]).currentlyActive = YES;
+                ((ChannelConfig*) devConf.connectedExpansionBoard.channels[i]).currentlyActive = YES;
             }
             else
             {
                 //set black and turn OFF the channel
-                ((ChannelConfig*) devConf.channels[i]).colorIndex = 0;
-                ((ChannelConfig*) devConf.channels[i]).currentlyActive = NO;
+                ((ChannelConfig*) devConf.connectedExpansionBoard.channels[i]).colorIndex = 0;
+                ((ChannelConfig*) devConf.connectedExpansionBoard.channels[i]).currentlyActive = NO;
             }
         }
     }
@@ -627,19 +628,21 @@ static BBAudioManager *bbAudioManager = nil;
    
     
     //if we have different sameple rate or number of channels resize buffers
-    if(tempSamplingRate != _sourceSamplingRate  || numOfActiveChannels != [self numberOfActiveChannels])
-    {
+    //if(tempSamplingRate != _sourceSamplingRate  || numOfActiveChannels != [self numberOfActiveChannels])
+    //{
         _sourceSamplingRate = tempSamplingRate;
         _numberOfSourceChannels = numberOfAvailableChannels;
         [self resetBuffers];
-    }
+  /*  }
     else
     {
         _sourceSamplingRate = tempSamplingRate;
         _numberOfSourceChannels = numberOfAvailableChannels;
         rtEvents = [[NSMutableArray alloc] initWithCapacity:0];
         ringBuffer->Clear();
-    }
+    }*/
+    
+    
     // ------ set filters according to config ------
     
     currentFilterSettings = FILTER_SETTINGS_CUSTOM;
@@ -761,9 +764,13 @@ static BBAudioManager *bbAudioManager = nil;
     {
         [eaManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
          {
-            [self extractActiveChannelsFormData:&data withNumberOfFrames:numFrames numberOfChannels:[self numberOfSourceChannels]];
+             if(numFrames>0)
+             {
+              [self extractActiveChannelsFormData:&data withNumberOfFrames:numFrames numberOfChannels:[self numberOfSourceChannels]];
+             }
              if([eaManager shouldRestartDevice])
              {
+                 NSLog(@"inside");
                  [self updateMfiDeviceParameters];
                  [eaManager deviceRestarted];
                  return;
@@ -774,9 +781,12 @@ static BBAudioManager *bbAudioManager = nil;
                  NSLog(@"/n/n ERROR in Input block for Mfi %p/n/n", self);
                  return;
              }
-             [self additionalProcessingOfInputData:data forNumOfFrames:numFrames andNumChannels:[self numberOfActiveChannels]];
-             ringBuffer->AddNewInterleavedFloatData(data, numFrames, [self numberOfActiveChannels]);
-             _preciseVirtualTimeNumOfFrames += numFrames;
+             if(numFrames>0)
+             {
+                 [self additionalProcessingOfInputData:data forNumOfFrames:numFrames andNumChannels:[self numberOfActiveChannels]];
+                 ringBuffer->AddNewInterleavedFloatData(data, numFrames, [self numberOfActiveChannels]);
+                 _preciseVirtualTimeNumOfFrames += numFrames;
+             }
              
          }];
     }
@@ -1148,10 +1158,54 @@ static BBAudioManager *bbAudioManager = nil;
 }
 
 //TODO:implement this function for expansion boards
+//
+// Called when eaManager request restart of device (shouldRestartDevice)
+//
 -(void) updateMfiDeviceParameters
 {
-    
+    NSLog(@"updateMfiDeviceParameters");
+    //check which expansion board is currently active
+    int currentExpansionBoard = 0;
+    InputDevice* inputDev = [self currentlyActiveInputDevice];
+    if(inputDev)
+    {
+        InputDeviceConfig * configForDevice = inputDev.config;
+        if(configForDevice.connectedExpansionBoard)
+        {
+            ExpansionBoardConfig* expConfig = configForDevice.connectedExpansionBoard;
+            currentExpansionBoard = [expConfig.boardType intValue];
+        }
+        //if expansion board changed, add new one
+        if(eaManager.getCurrentExpansionBoard !=  currentExpansionBoard)
+        {
+            NSMutableArray* expBoards = configForDevice.expansionBoards;
+            
+            for(int i=0;i<[expBoards count];i++)
+            {
+                ExpansionBoardConfig * expBoardConf = (ExpansionBoardConfig*)[expBoards objectAtIndex:i];
+                int totalNumberOfChannels = [configForDevice.channels count] + [expBoardConf.channels count];
+                int sampleRate = expBoardConf.maxSampleRate;
+                int resolutionOfData = configForDevice.sampleResolution;
+                if(eaManager.getCurrentExpansionBoard == [expBoardConf.boardType intValue])
+                {
+                    expBoardConf.currentlyActive = YES;
+                    inputDev.config.connectedExpansionBoard = expBoardConf;
+                    //dispatch_async(dispatch_get_main_queue(), ^{
+                            [self updateAvailableInputChannels];
+                            [self activateFirstInstanceOfInputDeviceWithUniqueName:configForDevice.uniqueName];
+                            [eaManager setSampleRate:sampleRate numberOfChannels:totalNumberOfChannels andResolution:resolutionOfData];
+                    //});
+                }
+            }
+        }
+        
+    }
+    else
+    {
+        return;
+    }
 }
+
 -(void) removeMfiDeviceWithModelNumber:(NSString *) modelNumber andSerial:(NSString *) serialNum;
 {
    // [self stopAllInputOutput];
@@ -1303,7 +1357,7 @@ static BBAudioManager *bbAudioManager = nil;
     vDSP_rmsqv(tempResamplingBuffer,1,&rms,inNumFrames);
     rmsOfNotchedSignal = rmsOfNotchedSignal*0.9 + rms*0.1;
     
-    NSLog(@"a/b: %f",rmsOfOriginalSignal/rmsOfNotchedSignal);
+    //NSLog(@"a/b: %f",rmsOfOriginalSignal/rmsOfNotchedSignal);
     //If RMS of the signal without carier is at least 3 times smaller than
     //with carrier than we have carrier present in original signal
     if(rmsOfNotchedSignal*3<rmsOfOriginalSignal)
@@ -1566,7 +1620,8 @@ static BBAudioManager *bbAudioManager = nil;
     {
             for(int i=0;i<thisNumChannels;i++)
             {
-                tempChannelConfig = (ChannelConfig *)[currentDeviceAvailableInputChannels objectAtIndex:i];
+                
+                tempChannelConfig = (ChannelConfig *)[currentDeviceActiveInputChannels objectAtIndex:i];
                 if(tempChannelConfig.filtered)
                 {
                         float zero = 0.0f;
