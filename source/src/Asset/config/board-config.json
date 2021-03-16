@@ -4,8 +4,8 @@
         "boards":[
             {
                 "uniqueName": "H&B SB Pro V1.0",
-                "userFriendlyFullName":"Heart and Brains SpikerBox Pro",
-                "userFriendlyShortName":"H&B SpikerBox Pro",
+                "userFriendlyFullName":"Human SpikerBox",
+                "userFriendlyShortName":"Human SpikerBox",
                 "hardwareComProtocolType": "iap2,serial",
                 "bybProtocolType": "BYB1",
                 "bybProtocolVersion": "1.0",
@@ -35,8 +35,8 @@
                 },
                 "channels":[
                     {
-                        "userFriendlyFullName":"EEG/ECG Channel 1",
-                        "userFriendlyShortName":"EEG/ECG Ch. 1",
+                        "userFriendlyFullName":"EEG/ECG/EMG Channel 1",
+                        "userFriendlyShortName":"EEG/ECG/EMG Ch. 1",
                         "activeByDefault":1,
                         "filtered":1,
                         "calibrationCoef":1.0,
@@ -44,8 +44,8 @@
                         "defaultVoltageScale":0.3
                     },
                     {
-                        "userFriendlyFullName":"EEG/ECG Channel 2",
-                        "userFriendlyShortName":"EEG/ECG Ch. 2",
+                        "userFriendlyFullName":"EEG/ECG/EMG Channel 2",
+                        "userFriendlyShortName":"EEG/ECG/EMG Ch. 2",
                         "activeByDefault":0,
                         "filtered":1,
                         "calibrationCoef":1.0,
@@ -75,8 +75,8 @@
                         "defaultAmplitudeScale":"1.0",
                         "channels":[
                             {
-                                "userFriendlyFullName":"EEG/ECG Channel 3",
-                                "userFriendlyShortName":"EEG/ECG Ch. 3",
+                                "userFriendlyFullName":"EEG/ECG/EMG Channel 3",
+                                "userFriendlyShortName":"EEG/ECG/EMG Ch. 3",
                                 "activeByDefault":0,
                                 "filtered":1,
                                 "calibrationCoef":1.0,
@@ -84,8 +84,8 @@
                                 "defaultVoltageScale":0.1
                             },
                             {
-                                "userFriendlyFullName":"EEG/ECG Channel 4",
-                                "userFriendlyShortName":"EEG/ECG Ch. 4",
+                                "userFriendlyFullName":"EEG/ECG/EMG Channel 4",
+                                "userFriendlyShortName":"EEG/ECG/EMG Ch. 4",
                                 "activeByDefault":0,
                                 "filtered":0,
                                 "calibrationCoef":1.0,
@@ -111,7 +111,7 @@
                                 "userFriendlyFullName":"Hammer channel",
                                 "userFriendlyShortName":"Hammer ch.",
                                 "activeByDefault":1,
-                                "filtered":0,
+                                "filtered":1,
                                 "calibrationCoef":1.0,
                                 "channelIsCalibrated":1,
                                 "defaultVoltageScale":0.1
