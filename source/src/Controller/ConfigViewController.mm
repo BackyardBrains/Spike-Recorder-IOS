@@ -48,6 +48,37 @@
     [self addCustomKeyboard];
 }
 
+
+- (NSUInteger)supportedInterfaceOrientations {
+
+    switch ([UIDevice currentDevice].userInterfaceIdiom) {
+
+        case UIUserInterfaceIdiomPad:
+            return UIInterfaceOrientationMaskAll;
+        case UIUserInterfaceIdiomPhone:
+            return UIInterfaceOrientationMaskPortrait;
+        case UIUserInterfaceIdiomUnspecified:
+            return UIInterfaceOrientationMaskAll;
+            break;
+        case UIUserInterfaceIdiomTV:
+            return UIInterfaceOrientationMaskAll;
+            break;
+        case UIUserInterfaceIdiomCarPlay:
+            return UIInterfaceOrientationMaskAll;
+            break;
+        case UIUserInterfaceIdiomMac:
+            return UIInterfaceOrientationMaskAll;
+            break;
+    }
+}
+
+- (BOOL)shouldAutorotate {
+
+    return NO;
+}
+
+
+
 -(void) setupFilters
 {
     self.lowTI.delegate = self;
