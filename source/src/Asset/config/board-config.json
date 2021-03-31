@@ -3,9 +3,9 @@
         "version":"1.0",
         "boards":[
             {
-                "uniqueName": "H&B SB Pro V1.0",
-                "userFriendlyFullName":"Human SpikerBox",
-                "userFriendlyShortName":"Human SpikerBox",
+                "uniqueName": "SpikerBox",
+                "userFriendlyFullName":"SpikerBox",
+                "userFriendlyShortName":"SpikerBox",
                 "hardwareComProtocolType": "iap2,serial",
                 "bybProtocolType": "BYB1",
                 "bybProtocolVersion": "1.0",

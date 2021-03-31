@@ -100,7 +100,7 @@ static  EAInputBlock inputBlock;
 
 -(void) initProtocol
 {
-     [super initWithProtocol:@"com.backyardbrains.sbpro"];
+     [super initWithProtocol:@"com.backyardbrains.spikerbox"];
     weAreInsideEscapeSequence = false;
     messageBufferIndex =0;
     escapeSequenceDetectorIndex = 0;
