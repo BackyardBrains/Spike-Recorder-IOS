@@ -368,7 +368,7 @@
         ConfigViewController *controller = [[ConfigViewController alloc] initWithNibName:@"ConfigViewController" bundle:nil];
         controller.masterDelegate = self;
         controller.modalPresentationStyle = UIModalPresentationPopover;
-        controller.preferredContentSize = CGSizeMake(600, 250);
+        controller.preferredContentSize = CGSizeMake(500, 700);
         
         // configure the Popover presentation controller
         popControllerIpad = [controller popoverPresentationController];
