@@ -17,6 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
     @property (nonatomic,retain) NSMutableArray * boardsConfig;
 
     -(int) loadLocalConfig;
+    -(void) downloadNewConfig;
     -(InputDeviceConfig *) getDeviceConfigForUniqueName:(NSString *) uniqueName;
 
 @end

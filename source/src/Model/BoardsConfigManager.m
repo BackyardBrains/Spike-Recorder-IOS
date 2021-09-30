@@ -11,6 +11,8 @@
 #import "ChannelConfig.h"
 #import "ExpansionBoardConfig.h"
 
+#define CONFIG_DOWNLOAD_URL @"http://unit.rs/update/board-config.json"
+
 @implementation BoardsConfigManager
 @synthesize boardsConfig;
 
@@ -18,10 +20,38 @@
     if ((self = [super init]))
     {
         boardsConfig = [[NSMutableArray alloc] initWithCapacity:0];
-        [self loadLocalConfig];
+        [self downloadNewConfig];
     }
     return self;
 }
+
+-(void) downloadNewConfig
+{
+    NSString *url_string = [NSString stringWithFormat: CONFIG_DOWNLOAD_URL];
+    NSData *data = [NSData dataWithContentsOfURL: [NSURL URLWithString:url_string]];
+    if(data)
+    {
+        NSString *jsonString = [[NSString alloc] initWithBytes:[data bytes] length:[data length] encoding:NSUTF8StringEncoding];
+        [self writeConfigToFile:jsonString];
+    }
+    
+    [self loadConfig];
+}
+
+- (void)writeConfigToFile:(NSString*)aString {
+
+    // Build the path, and create if needed.
+    NSString* filePath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSString* fileName = @"downloaded_config.json";
+    NSString* fileAtPath = [filePath stringByAppendingPathComponent:fileName];
+
+    if (![[NSFileManager defaultManager] fileExistsAtPath:fileAtPath]) {
+        [[NSFileManager defaultManager] createFileAtPath:fileAtPath contents:nil attributes:nil];
+    }
+
+    [[aString dataUsingEncoding:NSUTF8StringEncoding] writeToFile:fileAtPath atomically:NO];
+}
+
 
 -(InputDeviceConfig *) getDeviceConfigForUniqueName:(NSString *) uniqueName
 {
@@ -35,15 +65,21 @@
     }
     return nil;
 }
--(int) loadLocalConfig
+
+-(int) loadConfig
 {
-    //_pathToFile = [[urlToFile path] retain];
-    NSString *filePath= [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"board-config.json"];
+    NSString *filePath;
+    
+    NSString* directoryPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSString* fileName = @"downloaded_config.json";
+    filePath = [directoryPath stringByAppendingPathComponent:fileName];
+    
     NSFileHandle * _fileHandle = [NSFileHandle fileHandleForReadingAtPath:filePath];
     if (_fileHandle == nil)
     {
-        NSLog(@"ERROR: Failed to open the board config file");
-        return 1;
+        NSLog(@"No downloaded file");
+        filePath= [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"board-config.json"];
+        _fileHandle = [NSFileHandle fileHandleForReadingAtPath:filePath];
     }
     
     NSData *jsonConfig =[_fileHandle readDataToEndOfFile];

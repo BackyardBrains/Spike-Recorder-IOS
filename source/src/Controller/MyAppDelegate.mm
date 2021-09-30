@@ -61,10 +61,14 @@ static DemoProtocol *demoProtocol;
     
     [UIApplication sharedApplication].idleTimerDisabled = YES;
     
+    
+   
+    
 //------------------------------ MFI ----------------------------------
      demoProtocol = [[DemoProtocol alloc] init];
     [demoProtocol initProtocol];
 //------------------------------ MFI ----------------------------------
+    
 }
 
 #pragma mark - Application management
