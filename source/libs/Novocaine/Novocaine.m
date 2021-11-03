@@ -567,7 +567,7 @@ static Novocaine *audioManager = nil;
     
 	if (_outputFormat.mFormatFlags & kAudioFormatFlagIsNonInterleaved) {
         // The audio is non-interleaved
-        printf("Not interleaved!\n");
+        printf("Not interleaved!");
         self.isInterleaved = NO;
         
         // allocate an AudioBufferList plus enough space for array of AudioBuffers

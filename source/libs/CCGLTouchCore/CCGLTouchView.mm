@@ -453,7 +453,7 @@
 
 - (void)startAnimation
 {
-    NSLog(@"\n Start animation %p\n", self);
+    NSLog(@" Start animation %p", self);
 	if (!appSetupCalled)
 		[self setup];
     
@@ -468,7 +468,7 @@
 
 - (void)stopAnimation
 {
-    NSLog(@"\n Stop animation %p\n", self);
+    NSLog(@"Stop animation %p", self);
 	if( animating ) {
 		[displayLink invalidate];
 		displayLink = nil;

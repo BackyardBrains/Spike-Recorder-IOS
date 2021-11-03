@@ -73,6 +73,7 @@ static BBAudioManager *bbAudioManager = nil;
     float * tempResamplingBuffer;
     float * tempResampledBuffer;
     bool differentFreqInOut;
+    float tempSampleForLinearInterpolation;
     
     //basic stats
     float _currentSTD;
@@ -515,7 +516,7 @@ static BBAudioManager *bbAudioManager = nil;
         return;
     }
     */
-    NSLog(@"activateInputDeviceAtIndex");
+    NSLog(@"Start activateInputDeviceAtIndex VVVVVVVVVVVVVVVV");
     // ------ stop all functions ------
     
     [self quitAllFunctions];
@@ -665,6 +666,7 @@ static BBAudioManager *bbAudioManager = nil;
     [[NSNotificationCenter defaultCenter] postNotificationName:RESETUP_SCREEN_NOTIFICATION object:self];
     [[NSNotificationCenter defaultCenter] postNotificationName:NEW_DEVICE_ACTIVATED object:self];
     [self startAquiringInputs:inputDeviceToActivate];
+    NSLog(@"END activateInputDeviceAtIndex AAAAAAAAAAAAAAA");
 }
 
 //used when just channel active/inactive change but not a input device
@@ -2148,7 +2150,6 @@ static BBAudioManager *bbAudioManager = nil;
             [fileReader retrieveFreshAudio:tempCalculationBuffer numFrames:realNumberOfFrames numChannels:[self numberOfSourceChannels]];
             
             
-            
             //FIltering of playback data
           //  [self filterData:tempCalculationBuffer numFrames:realNumberOfFrames numChannels:[self numberOfSourceChannels]];
            
@@ -2164,8 +2165,16 @@ static BBAudioManager *bbAudioManager = nil;
                            &tempResamplingBuffer[1],
                            1,
                            realNumberOfFrames);
-                vDSP_vlint(tempResamplingBuffer, tempResamplingIndexes, 1, tempResampledBuffer, 1, numFrames, realNumberOfFrames);
                 
+                //tempSampleForLinearInterpolation patch explanation:
+                //because interpolation will use elements from zero to (realNumberOfFrames+1). And we are loading only
+                //realNumberOfFrames elements. We need to put into zero element
+                //realNumberOfFrames element from previous batch and load new data (realNumberOfFrames elements)
+                //from first element (above). SO that we end up with (realNumberOfFrames+1) elements
+               
+                tempResamplingBuffer[0] = tempSampleForLinearInterpolation;
+                vDSP_vlint(tempResamplingBuffer, tempResamplingIndexes, 1, tempResampledBuffer, 1, numFrames, realNumberOfFrames);
+ 
                 for (int iChannel = 0; iChannel < numChannels; ++iChannel) {
 
                     vDSP_vsadd(tempResampledBuffer,
@@ -2175,7 +2184,9 @@ static BBAudioManager *bbAudioManager = nil;
                                numChannels,
                                numFrames);
                 }
-                tempResamplingBuffer[0] = tempResamplingBuffer[realNumberOfFrames];
+              
+                
+                tempSampleForLinearInterpolation = tempResamplingBuffer[realNumberOfFrames];
             }
             else
             {

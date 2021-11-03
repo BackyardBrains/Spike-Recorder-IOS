@@ -19,6 +19,7 @@ typedef enum FilterPresetType
     
 } FilterPresetType;
 
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface SelectFilterPresetView : UIView
@@ -28,7 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
     @property FilterPresetType selectedType;
     @property(nonatomic,assign) id <FilterPresetDelegateProtocol> delegate;
     -(void) deselectAll;
-
+    -(void) lightUpButtonIndex:(int)indexToSelect;
 @end
 
 @protocol FilterPresetDelegateProtocol

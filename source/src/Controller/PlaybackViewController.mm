@@ -39,7 +39,7 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    NSLog(@"\n\nviewWillAppear Playback View Controller\n\n");
+    NSLog(@"viewWillAppear Playback View Controller");
     if(showNavigationBar)
     {
         [self.navigationController setNavigationBarHidden:NO animated:NO];
@@ -117,7 +117,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-    NSLog(@"\n\nviewWillDisappear - Playback\n\n");
+    NSLog(@"viewWillDisappear - Playback");
     [glView stopAnimation];
     [[BBAudioManager bbAudioManager] clearWaveform];
     

@@ -78,7 +78,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-    NSLog(@"\n viewWillDisappear threshold\n");
+    NSLog(@"viewWillDisappear threshold");
     [glView saveSettings:TRUE];
     [[BBAudioManager bbAudioManager] saveSettingsToUserDefaults];
     [[BBAudioManager bbAudioManager] stopThresholding];

@@ -106,7 +106,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-    NSLog(@"\n\n view WillDisappear View And Record\n\n");
+    NSLog(@"view WillDisappear View And Record");
     [glView stopAnimation];
     NSLog(@"Stopping regular view");
     [glView saveSettings:FALSE]; // save non-threshold settings
@@ -124,7 +124,7 @@
 #pragma mark - App management
 
 -(void) applicationDidBecomeActive:(UIApplication *)application {
-    NSLog(@"\n\nApp will become active - ViewRecord\n\n");
+    NSLog(@"App will become active - ViewRecord");
     if(glView)
     {
         [glView startAnimation];
@@ -387,6 +387,7 @@
     {
         ConfigViewController *controller = [[ConfigViewController alloc] initWithNibName:@"ConfigViewController" bundle:nil];
         controller.masterDelegate = self;
+        controller.modalPresentationStyle = UIModalPresentationFullScreen;
         [self presentViewController:controller animated:YES completion:nil];
     }  
 }

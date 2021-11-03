@@ -133,7 +133,7 @@
     
     
     firstDrawAfterChannelChange = YES;
-    NSLog(@"!!!!!!!!!Setup num of channel");
+    NSLog(@"CinderGLVIew Setup num of channel");
     [self stopAnimation];
 
     samplingRate = newSamplingRate;

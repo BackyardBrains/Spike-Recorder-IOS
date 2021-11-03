@@ -11,7 +11,7 @@
 #import "ChannelConfig.h"
 #import "ExpansionBoardConfig.h"
 
-#define CONFIG_DOWNLOAD_URL @"http://unit.rs/update/board-config.json"
+#define CONFIG_DOWNLOAD_URL @"https://backyardbrains.com/products/firmwares/devices/board-config.json"
 
 @implementation BoardsConfigManager
 @synthesize boardsConfig;

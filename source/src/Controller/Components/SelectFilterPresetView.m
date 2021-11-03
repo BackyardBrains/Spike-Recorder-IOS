@@ -65,6 +65,7 @@
         button.layer.masksToBounds = NO;
         
         [self addSubview:button];
+        [self selectOnlyOne];
     }
 }
 
@@ -86,17 +87,31 @@
 {
     for(int i=0;i<NUMBER_OF_BUTTONS;i++)
     {
-        UIButton * tempButton = (UIButton *)[_buttons objectAtIndex:i];
-        if(i==self.selectedType)
+        if([_buttons count]>i)
         {
-            tempButton.layer.shadowColor = [UIColor orangeColor].CGColor;
-            [tempButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        }
-        else
-        {
-            tempButton.layer.shadowColor = [UIColor whiteColor].CGColor;
-            [tempButton setTitleColor:[UIColor orangeColor] forState:UIControlStateNormal];
+            UIButton * tempButton = (UIButton *)[_buttons objectAtIndex:i];
+            if(tempButton)
+            {
+                if(i==self.selectedType)
+                {
+                    tempButton.layer.shadowColor = [UIColor orangeColor].CGColor;
+                    [tempButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+                }
+                else
+                {
+                    tempButton.layer.shadowColor = [UIColor whiteColor].CGColor;
+                    [tempButton setTitleColor:[UIColor orangeColor] forState:UIControlStateNormal];
+                }
+            }
         }
     }
+}
+
+
+
+-(void) lightUpButtonIndex:(int)indexToSelect
+{
+    self.selectedType = indexToSelect;
+    [self selectOnlyOne];
 }
 @end

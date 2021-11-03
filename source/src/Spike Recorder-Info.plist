@@ -99,7 +99,7 @@
       <false/>
       <key>NSExceptionDomains</key>
       <dict>
-        <key>unit.rs</key>
+        <key>backyardbrains.com</key>
         <dict>
           <key>NSIncludesSubdomains</key>
           <true/>

@@ -106,6 +106,7 @@
     {
         selectNotchFilter.selectedSegmentIndex = SEGMENTED_NOTCH_NO_FILTER_INDEX;
     }
+    [self checkFilterValuesAndLightUpButtons];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -149,23 +150,81 @@
     switch (filterType) {
         case ecgPreset:
             [self setLPValue: 100.0 HPValue:1.0 notch:SEGMENTED_NOTCH_60_HZ_INDEX];
+            [self setLPValue: 100.0 HPValue:1.0 notch:SEGMENTED_NOTCH_60_HZ_INDEX];
             break;
         case eegPreset:
             [self setLPValue: 50.0 HPValue:0.0 notch:SEGMENTED_NOTCH_60_HZ_INDEX];
+            [self setLPValue: 50.0 HPValue:0.0 notch:SEGMENTED_NOTCH_60_HZ_INDEX];
             break;
         case emgPreset:
-            [self setLPValue: 2500.0 HPValue:70.1 notch:SEGMENTED_NOTCH_60_HZ_INDEX];
+            [self setLPValue: 2500.0 HPValue:70.0 notch:SEGMENTED_NOTCH_60_HZ_INDEX];
+            [self setLPValue: 2500.0 HPValue:70.0 notch:SEGMENTED_NOTCH_60_HZ_INDEX];
             break;
         case plantPreset:
             [self setLPValue: 5.0 HPValue:0.0 notch:SEGMENTED_NOTCH_60_HZ_INDEX];
+            [self setLPValue: 5.0 HPValue:0.0 notch:SEGMENTED_NOTCH_60_HZ_INDEX];
             break;
         case neuronPreset:
-            [self setLPValue: 5000.1 HPValue:1.0 notch:SEGMENTED_NOTCH_60_HZ_INDEX];
+            [self setLPValue: 5000.0 HPValue:1.0 notch:SEGMENTED_NOTCH_60_HZ_INDEX];
+            [self setLPValue: 5000.0 HPValue:1.0 notch:SEGMENTED_NOTCH_60_HZ_INDEX];
             break;
         default:
             [self setLPValue: 5000.0 HPValue:1.0 notch:SEGMENTED_NOTCH_60_HZ_INDEX];
+            [self setLPValue: 5000.0 HPValue:1.0 notch:SEGMENTED_NOTCH_60_HZ_INDEX];
             break;
     }
+}
+
+-(void) checkFilterValuesAndLightUpButtons
+{
+    int lowPass = 0;
+    int highPass = 0;
+    
+    if(self.rangeSelector.lowerValue<0.0)
+    {
+        highPass = FILTER_HP_OFF;
+    }
+    else
+    {
+        highPass = (int)lroundf(exp(self.rangeSelector.lowerValue));
+    }
+    
+    if(self.rangeSelector.upperValue<0.0)
+    {
+        lowPass = 0;
+    }
+    else
+    {
+        lowPass = (int)lroundf(exp(self.rangeSelector.upperValue));
+    }
+    
+    
+    if((lowPass == 100) && (highPass==1.0))
+    {
+        [filterPresetSelection lightUpButtonIndex: ecgPreset];
+    }
+    else if((lowPass == 50) && (highPass==0))
+    {
+        [filterPresetSelection lightUpButtonIndex: eegPreset ];
+    }
+    else if((lowPass == 2500) && (highPass==70))
+    {
+        [filterPresetSelection lightUpButtonIndex: emgPreset];
+    }
+    else if((lowPass == 5) && (highPass==0))
+    {
+        [filterPresetSelection lightUpButtonIndex: plantPreset];
+    }
+    else if((lowPass == 5000) && (highPass==1))
+    {
+        [filterPresetSelection lightUpButtonIndex: neuronPreset];
+    }
+    else
+    {
+        [filterPresetSelection deselectAll];
+    }
+        
+    
 }
 
 -(void) setLPValue:(float) lpValue HPValue:(float) hpValue notch:(int) notchType
@@ -209,6 +268,8 @@
     [self fillFilterTextFromSlider];
     
 }
+
+
 
 
 
@@ -282,6 +343,8 @@
         [self validationAlertWithText:[NSString stringWithFormat:@"Enter valid number for low cutoff frequency. (0 - %dHz)",(int)REAL_VALUE_MAX]];
         return NO;
     }
+    
+    [self checkFilterValuesAndLightUpButtons];
     return YES;
 }
 
@@ -325,7 +388,7 @@
     }
     else
     {
-        self.lowTI.text =  [NSString stringWithFormat:@"%d",(int)exp(self.rangeSelector.lowerValue)];
+        self.lowTI.text =  [NSString stringWithFormat:@"%d",(int)lroundf(exp(self.rangeSelector.lowerValue))];
     }
     
     if(self.rangeSelector.upperValue<0.0)
@@ -334,13 +397,14 @@
     }
     else
     {
-        self.highTI.text =  [NSString stringWithFormat:@"%d",(int)exp(self.rangeSelector.upperValue)];
+        self.highTI.text =  [NSString stringWithFormat:@"%d",(int)lroundf(exp(self.rangeSelector.upperValue))];
     }
 }
 
 - (IBAction)rangeSelectrorValueChanged:(id)sender {
     
-    [filterPresetSelection deselectAll];
+    [self checkFilterValuesAndLightUpButtons];
+    //[filterPresetSelection deselectAll];
     [self fillFilterTextFromSlider];
     
 }
@@ -356,7 +420,7 @@
     }
     else
     {
-        highPass = (int)exp(self.rangeSelector.lowerValue);
+        highPass = (int)lroundf(exp(self.rangeSelector.lowerValue));
     }
     
     if(self.rangeSelector.upperValue<0.0)
@@ -365,7 +429,7 @@
     }
     else
     {
-        lowPass = (int)exp(self.rangeSelector.upperValue);
+        lowPass = (int)lroundf(exp(self.rangeSelector.upperValue));
     }
     if(lowPass>=REAL_VALUE_MAX)
     {
