@@ -760,6 +760,7 @@ static BBAudioManager *bbAudioManager = nil;
 -(void) startAquiringInputs:(InputDevice *) inputDeviceToActivate
 {
     NSLog(@"startAquiringInputs %p\n",audioManager);
+    
     _preciseVirtualTimeNumOfFrames = 0;
     
     if([inputDeviceToActivate isBasedOnCommunicationProtocol:HARDWARE_PROTOCOL_TYPE_MFI])
@@ -1796,6 +1797,7 @@ static BBAudioManager *bbAudioManager = nil;
     {
         [self stopFFT];
     }
+    
 }
 
 

@@ -150,25 +150,27 @@ static Novocaine *audioManager = nil;
 
 -(void) initNovocaine
 {
-    NSLog(@"Init novocaine");
-    self.inData  = (float *)calloc(8192, sizeof(float)); // probably more than we'll need
-    self.outData = (float *)calloc(8192, sizeof(float));
+
+        NSLog(@"Init novocaine");
+        self.inData  = (float *)calloc(8192, sizeof(float)); // probably more than we'll need
+        self.outData = (float *)calloc(8192, sizeof(float));
+        
+        self.inputBlock = nil;
+        self.outputBlock = nil;
+        
+    #if defined ( USING_OSX )
+        self.deviceNames = [[NSMutableArray alloc] initWithCapacity:100]; // more than we'll need
+    #endif
+        
+        self.playing = NO;
+        // self.playThroughEnabled = NO;
+        
+        // Fire up the audio session ( with steady error checking ... )
+        [self setupAudioSession];
+        
+        // start audio units
+        [self setupAudioUnits];
     
-    self.inputBlock = nil;
-    self.outputBlock = nil;
-    
-#if defined ( USING_OSX )
-    self.deviceNames = [[NSMutableArray alloc] initWithCapacity:100]; // more than we'll need
-#endif
-    
-    self.playing = NO;
-    // self.playThroughEnabled = NO;
-    
-    // Fire up the audio session ( with steady error checking ... )
-    [self setupAudioSession];
-    
-    // start audio units
-    [self setupAudioUnits];
 
 }
 

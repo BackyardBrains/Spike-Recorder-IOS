@@ -78,7 +78,7 @@
     
     // Make sure that we're playing out of the right audioroute, and if it changes
     // (e.g., if you unplug the headphones while playing), it just works
-    [self ifNoHeadphonesConfigureAudioToPlayOutOfSpeakers];
+    [self ifNoHeadphonesConfigureAudioToPlayOutOfSpeakers];//stanislav change
     [[Novocaine audioManager] addObserver:self forKeyPath:@"numOutputChannels" options:NSKeyValueObservingOptionNew context:NULL];
     [[BBAudioManager bbAudioManager] addObserver:self forKeyPath:@"playing" options:NSKeyValueObservingOptionNew context:NULL];
     
@@ -129,7 +129,9 @@
     [[BBAudioManager bbAudioManager] stopPlaying];
     
     [[Novocaine audioManager] removeObserver:self forKeyPath:@"numOutputChannels"];
-    [self restoreAudioOutputRouteToDefault];
+    
+    //[[Novocaine audioManager] initNovocaine];//stanislav added 3. nov. 2021
+    //[self restoreAudioOutputRouteToDefault];
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillTerminateNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillResignActiveNotification object:nil];

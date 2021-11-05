@@ -73,7 +73,7 @@
     NSLog(@"ViewAndRecord - set number of channesl");
     
     [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] numberOfActiveChannels ] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
-    
+    [[BBAudioManager bbAudioManager] startAquiringInputs:[[BBAudioManager bbAudioManager] currentlyActiveInputDevice]];
     NSLog(@"ViewAndRecord - start animation");
 	
     
