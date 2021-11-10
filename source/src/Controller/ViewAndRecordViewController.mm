@@ -34,12 +34,12 @@
 
 - (void)viewDidLoad
 {
-    NSLog(@"\n View and Record - viewDidLoad\n\n");
+    NSLog(@"viewDidLoad View and Record");
     [super viewDidLoad];
 }
 
 - (void)viewDidUnload {
-    
+    NSLog(@"viewDidUnload View and Record");
     [self setRecordButton:nil];
     [self setStopButton:nil];
     [self setConfigButton:nil];
@@ -48,7 +48,7 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    
+    NSLog(@"viewWillAppear - View And Record");
     //[[BBAudioManager bbAudioManager] startMonitoring];
 
     if(glView)
@@ -100,13 +100,13 @@
 
 - (void)viewDidAppear:(BOOL)animated
 {
-    NSLog(@"View and record viewDidAppear");
+    NSLog(@"viewDidAppear - View And Record");
     [super viewDidAppear:animated];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-    NSLog(@"view WillDisappear View And Record");
+    NSLog(@"viewWillDisappear - View And Record");
     [glView stopAnimation];
     NSLog(@"Stopping regular view");
     [glView saveSettings:FALSE]; // save non-threshold settings

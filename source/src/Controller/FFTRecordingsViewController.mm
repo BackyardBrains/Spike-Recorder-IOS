@@ -27,6 +27,7 @@
 #pragma mark - View management
 - (void)viewDidLoad
 {
+    NSLog(@"viewDidLoad - Recordings");
     [super viewDidLoad];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate:) name:UIApplicationWillTerminateNotification object:nil];
     self.timeSlider.continuous = YES;
@@ -45,11 +46,13 @@
 }
 
 - (void)viewDidUnload {
+    NSLog(@"viewDidUnload - Recordings");
     [super viewDidUnload];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    NSLog(@"viewWillAppear - Recordings");
     [super viewWillAppear:animated];
     [[self navigationController] setNavigationBarHidden:YES animated:NO];
     
@@ -112,12 +115,14 @@
 
 - (void)viewDidAppear:(BOOL)animated
 {
+    NSLog(@"viewDidAppear - Recordings");
     [super viewDidAppear:animated];
     [self startBackButtonCountdown];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
+    NSLog(@"viewWillDisappear - Recordings");
     [super viewWillDisappear:animated];
     [[self navigationController] setNavigationBarHidden:NO animated:NO];
     NSLog(@"Stopping regular view");
@@ -141,7 +146,7 @@
 #pragma mark - App management
 
 -(void) applicationDidBecomeActive:(UIApplication *)application {
-    NSLog(@"\n\nApp will become active - FFT view\n\n");
+    NSLog(@"\n\nApp will become active - Recordings view\n\n");
     if(glView)
     {
         [glView startAnimation];

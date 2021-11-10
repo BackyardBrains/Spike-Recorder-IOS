@@ -880,6 +880,13 @@ static BBAudioManager *bbAudioManager = nil;
 
 -(float) getVoltageScaleForChannelIndex:(int)indexOfChannel
 {
+    if(playing)
+    {
+        //since we don't have config for the device that we used to record the file
+        //and file does not contain that information we can take info about voltage scale from current device
+        //the last thing that user set on the device
+        indexOfChannel = 0;
+    }
     ChannelConfig* tempChannelConfig = [currentDeviceActiveInputChannels objectAtIndex:indexOfChannel];
     return tempChannelConfig.defaultVoltageScale;
 }

@@ -27,6 +27,7 @@
 
 - (void)viewDidLoad
 {
+    NSLog(@"viewDidLoad - Playback");
     [super viewDidLoad];
     self.timeSlider.continuous = YES;
     [self.timeSlider addTarget:self
@@ -39,7 +40,7 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    NSLog(@"viewWillAppear Playback View Controller");
+    NSLog(@"viewWillAppear - Playback");
     if(showNavigationBar)
     {
         [self.navigationController setNavigationBarHidden:NO animated:NO];
@@ -112,6 +113,7 @@
 
 - (void)viewDidAppear:(BOOL)animated
 {
+    NSLog(@"viewDidAppear - Playback");
     [super viewDidAppear:animated];
 }
 

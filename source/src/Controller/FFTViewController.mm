@@ -21,6 +21,7 @@
 #pragma mark - View management
 - (void)viewDidLoad
 {
+    
     [super viewDidLoad];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate:) name:UIApplicationWillTerminateNotification object:nil];
 }
