@@ -7,7 +7,7 @@
 #import "PlaybackViewController.h"
 
 @interface PlaybackViewController() {
-    dispatch_source_t callbackTimer; //timer for update of slider/scrubber
+    //dispatch_source_t callbackTimer; //timer for update of slider/scrubber
 }
 
 - (void)togglePlayback;
@@ -22,6 +22,7 @@
 @synthesize bbfile;
 @synthesize showNavigationBar;
 @synthesize glView;
+@synthesize callbackTimer;
 
 #pragma mark - View management
 
@@ -91,6 +92,8 @@
     // Set the slider to have the bounds of the audio file's duraiton
     timeSlider.minimumValue = 0;
     timeSlider.maximumValue = [BBAudioManager bbAudioManager].fileDuration;
+    
+ 
     // Periodically poll for the current position in the audio file, and update the slider accordingly.
     callbackTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, dispatch_get_main_queue());
     dispatch_source_set_timer(callbackTimer, dispatch_walltime(NULL, 0), 0.25*NSEC_PER_SEC, 0);
@@ -102,6 +105,9 @@
     });
     
     dispatch_resume(callbackTimer);
+    
+    
+    
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate:) name:UIApplicationWillTerminateNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
@@ -127,10 +133,17 @@
     [glView saveSettings:FALSE]; // save non-threshold settings
     
     
-    dispatch_suspend(callbackTimer);
+   // dispatch_suspend(callbackTimer);
+    dispatch_source_cancel(callbackTimer);
+    dispatch_release(callbackTimer);
+    callbackTimer = nil;
+    
+
+    
     [[BBAudioManager bbAudioManager] stopPlaying];
     
     [[Novocaine audioManager] removeObserver:self forKeyPath:@"numOutputChannels"];
+    [[BBAudioManager bbAudioManager] removeObserver:self forKeyPath:@"playing"];
     
     //[[Novocaine audioManager] initNovocaine];//stanislav added 3. nov. 2021
     //[self restoreAudioOutputRouteToDefault];
@@ -138,7 +151,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillTerminateNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillResignActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
-    
+
     [super viewWillDisappear:animated];
 }
 

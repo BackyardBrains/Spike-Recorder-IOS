@@ -14,6 +14,7 @@
 
 @property (retain, nonatomic) IBOutlet UIButton *playPauseButton;
 @property (retain, nonatomic) IBOutlet UISlider *timeSlider;
+@property (nonatomic, assign) dispatch_source_t callbackTimer; 
 
 // view handlers
 - (IBAction)backBtnClick:(id)sender;

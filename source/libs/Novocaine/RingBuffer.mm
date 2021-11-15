@@ -175,7 +175,7 @@ float RingBuffer::FetchFreshData2(float *outData, SInt64 numFrames, SInt64 which
     //NSLog(logString);
     if (mLastWrittenIndex[whichChannel] - numFrames >= 0) { // if we're requesting samples that won't go off the left end of the ring buffer, then go ahead and copy them all out.
        // NSLog(@"fetch audio 4");
-        UInt32 idx = mLastWrittenIndex[whichChannel] - numFrames;
+        int64_t idx = mLastWrittenIndex[whichChannel] - numFrames;
         float zero = 0.0f;
         vDSP_vsadd(&mData[whichChannel][idx], 
                    1, 

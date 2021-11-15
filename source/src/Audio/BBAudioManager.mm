@@ -890,6 +890,53 @@ static BBAudioManager *bbAudioManager = nil;
     ChannelConfig* tempChannelConfig = [currentDeviceActiveInputChannels objectAtIndex:indexOfChannel];
     return tempChannelConfig.defaultVoltageScale;
 }
+
+-(void) reactivateCurrentDevice
+{
+    
+    
+    InputDevice * tempInputDevice = ((InputDevice*)[availableInputDevices objectAtIndex:[self indexOfCurrentlyActiveDevice]]);
+    InputDeviceConfig * devConf = tempInputDevice.config;
+
+    float tempSamplingRate = [devConf maxSampleRate];
+    int numOfActiveChannels = 0;
+    int numberOfAvailableChannels = 0;
+
+    for (int i =0;i<[devConf.channels count];i++)
+    {
+        if([((ChannelConfig*) devConf.channels[i]) currentlyActive])
+        {
+            numOfActiveChannels++;
+        }
+        numberOfAvailableChannels++;
+    }
+    
+    if(devConf.connectedExpansionBoard)
+    {
+        for (int i =0;i<[devConf.connectedExpansionBoard.channels count];i++)
+        {
+            if([((ChannelConfig*) devConf.connectedExpansionBoard.channels[i]) currentlyActive])
+            {
+                numOfActiveChannels++;
+            }
+            numberOfAvailableChannels++;
+        }
+    }
+    if(devConf.sampleRateIsFunctionOfNumberOfChannels)
+    {
+        tempSamplingRate = (int)(tempSamplingRate/numOfActiveChannels);
+    }
+    NSLog(@"Before set %d", _numberOfSourceChannels);
+    _sourceSamplingRate = tempSamplingRate;
+    _numberOfSourceChannels = numberOfAvailableChannels;
+    NSLog(@"After set %d", _numberOfSourceChannels);
+    [self updateCurrentlyActiveChannels];
+    [self resetBuffers];
+
+    
+    
+    //[self activateInputDeviceAtIndex: [self indexOfCurrentlyActiveDevice]];
+}
 #pragma mark - Channels code
 
 //Note:
@@ -1275,7 +1322,11 @@ static BBAudioManager *bbAudioManager = nil;
 -(void) resetBuffers
 {
     NSLog(@"resetBuffers\n");
-    
+
+    if(rtEvents)
+    {
+        [rtEvents release];
+    }
     rtEvents = [[NSMutableArray alloc] initWithCapacity:0];
     
     delete ringBuffer;
@@ -1711,6 +1762,14 @@ static BBAudioManager *bbAudioManager = nil;
     lpFilterCutoff = newLPCuttof;
     hpFilterCutoff = newHPCutoff;
 
+    if(hpFilters)
+    {
+        [hpFilters release];
+    }
+    if(lpFilters)
+    {
+        [lpFilters release];
+    }
     hpFilters = [[NSMutableArray alloc] initWithCapacity:0];
     lpFilters = [[NSMutableArray alloc] initWithCapacity:0];
     
@@ -1722,6 +1781,7 @@ static BBAudioManager *bbAudioManager = nil;
             LPFilter.cornerFrequency = lpFilterCutoff;
             LPFilter.Q = 0.4f;
             [lpFilters addObject:LPFilter];
+            [LPFilter release];
         }
     }
     else
@@ -1738,6 +1798,7 @@ static BBAudioManager *bbAudioManager = nil;
             HPFilter.cornerFrequency = tempFilterValue;
             HPFilter.Q = 0.40f;
             [hpFilters addObject:HPFilter];
+            [HPFilter release];
         }
     }
     else

@@ -70,6 +70,8 @@
     [self setGLView:glView];
     glView.mode = MultichannelGLViewModeView;
     
+    [[BBAudioManager bbAudioManager] reactivateCurrentDevice];
+    
     NSLog(@"ViewAndRecord - set number of channesl");
     
     [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] numberOfActiveChannels ] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
@@ -101,6 +103,7 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     NSLog(@"viewDidAppear - View And Record");
+    
     [super viewDidAppear:animated];
 }
 

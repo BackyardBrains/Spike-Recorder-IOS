@@ -182,7 +182,7 @@
 -(float) getVoltageScaleForChannelIndex:(int)indexOfChannel;
 //select which one is selected on UI
 -(void) selectChannel:(int) selectedChannel;
-
+-(void) reactivateCurrentDevice;
 
 
 //Mfi

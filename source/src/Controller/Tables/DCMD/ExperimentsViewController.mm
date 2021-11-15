@@ -86,6 +86,7 @@
         self.navigationItem.rightBarButtonItem = rightButton;
     }
     [self.expTableView reloadData];
+    [super viewWillAppear:animated];
 }
 
 - (void)didReceiveMemoryWarning

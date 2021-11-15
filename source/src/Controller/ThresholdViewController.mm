@@ -58,6 +58,7 @@
         [self.view sendSubviewToBack:glView];
         [self initConstrainsForGLView];
     }
+    [[BBAudioManager bbAudioManager] reactivateCurrentDevice];
     glView.mode = MultichannelGLViewModeThresholding;
     [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] numberOfActiveChannels ] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
     [[BBAudioManager bbAudioManager] startThresholding:8192];
