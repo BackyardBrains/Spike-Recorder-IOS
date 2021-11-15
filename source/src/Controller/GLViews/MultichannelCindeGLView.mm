@@ -1035,7 +1035,7 @@
             int colorIndex = [[BBAudioManager bbAudioManager] getColorIndexForActiveChannelIndex:indexOfChannel];
             [self setColorWithIndex:colorIndex transparency:1.0f];
 
-            if(self.mode == MultichannelGLViewModeView)
+            if(self.mode == MultichannelGLViewModeView || multichannel)
             {
                 gl::drawSolidEllipse( Vec2f(centerOfCircleX, yOffsets[indexOfChannel]), radiusXAxis, radiusYAxis, 1000 );
                 gl::drawSolidTriangle(
