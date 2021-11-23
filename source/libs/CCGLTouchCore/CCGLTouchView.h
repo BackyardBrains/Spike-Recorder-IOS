@@ -118,6 +118,8 @@ using namespace std;
     // Multi-touch flag
     BOOL multipleTouchEnabled;
     
+    //patch for memory acumulation and white text
+    BOOL viewRotated;
     // Capture sketch
     UIImage *ccglCapture;
     BOOL ccglCaptureFlag;

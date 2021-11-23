@@ -149,6 +149,7 @@
     {
         //TODO: realease display vectors
         delete[] displayVectors;
+        
         //delete[] numVoltsVisible;
         //delete[] yOffsets;
         delete[] tempDataBuffer;
@@ -193,6 +194,7 @@
         {
             float x = (i- (numSamplesMax-1))*oneSampleTime;
             displayVectors[channelIndex].push_back(Vec2f(x, 0.0f));
+            
         }
         displayVectors[channelIndex].setClosed(false);
         //make some vertical space between channels
@@ -570,8 +572,15 @@
     {
         
         [self checkIfWeHaveVoltageScale];
-        if(firstDrawAfterChannelChange )
+        if(firstDrawAfterChannelChange || viewRotated)
         {
+            
+            if(viewRotated)
+            {
+                frameCount = 0;
+                viewRotated = false;
+                firstDrawAfterChannelChange = YES;
+            }
             frameCount++;
             //this is fix for bug. Draw text starts to paint background of text
             //to the same color as text if we don't make new instance here
@@ -581,13 +590,12 @@
             {
                 firstDrawAfterChannelChange = NO;
             }
-            //mFont = Font("Helvetica", 18);
-           
+            currentTimeTextureFont = gl::TextureFont::create( currentTimeFont );
+            heartBeatTextureFont = gl::TextureFont::create( heartBeatFont );
             mScaleFont = gl::TextureFont::create( mFont );
-            
-           // mScaleFont = gl::TextureFont::create( mFont );
-          //  mScaleFont->create(mFont);
         }
+        
+        
         
         currentUserInteractionTime = [[NSDate date] timeIntervalSince1970];
         handlesShouldBeVisible = (currentUserInteractionTime-lastUserInteraction)<HIDE_HANDLES_AFTER_SECONDS;
@@ -598,8 +606,11 @@
         }
 
         // this pair of lines is the standard way to clear the screen in OpenGL
-        gl::clear( Color( 0.0f, 0.0f, 0.0f ), true );
-        glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+        gl::clear( Color( 0.0f, 0.0f, 0.0f ), true );//stanislav commented
+        glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );//stanislav commented
+        
+        
+        
         // Look at it right
         mCam.setOrtho(-maxTimeSpan, -0.0f, -maxVoltsSpan/2.0f, maxVoltsSpan/2.0f, 1, 100);
         gl::setMatrices( mCam );
