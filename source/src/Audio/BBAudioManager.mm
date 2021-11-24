@@ -2501,7 +2501,7 @@ static BBAudioManager *bbAudioManager = nil;
 
 -(float) getVirtualTime
 {
-   if(_file && playing)
+    if(_file && (playing || seeking))
    {
        return _preciseTimeOfLastData;
    }

@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="EBf-gS-bmJ">
-    <device id="retina5_9" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="EBf-gS-bmJ">
+    <device id="retina5_9" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17126"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -67,6 +65,7 @@
                                 </connections>
                             </button>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="zLF-zu-TnF"/>
                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="ndR-rK-Iub" firstAttribute="top" secondItem="zLF-zu-TnF" secondAttribute="top" constant="5" id="FK9-MC-BDt"/>
@@ -76,7 +75,6 @@
                             <constraint firstItem="WnN-vn-xXv" firstAttribute="top" secondItem="zLF-zu-TnF" secondAttribute="top" constant="5" id="lvy-9g-hd5"/>
                             <constraint firstItem="ndR-rK-Iub" firstAttribute="leading" secondItem="zLF-zu-TnF" secondAttribute="leading" constant="6" id="pTz-dX-3pD"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="zLF-zu-TnF"/>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <tabBarItem key="tabBarItem" title="View / Record" image="WaveImage.png" id="yK5-2T-tMU" userLabel="View / Record"/>
@@ -125,6 +123,7 @@
                                 </connections>
                             </button>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="oRI-df-p6v"/>
                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="Hjq-ba-UE5" firstAttribute="top" secondItem="oRI-df-p6v" secondAttribute="top" constant="6" id="Aw7-pf-5vY"/>
@@ -132,7 +131,6 @@
                             <constraint firstItem="Hjq-ba-UE5" firstAttribute="leading" secondItem="oRI-df-p6v" secondAttribute="leading" constant="6" id="Xb9-FA-viT"/>
                             <constraint firstItem="kuT-UJ-bSW" firstAttribute="top" secondItem="oRI-df-p6v" secondAttribute="top" id="sXJ-45-k67"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="oRI-df-p6v"/>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics" barStyle="black" translucent="NO"/>
@@ -200,6 +198,7 @@
                                 </constraints>
                             </imageView>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="AKA-NP-r1P"/>
                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="DjQ-wv-pfN" firstAttribute="top" secondItem="AKA-NP-r1P" secondAttribute="top" constant="10" id="3eM-Qk-HgP"/>
@@ -209,13 +208,13 @@
                             <constraint firstItem="AKA-NP-r1P" firstAttribute="bottom" secondItem="NgM-NC-Kob" secondAttribute="bottom" constant="32" id="FzS-0N-qoP"/>
                             <constraint firstItem="DjQ-wv-pfN" firstAttribute="leading" secondItem="AKA-NP-r1P" secondAttribute="leading" constant="32" id="j4g-TQ-XZX"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="AKA-NP-r1P"/>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <tabBarItem key="tabBarItem" title="Threshold" image="ThresholdImage.png" id="e4F-52-qDS"/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics" barStyle="black" translucent="NO"/>
                     <connections>
                         <outlet property="activeHeartImg" destination="NgM-NC-Kob" id="Ytw-P3-Bqb"/>
+                        <outlet property="thresholdSlider" destination="DjQ-wv-pfN" id="Y3L-YT-PaL"/>
                         <outlet property="triggerHistoryLabel" destination="9sC-cc-ghK" id="WJ8-qr-fwi"/>
                     </connections>
                 </viewController>
@@ -233,10 +232,10 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="C9Q-lB-B7c">
-                                <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                <rect key="frame" x="0.0" y="28" width="375" height="43.666667938232422"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="C9Q-lB-B7c" id="VW0-N5-nXp">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.666666666666664"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.666667938232422"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableViewCellContentView>
                                 <connections>
@@ -266,10 +265,10 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="ExperimentsCell" id="t3e-pe-mRp">
-                                <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                <rect key="frame" x="0.0" y="28" width="375" height="43.666667938232422"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="t3e-pe-mRp" id="4a1-fA-0a6">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.666666666666664"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.666667938232422"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableViewCellContentView>
                             </tableViewCell>
@@ -295,8 +294,8 @@
                     <view key="view" contentMode="scaleToFill" id="cA3-G3-ect">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="s3X-zk-zsm"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </view>
                     <navigationItem key="navigationItem" id="Y79-1L-yET"/>
                     <connections>
@@ -338,10 +337,10 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="defaultPrototypeCell" id="e39-LW-s3Y">
-                                <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                <rect key="frame" x="0.0" y="28" width="375" height="43.666667938232422"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="e39-LW-s3Y" id="uDS-zx-ZY3">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.666666666666664"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.666667938232422"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableViewCellContentView>
                             </tableViewCell>
@@ -377,10 +376,10 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="t23-8M-PQd">
-                                <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                <rect key="frame" x="0.0" y="28" width="375" height="43.666667938232422"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="t23-8M-PQd" id="riz-XQ-pg9">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.666666666666664"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.666667938232422"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableViewCellContentView>
                             </tableViewCell>
@@ -447,6 +446,7 @@
                                 </connections>
                             </button>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="og9-b0-l5H"/>
                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="sC6-b8-GP9" firstAttribute="leading" secondItem="og9-b0-l5H" secondAttribute="leading" constant="15" id="70e-CD-Q0k"/>
@@ -457,7 +457,6 @@
                             <constraint firstItem="og9-b0-l5H" firstAttribute="trailing" secondItem="9lQ-J4-ogX" secondAttribute="trailing" constant="53" id="mb1-Fw-QOU"/>
                             <constraint firstItem="Ah3-MM-In8" firstAttribute="top" secondItem="og9-b0-l5H" secondAttribute="top" constant="16" id="ouP-4n-ABl"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="og9-b0-l5H"/>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics" barStyle="black" translucent="NO"/>
@@ -477,8 +476,8 @@
                     <view key="view" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="ec7-Z8-GXc">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="641"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <viewLayoutGuide key="safeArea" id="Cqq-8g-vt2"/>
+                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics" barStyle="black" translucent="NO"/>
@@ -536,6 +535,7 @@
                                 </connections>
                             </collectionView>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="211-dR-CdW"/>
                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="211-dR-CdW" firstAttribute="bottom" secondItem="SzW-i5-Ege" secondAttribute="bottom" id="4qI-Zc-cFb"/>
@@ -549,7 +549,6 @@
                             <constraint firstItem="211-dR-CdW" firstAttribute="bottom" secondItem="kHe-29-qrL" secondAttribute="bottom" id="gGL-hM-VWv"/>
                             <constraint firstItem="211-dR-CdW" firstAttribute="trailing" secondItem="yrK-ID-tBJ" secondAttribute="trailing" id="vE8-n0-sJD"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="211-dR-CdW"/>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics" barStyle="black" translucent="NO"/>
@@ -614,6 +613,7 @@
                                 </connections>
                             </collectionView>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="e49-4k-ZTE"/>
                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
@@ -628,7 +628,6 @@
                             <constraint firstItem="R9D-Nc-I8f" firstAttribute="top" secondItem="e49-4k-ZTE" secondAttribute="top" id="lW8-mY-kit"/>
                             <constraint firstItem="e49-4k-ZTE" firstAttribute="trailing" secondItem="WDR-dY-QZO" secondAttribute="trailing" id="tOX-ZB-fsz"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="e49-4k-ZTE"/>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics" barStyle="black" translucent="NO"/>
@@ -670,8 +669,8 @@
                                 </connections>
                             </collectionView>
                         </subviews>
-                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <viewLayoutGuide key="safeArea" id="CYN-Hw-K6N"/>
+                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </view>
                     <connections>
                         <outlet property="collectionView" destination="Jtu-7K-OL3" id="I0n-q4-B9O"/>
@@ -747,6 +746,7 @@
                                 </connections>
                             </button>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="GBj-DC-cwq"/>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="GBj-DC-cwq" firstAttribute="trailing" secondItem="YmC-0R-fO1" secondAttribute="trailing" constant="53" id="E7J-tK-YC4"/>
@@ -759,7 +759,6 @@
                             <constraint firstItem="GBj-DC-cwq" firstAttribute="trailing" secondItem="nVI-my-t7k" secondAttribute="trailing" constant="6" id="nuV-eC-94l"/>
                             <constraint firstItem="1Yg-FM-bOg" firstAttribute="leading" secondItem="GBj-DC-cwq" secondAttribute="leading" constant="12" id="raW-ii-QDi"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="GBj-DC-cwq"/>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics" barStyle="black" translucent="NO"/>
@@ -801,6 +800,7 @@
                             </connections>
                         </button>
                     </subviews>
+                    <viewLayoutGuide key="safeArea" id="Yau-9P-Xt3"/>
                     <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <constraints>
                         <constraint firstItem="S6W-RG-LwA" firstAttribute="top" secondItem="Yau-9P-Xt3" secondAttribute="top" id="1p6-oj-RUl"/>
@@ -808,7 +808,6 @@
                         <constraint firstItem="y7P-5i-fcw" firstAttribute="leading" secondItem="Yau-9P-Xt3" secondAttribute="leading" constant="6" id="jbe-NL-3ct"/>
                         <constraint firstItem="y7P-5i-fcw" firstAttribute="top" secondItem="Yau-9P-Xt3" secondAttribute="top" constant="6" id="qDM-t6-X0Y"/>
                     </constraints>
-                    <viewLayoutGuide key="safeArea" id="Yau-9P-Xt3"/>
                 </view>
             </objects>
             <point key="canvasLocation" x="-452" y="-6553"/>
@@ -893,7 +892,8 @@
                                 </connections>
                             </button>
                         </subviews>
-                        <color key="backgroundColor" cocoaTouchSystemColor="darkTextColor"/>
+                        <viewLayoutGuide key="safeArea" id="Qbv-Y9-kb7"/>
+                        <color key="backgroundColor" systemColor="darkTextColor"/>
                         <constraints>
                             <constraint firstItem="Qbv-Y9-kb7" firstAttribute="bottom" secondItem="x0s-Yh-YLH" secondAttribute="bottom" constant="53" id="6FP-JU-Oi0"/>
                             <constraint firstItem="Qbv-Y9-kb7" firstAttribute="trailing" secondItem="x0s-Yh-YLH" secondAttribute="trailing" constant="20" id="chl-yU-Y7V"/>
@@ -903,7 +903,6 @@
                             <constraint firstItem="dq2-GL-teK" firstAttribute="top" secondItem="Qbv-Y9-kb7" secondAttribute="top" id="mSg-qO-4Ho"/>
                             <constraint firstItem="FIF-Yl-8aW" firstAttribute="top" secondItem="Qbv-Y9-kb7" secondAttribute="top" constant="16" id="pke-MG-CAq"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="Qbv-Y9-kb7"/>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics" barStyle="black" translucent="NO"/>
@@ -933,6 +932,7 @@
                                 <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </view>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="fYy-6q-Z0t"/>
                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="FBs-cm-txY" firstAttribute="leading" secondItem="fYy-6q-Z0t" secondAttribute="leading" id="2fl-I8-qqL"/>
@@ -940,7 +940,6 @@
                             <constraint firstItem="fYy-6q-Z0t" firstAttribute="bottom" secondItem="FBs-cm-txY" secondAttribute="bottom" id="RRL-JQ-SyZ"/>
                             <constraint firstItem="fYy-6q-Z0t" firstAttribute="trailing" secondItem="FBs-cm-txY" secondAttribute="trailing" id="oyo-Uo-vXH"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="fYy-6q-Z0t"/>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout"/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics" barStyle="black" translucent="NO"/>
@@ -984,8 +983,8 @@
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </tableView>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="COe-Bi-z6f"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </view>
                     <connections>
                         <outlet property="tableView" destination="4pS-UF-1Hm" id="KOt-OR-8qY"/>
@@ -1109,7 +1108,7 @@
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yeI-FC-cMU">
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yeI-FC-cMU">
                                         <rect key="frame" x="285" y="968" width="70" height="30"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="23"/>
@@ -1136,8 +1135,8 @@
                                 </subviews>
                             </scrollView>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="498-iN-mzQ"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </view>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics" barStyle="black" translucent="NO"/>
                     <connections>
@@ -1172,8 +1171,8 @@
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </tableView>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="zsE-Wq-AqF"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </view>
                     <connections>
                         <outlet property="tableView" destination="Jk6-bx-4rj" id="3dg-FW-KNk"/>
@@ -1192,8 +1191,8 @@
                     <view key="view" contentMode="scaleToFill" id="HiN-l4-KVd">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="iL4-zN-OTA"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="V4S-tv-xfM" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1207,8 +1206,8 @@
                     <view key="view" contentMode="scaleToFill" id="cUy-zd-OK0">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="w9T-OJ-Xyu"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="LdR-3E-byv" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1216,6 +1215,10 @@
             <point key="canvasLocation" x="-1356" y="1157"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="bAc-oD-NjA"/>
+        <segue reference="Btc-bD-lKi"/>
+    </inferredMetricsTieBreakers>
     <resources>
         <image name="FileNeuron.png" width="30" height="30"/>
         <image name="Play.png" width="30" height="30"/>
@@ -1227,9 +1230,8 @@
         <image name="fft.png" width="58" height="58"/>
         <image name="settings.png" width="30" height="30"/>
         <image name="trash.png" width="3.9045553207397461" height="3.9045553207397461"/>
+        <systemColor name="darkTextColor">
+            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
     </resources>
-    <inferredMetricsTieBreakers>
-        <segue reference="bAc-oD-NjA"/>
-        <segue reference="Btc-bD-lKi"/>
-    </inferredMetricsTieBreakers>
 </document>
