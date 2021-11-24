@@ -591,7 +591,7 @@
                 firstDrawAfterChannelChange = NO;
             }
             currentTimeTextureFont = gl::TextureFont::create( currentTimeFont );
-            heartBeatTextureFont = gl::TextureFont::create( heartBeatFont );
+            //heartBeatTextureFont = gl::TextureFont::create( heartBeatFont );
             mScaleFont = gl::TextureFont::create( mFont );
         }
         

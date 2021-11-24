@@ -33,6 +33,7 @@ static void atomic_set(int64_t *ptr, int64_t value)
 RingBuffer::RingBuffer(SInt64 bufferLength, SInt64 numChannels) : 
 mSizeOfBuffer(bufferLength)
 {
+    NSLog(@"Start Ring Buffer");
 	if (numChannels > kMaxNumChannels)
 		mNumChannels = kMaxNumChannels;
 	else if (numChannels <= 0)
@@ -48,7 +49,7 @@ mSizeOfBuffer(bufferLength)
 		mLastReadIndex[i] = 0;
         mNumUnreadFrames[i] = 0;
 	}
-		
+    NSLog(@"End Ring Buffer");
 }
 
 RingBuffer::~RingBuffer() 

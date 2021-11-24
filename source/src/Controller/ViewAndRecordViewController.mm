@@ -442,6 +442,7 @@
 //
 -(void) finishedWithConfiguration
 {
+    //popControllerIpad = nil;
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 

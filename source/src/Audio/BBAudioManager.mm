@@ -893,8 +893,8 @@ static BBAudioManager *bbAudioManager = nil;
 
 -(void) reactivateCurrentDevice
 {
-    
-    
+    [self stopAllInputOutput];
+    NSLog(@"Reactivate current device");
     InputDevice * tempInputDevice = ((InputDevice*)[availableInputDevices objectAtIndex:[self indexOfCurrentlyActiveDevice]]);
     InputDeviceConfig * devConf = tempInputDevice.config;
 
@@ -926,10 +926,10 @@ static BBAudioManager *bbAudioManager = nil;
     {
         tempSamplingRate = (int)(tempSamplingRate/numOfActiveChannels);
     }
-    NSLog(@"Before set %d", _numberOfSourceChannels);
+
     _sourceSamplingRate = tempSamplingRate;
     _numberOfSourceChannels = numberOfAvailableChannels;
-    NSLog(@"After set %d", _numberOfSourceChannels);
+
     [self updateCurrentlyActiveChannels];
     [self resetBuffers];
 
