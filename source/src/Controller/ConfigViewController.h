@@ -27,5 +27,6 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 @protocol ConfigViewControllerDelegate <NSObject>
         -(void) finishedWithConfiguration;
+        -(void) configIsClossing;
 @end
 NS_ASSUME_NONNULL_END

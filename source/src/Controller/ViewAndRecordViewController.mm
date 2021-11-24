@@ -442,8 +442,13 @@
 //
 -(void) finishedWithConfiguration
 {
-    //popControllerIpad = nil;
+    popControllerIpad = nil;
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+-(void) configIsClossing
+{
+    popControllerIpad = nil;
 }
 
 #pragma mark - FFT stuff
