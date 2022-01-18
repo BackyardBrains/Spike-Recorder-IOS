@@ -38,7 +38,9 @@ static DemoProtocol *demoProtocol;
 //
 - (void)launch
 {
-    [Fabric with:@[[Crashlytics class]]];
+   
+    
+    //[Fabric with:@[[Crashlytics class]]];
     
     tabBarController = (UITabBarController *)self.window.rootViewController;
     tabBarController.delegate = self;

@@ -181,8 +181,20 @@ static BBAudioManager *bbAudioManager = nil;
 
 - (id)init
 {
+    
+    if([[UIApplication sharedApplication] isProtectedDataAvailable])
+    {
+        NSLog(@"Device is unlocked! BBaudio manager");
+    }
+    else
+    {
+        NSLog(@"Device is locked! BBaudio manager");
+    }
+    
+    NSLog(@"Init BBAudioManager - start");
     if (self = [super init])
     {
+       
         
         serialQueue = dispatch_queue_create("com.blah.queue", DISPATCH_QUEUE_SERIAL);
         boardsConfigManager = [[BoardsConfigManager alloc] init];
@@ -192,6 +204,7 @@ static BBAudioManager *bbAudioManager = nil;
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(resetupAudioInputs) name:@"audioChannelsChanged" object:nil];
         
+        NSLog(@"Create local audio devices");
         [self createLocalAudioDevice];
         
         [self initInputDevices];
@@ -255,13 +268,13 @@ static BBAudioManager *bbAudioManager = nil;
         
         rtEvents = [[NSMutableArray alloc] initWithCapacity:0];
         
-        
+        NSLog(@"audio manger play - before");
         [audioManager play];
-
+        NSLog(@"audio manger play - after");
         
         
     }
-    
+    NSLog(@"Init BBAudioManager - end");
     return self;
 }
 

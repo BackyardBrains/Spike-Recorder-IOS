@@ -118,6 +118,8 @@
 
 - (void)viewWillDisappear:(BOOL)animated
 {
+    
+    [_masterDelegate configIsClossing];
     [super viewWillDisappear:animated];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:RESETUP_SCREEN_NOTIFICATION object:nil];
 }

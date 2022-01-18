@@ -649,6 +649,7 @@ static Novocaine *audioManager = nil;
     //AVAudioSessionErrorInsufficientPriority = '!pri', /* 0x21707269, 561017449 */
     //and is described as "The app was not allowed to set the audio category because another app (Phone, etc.) is controlling it."
     //Stanislav
+    NSLog(@"Check and display error for Novocain");
 	CheckError(AudioUnitInitialize(_inputUnit), "Couldn't initialize the input unit");
 #if defined ( USING_OSX )
     CheckError(AudioUnitInitialize(_outputUnit), "Couldn't initialize the output unit");

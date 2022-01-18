@@ -195,6 +195,15 @@
 // connected and start listening for connect/disconnect events.
 - (id)initWithProtocol:(NSString *)protocol
 {
+    
+    if([[UIApplication sharedApplication] isProtectedDataAvailable])
+    {
+        NSLog(@"Device is unlocked! initWithProtocol");
+    }
+    else
+    {
+        NSLog(@"Device is locked! initWithProtocol");
+    }
     self = [super init];
     if (self) {
         _debugString = [NSMutableString stringWithString:@"initWithProtocol:\n"];
@@ -257,6 +266,14 @@
 // Attemps to open a session with the desired protocol if one is not already open.
 - (void)accessoryDidConnect:(NSNotification *)notification
 {
+    if([[UIApplication sharedApplication] isProtectedDataAvailable])
+    {
+        NSLog(@"Device is unlocked! accessoryDidConnect");
+    }
+    else
+    {
+        NSLog(@"Device is locked! accessoryDidConnect");
+    }
     [self addDebugString:@"DidConnect:\n"];
     if (_session == nil) {
         [self openSessionWithProtocol:_protocol];
