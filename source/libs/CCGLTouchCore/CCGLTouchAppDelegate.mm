@@ -50,7 +50,7 @@
  */
 
 - (void)launch {}
-
+- (void) enterForeground{};
 
 
 /**
@@ -59,13 +59,14 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    
+    self.launchingFromLocked = false;
     if([[UIApplication sharedApplication] isProtectedDataAvailable])
     {
         NSLog(@"Device is unlocked! didFinishLaunchingWithOptions");
     }
     else
     {
+        self.launchingFromLocked = true;
         NSLog(@"Device is locked! didFinishLaunchingWithOptions");
     }
     
@@ -116,7 +117,7 @@
     {
         NSLog(@"Device is locked! applicationWillEnterForeground");
     }
-    
+    [self enterForeground];
     /*
      Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
      */

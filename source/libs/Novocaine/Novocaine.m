@@ -650,7 +650,19 @@ static Novocaine *audioManager = nil;
     //and is described as "The app was not allowed to set the audio category because another app (Phone, etc.) is controlling it."
     //Stanislav
     NSLog(@"Check and display error for Novocain");
-	CheckError(AudioUnitInitialize(_inputUnit), "Couldn't initialize the input unit");
+    OSStatus tempError;
+    tempError = AudioUnitInitialize(_inputUnit);
+    if (tempError == noErr)
+    {
+        self.shouldReinitializeAudio = false;
+    }
+    else
+    {
+        NSLog(@"Novocain detected error");
+        self.shouldReinitializeAudio = true;
+    }
+    //Stanislav commented out
+	//CheckError(tempError, "Couldn't initialize the input unit. Please relaunch application.");
 #if defined ( USING_OSX )
     CheckError(AudioUnitInitialize(_outputUnit), "Couldn't initialize the output unit");
 #endif
@@ -751,7 +763,9 @@ static Novocaine *audioManager = nil;
 	if ( self.inputAvailable ) {
 		// Set the audio session category for simultaneous play and record
 		if (!self.playing) {
-			CheckError( AudioOutputUnitStart(_inputUnit), "Couldn't start the output unit");
+            AudioOutputUnitStart(_inputUnit);
+            //stanislav commented out
+			//CheckError( AudioOutputUnitStart(_inputUnit), "Couldn't start the output unit");
 #if defined ( USING_OSX )
             CheckError( AudioOutputUnitStart(_outputUnit), "Couldn't start the output unit");
 #endif
@@ -928,6 +942,7 @@ void sessionPropertyListener(void *                  inClientData,
     
     // Determines the reason for the route change, to ensure that it is not
     //      because of a category change.
+    NSLog(@"BYB log - sessionPropertyListener");
     CFNumberRef routeChangeReasonRef = (CFNumberRef)CFDictionaryGetValue ((CFDictionaryRef)inData, CFSTR (kAudioSession_AudioRouteChangeKey_Reason) );
     SInt32 routeChangeReason;
     CFNumberGetValue (routeChangeReasonRef, kCFNumberSInt32Type, &routeChangeReason);

@@ -32,6 +32,20 @@ static DemoProtocol *demoProtocol;
     return demoProtocol;
 }
 
+- (void) enterForeground
+{
+    NSLog(@"Inside new enter foreground");
+    if(self.shouldReinitializeAudio)
+    {
+        
+        NSLog(@"Reinit audio manager");
+        [[BBAudioManager bbAudioManager] init];
+        self.shouldReinitializeAudio = false;
+        
+    }
+    
+}
+
 //
 // This "launch" is called on the end of "application: didFinishLaunchingWithOptions"
 // in CCGLTouchAppDelegate

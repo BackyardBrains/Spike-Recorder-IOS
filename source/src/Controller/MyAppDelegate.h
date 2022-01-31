@@ -32,4 +32,5 @@
 +(DemoProtocol*) getEaManager;
 -(BOOL) sharedFileShouldBeOpened;
 -(void) sharedFileIsOpened;
+
 @end

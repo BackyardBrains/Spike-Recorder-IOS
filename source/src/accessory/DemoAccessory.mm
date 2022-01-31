@@ -129,10 +129,33 @@
     _accessoryInfoString = infoString;
 }
 
+
+- (void) reAddExistingAccessory
+{
+    
+    lastAccessory  = [self getCurrentAccessoryWithProtocol:_protocol];
+    NSLog(@"lastAccessory - before");
+    // If the requested protocol was found, open a session and hook up the related streams
+    if (lastAccessory) {
+        NSLog(@"lastAccessory - OK");
+        //_session = [[EASession alloc] initWithAccessory:lastAccessory forProtocol:_protocol];
+        
+        if (_session) {
+            NSLog(@"_session - OK");
+            //change audio manager input to external accessory
+            cBufHead=0;
+            cBufTail=0;
+            [[BBAudioManager bbAudioManager] addMfiDeviceWithModelNumber:lastAccessory.modelNumber andSerial:lastAccessory.serialNumber];
+        }
+    }
+}
+
 // Search connected accessories for the requested protocol. If found, open a session
 // and hook up the associated streams.
 - (void) openSessionWithProtocol:(NSString *)protocolString
 {
+    
+    NSLog(@"BYB log  - openSessionWithProtocol");
     _accessoryInfoString = @"Accessory Not Connected\n";
     //[self addDebugString:[NSString stringWithFormat:@"openSessionWithProtocol: %@\n", protocolString]];
     //[self addDebugString:[NSString stringWithFormat:@"%d connected accessories\n", [accessories count]]];

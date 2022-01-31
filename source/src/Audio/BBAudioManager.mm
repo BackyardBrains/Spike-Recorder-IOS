@@ -192,9 +192,33 @@ static BBAudioManager *bbAudioManager = nil;
     }
     
     NSLog(@"Init BBAudioManager - start");
-    if (self = [super init])
+    MyAppDelegate * appDelegate = (MyAppDelegate*)[[UIApplication sharedApplication] delegate];
+    //if ((self = [super init]) && ![appDelegate launchingFromLocked])
+    if (self || (self = [super init]))
     {
-       
+        NSLog(@"Create local audio devices");
+        bool reinitializeMFi = false;
+        if(appDelegate.shouldReinitializeAudio)
+        {
+            reinitializeMFi= true;
+            NSLog(@"App delegate ssays we sshould reinit audio");
+            [audioManager initNovocaine];
+        }
+        [self createLocalAudioDevice];
+        
+        if([audioManager shouldReinitializeAudio])
+        {
+            NSLog(@"BBAudioManager shouldReinitializeAudio detected");
+            appDelegate.shouldReinitializeAudio = true;
+        }
+        else
+        {
+            appDelegate.shouldReinitializeAudio = false;
+        }
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(resetupAudioInputs) name:@"audioChannelsChanged" object:nil];
+        
+        
         
         serialQueue = dispatch_queue_create("com.blah.queue", DISPATCH_QUEUE_SERIAL);
         boardsConfigManager = [[BoardsConfigManager alloc] init];
@@ -202,10 +226,12 @@ static BBAudioManager *bbAudioManager = nil;
         eaManager = [MyAppDelegate getEaManager];
         extractedChannelsBuffer = (float *)calloc(SIZE_OF_MAX_SAMPLES_FOR_ALL_CHANNELS, sizeof(float));
         
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(resetupAudioInputs) name:@"audioChannelsChanged" object:nil];
+
         
-        NSLog(@"Create local audio devices");
-        [self createLocalAudioDevice];
+        
+        
+        
+        
         
         [self initInputDevices];
         
@@ -268,9 +294,18 @@ static BBAudioManager *bbAudioManager = nil;
         
         rtEvents = [[NSMutableArray alloc] initWithCapacity:0];
         
+        //if(appDelegate.shouldReinitializeAudio)
+        if(reinitializeMFi)
+        {
+            NSLog(@"App delegate ssays we sshould reinit accessory");
+            [eaManager reAddExistingAccessory];
+            
+        }
         NSLog(@"audio manger play - before");
         [audioManager play];
         NSLog(@"audio manger play - after");
+        
+       
         
         
     }
@@ -491,6 +526,7 @@ static BBAudioManager *bbAudioManager = nil;
 //
 -(BOOL) activateFirstInstanceOfInputDeviceWithUniqueName:(NSString *) uniqueName
 {
+    NSLog(@"Activate first instance with name %@", uniqueName);
     BOOL foundDevice = NO;
     int indexOfNewDevice = 0;
     for (int i=0;i<[availableInputDevices count];i++)
