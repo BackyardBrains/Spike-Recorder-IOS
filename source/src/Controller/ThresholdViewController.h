@@ -14,6 +14,7 @@
 @interface ThresholdViewController : CCGLTouchViewController <MultichannelGLViewDelegate>
 {
 }
+@property (retain, nonatomic) IBOutlet UISlider *thresholdSlider;
 
 @property (retain, nonatomic) IBOutlet UILabel *triggerHistoryLabel;
 @property (retain, nonatomic) IBOutlet UIImageView *activeHeartImg;

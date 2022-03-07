@@ -1322,7 +1322,6 @@ NSMutableArray *checkedTables;
 	//[self tableCheck];
 	
 	[[self class] unregisterObject:self];
-	
 	NSString *deleteQuery = [NSString stringWithFormat:@"DELETE FROM %@ WHERE pk = %d", [[self class] tableName], pk];
 	sqlite3 *database = [[SQLiteInstanceManager sharedManager] database];
 	char *errmsg = NULL;

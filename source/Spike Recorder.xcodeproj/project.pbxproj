@@ -30,8 +30,6 @@
 		1CD05BAA1CFD398400A83727 /* BBCommentDetailsCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1CD05BA81CFD398400A83727 /* BBCommentDetailsCell.xib */; };
 		1CE5E02A1F742E730016E7D9 /* configIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CE5E0281F742E730016E7D9 /* configIcon.png */; };
 		1CE5E02B1F742E730016E7D9 /* configIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CE5E0291F742E730016E7D9 /* configIcon@2x.png */; };
-		1CE5E0361F7453080016E7D9 /* ChooseFilterTypeViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1CE5E0341F7453080016E7D9 /* ChooseFilterTypeViewController.mm */; };
-		1CE5E0371F7453080016E7D9 /* ChooseFilterTypeViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1CE5E0351F7453080016E7D9 /* ChooseFilterTypeViewController.xib */; };
 		1CF7DB2E1F7988DF008F303E /* slider-default7-handle.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CF7DB111F7988DF008F303E /* slider-default7-handle.png */; };
 		1CF7DB2F1F7988DF008F303E /* slider-default7-handle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CF7DB121F7988DF008F303E /* slider-default7-handle@2x.png */; };
 		1CF7DB301F7988DF008F303E /* slider-default7-track.png in Resources */ = {isa = PBXBuildFile; fileRef = 1CF7DB131F7988DF008F303E /* slider-default7-track.png */; };
@@ -112,7 +110,6 @@
 		2418FF171A83F79200662547 /* WavManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FF0E1A83F79200662547 /* WavManager.mm */; };
 		2418FF321A83FD3700662547 /* DCMDExperimentViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FF1E1A83FD3700662547 /* DCMDExperimentViewController.mm */; };
 		2418FF341A83FD3700662547 /* FFTViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FF221A83FD3700662547 /* FFTViewController.mm */; };
-		2418FF351A83FD3700662547 /* FilterSettingsViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FF241A83FD3700662547 /* FilterSettingsViewController.mm */; };
 		2418FF361A83FD3700662547 /* MyAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FF261A83FD3700662547 /* MyAppDelegate.mm */; };
 		2418FF371A83FD3700662547 /* PlaybackViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FF281A83FD3700662547 /* PlaybackViewController.mm */; };
 		2418FF381A83FD3700662547 /* SpikesAnalysisViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FF2A1A83FD3700662547 /* SpikesAnalysisViewController.mm */; };
@@ -231,15 +228,40 @@
 		24D697BA1A6FF3EB00108D78 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 24D697B91A6FF3EB00108D78 /* Images.xcassets */; };
 		24DBA92A197709DF00AEDE86 /* FFTViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 24DBA928197709DF00AEDE86 /* FFTViewController.xib */; };
 		24E1430D1B61407B00DA32B9 /* Log.m in Sources */ = {isa = PBXBuildFile; fileRef = 24E1430C1B61407B00DA32B9 /* Log.m */; };
-		24E6D8A91A011EE0006C8CED /* FilterSettingsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 24E6D8A71A011EE0006C8CED /* FilterSettingsViewController.xib */; };
 		24EBC1AE1997852D001D3392 /* TrialsDCMDTableViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 24EBC1AC1997852D001D3392 /* TrialsDCMDTableViewController.xib */; };
 		24EBC1B31997DD21001D3392 /* TrialActionsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 24EBC1B11997DD21001D3392 /* TrialActionsViewController.xib */; };
+		850258BF245C8ABC006F9927 /* close.png in Resources */ = {isa = PBXBuildFile; fileRef = 850258BD245C8ABC006F9927 /* close.png */; };
+		850258C0245C8ABC006F9927 /* close@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 850258BE245C8ABC006F9927 /* close@2x.png */; };
+		850258C3245DC55F006F9927 /* FilterSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = 850258C2245DC55F006F9927 /* FilterSettings.m */; };
+		850258C6245F57E3006F9927 /* InputDeviceConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 850258C5245F57E3006F9927 /* InputDeviceConfig.m */; };
+		850258C9245F5E71006F9927 /* ExpansionBoardConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 850258C8245F5E71006F9927 /* ExpansionBoardConfig.m */; };
 		851897AF22BBDF15003C5D7F /* BBEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 851897AE22BBDF15003C5D7F /* BBEvent.m */; };
-		856E3E6F22C50D5700103E2A /* ObjectiveDropboxOfficial.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 856E3E6E22C50D5700103E2A /* ObjectiveDropboxOfficial.framework */; };
-		856E3E7122C50D7E00103E2A /* ObjectiveDropboxOfficial.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 856E3E7022C50D7E00103E2A /* ObjectiveDropboxOfficial.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		8526365F241ED2D7000755F6 /* Comic-Book.otf in Resources */ = {isa = PBXBuildFile; fileRef = 8526365B241ED2D7000755F6 /* Comic-Book.otf */; };
+		85263660241ED2D7000755F6 /* Comic-Book-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 8526365C241ED2D7000755F6 /* Comic-Book-Bold.otf */; };
+		85263661241ED2D7000755F6 /* Comic-Book-Bold-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 8526365D241ED2D7000755F6 /* Comic-Book-Bold-Italic.otf */; };
+		85263662241ED2D7000755F6 /* Comic-Book-Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 8526365E241ED2D7000755F6 /* Comic-Book-Italic.otf */; };
+		85263665241FF1DD000755F6 /* SelectChannelColor.m in Sources */ = {isa = PBXBuildFile; fileRef = 85263664241FF1DD000755F6 /* SelectChannelColor.m */; };
+		85274D0D2464743D003561CE /* readme-config.txt in Resources */ = {isa = PBXBuildFile; fileRef = 85274D0C2464743D003561CE /* readme-config.txt */; };
+		852AB58A241BD4940010C846 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 852AB589241BD4940010C846 /* StoreKit.framework */; };
+		855CBE812332455F004E1BBA /* BBExperimentsTableViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 855CBE802332455F004E1BBA /* BBExperimentsTableViewController.mm */; };
+		855F6679235755E0008143FC /* ProductIds.plist in Resources */ = {isa = PBXBuildFile; fileRef = 855F6678235755E0008143FC /* ProductIds.plist */; };
+		855F667D2357598A008143FC /* StoreManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 855F667C2357598A008143FC /* StoreManager.m */; };
+		855F668023575B3E008143FC /* Section.m in Sources */ = {isa = PBXBuildFile; fileRef = 855F667F23575B3E008143FC /* Section.m */; };
+		855F668323575EC9008143FC /* StoreObserver.m in Sources */ = {isa = PBXBuildFile; fileRef = 855F668223575EC9008143FC /* StoreObserver.m */; };
+		8569F7952421566900EA9990 /* ChannelColorsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 8569F7932421566900EA9990 /* ChannelColorsTableViewCell.m */; };
+		8569F7962421566900EA9990 /* ChannelColorsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8569F7942421566900EA9990 /* ChannelColorsTableViewCell.xib */; };
 		856E3E7622C62D7800103E2A /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 856E3E7422C62D7800103E2A /* logo.png */; };
 		856E3E7722C62D7800103E2A /* splash-background.png in Resources */ = {isa = PBXBuildFile; fileRef = 856E3E7522C62D7800103E2A /* splash-background.png */; };
 		856E3E7F22C6315C00103E2A /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 856E3E7E22C6315C00103E2A /* Launch Screen.storyboard */; };
+		8580C84F241E72660033BF2E /* ConfigViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8580C84D241E72660033BF2E /* ConfigViewController.mm */; };
+		8580C850241E72660033BF2E /* ConfigViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8580C84E241E72660033BF2E /* ConfigViewController.xib */; };
+		8580C856241E77420033BF2E /* SelectFilterPresetView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8580C855241E77420033BF2E /* SelectFilterPresetView.m */; };
+		858B1CD92614D15E0094EF17 /* ObjectiveDropboxOfficial.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 858B1CD82614D15E0094EF17 /* ObjectiveDropboxOfficial.framework */; };
+		858B1CDA2614D2E00094EF17 /* ObjectiveDropboxOfficial.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 858B1CD82614D15E0094EF17 /* ObjectiveDropboxOfficial.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		858FACF52463106300EAC87A /* ChannelConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 858FACF42463106300EAC87A /* ChannelConfig.m */; };
+		858FACF8246312E400EAC87A /* board-config.json in Resources */ = {isa = PBXBuildFile; fileRef = 858FACF7246312E400EAC87A /* board-config.json */; };
+		858FACFB2463137B00EAC87A /* BoardsConfigManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 858FACFA2463137B00EAC87A /* BoardsConfigManager.m */; };
+		8592F48225533793006DCAA0 /* InputDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 8592F48125533793006DCAA0 /* InputDevice.m */; };
 		85CE23EF2137DA650035AEC8 /* DemoAccessory.mm in Sources */ = {isa = PBXBuildFile; fileRef = 85CE23EC2137DA640035AEC8 /* DemoAccessory.mm */; };
 		85CE23F02137DA650035AEC8 /* DemoProtocol.mm in Sources */ = {isa = PBXBuildFile; fileRef = 85CE23EE2137DA640035AEC8 /* DemoProtocol.mm */; };
 		85CE23F22137DAB20035AEC8 /* ExternalAccessory.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85CE23F12137DAB20035AEC8 /* ExternalAccessory.framework */; };
@@ -266,13 +288,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		1CB1265E1F87DDFF00247389 /* Embed Frameworks */ = {
+		8586320423BF4F2100D6BC5A /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				856E3E7122C50D7E00103E2A /* ObjectiveDropboxOfficial.framework in Embed Frameworks */,
+				858B1CDA2614D2E00094EF17 /* ObjectiveDropboxOfficial.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -307,9 +329,6 @@
 		1CD05BA81CFD398400A83727 /* BBCommentDetailsCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BBCommentDetailsCell.xib; sourceTree = "<group>"; };
 		1CE5E0281F742E730016E7D9 /* configIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = configIcon.png; sourceTree = "<group>"; };
 		1CE5E0291F742E730016E7D9 /* configIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "configIcon@2x.png"; sourceTree = "<group>"; };
-		1CE5E0331F7453080016E7D9 /* ChooseFilterTypeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChooseFilterTypeViewController.h; sourceTree = "<group>"; };
-		1CE5E0341F7453080016E7D9 /* ChooseFilterTypeViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ChooseFilterTypeViewController.mm; sourceTree = "<group>"; };
-		1CE5E0351F7453080016E7D9 /* ChooseFilterTypeViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = ChooseFilterTypeViewController.xib; path = Controller/ChooseFilterTypeViewController.xib; sourceTree = "<group>"; };
 		1CF7DB111F7988DF008F303E /* slider-default7-handle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "slider-default7-handle.png"; sourceTree = "<group>"; };
 		1CF7DB121F7988DF008F303E /* slider-default7-handle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "slider-default7-handle@2x.png"; sourceTree = "<group>"; };
 		1CF7DB131F7988DF008F303E /* slider-default7-track.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "slider-default7-track.png"; sourceTree = "<group>"; };
@@ -574,8 +593,6 @@
 		2418FF1E1A83FD3700662547 /* DCMDExperimentViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DCMDExperimentViewController.mm; sourceTree = "<group>"; };
 		2418FF211A83FD3700662547 /* FFTViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FFTViewController.h; sourceTree = "<group>"; };
 		2418FF221A83FD3700662547 /* FFTViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FFTViewController.mm; sourceTree = "<group>"; };
-		2418FF231A83FD3700662547 /* FilterSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FilterSettingsViewController.h; sourceTree = "<group>"; };
-		2418FF241A83FD3700662547 /* FilterSettingsViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FilterSettingsViewController.mm; sourceTree = "<group>"; };
 		2418FF251A83FD3700662547 /* MyAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyAppDelegate.h; sourceTree = "<group>"; };
 		2418FF261A83FD3700662547 /* MyAppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MyAppDelegate.mm; sourceTree = "<group>"; };
 		2418FF271A83FD3700662547 /* PlaybackViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaybackViewController.h; sourceTree = "<group>"; };
@@ -690,16 +707,54 @@
 		24DBA928197709DF00AEDE86 /* FFTViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FFTViewController.xib; sourceTree = "<group>"; };
 		24E1430B1B61407B00DA32B9 /* Log.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Log.h; sourceTree = "<group>"; };
 		24E1430C1B61407B00DA32B9 /* Log.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Log.m; sourceTree = "<group>"; };
-		24E6D8A71A011EE0006C8CED /* FilterSettingsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FilterSettingsViewController.xib; sourceTree = "<group>"; };
 		24EBC1AC1997852D001D3392 /* TrialsDCMDTableViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TrialsDCMDTableViewController.xib; sourceTree = "<group>"; };
 		24EBC1B11997DD21001D3392 /* TrialActionsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TrialActionsViewController.xib; sourceTree = "<group>"; };
+		850258BD245C8ABC006F9927 /* close.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = close.png; sourceTree = "<group>"; };
+		850258BE245C8ABC006F9927 /* close@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "close@2x.png"; sourceTree = "<group>"; };
+		850258C1245DC55F006F9927 /* FilterSettings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FilterSettings.h; sourceTree = "<group>"; };
+		850258C2245DC55F006F9927 /* FilterSettings.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FilterSettings.m; sourceTree = "<group>"; };
+		850258C4245F57E3006F9927 /* InputDeviceConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = InputDeviceConfig.h; sourceTree = "<group>"; };
+		850258C5245F57E3006F9927 /* InputDeviceConfig.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = InputDeviceConfig.m; sourceTree = "<group>"; };
+		850258C7245F5E71006F9927 /* ExpansionBoardConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExpansionBoardConfig.h; sourceTree = "<group>"; };
+		850258C8245F5E71006F9927 /* ExpansionBoardConfig.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExpansionBoardConfig.m; sourceTree = "<group>"; };
 		851897AD22BBDF15003C5D7F /* BBEvent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BBEvent.h; sourceTree = "<group>"; };
 		851897AE22BBDF15003C5D7F /* BBEvent.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BBEvent.m; sourceTree = "<group>"; };
-		856E3E6E22C50D5700103E2A /* ObjectiveDropboxOfficial.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ObjectiveDropboxOfficial.framework; path = Carthage/Build/simulator/ObjectiveDropboxOfficial.framework; sourceTree = "<group>"; };
-		856E3E7022C50D7E00103E2A /* ObjectiveDropboxOfficial.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ObjectiveDropboxOfficial.framework; path = Carthage/Build/simulator/ObjectiveDropboxOfficial.framework; sourceTree = "<group>"; };
+		8526365B241ED2D7000755F6 /* Comic-Book.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Comic-Book.otf"; sourceTree = "<group>"; };
+		8526365C241ED2D7000755F6 /* Comic-Book-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Comic-Book-Bold.otf"; sourceTree = "<group>"; };
+		8526365D241ED2D7000755F6 /* Comic-Book-Bold-Italic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Comic-Book-Bold-Italic.otf"; sourceTree = "<group>"; };
+		8526365E241ED2D7000755F6 /* Comic-Book-Italic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Comic-Book-Italic.otf"; sourceTree = "<group>"; };
+		85263663241FF1DD000755F6 /* SelectChannelColor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SelectChannelColor.h; sourceTree = "<group>"; };
+		85263664241FF1DD000755F6 /* SelectChannelColor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SelectChannelColor.m; sourceTree = "<group>"; };
+		85274D0C2464743D003561CE /* readme-config.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "readme-config.txt"; sourceTree = "<group>"; };
+		852AB589241BD4940010C846 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		855CBE7F2332455F004E1BBA /* BBExperimentsTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BBExperimentsTableViewController.h; sourceTree = "<group>"; };
+		855CBE802332455F004E1BBA /* BBExperimentsTableViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BBExperimentsTableViewController.mm; sourceTree = "<group>"; };
+		855F6678235755E0008143FC /* ProductIds.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = ProductIds.plist; sourceTree = "<group>"; };
+		855F667B2357598A008143FC /* StoreManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StoreManager.h; sourceTree = "<group>"; };
+		855F667C2357598A008143FC /* StoreManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = StoreManager.m; sourceTree = "<group>"; };
+		855F667E23575B3E008143FC /* Section.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Section.h; sourceTree = "<group>"; };
+		855F667F23575B3E008143FC /* Section.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Section.m; sourceTree = "<group>"; };
+		855F668123575EC9008143FC /* StoreObserver.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StoreObserver.h; sourceTree = "<group>"; };
+		855F668223575EC9008143FC /* StoreObserver.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = StoreObserver.m; sourceTree = "<group>"; };
+		8569F7922421566900EA9990 /* ChannelColorsTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChannelColorsTableViewCell.h; sourceTree = "<group>"; };
+		8569F7932421566900EA9990 /* ChannelColorsTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChannelColorsTableViewCell.m; sourceTree = "<group>"; };
+		8569F7942421566900EA9990 /* ChannelColorsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ChannelColorsTableViewCell.xib; sourceTree = "<group>"; };
 		856E3E7422C62D7800103E2A /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo.png; sourceTree = "<group>"; };
 		856E3E7522C62D7800103E2A /* splash-background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "splash-background.png"; sourceTree = "<group>"; };
 		856E3E7E22C6315C00103E2A /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
+		8580C84C241E72660033BF2E /* ConfigViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ConfigViewController.h; sourceTree = "<group>"; };
+		8580C84D241E72660033BF2E /* ConfigViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ConfigViewController.mm; sourceTree = "<group>"; };
+		8580C84E241E72660033BF2E /* ConfigViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConfigViewController.xib; sourceTree = "<group>"; };
+		8580C854241E77420033BF2E /* SelectFilterPresetView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SelectFilterPresetView.h; sourceTree = "<group>"; };
+		8580C855241E77420033BF2E /* SelectFilterPresetView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SelectFilterPresetView.m; sourceTree = "<group>"; };
+		858B1CD82614D15E0094EF17 /* ObjectiveDropboxOfficial.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ObjectiveDropboxOfficial.framework; sourceTree = SOURCE_ROOT; };
+		858FACF32463106300EAC87A /* ChannelConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChannelConfig.h; sourceTree = "<group>"; };
+		858FACF42463106300EAC87A /* ChannelConfig.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChannelConfig.m; sourceTree = "<group>"; };
+		858FACF7246312E400EAC87A /* board-config.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "board-config.json"; sourceTree = "<group>"; };
+		858FACF92463137B00EAC87A /* BoardsConfigManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BoardsConfigManager.h; sourceTree = "<group>"; };
+		858FACFA2463137B00EAC87A /* BoardsConfigManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BoardsConfigManager.m; sourceTree = "<group>"; };
+		8592F48025533793006DCAA0 /* InputDevice.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = InputDevice.h; sourceTree = "<group>"; };
+		8592F48125533793006DCAA0 /* InputDevice.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = InputDevice.m; sourceTree = "<group>"; };
 		85CE23EB2137DA640035AEC8 /* DemoAccessory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoAccessory.h; sourceTree = "<group>"; };
 		85CE23EC2137DA640035AEC8 /* DemoAccessory.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DemoAccessory.mm; sourceTree = "<group>"; };
 		85CE23ED2137DA640035AEC8 /* DemoProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoProtocol.h; sourceTree = "<group>"; };
@@ -739,6 +794,7 @@
 				247ED9BE193DEC0800871BAC /* libz.dylib in Frameworks */,
 				248C8EC118E5D90500307C4C /* ImageIO.framework in Frameworks */,
 				248C8EBF18E5D8FC00307C4C /* MobileCoreServices.framework in Frameworks */,
+				858B1CD92614D15E0094EF17 /* ObjectiveDropboxOfficial.framework in Frameworks */,
 				FA905A7C15AA8F370013688B /* MessageUI.framework in Frameworks */,
 				FA905A7A15AA8F0C0013688B /* CFNetwork.framework in Frameworks */,
 				FA905A4815AA8BBA0013688B /* Security.framework in Frameworks */,
@@ -748,9 +804,9 @@
 				FADF26551596362F006C87BA /* UIKit.framework in Frameworks */,
 				FADF26571596362F006C87BA /* Foundation.framework in Frameworks */,
 				FADF26591596362F006C87BA /* CoreGraphics.framework in Frameworks */,
-				856E3E6F22C50D5700103E2A /* ObjectiveDropboxOfficial.framework in Frameworks */,
 				1CBD16121E72E6DC00F59AEF /* Crashlytics.framework in Frameworks */,
 				FADF265B1596362F006C87BA /* QuartzCore.framework in Frameworks */,
+				852AB58A241BD4940010C846 /* StoreKit.framework in Frameworks */,
 				FADF265D1596362F006C87BA /* OpenGLES.framework in Frameworks */,
 				FADF26611596362F006C87BA /* CoreVideo.framework in Frameworks */,
 				FADF26631596362F006C87BA /* AVFoundation.framework in Frameworks */,
@@ -1165,6 +1221,8 @@
 		2418FE5C1A83F4C600662547 /* Asset */ = {
 			isa = PBXGroup;
 			children = (
+				858FACF62463126000EAC87A /* config */,
+				8526365A241ED2D7000755F6 /* fonts */,
 				241C8AF51B3201B800CEFCEE /* templates */,
 				2418FE881A83F5D700662547 /* Images */,
 				2418FE601A83F57900662547 /* Icons */,
@@ -1237,6 +1295,8 @@
 		2418FE881A83F5D700662547 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				850258BD245C8ABC006F9927 /* close.png */,
+				850258BE245C8ABC006F9927 /* close@2x.png */,
 				2418FE891A83F5D700662547 /* again.png */,
 				2418FE8A1A83F5D700662547 /* again@2x.png */,
 				2418FE8B1A83F5D700662547 /* backbtn.png */,
@@ -1304,6 +1364,18 @@
 				2418FEF31A83F6C800662547 /* BBSpikeTrain.m */,
 				851897AD22BBDF15003C5D7F /* BBEvent.h */,
 				851897AE22BBDF15003C5D7F /* BBEvent.m */,
+				850258C1245DC55F006F9927 /* FilterSettings.h */,
+				850258C2245DC55F006F9927 /* FilterSettings.m */,
+				850258C4245F57E3006F9927 /* InputDeviceConfig.h */,
+				850258C5245F57E3006F9927 /* InputDeviceConfig.m */,
+				850258C7245F5E71006F9927 /* ExpansionBoardConfig.h */,
+				850258C8245F5E71006F9927 /* ExpansionBoardConfig.m */,
+				858FACF32463106300EAC87A /* ChannelConfig.h */,
+				858FACF42463106300EAC87A /* ChannelConfig.m */,
+				858FACF92463137B00EAC87A /* BoardsConfigManager.h */,
+				858FACFA2463137B00EAC87A /* BoardsConfigManager.m */,
+				8592F48025533793006DCAA0 /* InputDevice.h */,
+				8592F48125533793006DCAA0 /* InputDevice.m */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1351,8 +1423,6 @@
 				2418FF221A83FD3700662547 /* FFTViewController.mm */,
 				1C3FC2FD203EE9B200C28680 /* FFTRecordingsViewController.h */,
 				1C3FC2FB203EE99600C28680 /* FFTRecordingsViewController.mm */,
-				2418FF231A83FD3700662547 /* FilterSettingsViewController.h */,
-				2418FF241A83FD3700662547 /* FilterSettingsViewController.mm */,
 				2418FF251A83FD3700662547 /* MyAppDelegate.h */,
 				2418FF261A83FD3700662547 /* MyAppDelegate.mm */,
 				2418FF271A83FD3700662547 /* PlaybackViewController.h */,
@@ -1363,8 +1433,10 @@
 				2418FF2E1A83FD3700662547 /* ThresholdViewController.mm */,
 				2418FF2F1A83FD3700662547 /* ViewAndRecordViewController.h */,
 				2418FF301A83FD3700662547 /* ViewAndRecordViewController.mm */,
-				1CE5E0331F7453080016E7D9 /* ChooseFilterTypeViewController.h */,
-				1CE5E0341F7453080016E7D9 /* ChooseFilterTypeViewController.mm */,
+				8580C84C241E72660033BF2E /* ConfigViewController.h */,
+				8580C84D241E72660033BF2E /* ConfigViewController.mm */,
+				8569F7922421566900EA9990 /* ChannelColorsTableViewCell.h */,
+				8569F7932421566900EA9990 /* ChannelColorsTableViewCell.m */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -1375,6 +1447,10 @@
 				1CF7DB041F7988DF008F303E /* NMRangeSlider */,
 				2418FF3D1A83FD6700662547 /* BYBHandleButton.h */,
 				2418FF3E1A83FD6700662547 /* BYBHandleButton.mm */,
+				8580C854241E77420033BF2E /* SelectFilterPresetView.h */,
+				8580C855241E77420033BF2E /* SelectFilterPresetView.m */,
+				85263663241FF1DD000755F6 /* SelectChannelColor.h */,
+				85263664241FF1DD000755F6 /* SelectChannelColor.m */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -1425,6 +1501,8 @@
 				1CD05BA21CFD02EE00A83727 /* BBFileDetailsViewCell.m */,
 				1CD05BA61CFD398400A83727 /* BBCommentDetailsCell.h */,
 				1CD05BA71CFD398400A83727 /* BBCommentDetailsCell.m */,
+				855CBE7F2332455F004E1BBA /* BBExperimentsTableViewController.h */,
+				855CBE802332455F004E1BBA /* BBExperimentsTableViewController.mm */,
 			);
 			path = Tables;
 			sourceTree = "<group>";
@@ -1464,6 +1542,39 @@
 			path = templates;
 			sourceTree = "<group>";
 		};
+		8526365A241ED2D7000755F6 /* fonts */ = {
+			isa = PBXGroup;
+			children = (
+				8526365B241ED2D7000755F6 /* Comic-Book.otf */,
+				8526365C241ED2D7000755F6 /* Comic-Book-Bold.otf */,
+				8526365D241ED2D7000755F6 /* Comic-Book-Bold-Italic.otf */,
+				8526365E241ED2D7000755F6 /* Comic-Book-Italic.otf */,
+			);
+			path = fonts;
+			sourceTree = "<group>";
+		};
+		855F667A2357594F008143FC /* App Store */ = {
+			isa = PBXGroup;
+			children = (
+				855F667B2357598A008143FC /* StoreManager.h */,
+				855F667C2357598A008143FC /* StoreManager.m */,
+				855F667E23575B3E008143FC /* Section.h */,
+				855F667F23575B3E008143FC /* Section.m */,
+				855F668123575EC9008143FC /* StoreObserver.h */,
+				855F668223575EC9008143FC /* StoreObserver.m */,
+			);
+			path = "App Store";
+			sourceTree = "<group>";
+		};
+		858FACF62463126000EAC87A /* config */ = {
+			isa = PBXGroup;
+			children = (
+				858FACF7246312E400EAC87A /* board-config.json */,
+				85274D0C2464743D003561CE /* readme-config.txt */,
+			);
+			path = config;
+			sourceTree = "<group>";
+		};
 		85CE23EA2137DA000035AEC8 /* accessory */ = {
 			isa = PBXGroup;
 			children = (
@@ -1478,7 +1589,7 @@
 		FADF26451596362E006C87BA = {
 			isa = PBXGroup;
 			children = (
-				856E3E7022C50D7E00103E2A /* ObjectiveDropboxOfficial.framework */,
+				858B1CD82614D15E0094EF17 /* ObjectiveDropboxOfficial.framework */,
 				2418FE5C1A83F4C600662547 /* Asset */,
 				FADF26681596362F006C87BA /* src */,
 				FADF26531596362F006C87BA /* Frameworks */,
@@ -1497,7 +1608,7 @@
 		FADF26531596362F006C87BA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				856E3E6E22C50D5700103E2A /* ObjectiveDropboxOfficial.framework */,
+				852AB589241BD4940010C846 /* StoreKit.framework */,
 				85CE23F12137DAB20035AEC8 /* ExternalAccessory.framework */,
 				1CBD16101E72E6DC00F59AEF /* Crashlytics.framework */,
 				1CBD16111E72E6DC00F59AEF /* Fabric.framework */,
@@ -1528,6 +1639,7 @@
 		FADF26681596362F006C87BA /* src */ = {
 			isa = PBXGroup;
 			children = (
+				855F667A2357594F008143FC /* App Store */,
 				85CE23EA2137DA000035AEC8 /* accessory */,
 				2418FF1A1A83FD3700662547 /* Controller */,
 				2418FEFB1A83F79200662547 /* Audio */,
@@ -1552,6 +1664,7 @@
 				24E1430B1B61407B00DA32B9 /* Log.h */,
 				24E1430C1B61407B00DA32B9 /* Log.m */,
 				856E3E7E22C6315C00103E2A /* Launch Screen.storyboard */,
+				855F6678235755E0008143FC /* ProductIds.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -1563,10 +1676,10 @@
 				1CD05BA81CFD398400A83727 /* BBCommentDetailsCell.xib */,
 				1CD05BA31CFD02EE00A83727 /* BBFileDetailsViewCell.xib */,
 				24DBA928197709DF00AEDE86 /* FFTViewController.xib */,
-				1CE5E0351F7453080016E7D9 /* ChooseFilterTypeViewController.xib */,
-				24E6D8A71A011EE0006C8CED /* FilterSettingsViewController.xib */,
 				FA905A4B15AA8CF00013688B /* BBFileTableCell.xib */,
+				8580C84E241E72660033BF2E /* ConfigViewController.xib */,
 				1C3882F5201B58D500B0388B /* MainStoryboard.storyboard */,
+				8569F7942421566900EA9990 /* ChannelColorsTableViewCell.xib */,
 			);
 			name = Boards;
 			sourceTree = "<group>";
@@ -1583,8 +1696,8 @@
 				FADF264E1596362F006C87BA /* Resources */,
 				1CBD16141E72E71400F59AEF /* ShellScript */,
 				1CB126581F86C91200247389 /* ShellScript */,
-				1CB1265E1F87DDFF00247389 /* Embed Frameworks */,
 				1CB1265F1F8BE20700247389 /* ShellScript */,
+				8586320423BF4F2100D6BC5A /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1608,8 +1721,14 @@
 						DevelopmentTeam = MLGRKD657P;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
 							com.apple.HealthKit = {
 								enabled = 0;
+							};
+							com.apple.InAppPurchase = {
+								enabled = 1;
 							};
 							com.apple.WAC = {
 								enabled = 0;
@@ -1661,6 +1780,7 @@
 				2418FEC61A83F5D700662547 /* FileNeuron@2x.png in Resources */,
 				2418FEC11A83F5D700662547 /* dropbox.png in Resources */,
 				2418FEDA1A83F5D700662547 /* Stimulate.png in Resources */,
+				8580C850241E72660033BF2E /* ConfigViewController.xib in Resources */,
 				856E3E7722C62D7800103E2A /* splash-background.png in Resources */,
 				2418FECC1A83F5D700662547 /* nobeat@2x.png in Resources */,
 				2418FEE11A83F5D700662547 /* trash@2x.png in Resources */,
@@ -1670,6 +1790,7 @@
 				2418FFD21A8406A600662547 /* Screenshot-1242x2208.png in Resources */,
 				24EBC1B31997DD21001D3392 /* TrialActionsViewController.xib in Resources */,
 				1C9850682036E3830076997B /* fft.png in Resources */,
+				85263662241ED2D7000755F6 /* Comic-Book-Italic.otf in Resources */,
 				2418FEC31A83F5D700662547 /* ecg.png in Resources */,
 				1C3882C52018890300B0388B /* landscape-2048-1536.png in Resources */,
 				1C3882CE2018AF8B00B0388B /* landcape-2208-1242.png in Resources */,
@@ -1677,9 +1798,11 @@
 				1C3882C92018AB5900B0388B /* Screenshot@2x-1.png in Resources */,
 				241C8AF71B3201B800CEFCEE /* template.xml in Resources */,
 				1C3882C12018863400B0388B /* landscape-1024-768.png in Resources */,
+				8569F7962421566900EA9990 /* ChannelColorsTableViewCell.xib in Resources */,
 				247087C61A851774004C6B9B /* Icon-Small.png in Resources */,
 				245B1847199172D200943684 /* ExperimentsViewController.xib in Resources */,
 				247087BA1A851774004C6B9B /* Icon-60.png in Resources */,
+				8526365F241ED2D7000755F6 /* Comic-Book.otf in Resources */,
 				24BB8365199E7D0C00C12932 /* GraphDCMDTrialViewController.xib in Resources */,
 				247087C01A851774004C6B9B /* Icon-76@2x.png in Resources */,
 				1CF7DB3C1F7988DF008F303E /* slider-metal-trackBackground.png in Resources */,
@@ -1690,7 +1813,6 @@
 				2418FFD31A8406A600662547 /* Screenshot@2x.png in Resources */,
 				247087BB1A851774004C6B9B /* Icon-60@2x.png in Resources */,
 				2418FEC41A83F5D700662547 /* ecg@2x.png in Resources */,
-				24E6D8A91A011EE0006C8CED /* FilterSettingsViewController.xib in Resources */,
 				FA9A665B15BB19B000CF1697 /* SettingsDefaults.plist in Resources */,
 				1CF7DB341F7988DF008F303E /* slider-default7-trackCrossedOver.png in Resources */,
 				2418FE5F1A83F4C600662547 /* beep.wav in Resources */,
@@ -1700,13 +1822,14 @@
 				2418FEBC1A83F5D700662547 /* bluetooth@2x.png in Resources */,
 				1CF7DB331F7988DF008F303E /* slider-default7-trackBackground@2x.png in Resources */,
 				1C9850672036E3830076997B /* fft@2x.png in Resources */,
-				1CE5E0371F7453080016E7D9 /* ChooseFilterTypeViewController.xib in Resources */,
 				2418FFD11A8406A600662547 /* Screenshot-750x1334.png in Resources */,
+				85263661241ED2D7000755F6 /* Comic-Book-Bold-Italic.otf in Resources */,
 				2418FEBF1A83F5D700662547 /* checkmark.png in Resources */,
 				1CD05BA51CFD02EE00A83727 /* BBFileDetailsViewCell.xib in Resources */,
 				2418FEDC1A83F5D700662547 /* ThresholdImage.png in Resources */,
 				24DBA92A197709DF00AEDE86 /* FFTViewController.xib in Resources */,
 				247087C21A851774004C6B9B /* Icon-Small-40@2x.png in Resources */,
+				85274D0D2464743D003561CE /* readme-config.txt in Resources */,
 				1C3882C32018879400B0388B /* portrait-768-1024.png in Resources */,
 				2418FEBB1A83F5D700662547 /* bluetooth.png in Resources */,
 				247087C51A851774004C6B9B /* Icon-Small-50@2x.png in Resources */,
@@ -1721,6 +1844,7 @@
 				2418FFD01A8406A600662547 /* Screenshot-568h.png in Resources */,
 				247087BE1A851774004C6B9B /* Icon-72@2x.png in Resources */,
 				247087C11A851774004C6B9B /* Icon-Small-40.png in Resources */,
+				850258C0245C8ABC006F9927 /* close@2x.png in Resources */,
 				1CD05BAA1CFD398400A83727 /* BBCommentDetailsCell.xib in Resources */,
 				1CF7DB311F7988DF008F303E /* slider-default7-track@2x.png in Resources */,
 				2418FFCE1A8406A600662547 /* Default-Portrait.png in Resources */,
@@ -1730,6 +1854,7 @@
 				1C3882BF2018844E00B0388B /* icon83-5@2x.png in Resources */,
 				2418FFCF1A8406A600662547 /* Default-Portrait@2x.png in Resources */,
 				856E3E7622C62D7800103E2A /* logo.png in Resources */,
+				85263660241ED2D7000755F6 /* Comic-Book-Bold.otf in Resources */,
 				2418FEB71A83F5D700662547 /* again.png in Resources */,
 				1C3882F6201B58D500B0388B /* MainStoryboard.storyboard in Resources */,
 				247087BD1A851774004C6B9B /* Icon-72.png in Resources */,
@@ -1742,6 +1867,7 @@
 				2418FEC21A83F5D700662547 /* dropbox@2x.png in Resources */,
 				2418FED61A83F5D700662547 /* spectrum.png in Resources */,
 				2418FEB91A83F5D700662547 /* backbtn.png in Resources */,
+				858FACF8246312E400EAC87A /* board-config.json in Resources */,
 				2418FECF1A83F5D700662547 /* Play.png in Resources */,
 				2418FEBE1A83F5D700662547 /* charticon@2x.png in Resources */,
 				2489D8201992284500C00A9C /* ExperimentSetupViewController.xib in Resources */,
@@ -1761,9 +1887,11 @@
 				1CF7DB391F7988DF008F303E /* slider-metal-handle@2x.png in Resources */,
 				24EBC1AE1997852D001D3392 /* TrialsDCMDTableViewController.xib in Resources */,
 				2418FECA1A83F5D700662547 /* inputicon@2x.png in Resources */,
+				850258BF245C8ABC006F9927 /* close.png in Resources */,
 				1C3882C720188A4C00B0388B /* portrait-1536-2048.png in Resources */,
 				247087C71A851774004C6B9B /* Icon-Small@2x.png in Resources */,
 				1CF7DB3A1F7988DF008F303E /* slider-metal-track.png in Resources */,
+				855F6679235755E0008143FC /* ProductIds.plist in Resources */,
 				2418FED71A83F5D700662547 /* spectrum@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1777,7 +1905,6 @@
 			files = (
 			);
 			inputPaths = (
-				"${PROJECT_DIR}/Carthage/Build/iOS/ObjectiveDropboxOfficial.framework",
 			);
 			outputPaths = (
 			);
@@ -1821,6 +1948,7 @@
 				24E1430D1B61407B00DA32B9 /* Log.m in Sources */,
 				247087011A850FF6004C6B9B /* CCGLTouchAppDelegate.mm in Sources */,
 				247087031A850FF6004C6B9B /* CCGLTouchView.mm in Sources */,
+				850258C3245DC55F006F9927 /* FilterSettings.m in Sources */,
 				247087051A850FF6004C6B9B /* CCGLTouchViewController.mm in Sources */,
 				2418FEF71A83F6C800662547 /* BBFile.mm in Sources */,
 				2418FEF41A83F6C800662547 /* BBChannel.m in Sources */,
@@ -1832,6 +1960,7 @@
 				2418FEF61A83F6C800662547 /* BBDCMDTrial.mm in Sources */,
 				2418FF5D1A83FDA100662547 /* CrossCorrViewController.m in Sources */,
 				2418FF7E1A83FDD500662547 /* BBFileViewControllerTBV.mm in Sources */,
+				850258C9245F5E71006F9927 /* ExpansionBoardConfig.m in Sources */,
 				2418FF9D1A83FE1200662547 /* MultichannelCindeGLView.mm in Sources */,
 				2418FF631A83FDA100662547 /* ISIGraphViewController.mm in Sources */,
 				2418FEF51A83F6C800662547 /* BBDCMDExperiment.mm in Sources */,
@@ -1849,11 +1978,13 @@
 				2418FEF91A83F6C800662547 /* BBSpike.m in Sources */,
 				2418FF7A1A83FDD500662547 /* BBChannelSelectionTableViewController.m in Sources */,
 				2418FF361A83FD3700662547 /* MyAppDelegate.mm in Sources */,
+				855F668323575EC9008143FC /* StoreObserver.m in Sources */,
 				2418FF7B1A83FDD500662547 /* BBFileActionViewControllerTBV.mm in Sources */,
 				2418FF621A83FDA100662547 /* ISIGraphCollectionViewCell.m in Sources */,
 				2418FF971A83FE1200662547 /* AverageSpikeGraphView.mm in Sources */,
 				2418FF601A83FDA100662547 /* GraphDCMDTrialViewController.mm in Sources */,
 				1C3FC2FC203EE99600C28680 /* FFTRecordingsViewController.mm in Sources */,
+				8569F7952421566900EA9990 /* ChannelColorsTableViewCell.m in Sources */,
 				2418FF3F1A83FD6700662547 /* BYBHandleButton.mm in Sources */,
 				2418FF801A83FDD500662547 /* ExperimentsMenuTableViewCell.m in Sources */,
 				2418FF121A83F79200662547 /* BBAudioManager.mm in Sources */,
@@ -1869,26 +2000,31 @@
 				2470879C1A851063004C6B9B /* ioapi.c in Sources */,
 				2470879E1A851063004C6B9B /* mztools.c in Sources */,
 				851897AF22BBDF15003C5D7F /* BBEvent.m in Sources */,
+				8580C84F241E72660033BF2E /* ConfigViewController.mm in Sources */,
 				247087A01A851063004C6B9B /* unzip.c in Sources */,
 				247087A21A851063004C6B9B /* zip.c in Sources */,
+				858FACFB2463137B00EAC87A /* BoardsConfigManager.m in Sources */,
 				2470879A1A85105A004C6B9B /* UIDeviceExt.m in Sources */,
 				247087821A85104D004C6B9B /* NSNumber-SQLitePersistence.m in Sources */,
+				8580C856241E77420033BF2E /* SelectFilterPresetView.m in Sources */,
+				850258C6245F57E3006F9927 /* InputDeviceConfig.m in Sources */,
 				247087841A85104D004C6B9B /* NSObject-ClassName.m in Sources */,
 				247087861A85104D004C6B9B /* NSObject-MissingKV.m in Sources */,
 				247087881A85104D004C6B9B /* NSObject-SQLitePersistence.m in Sources */,
 				2470878A1A85104D004C6B9B /* NSString-NumberStuff.m in Sources */,
 				2470878C1A85104D004C6B9B /* NSString-SQLiteColumnName.m in Sources */,
 				2470878E1A85104D004C6B9B /* NSString-SQLitePersistence.m in Sources */,
-				1CE5E0361F7453080016E7D9 /* ChooseFilterTypeViewController.mm in Sources */,
 				247087901A85104D004C6B9B /* NSString-UppercaseFirst.m in Sources */,
 				247087921A85104D004C6B9B /* SQLiteInstanceManager.m in Sources */,
 				247087941A85104D004C6B9B /* SQLitePersistentObject.m in Sources */,
+				85263665241FF1DD000755F6 /* SelectChannelColor.m in Sources */,
 				247087961A85104D004C6B9B /* UIColor-SQLitePersistentObject.m in Sources */,
 				247087981A85104D004C6B9B /* UIImage-SQLitePersistence.m in Sources */,
 				2470875D1A85102F004C6B9B /* NVAllpassFilter.m in Sources */,
 				2470875F1A85102F004C6B9B /* NVBandpassFilter.m in Sources */,
 				247087611A85102F004C6B9B /* NVBandpassQPeakGainFilter.m in Sources */,
 				247087781A851044004C6B9B /* MBProgressHUD.m in Sources */,
+				8592F48225533793006DCAA0 /* InputDevice.m in Sources */,
 				247087631A85102F004C6B9B /* NVHighpassFilter.m in Sources */,
 				241C8AF41B31EEEA00CEFCEE /* tinyxml2.mm in Sources */,
 				247087721A85103D004C6B9B /* FPPopoverController.m in Sources */,
@@ -1913,7 +2049,6 @@
 				2418FF0F1A83F79200662547 /* BBAnalysisManager.mm in Sources */,
 				2418FF821A83FDD500662547 /* TrialActionsViewController.mm in Sources */,
 				2418FF5C1A83FDA100662547 /* ColumnHeaderCollectionViewCell.m in Sources */,
-				2418FF351A83FD3700662547 /* FilterSettingsViewController.mm in Sources */,
 				2418FF5B1A83FDA100662547 /* AverageSpikeGraphViewController.mm in Sources */,
 				2418FF161A83F79200662547 /* DSPThreshold.mm in Sources */,
 				2418FF3B1A83FD3700662547 /* ViewAndRecordViewController.mm in Sources */,
@@ -1921,11 +2056,15 @@
 				2418FF321A83FD3700662547 /* DCMDExperimentViewController.mm in Sources */,
 				85CE23EF2137DA650035AEC8 /* DemoAccessory.mm in Sources */,
 				2418FF371A83FD3700662547 /* PlaybackViewController.mm in Sources */,
+				855CBE812332455F004E1BBA /* BBExperimentsTableViewController.mm in Sources */,
+				855F668023575B3E008143FC /* Section.m in Sources */,
+				858FACF52463106300EAC87A /* ChannelConfig.m in Sources */,
 				2418FF151A83F79200662547 /* DSPAnalysis.mm in Sources */,
 				2418FF141A83F79200662547 /* BBECGAnalysis.mm in Sources */,
 				2418FF111A83F79200662547 /* BBAudioFileWriter.m in Sources */,
 				1CF7DB3E1F7988DF008F303E /* NMRangeSlider.m in Sources */,
 				2418FF981A83FE1200662547 /* BYBGLView.mm in Sources */,
+				855F667D2357598A008143FC /* StoreManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1991,13 +2130,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CINDER_PATH = /Users/stanislav/Desktop/Projects/Backup/Libraries/cinder_0.8.6_mac;
+				CINDER_PATH = "$(PROJECT_DIR)/libs/cinder_0.8.6_mac";
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_OBJC_ARC = NO;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 3.0.25;
 				DEVELOPMENT_TEAM = MLGRKD657P;
 				DEVICE_FAMILY = iPhone/iPad;
 				ENABLE_BITCODE = NO;
@@ -2006,8 +2146,10 @@
 					"$(SRCROOT)",
 					"$(PROJECT_DIR)/libs",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/Carthage/Build/IOS",
 					"$(PROJECT_DIR)/Carthage/Build/simulator",
 				);
+				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "src/Spike Recorder-Prefix.pch";
@@ -2017,6 +2159,7 @@
 				HEADER_SEARCH_PATHS = (
 					"$(CINDER_PATH)/include",
 					"$(CINDER_PATH)/boost",
+					"$(PROJECT_DIR)/Carthage/Build/IOS/ObjectiveDropboxOfficial.framework/Headers",
 				);
 				INFOPLIST_FILE = "src/Spike Recorder-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
@@ -2028,6 +2171,7 @@
 					"$(PROJECT_DIR)",
 					"$(PROJECT_DIR)/libs/CorePlot",
 				);
+				MARKETING_VERSION = 3.0.0;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
@@ -2056,13 +2200,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CINDER_PATH = /Users/stanislav/Desktop/Projects/Backup/Libraries/cinder_0.8.6_mac;
+				CINDER_PATH = "$(PROJECT_DIR)/libs/cinder_0.8.6_mac";
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_OBJC_ARC = NO;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 3.0.25;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = MLGRKD657P;
 				DEVICE_FAMILY = iPhone/iPad;
@@ -2072,8 +2217,10 @@
 					"$(SRCROOT)",
 					"$(PROJECT_DIR)/libs",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/Carthage/Build/IOS",
 					"$(PROJECT_DIR)/Carthage/Build/simulator",
 				);
+				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "src/Spike Recorder-Prefix.pch";
@@ -2084,6 +2231,7 @@
 				HEADER_SEARCH_PATHS = (
 					"$(CINDER_PATH)/include",
 					"$(CINDER_PATH)/boost",
+					"$(PROJECT_DIR)/Carthage/Build/IOS/ObjectiveDropboxOfficial.framework/Headers",
 				);
 				INFOPLIST_FILE = "src/Spike Recorder-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
@@ -2095,6 +2243,7 @@
 					"$(PROJECT_DIR)",
 					"$(PROJECT_DIR)/libs/CorePlot",
 				);
+				MARKETING_VERSION = 3.0.0;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
@@ -2102,9 +2251,9 @@
 				);
 				OTHER_LDFLAGS = (
 					"-lz",
-					"$(CINDER_PATH)/lib/libcinder-iphone-sim.a",
 					"$(CINDER_PATH)/lib/libcinder-iphone.a",
 					"-ObjC",
+					"$(CINDER_PATH)/lib/libcinder-iphone-sim.a",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.backyardbrains.Backyard-Brains";
 				PRODUCT_NAME = "Spike Recorder";

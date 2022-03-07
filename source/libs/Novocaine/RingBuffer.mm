@@ -33,6 +33,7 @@ static void atomic_set(int64_t *ptr, int64_t value)
 RingBuffer::RingBuffer(SInt64 bufferLength, SInt64 numChannels) : 
 mSizeOfBuffer(bufferLength)
 {
+    NSLog(@"Start Ring Buffer");
 	if (numChannels > kMaxNumChannels)
 		mNumChannels = kMaxNumChannels;
 	else if (numChannels <= 0)
@@ -48,7 +49,7 @@ mSizeOfBuffer(bufferLength)
 		mLastReadIndex[i] = 0;
         mNumUnreadFrames[i] = 0;
 	}
-		
+    NSLog(@"End Ring Buffer");
 }
 
 RingBuffer::~RingBuffer() 
@@ -175,7 +176,7 @@ float RingBuffer::FetchFreshData2(float *outData, SInt64 numFrames, SInt64 which
     //NSLog(logString);
     if (mLastWrittenIndex[whichChannel] - numFrames >= 0) { // if we're requesting samples that won't go off the left end of the ring buffer, then go ahead and copy them all out.
        // NSLog(@"fetch audio 4");
-        UInt32 idx = mLastWrittenIndex[whichChannel] - numFrames;
+        int64_t idx = mLastWrittenIndex[whichChannel] - numFrames;
         float zero = 0.0f;
         vDSP_vsadd(&mData[whichChannel][idx], 
                    1, 
@@ -311,7 +312,7 @@ float RingBuffer::Min(const SInt64 whichChannel)
 
 void RingBuffer::Clear()
 {
-    NSLog(@"\nClear Ring Buffer\n");
+    NSLog(@"Clear Ring Buffer");
 	for (int i=0; i < mNumChannels; ++i) {
         atomic_set(&mLastWrittenIndex[i], 0);
         atomic_set(&mLastReadIndex[i], 0);

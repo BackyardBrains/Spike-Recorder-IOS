@@ -70,7 +70,6 @@
 @implementation MultichannelCindeGLView
 
 @synthesize mode;//operational mode - enum MultichannelGLViewMode
-@synthesize channelsConfiguration;
 @synthesize rtConfigurationActive;
 //====================================== INIT ==============================================================================
 #pragma mark - Initialization
@@ -100,10 +99,7 @@
     self.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     
     // Set up our font, which we'll use to display the unit scales
-    
-  
-    
-   
+
     mFont = Font("Helvetica", 18);//36/retinaScaling);
     mScaleFont = gl::TextureFont::create( mFont );
     
@@ -129,33 +125,17 @@
 //
 - (void)setNumberOfChannels:(int) newNumberOfChannels samplingRate:(float) newSamplingRate andDataSource:(id <MultichannelGLViewDelegate>) newDataSource
 {
+    if(newNumberOfChannels!=maxNumberOfChannels)
+    {
+        numVoltsVisible= nil;
+    }
+    maxNumberOfChannels = newNumberOfChannels;
     
-    if(self.mode != MultichannelGLViewModeThresholding)
-    {
-       // autorangeActive = YES;
-       // autorangeTimer = [NSTimer scheduledTimerWithTimeInterval:2.5 target:self selector:@selector(stopAutorange) userInfo:nil repeats:NO];
-    }
-    
-    if([[BBAudioManager bbAudioManager] btOn])
-    {
-      //  maxNumberOfChannels = [[BBBTManager btManager] maxNumberOfChannelsForDevice];
-    }
-    else
-    {
-        maxNumberOfChannels = newNumberOfChannels;
-    }
     
     firstDrawAfterChannelChange = YES;
-    NSLog(@"!!!!!!!!!Setup num of channel");
+    NSLog(@"CinderGLVIew Setup num of channel");
     [self stopAnimation];
-    
-  //  if(newNumberOfChannels<2)
-  //  {
-  //      debugMultichannelOnSingleChannel = YES;
-  //      newNumberOfChannels = 3;
-  //  }
-    
-    
+
     samplingRate = newSamplingRate;
     numberOfChannels = newNumberOfChannels;
     
@@ -164,19 +144,18 @@
         multichannel = YES;
     }
     
-    
     // Setup display vectors. Every PolyLine2f is one waveform
     if(displayVectors!=nil)
     {
         //TODO: realease display vectors
         delete[] displayVectors;
-        delete[] numVoltsVisible;
+        
+        //delete[] numVoltsVisible;
         //delete[] yOffsets;
         delete[] tempDataBuffer;
     }
     displayVectors =  new PolyLine2f[newNumberOfChannels];
-    numVoltsVisible = new float[maxNumberOfChannels]; //current zoom for every channel y axis
-    
+    [self checkIfWeHaveVoltageScale];
     if(!yOffsets)
     {
         yOffsets = new float[maxNumberOfChannels];//y offset of horizontal axis
@@ -215,6 +194,7 @@
         {
             float x = (i- (numSamplesMax-1))*oneSampleTime;
             displayVectors[channelIndex].push_back(Vec2f(x, 0.0f));
+            
         }
         displayVectors[channelIndex].setClosed(false);
         //make some vertical space between channels
@@ -235,32 +215,14 @@
     }
     
     dataSourceDelegate = newDataSource;
-    
 
-        int tempMask = 1;
-        channelsConfiguration = 0;
-        for(int k=0;k<[[BBAudioManager bbAudioManager] sourceNumberOfChannels];k++)
-        {
-            channelsConfiguration = channelsConfiguration | (tempMask<<k);
-        }
-    
-    
-    for(int i=0;i<maxNumberOfChannels;i++)
-    {
-        if([self channelActive:i])
-        {
-            selectedChannel = i;
-            break;
-        }
-    }
-    
+    selectedChannel = 0;
+            
     if ([dataSourceDelegate respondsToSelector:@selector(selectChannel:)]) {
         [dataSourceDelegate selectChannel:0];
     }
     
     NSLog(@"End setup number of channels");
-   // [self startAnimation];
-    
 }
 
 
@@ -285,25 +247,6 @@
     
 }
 
-//
-// Check if channel is active\
-// channels configuration keeps info about active
-// and nonactive channels. Every channel is one bit.
-// if it is active than bit is set to 1 if not to 0
-//
--(BOOL) channelActive:(UInt8) channelIndex
-{
-    if(channelIndex>maxNumberOfChannels)
-    {
-        return NO;
-    }
-    int tempMask = 1;
-    tempMask = tempMask<<channelIndex;
-    return ((channelsConfiguration & tempMask) > 0);
-}
-
-
-
 - (void)dealloc
 {
     mScaleFont = nil;
@@ -317,8 +260,50 @@
     [super dealloc];
 }
 
+-(void) setCurrentTimeScale:(float) timeScaleToSet
+{
+    float tempNumberOfSampleVisible =(1.0*samplingRate)*timeScaleToSet;
+    if(tempNumberOfSampleVisible>MAX_THRESHOLD_VISIBLE_TIME*samplingRate)
+    {
+        tempNumberOfSampleVisible = MAX_THRESHOLD_VISIBLE_TIME*samplingRate;
+    }
+    if(tempNumberOfSampleVisible<numSamplesMin)
+    {
+        tempNumberOfSampleVisible =numSamplesMin;
+    }
+    numSamplesVisible = tempNumberOfSampleVisible;
+    NSDictionary *defaultsDict = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"SettingsDefaults" ofType:@"plist"]];
+    [[NSUserDefaults standardUserDefaults] registerDefaults:defaultsDict];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    if (mode==MultichannelGLViewModeThresholding) {
+        [defaults setValue:[NSNumber numberWithFloat:numSamplesVisible] forKey:@"numSamplesVisibleThreshold"];
+    }
+    else {
+        [defaults setValue:[NSNumber numberWithFloat:numSamplesVisible] forKey:@"numSamplesVisible"];
+    }
+}
 
-
+-(void) setCurrentVoltageScaleToDefault
+{
+    if(numVoltsVisible!=nil)
+    {
+        delete[] numVoltsVisible;
+    }
+    numVoltsVisible = new float[[[BBAudioManager bbAudioManager] numberOfActiveChannels]]; //current zoom for every channel y axis
+    for(int i=0;i<[[BBAudioManager bbAudioManager] numberOfActiveChannels];i++)
+    {
+        float tempVolts =  [[BBAudioManager bbAudioManager] getVoltageScaleForChannelIndex:i];
+        if(tempVolts < 0.00001)
+        {
+            tempVolts = 0.00002;
+        }
+        if(tempVolts>numVoltsMax)
+        {
+            tempVolts = numVoltsMax;
+        }
+        numVoltsVisible[i] = tempVolts;
+    }
+}
 - (void)loadSettings:(BOOL)useThresholdSettings
 {
     
@@ -339,27 +324,27 @@
         numVoltsMin = [[defaults valueForKey:@"numVoltsMinThreshold"] floatValue];
         numVoltsMax = [[defaults valueForKey:@"numVoltsMaxThresholdUpdate1"] floatValue];
        
-        for(int i=0;i<maxNumberOfChannels;i++)
+      /*  for(int i=0;i<maxNumberOfChannels;i++)
         {
             //numVoltsVisible[i] = [[defaults valueForKey:@"numVoltsVisibleThreshold"] floatValue];
             numVoltsVisible[i] = [[defaults valueForKey:@"numVoltsVisible"] floatValue];
             
             //override settings if it is not app startup. Use from BBAudioManager
             //made so that threshold and real time screen can share vertical scale
-            if(!([[BBAudioManager bbAudioManager] maxVoltageVisible]<0))
+            if([[BBAudioManager bbAudioManager] maxVoltageVisible]!=MAX_VOLTAGE_NOT_SET)
             {
                 numVoltsVisible[i] = [[BBAudioManager bbAudioManager] maxVoltageVisible];
             }
             NSLog(@"Max volts visible: %f", numVoltsVisible[i]);
-            if(numVoltsVisible[i] < 0.001)
+            if(numVoltsVisible[i] < 0.00001)
             {
-                numVoltsVisible[i] = 0.002;
+                numVoltsVisible[i] = 0.00002;
             }
             if(numVoltsVisible[i]>numVoltsMax)
             {
                 numVoltsVisible[i] = numVoltsMax;
             }
-        }
+        }*/
     }
     else {
         NSLog(@"Setting normal defaults\n");
@@ -369,12 +354,12 @@
         numVoltsMin = [[defaults valueForKey:@"numVoltsMin"] floatValue];
         numVoltsMax = [[defaults valueForKey:@"numVoltsMaxUpdate1"] floatValue];
         
-        for(int i=0;i<maxNumberOfChannels;i++)
+       /* for(int i=0;i<maxNumberOfChannels;i++)
         {
             numVoltsVisible[i] = [[defaults valueForKey:@"numVoltsVisible"] floatValue];
             //override settings if it is not app startup. Use from BBAudioManager
             //made so that threshold and real time screen can share vertical scale
-            if(!([[BBAudioManager bbAudioManager] maxVoltageVisible]<0))
+            if([[BBAudioManager bbAudioManager] maxVoltageVisible]!=MAX_VOLTAGE_NOT_SET)
             {
                 numVoltsVisible[i] = [[BBAudioManager bbAudioManager] maxVoltageVisible];
             }
@@ -383,11 +368,11 @@
             {
                 numVoltsVisible[i] = numVoltsMax;
             }
-            if(numVoltsVisible[i] < 0.001)
+            if(numVoltsVisible[i] < 0.00001)
             {
-                numVoltsVisible[i] = 0.002;
+                numVoltsVisible[i] = 0.00002;
             }
-        }
+        }*/
         
     }
     
@@ -476,20 +461,16 @@
                 
                 float zero = 0.0f;
                 float zoom = oldValue/numSamplesVisible;
-                int realIndexOfChannel = 0;
+                
                 for(int channelIndex = 0; channelIndex<maxNumberOfChannels; channelIndex++)
                 {
-                    if([self channelActive:channelIndex])
-                    {
-                        vDSP_vsmsa ((float *)&(displayVectors[realIndexOfChannel].getPoints()[0]), 2,
-                            &zoom,
-                            &zero,
-                            (float *)&(displayVectors[realIndexOfChannel].getPoints()[0]),
-                            2,
-                            numSamplesMax
-                            );
-                        realIndexOfChannel ++;
-                    }
+                    vDSP_vsmsa ((float *)&(displayVectors[channelIndex].getPoints()[0]), 2,
+                        &zoom,
+                        &zero,
+                        (float *)&(displayVectors[channelIndex].getPoints()[0]),
+                        2,
+                        numSamplesMax
+                        );
                 }
             }
         }
@@ -509,20 +490,16 @@
                 
                 float zero = 0.0f;
                 float zoom = oldValue/numSamplesVisible;
-                int realIndexOfChannel = 0;
+
                 for(int channelIndex = 0; channelIndex<numberOfChannels; channelIndex++)
                 {
-                    if([self channelActive:channelIndex])
-                    {
-                        vDSP_vsmsa ((float *)&(displayVectors[realIndexOfChannel].getPoints()[0]), 2,
-                                &zoom,
-                                &zero,
-                                (float *)&(displayVectors[realIndexOfChannel].getPoints()[0]),
-                                2,
-                                numSamplesMax
-                                );
-                        realIndexOfChannel++;
-                    }
+                    vDSP_vsmsa ((float *)&(displayVectors[channelIndex].getPoints()[0]), 2,
+                            &zoom,
+                            &zero,
+                            (float *)&(displayVectors[channelIndex].getPoints()[0]),
+                            2,
+                            numSamplesMax
+                            );
                 }
 
             }
@@ -548,46 +525,62 @@
         // Aight, now that we've got our ranges correct, let's ask for the signal.
         //Only fetch visible part (numPoints samples) and put it after offset.
 
-    int realIndexOfChannel = 0;
     for(int channelIndex = 0; channelIndex<maxNumberOfChannels; channelIndex++)
     {
-        if([self channelActive:channelIndex])
+        if (!(mode == MultichannelGLViewModeThresholding))
         {
-            if (!(mode == MultichannelGLViewModeThresholding))
-            {
-                numPoints = numSamplesMax;
-                offset = 0;
-            }
-        
-            
-            timeForSincDrawing =  [dataSourceDelegate fetchDataToDisplay:tempDataBuffer numFrames:numPoints whichChannel:realIndexOfChannel];
-          //  NSLog(@"After - Fetch Data to display");
-            float zero = yOffsets[channelIndex];
-            float zoom = maxVoltsSpan/ numVoltsVisible[channelIndex];
-            //float zoom = 1.0f;
-            vDSP_vsmsa (tempDataBuffer,
-                        1,
-                        &zoom,
-                        &zero,
-                        (float *)&(displayVectors[realIndexOfChannel].getPoints()[offset])+1,
-                        2,
-                        numPoints
-                        );
-            realIndexOfChannel++;
+            numPoints = numSamplesMax;
+            offset = 0;
         }
-        
+    
+        timeForSincDrawing =  [dataSourceDelegate fetchDataToDisplay:tempDataBuffer numFrames:numPoints whichChannel:channelIndex];
+      //  NSLog(@"After - Fetch Data to display");
+        float zero = yOffsets[channelIndex];
+        float zoom = maxVoltsSpan/ numVoltsVisible[channelIndex];
+        //float zoom = 1.0f;
+        vDSP_vsmsa (tempDataBuffer,
+                    1,
+                    &zoom,
+                    &zero,
+                    (float *)&(displayVectors[channelIndex].getPoints()[offset])+1,
+                    2,
+                    numPoints
+                    );
     }
 }
 
-
+-(void) checkIfWeHaveVoltageScale
+{
+    //voltage patch
+    if(numVoltsVisible==nil)
+    {
+        numVoltsVisible = new float[maxNumberOfChannels]; //current zoom for every channel y axis
+        [self setCurrentVoltageScaleToDefault];
+    }
+    else
+    {
+        if(numVoltsVisible[0]==0)
+        {
+            [self setCurrentVoltageScaleToDefault];
+        }
+    }
+}
 
 - (void)draw {
     
     if(dataSourceDelegate)
     {
         
-        if(firstDrawAfterChannelChange )
+        [self checkIfWeHaveVoltageScale];
+        if(firstDrawAfterChannelChange || viewRotated)
         {
+            
+            if(viewRotated)
+            {
+                frameCount = 0;
+                viewRotated = false;
+                firstDrawAfterChannelChange = YES;
+            }
             frameCount++;
             //this is fix for bug. Draw text starts to paint background of text
             //to the same color as text if we don't make new instance here
@@ -597,25 +590,27 @@
             {
                 firstDrawAfterChannelChange = NO;
             }
-            //mFont = Font("Helvetica", 18);
-           
+            currentTimeTextureFont = gl::TextureFont::create( currentTimeFont );
+            //heartBeatTextureFont = gl::TextureFont::create( heartBeatFont );
             mScaleFont = gl::TextureFont::create( mFont );
-            
-           // mScaleFont = gl::TextureFont::create( mFont );
-          //  mScaleFont->create(mFont);
         }
+        
+        
         
         currentUserInteractionTime = [[NSDate date] timeIntervalSince1970];
         handlesShouldBeVisible = (currentUserInteractionTime-lastUserInteraction)<HIDE_HANDLES_AFTER_SECONDS;
         
         if([dataSourceDelegate respondsToSelector:@selector(setVisibilityForConfigButton:)])
         {
-            [dataSourceDelegate setVisibilityForConfigButton:[[BBAudioManager bbAudioManager] amDemodulationIsON] || [[BBAudioManager bbAudioManager] externalAccessoryOn]];
+            [dataSourceDelegate setVisibilityForConfigButton:[[BBAudioManager bbAudioManager] amDemodulationIsON] || [[BBAudioManager bbAudioManager] externalAccessoryIsActive]];
         }
 
         // this pair of lines is the standard way to clear the screen in OpenGL
-        gl::clear( Color( 0.0f, 0.0f, 0.0f ), true );
-        glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+        gl::clear( Color( 0.0f, 0.0f, 0.0f ), true );//stanislav commented
+        glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );//stanislav commented
+        
+        
+        
         // Look at it right
         mCam.setOrtho(-maxTimeSpan, -0.0f, -maxVoltsSpan/2.0f, maxVoltsSpan/2.0f, 1, 100);
         gl::setMatrices( mCam );
@@ -651,16 +646,12 @@
         }
         [self fillDisplayVector];
 
-        int realIndexOfChannel = 0;
+        //draw signal
         for(int channelIndex=0;channelIndex<maxNumberOfChannels;channelIndex++)
         {
-            if([self channelActive:channelIndex])
-            {
-                [self setColorWithIndex:channelIndex transparency:1.0f];
-                gl::draw(displayVectors[realIndexOfChannel]);
-                realIndexOfChannel++;
-            }
-
+            int colorIndex = [[BBAudioManager bbAudioManager] getColorIndexForActiveChannelIndex:channelIndex];
+            [self setColorWithIndex:colorIndex transparency:1.0f];
+            gl::draw(displayVectors[channelIndex]);
         }
 
         //Draw spikes
@@ -955,7 +946,7 @@
                 gl::color( ColorA( 0.0, 1.0f, 0.0f, 1.0f ) );
                 mScaleFont->drawString(rmstream.str(), textPosition);
             
-                //[self setColorWithIndex:i transparency:1.0f];
+
                 [self setGLColor:[BYBGLView getSpikeTrainColorWithIndex:i/2 transparency:1.0f]];
                 gl::drawSolidEllipse( Vec2f(xPositionOfBackground+10, yPositionOfBackground+heightOfOneRow*0.5), 5,5, 40 );
                 
@@ -1046,21 +1037,16 @@
         //draw all handles
         for(int indexOfChannel = 0;indexOfChannel<maxNumberOfChannels;indexOfChannel++)
         {
-            
-           
             //draw tickmark
-            if([self channelActive:indexOfChannel])
-            {
-                // NSLog([[NSString alloc] initWithFormat:@"Channel configuration: %d, offset: %f, index: %d", channelsConfiguration,  yOffsets[indexOfChannel]], indexOfChannel);
-                glLineWidth(2.0f);
-                glColor4f(1.0f, 1.0f, 1.0f, 1.0-transparencyForAxis);
-                gl::drawLine(Vec2f(-maxTimeSpan, yOffsets[indexOfChannel]), Vec2f(-maxTimeSpan+20*scaleXY.x, yOffsets[indexOfChannel]));
-                
-            }
-
+            glLineWidth(2.0f);
+            glColor4f(1.0f, 1.0f, 1.0f, 1.0-transparencyForAxis);
+            gl::drawLine(Vec2f(-maxTimeSpan, yOffsets[indexOfChannel]), Vec2f(-maxTimeSpan+20*scaleXY.x, yOffsets[indexOfChannel]));
+            
              //draw handle for active channels
-            [self setColorWithIndex:indexOfChannel transparency:1.0f];
-            if(self.mode == MultichannelGLViewModeView || [self channelActive:indexOfChannel])
+            int colorIndex = [[BBAudioManager bbAudioManager] getColorIndexForActiveChannelIndex:indexOfChannel];
+            [self setColorWithIndex:colorIndex transparency:1.0f];
+
+            if(self.mode == MultichannelGLViewModeView || multichannel)
             {
                 gl::drawSolidEllipse( Vec2f(centerOfCircleX, yOffsets[indexOfChannel]), radiusXAxis, radiusYAxis, 1000 );
                 gl::drawSolidTriangle(
@@ -1071,42 +1057,21 @@
             }
             
             //draw line for active channel
-            
-            
-            
-            if([self channelActive:indexOfChannel])
-            {
-            
-                [self setColorWithIndex:indexOfChannel transparency:transparencyForAxis];
-                glLineWidth(2.0f);
-                gl::drawLine(Vec2f(centerOfCircleX, yOffsets[indexOfChannel]), Vec2f(0.0f, yOffsets[indexOfChannel]));
-            }
+            int colorIndex2 = [[BBAudioManager bbAudioManager] getColorIndexForActiveChannelIndex:indexOfChannel];
+            [self setColorWithIndex:colorIndex2 transparency:transparencyForAxis];
+            glLineWidth(2.0f);
+            gl::drawLine(Vec2f(centerOfCircleX, yOffsets[indexOfChannel]), Vec2f(0.0f, yOffsets[indexOfChannel]));
+    
             glLineWidth(1.0f);
             
-            
-            [self setColorWithIndex:indexOfChannel transparency:1.0f];
+            int colorIndex3 = [[BBAudioManager bbAudioManager] getColorIndexForActiveChannelIndex:indexOfChannel];
+            [self setColorWithIndex:colorIndex3 transparency:1.0];
+       
             //draw holow unselected handle
             if(indexOfChannel!=selectedChannel)
             {
                 glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
                 gl::drawSolidEllipse( Vec2f(centerOfCircleX, yOffsets[indexOfChannel]), radiusXAxis*0.8, radiusYAxis*0.8, 1000 );
-            }
-            else
-            {
-                if(self.mode == MultichannelGLViewModeView && multichannel)
-                {
-                    //Draw X icon for channel removal
-                    //Draw X icon for channel removal
-                 /*   xPositionOfRemove = - offsetPositionOfHandles -60*scaleXY.x;
-                    yPositionOfRemove = yOffsets[indexOfChannel]+100*scaleXY.y;
-                    gl::drawSolidEllipse( Vec2f(xPositionOfRemove, yPositionOfRemove), radiusXAxis+2*scaleXY.x, radiusYAxis+2*scaleXY.y, 1000 );
-                    glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
-                    gl::drawSolidEllipse( Vec2f(xPositionOfRemove, yPositionOfRemove), radiusXAxis+0.0*scaleXY.x, radiusYAxis+0.0*scaleXY.y, 1000 );
-                    [self setColorWithIndex:indexOfChannel transparency:1.0f];
-                    glLineWidth(2.0f);
-                    gl::drawLine(Vec2f(xPositionOfRemove-radiusXAxis*0.7, yPositionOfRemove), Vec2f(xPositionOfRemove+radiusXAxis*0.7, yPositionOfRemove));
-                    glLineWidth(1.0f);*/
-                }
             }
         }//for loop for channels
     }//if multichannel
@@ -1117,15 +1082,15 @@
 
 -(void) drawEvents
 {
-     float currentTime = timeForSincDrawing ;
     
-     NSMutableArray * allEvents = [dataSourceDelegate getEvents];
+    
+    float currentTime = timeForSincDrawing ;
+    
+    NSMutableArray * allEvents = [dataSourceDelegate getEvents];
     
     
     float realNumberOfSamplesVisible = numSamplesVisible;
-    /*if (realNumberOfSamplesVisible > numSamplesMax) {
-     realNumberOfSamplesVisible = numSamplesMax;
-     }*/
+    
     if (realNumberOfSamplesVisible < numSamplesMin) {
         realNumberOfSamplesVisible = numSamplesMin;
     }
@@ -1146,47 +1111,56 @@
         graphStartTime = currentTime - numSamplesMax * 1.0f/samplingRate;
     }
     
-   /* if(graphStartTime<0.0f)
-    {
-        graphStartTime = 0.0f;
-    }*/
     
-    //Draw spikes
+    
+
     glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
     BOOL weAreInInterval = NO;
     BBEvent * tempEvent;
     
-    float sizeOfSquareX = scaleXY.x * 15;
-    float sizeOfSquareY = scaleXY.y *20;
-    
+    float sizeOfSquareX = 8;
+    float sizeOfSquareY = 10;
+    //make it so that we can define measurements in pixels
+    gl::setMatricesWindow( Vec2i(self.frame.size.width, self.frame.size.height) );
+    float lastPositionOfSquareX = -1000;
+    float lastPositionOfSquareY = -1000;
     //go through all events
     for (tempEvent in allEvents) {
         if([tempEvent time]>graphStartTime && [tempEvent time]<realEndTime)
         {
             weAreInInterval = YES;//we are in visible interval
             //reacalculate spikes to virtual GL x axis [-maxTimeSpan, 0]
-            float xValue = ([tempEvent time] -realEndTime)*(maxTimeSpan/virtualVisibleTimeSpan);
+            float xValue = self.frame.size.width+ self.frame.size.width * (([tempEvent time] -realEndTime)/virtualVisibleTimeSpan);
+            
             //recalculate Y axis with zoom and offset
             int eventNumber = [tempEvent value];
-            float yValueOfNumberBackground = maxVoltsSpan/3;
+            float yValueOfNumberBackground = self.frame.size.height/3;
+            
+            //check if event marks will overlap
+            if(abs(xValue-lastPositionOfSquareX)<(2*(sizeOfSquareX+1)))
+            {
+                if(abs(yValueOfNumberBackground-lastPositionOfSquareY)<sizeOfSquareY)
+                {
+                    yValueOfNumberBackground = lastPositionOfSquareY+2*sizeOfSquareY+1;
+                }
+            }
+            
             [self setGLColor:[BYBGLView getEventColorWithIndex:eventNumber transparency:1.0f]];
-            //glColor4f(0.8, 0.8, 0.8, 1.0);
+
             //draw event line
-            gl::drawLine(Vec2f(xValue, -maxVoltsSpan/2), Vec2f(xValue, maxVoltsSpan/2));
+            gl::drawLine(Vec2f(xValue, -self.frame.size.height), Vec2f(xValue, self.frame.size.height));
             //draw event number background
-            //glColor4f(0.8, 0.0, 0.0, 1.0);
-            gl::drawSolidRect(Rectf(xValue-sizeOfSquareX,yValueOfNumberBackground-sizeOfSquareY,xValue+sizeOfSquareX,yValueOfNumberBackground+sizeOfSquareY));
+        gl::drawSolidRect(Rectf(xValue-sizeOfSquareX,yValueOfNumberBackground-sizeOfSquareY,xValue+sizeOfSquareX,yValueOfNumberBackground+sizeOfSquareY));
             
             //Draw event number ---------------------------------------------
             std::stringstream eventStream;
             eventStream <<""<< eventNumber;
             
-            //make it so that we can define measurements in pixels
-            gl::setMatricesWindow( Vec2i(self.frame.size.width, self.frame.size.height) );
+           
             
             Vec2f xScaleTextPosition = Vec2f(0.,0.);
-            xScaleTextPosition.x =self.frame.size.width + 0.5*(xValue-sizeOfSquareX*0.5)/scaleXY.x ;//(self.frame.size.width - xScaleTextSize.x)/2.0;
-            xScaleTextPosition.y =0.5*0.5*(yValueOfNumberBackground+sizeOfSquareY*1.1)/scaleXY.y;//self.frame.size.height-23 + (mScaleFont->getAscent() / 2.0f);
+            xScaleTextPosition.x =xValue-sizeOfSquareX*0.5;
+            xScaleTextPosition.y =yValueOfNumberBackground+sizeOfSquareY*0.5;
             
             //make it black number of color background
             gl::color( ColorA( 0.0, 0.0f, 0.0f, 1.0f ) );
@@ -1194,9 +1168,8 @@
             //draw text
             mScaleFont->drawString(eventStream.str(), xScaleTextPosition);
             
-            //return back perspective to time and voltage
-            mCam.setOrtho(-maxTimeSpan, -0.0f, -maxVoltsSpan/2.0f, maxVoltsSpan/2.0f, 1, 100);
-            gl::setMatrices( mCam );
+            lastPositionOfSquareX = xValue;
+            lastPositionOfSquareY = yValueOfNumberBackground;
         }
         else if(weAreInInterval)
         {//if we pass last spike in visible interval
@@ -1204,7 +1177,9 @@
         }
     }
     
-    
+    //return back perspective to time and voltage
+    mCam.setOrtho(-maxTimeSpan, -0.0f, -maxVoltsSpan/2.0f, maxVoltsSpan/2.0f, 1, 100);
+    gl::setMatrices( mCam );
 }
 
 //
@@ -1652,27 +1627,19 @@
             }
         }
         
-        
-       
         //Change x axis values so that only numSamplesVisible samples are visible for selected channel
         float zero = 0.0f;
         float zoom = touchDistanceDelta.x;
-        int realIndexOfChannel = 0;
         for(int channelIndex = 0;channelIndex<maxNumberOfChannels;channelIndex++)
         {
-            if([self channelActive:channelIndex])
-            {
-                
-                vDSP_vsmsa ((float *)&(displayVectors[realIndexOfChannel].getPoints()[0]),
-                         2,
-                         &zoom,
-                         &zero,
-                         (float *)&(displayVectors[realIndexOfChannel].getPoints()[0]),
-                         2,
-                         numSamplesMax
-                         );
-                realIndexOfChannel++;
-            }
+            vDSP_vsmsa ((float *)&(displayVectors[channelIndex].getPoints()[0]),
+                     2,
+                     &zoom,
+                     &zero,
+                     (float *)&(displayVectors[channelIndex].getPoints()[0]),
+                     2,
+                     numSamplesMax
+                     );
         }
        
     }
@@ -1715,54 +1682,29 @@
             //select channel
             if(selectedChannel!=grabbedHandleIndex)
             {
-                
-                
-                if([self channelActive:grabbedHandleIndex])
-                {
-                    selectedChannel = grabbedHandleIndex;
-                    if ([dataSourceDelegate respondsToSelector:@selector(selectChannel:)]) {
-                        
-                        //Calculate compressed selected channel for AudioManager
-                        
-                        int compressedSelectedChannel = 0;
-                        for(int i =0;i<maxNumberOfChannels;i++)
-                        {
-                            if(i==grabbedHandleIndex)
-                            {
-                                break;
-                            }
-                            if([self channelActive:i])
-                            {
-                                compressedSelectedChannel++;
-                            }
-                        }
-                        //Select channel on audio manager
-                        NSLog(@"%d - selected handle: %d", compressedSelectedChannel, grabbedHandleIndex);
-                        [dataSourceDelegate selectChannel:compressedSelectedChannel];
-                    }
-                
-                }
-                else
-                {
-                    if([dataSourceDelegate respondsToSelector:@selector(addChannel:)])
+                selectedChannel = grabbedHandleIndex;
+                if ([dataSourceDelegate respondsToSelector:@selector(selectChannel:)]) {
+                    
+                    //Calculate compressed selected channel for AudioManager
+                    
+                    int compressedSelectedChannel = 0;
+                    for(int i =0;i<maxNumberOfChannels;i++)
                     {
-                        [dataSourceDelegate addChannel:grabbedHandleIndex];
+                        if(i==grabbedHandleIndex)
+                        {
+                            break;
+                        }
+                        compressedSelectedChannel++;
                     }
+                    //Select channel on audio manager
+                    [dataSourceDelegate selectChannel:compressedSelectedChannel];
                 }
             }
-        
         }
         
        
         
-        //Remove channel X button
-        if([self checkIntesectionWithRemoveButton:glWorldTouchPos])
-        {
-            if([dataSourceDelegate respondsToSelector:@selector(removeChannel:)])
-            {
-                [dataSourceDelegate removeChannel:selectedChannel];
-            }
-        }
+       
         
         //if we are not moving channels check if need to make interval selection or threshold
         if(!weAreHoldingHandle)
@@ -2075,11 +2017,10 @@
 //Change color of spike marks according to index
 -(void) setColorWithIndex:(int) iindex transparency:(float) transp
 {
-    iindex = iindex%5;
+   /* iindex = iindex%5;
     switch (iindex) {
         case 0:
             glColor4f(0.0f, 1.0f, 0.0f, transp);
-            
             break;
         case 1:
             glColor4f(1.0f, 0.011764705882352941f, 0.011764705882352941f, transp);
@@ -2094,7 +2035,28 @@
             glColor4f(1.0f, 0.0f, 1.0f, transp);
             break;
     }
+    */
     
+    switch (iindex) {
+        case 1:
+            glColor4f(0.45882352941f,0.98039215686f,0.32156862745f,transp);
+            break;
+        case 2:
+            glColor4f(0.92156862745f,0.2f,0.26666666666f,transp);
+            break;
+        case 3:
+            glColor4f(0.90588235294f,0.98039215686f,0.45882352941f,transp);
+            break;
+        case 4:
+            glColor4f(0.94509803921f,0.56470588235f,0.39607843137f,transp);
+            break;
+        case 5:
+            glColor4f(0.55294117647f,0.89803921568f,0.47843137254f,transp);
+            break;
+        default:
+            glColor4f(0.3294117647f,0.73725490196f,0.77647058823f,transp);
+            break;
+    }
 }
 
 

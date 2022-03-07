@@ -67,13 +67,14 @@ using namespace std;
 }
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;
-
+@property (nonatomic, assign) BOOL launchingFromLocked;
+@property (nonatomic, assign) BOOL shouldReinitializeAudio;
 /**
  *  Launch app
  */
 
 - (void)launch;
-
+- (void) enterForeground;
 /**
  *  App Utils
  */

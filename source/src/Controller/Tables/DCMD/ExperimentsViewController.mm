@@ -9,20 +9,40 @@
 #import "ExperimentsViewController.h"
 
 #import "BBDCMDExperiment.h"
+#define SEGUE_TRIALS_TABLE_VIEW             @"openDcmdTrialsSegue"
+#define SEGUE_DCMD_SETUP_VIEW               @"openDcmdSetupSegue"
+#define SEGUE_START_DCMD_EXPERIMENT_VIEW    @"startExperimentViewSeque"
+
 @interface ExperimentsViewController ()
+{
+    BBDCMDExperiment* experimentToBeLoaded;
+}
 
 @end
 
 @implementation ExperimentsViewController
 @synthesize allExperiments = _allExperiments;
 @synthesize myNewExperiment = _myNewExperiment;
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-
+        
         _allExperiments = [[NSMutableArray alloc] initWithCapacity:0];
     }
+    return self;
+}
+
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    
+    if(self = [super initWithCoder:aDecoder]) {
+        
+        
+        _allExperiments = [[NSMutableArray alloc] initWithCapacity:0];
+        
+    }
+    
     return self;
 }
 
@@ -30,25 +50,43 @@
 {
     self.title = @"Experiments";
     [super viewDidLoad];
+    self.expTableView  = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
+    [self.expTableView setAutoresizesSubviews:YES];
+    [self.expTableView setAutoresizingMask:
+     UIViewAutoresizingFlexibleWidth |
+     UIViewAutoresizingFlexibleHeight];
+    // must set delegate & dataSource, otherwise the the table will be empty and not responsive
     self.expTableView.delegate = self;
     self.expTableView.dataSource = self;
+    
+    
+    // add to canvas
+    [self.view addSubview:self.expTableView];
+    
 }
 
+- (void) willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+    self.expTableView.frame = self.view.bounds;
+    [self.expTableView reloadData];
+}
 
 -(void) viewWillAppear:(BOOL)animated
 {
-
+    self.expTableView.delegate = self;
+    self.expTableView.dataSource = self;
+    
     _allExperiments = [[NSMutableArray arrayWithArray:[BBDCMDExperiment allObjects]] retain];
     
     if (self.navigationItem.rightBarButtonItem==nil) {
         
         UIBarButtonItem *rightButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
-                                                                                 target:self
-                                                                                 action:@selector(createNewExperiment:)];
+                                                                                     target:self
+                                                                                     action:@selector(createNewExperiment:)];
         
         self.navigationItem.rightBarButtonItem = rightButton;
     }
     [self.expTableView reloadData];
+    [super viewWillAppear:animated];
 }
 
 - (void)didReceiveMemoryWarning
@@ -57,7 +95,8 @@
 }
 
 - (void)dealloc {
-    [_expTableView release];
+    [self.expTableView release];
+    
     [super dealloc];
 }
 
@@ -65,33 +104,24 @@
 
 -(void) createNewExperiment:(id)sender
 {
-    ExperimentSetupViewController *expSt = [[ExperimentSetupViewController alloc] initWithNibName:@"ExperimentSetupViewController" bundle:nil];
+    //SEGUE_DCMD_SETUP_VIEW
     _myNewExperiment = [[BBDCMDExperiment alloc] init];
-    expSt.experiment = _myNewExperiment;
-    expSt.masterDelegate = self;
-    [self.navigationController pushViewController:expSt animated:YES];
-    [expSt release];
+    [self performSegueWithIdentifier:SEGUE_DCMD_SETUP_VIEW sender:self];
 }
 
 -(void) endOfSetup
 {
+    //SEGUE_START_DCMD_EXPERIMENT_VIEW
     [self.navigationController popViewControllerAnimated:NO];
-    DCMDExperimentViewController *expVC = [[DCMDExperimentViewController alloc] initWithNibName:@"DCMDExperimentViewController" bundle:nil];
-    expVC.experiment = _myNewExperiment;
-    expVC.masterDelegate = self;
-    expVC.hidesBottomBarWhenPushed = YES;
-    [self.navigationController pushViewController:expVC animated:YES];
-    [expVC release];
+    [self performSegueWithIdentifier:SEGUE_START_DCMD_EXPERIMENT_VIEW sender:self];
 }
 
 -(void) endOfExperiment
 {
     [self.navigationController popViewControllerAnimated:NO];
     [[self navigationController] setNavigationBarHidden:NO animated:YES];
-    TrialsDCMDTableViewController *trialsVC = [[TrialsDCMDTableViewController alloc] initWithNibName:@"TrialsDCMDTableViewController" bundle:nil];
-    trialsVC.experiment = _myNewExperiment;
-    [self.navigationController pushViewController:trialsVC animated:YES];
-    [trialsVC release];
+    experimentToBeLoaded = _myNewExperiment;
+    [self performSegueWithIdentifier:SEGUE_TRIALS_TABLE_VIEW sender:self];
 }
 
 #pragma mark - Table view code
@@ -112,7 +142,7 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         
-         BBDCMDExperiment * tempExperiment = (BBDCMDExperiment *)[_allExperiments objectAtIndex:indexPath.row];
+        BBDCMDExperiment * tempExperiment = (BBDCMDExperiment *)[_allExperiments objectAtIndex:indexPath.row];
         [_allExperiments removeObjectAtIndex:indexPath.row];
         for(int i=[[tempExperiment trials] count]-1;i>=0;i--)
         {
@@ -143,24 +173,44 @@
     BBDCMDExperiment * tempExperiment = (BBDCMDExperiment *)[_allExperiments objectAtIndex:indexPath.row];
     
     cell.textLabel.text = tempExperiment.name;
-   
+    
     
     // set the accessory view:
     cell.accessoryType =  UITableViewCellAccessoryDisclosureIndicator;
     
     return cell;
-
+    
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [self removeAllTrialsThatAreNotSimulated:[_allExperiments objectAtIndex:indexPath.row]];
-    TrialsDCMDTableViewController *trialsVC = [[TrialsDCMDTableViewController alloc] initWithNibName:@"TrialsDCMDTableViewController" bundle:nil];
-    trialsVC.experiment = [_allExperiments objectAtIndex:indexPath.row];
-    [self.navigationController pushViewController:trialsVC animated:YES];
-    [trialsVC release];
+    experimentToBeLoaded = [_allExperiments objectAtIndex:indexPath.row];
+    [self performSegueWithIdentifier:SEGUE_TRIALS_TABLE_VIEW sender:self];
 }
 
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([[segue identifier] isEqualToString:SEGUE_TRIALS_TABLE_VIEW])
+    {
+        TrialsDCMDTableViewController *avc = (TrialsDCMDTableViewController *)segue.destinationViewController;
+        avc.experiment = experimentToBeLoaded;
+    }
+    if ([[segue identifier] isEqualToString:SEGUE_DCMD_SETUP_VIEW])
+    {
+        ExperimentSetupViewController *avc = (ExperimentSetupViewController *)segue.destinationViewController;
+        avc.experiment = _myNewExperiment;
+        avc.masterDelegate = self;
+    }
+    if ([[segue identifier] isEqualToString:SEGUE_START_DCMD_EXPERIMENT_VIEW])
+    {
+        DCMDExperimentViewController *avc = (DCMDExperimentViewController *)segue.destinationViewController;
+        avc.experiment = _myNewExperiment;
+        avc.masterDelegate = self;
+        avc.hidesBottomBarWhenPushed = YES;
+    }
+}
 
 
 -(void) removeAllTrialsThatAreNotSimulated:(BBDCMDExperiment *) experimentToClean

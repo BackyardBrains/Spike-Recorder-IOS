@@ -32,13 +32,29 @@ static DemoProtocol *demoProtocol;
     return demoProtocol;
 }
 
+- (void) enterForeground
+{
+    NSLog(@"Inside new enter foreground");
+    if(self.shouldReinitializeAudio)
+    {
+        
+        NSLog(@"Reinit audio manager");
+        [[BBAudioManager bbAudioManager] init];
+        self.shouldReinitializeAudio = false;
+        
+    }
+    
+}
+
 //
 // This "launch" is called on the end of "application: didFinishLaunchingWithOptions"
 // in CCGLTouchAppDelegate
 //
 - (void)launch
 {
-    [Fabric with:@[[Crashlytics class]]];
+   
+    
+    //[Fabric with:@[[Crashlytics class]]];
     
     tabBarController = (UITabBarController *)self.window.rootViewController;
     tabBarController.delegate = self;
@@ -61,10 +77,14 @@ static DemoProtocol *demoProtocol;
     
     [UIApplication sharedApplication].idleTimerDisabled = YES;
     
+    
+   
+    
 //------------------------------ MFI ----------------------------------
      demoProtocol = [[DemoProtocol alloc] init];
     [demoProtocol initProtocol];
 //------------------------------ MFI ----------------------------------
+    
 }
 
 #pragma mark - Application management

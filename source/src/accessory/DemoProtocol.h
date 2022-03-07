@@ -13,6 +13,11 @@
 #import <Foundation/Foundation.h>
 #import "DemoAccessory.h"
 
+#define BOARD_WITH_EVENT_INPUTS 0
+#define BOARD_WITH_ADDITIONAL_INPUTS 1
+#define BOARD_WITH_HAMMER 4
+#define BOARD_WITH_JOYSTICK 5
+
 // The protocol extends the DemoAccessory base class
 //  - The base clase controls the accessory and I/O streams
 //  - The protocol implements the specific protocol on the I/O streams
@@ -29,10 +34,16 @@ typedef void (^EAInputBlock)(float *data, UInt32 numFrames, UInt32 numChannels);
 //+ (EAInputBlock)getInputBlock;
 -(void) initProtocol;
 @property (atomic, copy) EAInputBlock inputBlock;
+-(void) setSampleRate:(int) inSampleRate numberOfChannels:(int) inNumberOfChannels andResolution:(int) resolution;
 
-- (void)getGpioState;
-- (void)setGpioState:(uint8_t)gpio;
-- (void)setCapVolume:(uint8_t)volume andRelease:(uint8_t)release;
+
+
 - (void)sendCommandGetAdc;
+- (void) askForBoardType;
+-(int) getCurrentExpansionBoard;
+- (int) numberOfChannels;
+- (int) sampleRate;
+- (bool) shouldRestartDevice;
+-(void) deviceRestarted;
 
 @end

@@ -110,6 +110,7 @@ typedef void (^NovocaineInputBlock)(float *data, UInt32 numFrames, UInt32 numCha
 
 #ifdef USING_IOS
 @property (nonatomic, assign)   BOOL forceOutputToSpeaker;
+@property (nonatomic, assign) BOOL shouldReinitializeAudio;
 #endif
 
 

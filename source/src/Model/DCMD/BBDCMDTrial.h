@@ -8,6 +8,7 @@
 
 #import "SQLitePersistentObject.h"
 #import "BBFile.h"
+#import "BBDCMDExperiment.h"
 @interface BBDCMDTrial : SQLitePersistentObject
 {
     float size;
@@ -15,8 +16,9 @@
     BBFile * _file;
     NSMutableArray * _angles;
     float timeOfImpact;
-    float startOfRecording;
+    float startOfTrialTimestamp;
     float distance;
+    NSString *color;
 }
 
 @property float size;
@@ -25,8 +27,9 @@
 @property (nonatomic,retain) BBFile * file;
 @property (nonatomic,retain) NSMutableArray * angles;//interlived format timestamp, angle
 @property float timeOfImpact;
-@property float startOfRecording;
+@property float startOfTrialTimestamp;
+@property (nonatomic,retain) NSString *color;
 
 -(id) initWithSize:(float) inSize velocity:(float) inVelocity andDistance:(float) inDistance;
-- (NSDictionary *) createTrialDictionary;
+- (NSDictionary *) createTrialDictionaryWithVersion:(BOOL)addVersion;
 @end

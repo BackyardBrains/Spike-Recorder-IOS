@@ -10,6 +10,7 @@
 
 #import "BBDCMDExperiment.h"
 
+
 @protocol  DCMDSetupExperimentDelegate;
 
 @interface ExperimentSetupViewController : UIViewController <UITextFieldDelegate,UITextViewDelegate>
@@ -22,13 +23,21 @@
 @property (retain, nonatomic) IBOutlet UITextField *distanceTB;
 @property (retain, nonatomic) IBOutlet UIButton *doneBtn;
 @property (retain, nonatomic) IBOutlet UILabel *cumulativeNumberOfTrialsLBL;
+
 @property (retain, nonatomic) IBOutlet UITextField *delayTB;
+
+
+@property (retain, nonatomic) IBOutlet UITextField *colorTB;
+
+
 
 @property (retain, nonatomic) BBDCMDExperiment * experiment;
 
 @property (nonatomic, assign) id <DCMDSetupExperimentDelegate> masterDelegate;
 
 - (IBAction)doneClick:(id)sender;
+
+
 
 @end
 

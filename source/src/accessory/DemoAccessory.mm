@@ -21,6 +21,7 @@
     EASession *_session;
     NSString *_protocol;
     NSMutableData *_txData;
+    EAAccessory *lastAccessory;
 
 }
 
@@ -128,37 +129,51 @@
     _accessoryInfoString = infoString;
 }
 
+
+- (void) reAddExistingAccessory
+{
+    
+    lastAccessory  = [self getCurrentAccessoryWithProtocol:_protocol];
+    NSLog(@"lastAccessory - before");
+    // If the requested protocol was found, open a session and hook up the related streams
+    if (lastAccessory) {
+        NSLog(@"lastAccessory - OK");
+        //_session = [[EASession alloc] initWithAccessory:lastAccessory forProtocol:_protocol];
+        
+        if (_session) {
+            NSLog(@"_session - OK");
+            //change audio manager input to external accessory
+            cBufHead=0;
+            cBufTail=0;
+            [[BBAudioManager bbAudioManager] addMfiDeviceWithModelNumber:lastAccessory.modelNumber andSerial:lastAccessory.serialNumber];
+        }
+    }
+}
+
 // Search connected accessories for the requested protocol. If found, open a session
 // and hook up the associated streams.
 - (void) openSessionWithProtocol:(NSString *)protocolString
 {
-    NSArray *accessories = [[EAAccessoryManager sharedAccessoryManager] connectedAccessories];
-    EAAccessory *accessory = nil;
-
+    
+    NSLog(@"BYB log  - openSessionWithProtocol");
     _accessoryInfoString = @"Accessory Not Connected\n";
-    [self addDebugString:[NSString stringWithFormat:@"openSessionWithProtocol: %@\n", protocolString]];
-    [self addDebugString:[NSString stringWithFormat:@"%d connected accessories\n", [accessories count]]];
+    //[self addDebugString:[NSString stringWithFormat:@"openSessionWithProtocol: %@\n", protocolString]];
+    //[self addDebugString:[NSString stringWithFormat:@"%d connected accessories\n", [accessories count]]];
 
-    // Search connected accessories for the requested protocol
-    for (EAAccessory *nextAccessory in accessories) {
-        if ([[nextAccessory protocolStrings] containsObject:protocolString]) {
-            accessory = nextAccessory;
-            break;
-        }
-    }
+    lastAccessory  = [self getCurrentAccessoryWithProtocol:protocolString];
 
     // If the requested protocol was found, open a session and hook up the related streams
-    if (accessory) {
-        [self gatherAccessoryInfo:accessory];
+    if (lastAccessory) {
+        [self gatherAccessoryInfo:lastAccessory];
         [self addDebugString:@"Opening session...\n"];
-        _session = [[EASession alloc] initWithAccessory:accessory forProtocol:protocolString];
+        _session = [[EASession alloc] initWithAccessory:lastAccessory forProtocol:protocolString];
         
         if (_session) {
             
             //change audio manager input to external accessory
             cBufHead=0;
             cBufTail=0;
-            [[BBAudioManager bbAudioManager] switchToExternalDeviceWithChannels:2 andSampleRate:10000];
+            [[BBAudioManager bbAudioManager] addMfiDeviceWithModelNumber:lastAccessory.modelNumber andSerial:lastAccessory.serialNumber];
             
             
             
@@ -170,9 +185,13 @@
             [[_session outputStream] setDelegate:self];
             [[_session outputStream] scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
             [[_session outputStream] open];
+            
+            [self setupProtocol];
         } else {
             [self addDebugString:@"Failed opening session\n"];
         }
+        
+        
     }
 }
 
@@ -182,7 +201,7 @@
     _accessoryInfoString = @"Accessory Not Connected\n";
     [self addDebugString:@"closeSession\n"];
     if (_session) {
-        [[BBAudioManager bbAudioManager] closeExternalDevice];
+        [[BBAudioManager bbAudioManager] removeMfiDeviceWithModelNumber:lastAccessory.modelNumber andSerial:lastAccessory.serialNumber];
         [[_session inputStream] close];
         [[_session inputStream] removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
         [[_session inputStream] setDelegate:nil];
@@ -199,6 +218,15 @@
 // connected and start listening for connect/disconnect events.
 - (id)initWithProtocol:(NSString *)protocol
 {
+    
+    if([[UIApplication sharedApplication] isProtectedDataAvailable])
+    {
+        NSLog(@"Device is unlocked! initWithProtocol");
+    }
+    else
+    {
+        NSLog(@"Device is locked! initWithProtocol");
+    }
     self = [super init];
     if (self) {
         _debugString = [NSMutableString stringWithString:@"initWithProtocol:\n"];
@@ -224,7 +252,20 @@
 }
 
 
+-(EAAccessory *) getCurrentAccessoryWithProtocol:(NSString *) protocol
+{
+    NSArray *accessories = [[EAAccessoryManager sharedAccessoryManager] connectedAccessories];
+    EAAccessory *accessory = nil;
 
+    // Search connected accessories for the requested protocol
+    for (EAAccessory *nextAccessory in accessories) {
+        if ([[nextAccessory protocolStrings] containsObject:protocol]) {
+            accessory = nextAccessory;
+            break;
+        }
+    }
+    return accessory;
+}
 
 
 // On instance removal, stop listening for connect/disconnect events and close the session if
@@ -233,6 +274,7 @@
 {
     [[EAAccessoryManager sharedAccessoryManager] unregisterForLocalNotifications];
     [self closeSession];
+    
 }
 
 // Checks if the accessory is currently connected.
@@ -247,6 +289,14 @@
 // Attemps to open a session with the desired protocol if one is not already open.
 - (void)accessoryDidConnect:(NSNotification *)notification
 {
+    if([[UIApplication sharedApplication] isProtectedDataAvailable])
+    {
+        NSLog(@"Device is unlocked! accessoryDidConnect");
+    }
+    else
+    {
+        NSLog(@"Device is locked! accessoryDidConnect");
+    }
     [self addDebugString:@"DidConnect:\n"];
     if (_session == nil) {
         [self openSessionWithProtocol:_protocol];
@@ -264,6 +314,11 @@
     if ([protocolStrings containsObject:_protocol]) {
         [self closeSession];
     }
+}
+
+- (void) setupProtocol
+{
+    //init all things that you need
 }
 
 @end

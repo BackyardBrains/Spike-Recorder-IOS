@@ -10,6 +10,7 @@
 
 #import "ViewAndRecordViewController.h"
 #import "FFTViewController.h"
+#import "ConfigViewController.h"
 
 @interface ViewAndRecordViewController()
 {
@@ -33,12 +34,12 @@
 
 - (void)viewDidLoad
 {
-    NSLog(@"\n View and Record - viewDidLoad\n\n");
+    NSLog(@"viewDidLoad View and Record");
     [super viewDidLoad];
 }
 
 - (void)viewDidUnload {
-    
+    NSLog(@"viewDidUnload View and Record");
     [self setRecordButton:nil];
     [self setStopButton:nil];
     [self setConfigButton:nil];
@@ -47,8 +48,8 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    
-    [[BBAudioManager bbAudioManager] startMonitoring];
+    NSLog(@"viewWillAppear - View And Record");
+    //[[BBAudioManager bbAudioManager] startMonitoring];
 
     if(glView)
     {
@@ -56,18 +57,25 @@
     }
     else
     {
+        //this will execute just first time the app is opened
         glView = [[MultichannelCindeGLView alloc] initWithFrame:self.view.frame];
         [self.view addSubview:glView];
         [self.view sendSubviewToBack:glView];        
         [self initConstrainsForGLView];
+     
     }
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reSetupScreen:) name:RESETUP_SCREEN_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newDeviceActivated:) name:NEW_DEVICE_ACTIVATED object:nil];
+    
     [self setGLView:glView];
     glView.mode = MultichannelGLViewModeView;
     
+    [[BBAudioManager bbAudioManager] reactivateCurrentDevice];
+    
     NSLog(@"ViewAndRecord - set number of channesl");
     
-    [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels ] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
-    
+    [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] numberOfActiveChannels ] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
+    [[BBAudioManager bbAudioManager] startAquiringInputs:[[BBAudioManager bbAudioManager] currentlyActiveInputDevice]];
     NSLog(@"ViewAndRecord - start animation");
 	
     
@@ -75,18 +83,6 @@
     doubleTap.numberOfTapsRequired = 2;
     [glView addGestureRecognizer:doubleTap];
  
-    NSLog(@"ViewAndRecord - set active channels");
-        
-    //Set all channels to active
-    UInt8 configurationOfChannels = 0;
-    int tempMask = 1;
-    for(int i=0;i<[[BBAudioManager bbAudioManager] sourceNumberOfChannels];i++)
-    {
-        configurationOfChannels = configurationOfChannels | (tempMask<<i);
-    }
-    glView.channelsConfiguration = configurationOfChannels;
-
-    
     NSLog(@"ViewAndRecord -add notifications");
 
     CGRect stopButtonRect = CGRectMake(self.stopButton.frame.origin.x, -self.stopButton.frame.size.height, self.stopButton.frame.size.width, self.stopButton.frame.size.height);
@@ -94,31 +90,36 @@
     
     [super viewWillAppear:animated];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reSetupScreen) name:RESETUP_SCREEN_NOTIFICATION object:nil];
+  
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate:) name:UIApplicationWillTerminateNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showUnknownMfiDevice:) name:CAN_NOT_FIND_CONFIG_FOR_DEVICE object:nil];
     
     [glView startAnimation];
 }
 
+
 - (void)viewDidAppear:(BOOL)animated
 {
-    NSLog(@"View and record viewDidAppear");
+    NSLog(@"viewDidAppear - View And Record");
+    
     [super viewDidAppear:animated];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-    NSLog(@"\n\n view WillDisappear View And Record\n\n");
+    NSLog(@"viewWillDisappear - View And Record");
     [glView stopAnimation];
     NSLog(@"Stopping regular view");
     [glView saveSettings:FALSE]; // save non-threshold settings
 
     [[NSNotificationCenter defaultCenter] removeObserver:self name:RESETUP_SCREEN_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NEW_DEVICE_ACTIVATED object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillTerminateNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillResignActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:CAN_NOT_FIND_CONFIG_FOR_DEVICE object:nil];
     [super viewWillDisappear:animated];
 }
 
@@ -126,7 +127,7 @@
 #pragma mark - App management
 
 -(void) applicationDidBecomeActive:(UIApplication *)application {
-    NSLog(@"\n\nApp will become active - ViewRecord\n\n");
+    NSLog(@"App will become active - ViewRecord");
     if(glView)
     {
         [glView startAnimation];
@@ -147,7 +148,17 @@
 
 #pragma mark - Init/Reset
 
--(void) reSetupScreen
+-(void) newDeviceActivated:(id) object
+{
+    float currentDefaultTimescale = [[BBAudioManager bbAudioManager] getDefaultTimeScale];
+    if(glView)
+    {
+        [glView setCurrentTimeScale:currentDefaultTimescale];
+        [glView setCurrentVoltageScaleToDefault];
+    }
+}
+
+-(void) reSetupScreen:(id) object
 {
     NSLog(@"Resetup screen - View And Record View Controller");
     if(glView)
@@ -163,7 +174,7 @@
         [self initConstrainsForGLView];
     }
     
-    [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
+    [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] numberOfActiveChannels] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
     glView.mode = MultichannelGLViewModeView;
     
     
@@ -175,14 +186,6 @@
     [self setGLView:glView];
     [glView startAnimation];
     
-    //Set all channels to active
-    UInt8 configurationOfChannels = 0;
-    int tempMask = 1;
-    for(int i=0;i<[[BBAudioManager bbAudioManager] sourceNumberOfChannels];i++)
-    {
-        configurationOfChannels = configurationOfChannels | (tempMask<<i);
-    }
-    glView.channelsConfiguration = configurationOfChannels;
 }
 
 - (void)setGLView:(MultichannelCindeGLView *)view
@@ -233,23 +236,6 @@
 {
     return [[BBAudioManager bbAudioManager] getEvents];
 }
-
-//
-// It works with extended channel index
-//
-- (void) removeChannel:(int) chanelIndex
-{
-    //used to add remove BT multichannel
-}
-
-//
-// Add channel
-//
-- (void) addChannel:(int) chanelIndex
-{
-    //used to add remove BT multichannel
-}
-
 
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
@@ -316,7 +302,7 @@
     if (bbAudioManager.recording == false) {
         
         //check if we have non-standard requirements for format and make custom wav
-        if([bbAudioManager sourceNumberOfChannels]>2 || [bbAudioManager sourceSamplingRate]!=44100.0f)
+        if([bbAudioManager numberOfActiveChannels]>2 || [bbAudioManager sourceSamplingRate]!=44100.0f)
         {
             aFile = [[BBFile alloc] initWav];
         }
@@ -325,7 +311,7 @@
             //if everything is standard make .m4a file (it has beter compression )
             aFile = [[BBFile alloc] init];
         }
-        aFile.numberOfChannels = [bbAudioManager sourceNumberOfChannels];
+        aFile.numberOfChannels = [bbAudioManager numberOfActiveChannels];
         aFile.samplingrate = [bbAudioManager sourceSamplingRate];
         [aFile setupChannels];//create name of channels without spike trains
         
@@ -362,10 +348,11 @@
 
 -(void) setVisibilityForConfigButton:(BOOL) setVisible
 {
+    setVisible = YES;
     self.configButton.hidden = !setVisible;
-    
+    //self.configButton.hidden = NO;
     int filterSettings = [[BBAudioManager bbAudioManager] currentFilterSettings];
-    if(filterSettings == FILTER_SETTINGS_EEG || filterSettings == FILTER_SETTINGS_RAW || filterSettings == FILTER_SETTINGS_CUSTOM || [[BBAudioManager bbAudioManager] externalAccessoryOn])
+    if(filterSettings == FILTER_SETTINGS_EEG || filterSettings == FILTER_SETTINGS_RAW || filterSettings == FILTER_SETTINGS_CUSTOM || [[BBAudioManager bbAudioManager] externalAccessoryIsActive])
     {
         self.fftButton.hidden = !setVisible;
     }
@@ -377,35 +364,35 @@
 }
 
 - (IBAction)configButtonPressed:(id)sender {
-    // grab the view controller we want to show
-    ChooseFilterTypeViewController *controller = [[ChooseFilterTypeViewController alloc] initWithNibName:@"ChooseFilterTypeViewController" bundle:nil];
-    // present the controller
-    // on iPad, this will be a Popover
-    // on iPhone, this will be an action sheet
-    controller.modalPresentationStyle = UIModalPresentationPopover;
-    controller.preferredContentSize = CGSizeMake(200, 275);
-    controller.delegate = self;
     
-    // configure the Popover presentation controller
-    popController = [controller popoverPresentationController];
-    popController.backgroundColor = [UIColor whiteColor];
-    popController.delegate = self;
-    
-    popController.sourceView = self.configButton;
-    if (UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation) && (!( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )))
+
+    if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
     {
-        popController.permittedArrowDirections = UIPopoverArrowDirectionLeft;
+        ConfigViewController *controller = [[ConfigViewController alloc] initWithNibName:@"ConfigViewController" bundle:nil];
+        controller.masterDelegate = self;
+        controller.modalPresentationStyle = UIModalPresentationPopover;
+        controller.preferredContentSize = CGSizeMake(500, 700);
         
-        popController.sourceRect =  CGRectMake(self.configButton.bounds.origin.x, 0, configButton.bounds.size.width, configButton.bounds.size.height);
+        // configure the Popover presentation controller
+        popControllerIpad = [controller popoverPresentationController];
+        
+        popControllerIpad.delegate = self;
+        popControllerIpad.permittedArrowDirections = 0;
+        CGRect sourceRect = CGRectZero;
+        sourceRect.origin.x = CGRectGetMidX(self.view.bounds)-self.view.frame.origin.x/2.0;
+        sourceRect.origin.y = CGRectGetMidY(self.view.bounds)-self.view.frame.origin.y/2.0;
+        popControllerIpad.sourceRect =  sourceRect;
+        popControllerIpad.sourceView = self.view;
+        [self presentViewController:controller animated:YES completion:nil];
+        
     }
     else
     {
-        popController.permittedArrowDirections = UIPopoverArrowDirectionUp;
-        popController.sourceRect =  CGRectMake(self.configButton.bounds.origin.x, self.configButton.bounds.origin.y, configButton.bounds.size.width, configButton.bounds.size.height);
-    }
-    
-    // in case we don't have a bar button as reference
-    [self presentViewController:controller animated:YES completion:nil];
+        ConfigViewController *controller = [[ConfigViewController alloc] initWithNibName:@"ConfigViewController" bundle:nil];
+        controller.masterDelegate = self;
+        controller.modalPresentationStyle = UIModalPresentationFullScreen;
+        [self presentViewController:controller animated:YES completion:nil];
+    }  
 }
 
 
@@ -449,48 +436,19 @@
  return UIModalPresentationNone;
 }
 
-- (void)endSelectionOfFilters:(int) filterType
-{
-    [self dismissViewControllerAnimated:YES completion:^void () {
-        if(filterType == FILTER_SETTINGS_CUSTOM)
-        {
-            if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
-            {
-                FilterSettingsViewController *controller = [[FilterSettingsViewController alloc] initWithNibName:@"FilterSettingsViewController" bundle:nil];
-                controller.masterDelegate = self;
-                controller.modalPresentationStyle = UIModalPresentationPopover;
-                controller.preferredContentSize = CGSizeMake(600, 250);
-                controller.masterDelegate = self;
-                
-                // configure the Popover presentation controller
-                 popControllerIpad = [controller popoverPresentationController];
-                
-                popControllerIpad.delegate = self;
-                popControllerIpad.permittedArrowDirections = 0;
-                CGRect sourceRect = CGRectZero;
-                sourceRect.origin.x = CGRectGetMidX(self.view.bounds)-self.view.frame.origin.x/2.0;
-                sourceRect.origin.y = CGRectGetMidY(self.view.bounds)-self.view.frame.origin.y/2.0;
-                popControllerIpad.sourceRect =  sourceRect;
-                popControllerIpad.sourceView = self.view;
-                [self presentViewController:controller animated:YES completion:nil];
-                
-            }
-            else
-            {
-                   FilterSettingsViewController *controller = [[FilterSettingsViewController alloc] initWithNibName:@"FilterSettingsViewController" bundle:nil];
-                    controller.masterDelegate = self;
-                    [self presentViewController:controller animated:YES completion:nil];
-            }
-        }
-    }];
-}
 
 //
 // Used for custom filter view
 //
 -(void) finishedWithConfiguration
 {
+    popControllerIpad = nil;
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+-(void) configIsClossing
+{
+    popControllerIpad = nil;
 }
 
 #pragma mark - FFT stuff
@@ -499,6 +457,33 @@
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
     UIViewController *controller = [storyboard instantiateViewControllerWithIdentifier:@"fftViewID"];
     [self presentViewController:controller animated:YES completion:nil];
+}
+
+#pragma mark - Alerts for user
+
+-(void) showUnknownMfiDevice:(NSNotification *) notification
+{
+    NSString *detailsText = [NSString stringWithFormat:@"App does not have info about connected device. Please connect to internet and restart application to update device info. (Device Model: %@)", (NSString*) notification.object];
+    UIAlertController *alertView = [UIAlertController alertControllerWithTitle:@"Can not recognize device" message:detailsText preferredStyle:UIAlertControllerStyleAlert];
+    [alertView addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action)
+                            {
+                                // OK button tappped. Do nothing
+                                [self dismissViewControllerAnimated:YES completion:^{
+                                }];
+                            }]];
+    
+    //make so that on iPad alert is displayed in the center of the screen
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+    {
+        CGRect rectForWindow;
+        alertView.popoverPresentationController.sourceView = self.view;
+        alertView.popoverPresentationController.permittedArrowDirections = 0;
+        rectForWindow = CGRectMake(self.view.bounds.size.width/2, self.view.bounds.size.height/2, 1, 1);
+        alertView.popoverPresentationController.sourceRect = rectForWindow;
+    }
+
+    // Present action sheet.
+    [self presentViewController:alertView animated:YES completion:nil];
 }
 
 #pragma mark - Memory management

@@ -27,6 +27,7 @@
 #pragma mark - View management
 - (void)viewDidLoad
 {
+    NSLog(@"viewDidLoad - Recordings");
     [super viewDidLoad];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate:) name:UIApplicationWillTerminateNotification object:nil];
     self.timeSlider.continuous = YES;
@@ -45,11 +46,13 @@
 }
 
 - (void)viewDidUnload {
+    NSLog(@"viewDidUnload - Recordings");
     [super viewDidUnload];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    NSLog(@"viewWillAppear - Recordings");
     [super viewWillAppear:animated];
     [[self navigationController] setNavigationBarHidden:YES animated:NO];
     
@@ -90,7 +93,7 @@
     [glView setupWithBaseFreq:baseFreq lengthOfFFT:[[BBAudioManager bbAudioManager] lengthOf30HzData] numberOfGraphs:[[BBAudioManager bbAudioManager] lenghtOfFFTGraphBuffer] maxTime:maxTime];
     [[BBAudioManager bbAudioManager] selectChannel:0];
     glView.masterDelegate = self;
-    _channelBtn.hidden = [[BBAudioManager bbAudioManager] sourceNumberOfChannels]<2;
+    _channelBtn.hidden = [[BBAudioManager bbAudioManager] numberOfActiveChannels]<2;
     [self.view addSubview:glView];
     [self.view sendSubviewToBack:glView];
     [self initConstrainsForGLView];
@@ -103,7 +106,7 @@
     [glView addGestureRecognizer:doubleTap];
     [self doubleTapHandler];
     
-    //Bluetooth notifications
+    //Notifications
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reSetupScreen) name:RESETUP_SCREEN_NOTIFICATION object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate:) name:UIApplicationWillTerminateNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
@@ -112,12 +115,14 @@
 
 - (void)viewDidAppear:(BOOL)animated
 {
+    NSLog(@"viewDidAppear - Recordings");
     [super viewDidAppear:animated];
     [self startBackButtonCountdown];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
+    NSLog(@"viewWillDisappear - Recordings");
     [super viewWillDisappear:animated];
     [[self navigationController] setNavigationBarHidden:NO animated:NO];
     NSLog(@"Stopping regular view");
@@ -141,7 +146,7 @@
 #pragma mark - App management
 
 -(void) applicationDidBecomeActive:(UIApplication *)application {
-    NSLog(@"\n\nApp will become active - FFT view\n\n");
+    NSLog(@"\n\nApp will become active - Recordings view\n\n");
     if(glView)
     {
         [glView startAnimation];
@@ -183,7 +188,7 @@
     doubleTap.numberOfTapsRequired = 2;
     [glView addGestureRecognizer:doubleTap];
     [self doubleTapHandler];
-    _channelBtn.hidden = [[BBAudioManager bbAudioManager] sourceNumberOfChannels]<2;
+    _channelBtn.hidden = [[BBAudioManager bbAudioManager] numberOfActiveChannels]<2;
     [self.view addSubview:glView];
     [self.view sendSubviewToBack:glView];
     [glView startAnimation];
@@ -320,7 +325,7 @@
 -(NSMutableArray *) getAllRows
 {
     NSMutableArray * allChannelsLabels = [[[NSMutableArray alloc] init] autorelease];
-    for(int i=0;i<[[BBAudioManager bbAudioManager] sourceNumberOfChannels];i++)
+    for(int i=0;i<[[BBAudioManager bbAudioManager] numberOfActiveChannels];i++)
     {
         [allChannelsLabels addObject:[NSString stringWithFormat:@"Channel %d",i+1]];
     }
@@ -381,7 +386,7 @@
 {
     if(!backButtonActive)
     {
-        bool hideChannelButton = [[BBAudioManager bbAudioManager] sourceNumberOfChannels]<2;
+        bool hideChannelButton = [[BBAudioManager bbAudioManager] numberOfActiveChannels]<2;
         [UIView animateWithDuration:0.7  delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState
                          animations:^{
                              backButtonActive = YES;

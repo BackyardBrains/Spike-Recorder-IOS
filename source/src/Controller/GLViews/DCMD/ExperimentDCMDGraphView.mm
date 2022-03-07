@@ -13,7 +13,7 @@
 #define DEFAULT_Y_SIZE_OF_SPIKE 16
 #define MIN_SIZE_OF_HISTOGRAM 150
 #define GRAPH_MARGIN 10
-#define SIZE_OF_BIN 0.1f
+#define SIZE_OF_BIN 0.025f
 @implementation ExperimentDCMDGraphView
 
 //
@@ -26,7 +26,7 @@
     [super setup];//this calls [self startAnimation]
     
     // Setup the camera
-	mCam.lookAt( Vec3f(0.0f, 0.0f, 40.0f), Vec3f::zero() );
+    mCam.lookAt( Vec3f(0.0f, 0.0f, 40.0f), Vec3f::zero() );
     
     [self enableAntiAliasing:YES];
     
@@ -39,7 +39,7 @@
     retinaCorrection = 1.0f;
     if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] && [[UIScreen mainScreen] scale]==2.0)
     {//if it is retina correct scale
-        retinaCorrection = 1/((float)[[UIScreen mainScreen] scale]);
+        retinaCorrection = 0.5f;
     }
 }
 
@@ -61,13 +61,13 @@
     float lastRecordedTime;
     float firstAngleTime;
     
-
+    
     NSSortDescriptor * sortDescriptorVelocity = [[NSSortDescriptor alloc] initWithKey:@"velocity"
-                                                 ascending:YES];
+                                                                            ascending:YES];
     NSSortDescriptor * sortDescriptorSize = [[NSSortDescriptor alloc] initWithKey:@"size"
-                                                         ascending:YES];
+                                                                        ascending:YES];
     NSArray *sortDescriptors = [NSArray arrayWithObjects:sortDescriptorSize,sortDescriptorVelocity, nil];
-
+    
     NSArray *sortedArray;
     sortedArray = [[currentExperiment trials] sortedArrayUsingDescriptors:sortDescriptors];
     
@@ -77,7 +77,7 @@
         tempTrial = [sortedArray objectAtIndex:i];
         tempChannel = (BBChannel *)[tempTrial.file.allChannels objectAtIndex:0];
         tempSpikestrain = (BBSpikeTrain *)[[tempChannel spikeTrains] objectAtIndex:0];
-        tempArrayOfSpikes = [tempSpikestrain makeArrayOfTimestampsWithOffset:tempTrial.startOfRecording-tempTrial.timeOfImpact];
+        tempArrayOfSpikes = [tempSpikestrain makeArrayOfTimestampsWithOffset:-tempTrial.startOfTrialTimestamp-tempTrial.timeOfImpact];
         
         
         lastRecordedTime = [((NSNumber *)[[tempTrial angles] objectAtIndex:[tempTrial.angles count]-1]) floatValue];
@@ -116,7 +116,7 @@
             if(timestamp>=minXAxis && timestamp<=maxXAxis)
             {
                 calcIndex = (UInt32)((timestamp - minXAxis)/SIZE_OF_BIN);
-
+                
                 histogramValues[calcIndex] +=1;
             }
         }
@@ -209,7 +209,7 @@
         for(i=0;i<numOfPointsHistogram;i++)
         {
             
-             gl::drawSolidRect(Rectf(binLeftXEdge, yOffsetHistogram, binLeftXEdge+SIZE_OF_BIN, normalizedHistogramValues[i]));
+            gl::drawSolidRect(Rectf(binLeftXEdge, yOffsetHistogram, binLeftXEdge+SIZE_OF_BIN, normalizedHistogramValues[i]));
             binLeftXEdge+= SIZE_OF_BIN;
         }
         
@@ -311,7 +311,7 @@
         xScaleTextPosition.x = 0.5*(self.frame.size.width - xScaleTextSize.x) ;
         
         xScaleTextPosition.y =self.frame.size.height-13;
-       // gl::rotate(90.0f);
+        // gl::rotate(90.0f);
         mScaleFont->drawString(timeString.str(), xScaleTextPosition);
         
         
@@ -334,9 +334,9 @@
         
         xScaleTextPosition.y =23+self.frame.size.height-retinaCorrection*(yOffsetHistogram/scaleXY.y + minSizeOfHistogram/scaleXY.y);
         
-
+        
         mScaleFont->drawString(timeString.str(), xScaleTextPosition);
-    
+        
         
         
     }
@@ -359,11 +359,11 @@
     
     float windowHeight = self.frame.size.height;
     float windowWidth = self.frame.size.width;
-    if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] )
+    if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] && [[UIScreen mainScreen] scale]==2.0)
     {
-        float screenScale = [[UIScreen mainScreen] scale];
-        windowHeight *=  screenScale;
-        windowWidth *= screenScale;
+        //if it is retina
+        windowHeight += windowHeight;
+        windowWidth += windowWidth;
     }
     
     float worldLeft, worldTop, worldRight, worldBottom, worldNear, worldFar;
@@ -393,11 +393,11 @@
     float windowHeight = self.frame.size.height;
     float windowWidth = self.frame.size.width;
     
-    if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] )
+    if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] && [[UIScreen mainScreen] scale]==2.0)
     {
-        float screenScale = [[UIScreen mainScreen] scale];
-        windowHeight *=  screenScale;
-        windowWidth *= screenScale;
+        //if it is retina
+        windowHeight += windowHeight;
+        windowWidth += windowWidth;
     }
     
     float worldLeft, worldTop, worldRight, worldBottom, worldNear, worldFar;

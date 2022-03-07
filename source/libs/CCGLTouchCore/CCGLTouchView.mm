@@ -73,6 +73,7 @@
 {
 	if ( (self = [super initWithFrame:frame]) ) {
         
+        viewRotated = false;
         // Retina or not
         if ([[UIScreen mainScreen] respondsToSelector:@selector(displayLinkWithTarget:selector:)] &&
             ([UIScreen mainScreen].scale > 1.0)) {
@@ -208,9 +209,9 @@
                              GL_DEPTH_COMPONENT16_OES,
                              backingWidth, backingHeight);
 	
-    if( glCheckFramebufferStatusOES(GL_FRAMEBUFFER_OES) != GL_FRAMEBUFFER_COMPLETE_OES ) {
+    /*if( glCheckFramebufferStatusOES(GL_FRAMEBUFFER_OES) != GL_FRAMEBUFFER_COMPLETE_OES ) {
 		NSLog(@"Failed to make complete framebuffer object %x", glCheckFramebufferStatusOES(GL_FRAMEBUFFER_OES));
-    }
+    }*/
 }
 
 - (void)layoutSubviewsWithMSAA
@@ -234,6 +235,31 @@
     ccglMsaaRenderBuffer = 0;
     glDeleteFramebuffersOES(1, &ccglMsaaFramebuffer);
     ccglMsaaFramebuffer = 0;
+    
+    
+    //stanislav added ------------------------------------
+    
+    
+    if ([EAGLContext currentContext] == context)
+        [EAGLContext setCurrentContext:nil];
+    [context release];
+    context = nil;
+    sharegroup = nil;
+    
+    //maybe to add this function [self allocateGraphics];
+    [self allocateGraphics];
+    //context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES1];
+    //sharegroup = context.sharegroup;
+    
+    
+    [EAGLContext setCurrentContext:context];
+    viewRotated = true;
+    /*[ccglCapture release];
+    ccglCapture = nil;
+    */
+    //--------------------------------------------- end of stanislav added
+    
+    
     
 	// Create default framebuffer object. The backing will be allocated for the current layer in -resizeFromLayer
 	glGenFramebuffersOES( 1, &defaultFramebuffer );
@@ -265,9 +291,9 @@
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, ccglMsaaDepthBuffer);
     
     // Verify it worked
-    if( glCheckFramebufferStatusOES(GL_FRAMEBUFFER_OES) != GL_FRAMEBUFFER_COMPLETE_OES ) {
+   /* if( glCheckFramebufferStatusOES(GL_FRAMEBUFFER_OES) != GL_FRAMEBUFFER_COMPLETE_OES ) {
 		NSLog(@"Failed to make complete framebuffer object %x", glCheckFramebufferStatusOES(GL_FRAMEBUFFER_OES));
-    }
+    }*/
 }
 
 
@@ -306,7 +332,7 @@
 	
 	// Clear the screen.  If we are going to draw a background image then this clear is not necessary
 	// as drawing the background image will destroy the previous image
-	glClear(GL_COLOR_BUFFER_BIT);
+	//glClear(GL_COLOR_BUFFER_BIT);
 	
 	// Setup how the images are to be blended when rendered.  This could be changed at different points during your
 	// render process if you wanted to apply different effects
@@ -453,6 +479,7 @@
 
 - (void)startAnimation
 {
+    NSLog(@" Start animation %p", self);
 	if (!appSetupCalled)
 		[self setup];
     
@@ -467,6 +494,7 @@
 
 - (void)stopAnimation
 {
+    NSLog(@"Stop animation %p", self);
 	if( animating ) {
 		[displayLink invalidate];
 		displayLink = nil;

@@ -93,7 +93,7 @@
     [glView release];
     glView = nil;
     [self.navigationController setNavigationBarHidden:NO animated:YES];
-    
+    [self.masterDelegate spikesSortingFinished];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillResignActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillTerminateNotification object:nil];

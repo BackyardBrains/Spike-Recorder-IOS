@@ -18,9 +18,12 @@
 #import "NVLowpassFilter.h"
 #import "NVNotchFilter.h"
 #import "DemoProtocol.h"
+#import "InputDevice.h"
+#import "ChannelConfig.h"
 
 #define RESETUP_SCREEN_NOTIFICATION @"resetupScreenNotification"
-#define FILTER_PARAMETERS_CHANGED @"filterParametersChanged"
+#define CAN_NOT_FIND_CONFIG_FOR_DEVICE @"canNotFindConfigForDevice"
+#define NEW_DEVICE_ACTIVATED @"newDeviceActivated"
 #define MAX_NUMBER_OF_FFT_SEC 6.0f
 
 #define AM_CARRIER_FREQUENCY 5000.0
@@ -34,6 +37,8 @@
 
 #define FILTER_LP_OFF 10000000
 #define FILTER_HP_OFF 0
+
+#define MAX_VOLTAGE_NOT_SET -1
 
 @class BBFile;
 
@@ -53,11 +58,12 @@
     BOOL playing;
     
     //Filtering
-    NVHighpassFilter * HPFilter;
-    NVLowpassFilter * LPFilter;
-    NVNotchFilter * NotchFilter;
-    BOOL notchIsOn;
+    NSMutableArray * hpFilters;
+    NSMutableArray * lpFilters;
+    NSMutableArray * notchFilters;
     
+    BOOL notch50HzIsOn;
+    BOOL notch60HzIsOn;
     
     NVNotchFilter * amDetectionNotchFilter;
     NVLowpassFilter * amDetectionLPFilter;
@@ -81,11 +87,10 @@
     
 }
 
-@property (getter=samplingRate, readonly) float samplingRate;
-@property (getter=numberOfChannels, readonly) int numberOfChannels;
 
 @property (getter=sourceSamplingRate, readonly) float sourceSamplingRate;
-@property (getter=sourceNumberOfChannels, readonly) int sourceNumberOfChannels;
+-(int) numberOfSourceChannels;
+-(int) numberOfActiveChannels;
 
 @property UInt32 numTriggersInThresholdHistory;
 
@@ -113,21 +118,26 @@
 @property (readonly) BOOL selecting;
 @property (readonly) BOOL playing;
 @property (readonly) BOOL btOn;
-@property (readonly) BOOL externalAccessoryOn;
 @property (readonly) BOOL FFTOn;
 @property (readonly) BOOL ECGOn;
 @property (readonly) BOOL rtSpikeSorting;
 @property BOOL seeking;
 @property BOOL amDemodulationIsON;
-
+@property NSMutableArray* availableInputDevices;
 @property int currentFilterSettings;
 
 -(int) getLPFilterCutoff;
--(int) getHPFilterCutoff; 
+-(int) getHPFilterCutoff;
+-(BOOL) isNotchON;
+-(BOOL) is60HzNotchON;
+-(BOOL) is50HzNotchON;
+-(void) turnON60HzNotch;
+-(void) turnON50HzNotch;
+-(void) turnOFFNotchFilters;
 
 + (BBAudioManager *) bbAudioManager;
 -(void) quitAllFunctions;
-- (void)startMonitoring;
+//- (void)startMonitoring;
 
 - (void)startRecording:(BBFile *) aFile;
 - (void)stopRecording;
@@ -156,19 +166,32 @@
 
 -(void) setSeekTime:(float) newTime;
 
-
-
-//Bluetooth
--(void) switchToBluetoothWithChannels:(int) channelConfiguration andSampleRate:(int) inSampleRate;
--(void) closeBluetooth;
+//Input device connect/disconnect
+-(int) indexOfCurrentlyActiveDevice;
+-(InputDevice*) currentlyActiveInputDevice;
+-(NSArray* ) currentlyAvailableInputChannels;
+-(BOOL) activateFirstInstanceOfInputDeviceWithUniqueName:(NSString *) uniqueName;
+-(void) addNewInputDevice:(InputDevice *) newInputDevice;
+-(void) removeInputDevice:(InputDevice *) inputDeviceToRemove;
+-(void) deactivateInputDevice:(InputDevice *) inputDeviceToDeactivate;
+-(BOOL) activateChannelWithConfig:(ChannelConfig *) channelConfigToActivate;
+-(BOOL) deactivateChannelWithConfig:(ChannelConfig *) channelConfigToDeactivate;
+-(int) getColorIndexForActiveChannelIndex:(int) indexOfChannel;
+-(void) updateColorOfActiveChannels;
+-(float) getDefaultTimeScale;
+-(float) getVoltageScaleForChannelIndex:(int)indexOfChannel;
+//select which one is selected on UI
 -(void) selectChannel:(int) selectedChannel;
--(int) numberOfFramesBuffered;
+-(void) reactivateCurrentDevice;
 
 
 //Mfi
--(void) switchToExternalDeviceWithChannels:(int)numberOfChannels andSampleRate:(int) inSampleRate;
--(void) closeExternalDevice;
--(void) addNewData:(float*)data frames:(int) numberOfFrames channels:(int) numberOfChannels;
+-(void) addMfiDeviceWithModelNumber:(NSString *) modelNumber andSerial:(NSString *) serialNum;
+-(BOOL) externalAccessoryIsActive;
+
+-(void) removeMfiDeviceWithModelNumber:(NSString *) modelNumber andSerial:(NSString *) serialNum;
+
+
 - (void) addEvent:(int) eventType withOffset:(int) inOffset;
 
 
@@ -202,8 +225,6 @@
 @property (readonly) BOOL heartBeatPresent;
 
 @property float maxVoltageVisible;
-
--(void) setFilterSettings:(int) newFilterSettings;
 
 -(void) setFilterLPCutoff:(int) newLPCuttof hpCutoff:(int)newHPCutoff;
 

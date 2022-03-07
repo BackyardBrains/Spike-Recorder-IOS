@@ -10,11 +10,9 @@
 #import "BBAudioManager.h"
 #import "BBFile.h"
 #import "MultichannelCindeGLView.h"
-#import "ChooseFilterTypeViewController.h"
-#import "FilterSettingsViewController.h"
+#import "ConfigViewController.h"
 
-
-@interface ViewAndRecordViewController : CCGLTouchViewController <MultichannelGLViewDelegate, UIPopoverPresentationControllerDelegate, ChooseFilterTypeDelegateProtocol, BBFilterConfigDelegate>
+@interface ViewAndRecordViewController : CCGLTouchViewController <MultichannelGLViewDelegate, UIPopoverPresentationControllerDelegate, ConfigViewControllerDelegate>
 {
     UIPopoverPresentationController *popController;
     UIPopoverPresentationController * popControllerIpad;
@@ -41,7 +39,6 @@
 
 //Config popup stuff
 -(void) setVisibilityForConfigButton:(BOOL) setVisible;
--(void) endSelectionOfFilters:(int) filterType;
 -(void) finishedWithConfiguration;//delegate for custom filter
-
+-(void) configIsClossing;//delegate for custom filter
 @end

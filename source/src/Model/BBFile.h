@@ -59,7 +59,7 @@
 -(id) initWithUrl:(NSURL *) urlOfExistingFile;
 -(id) initWav;
 -(void) saveWithoutArrays;
-
+-(NSString *) saveWithArraysToArchieve;
 -(NSURL *) prepareBYBFile;
 
 -(int) numberOfSpikeTrains;

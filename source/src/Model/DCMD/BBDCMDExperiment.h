@@ -7,12 +7,15 @@
 //
 
 #import "SQLitePersistentObject.h"
+#import "BBFile.h"
+
+#define JSON_VERSION @"6"
 
 @interface BBDCMDExperiment : SQLitePersistentObject
 {
     NSString *name;
-	NSString *comment;
-	NSDate *date;
+    NSString *comment;
+    NSDate *date;
     float distance;//distance to grasshopper in mm
     NSMutableArray * _velocities;
     NSMutableArray * _sizes;
@@ -21,6 +24,8 @@
     float contrast;//in percentage
     int typeOfStimulus;
     NSMutableArray * _trials;
+    BBFile * _file;
+    NSMutableArray * _color;
 }
 @property (nonatomic,retain) NSString *name;
 @property (nonatomic,retain) NSString *comment;
@@ -33,6 +38,8 @@
 @property float contrast;//in percentage
 @property int typeOfStimulus;
 @property (nonatomic,retain) NSMutableArray * trials;
+@property (nonatomic,retain) NSMutableArray * color;
+@property (nonatomic,retain) BBFile * file;
 
 
 -(NSDictionary *) createExperimentDictionary;

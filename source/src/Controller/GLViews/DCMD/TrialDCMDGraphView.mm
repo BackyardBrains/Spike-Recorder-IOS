@@ -23,11 +23,11 @@
 - (void)setup
 {
     
-
+    
     [super setup];//this calls [self startAnimation]
     
     // Setup the camera
-	mCam.lookAt( Vec3f(0.0f, 0.0f, 40.0f), Vec3f::zero() );
+    mCam.lookAt( Vec3f(0.0f, 0.0f, 40.0f), Vec3f::zero() );
     
     [self enableAntiAliasing:YES];
     
@@ -38,9 +38,9 @@
     mScaleFont = gl::TextureFont::create( Font("Helvetica", 12) );
     
     retinaCorrection = 1.0f;
-    if([[UIScreen mainScreen] respondsToSelector:@selector(scale)])
+    if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] && [[UIScreen mainScreen] scale]==2.0)
     {//if it is retina correct scale
-        retinaCorrection = 1/((float) [[UIScreen mainScreen] scale]);
+        retinaCorrection = 0.5f;
     }
 }
 
@@ -60,23 +60,34 @@
     firstAngleTime = [((NSNumber *)[[currentTrial angles] objectAtIndex:1]) floatValue];
     maxXAxis = lastRecordedTime-currentTrial.timeOfImpact;
     minXAxis = firstAngleTime-currentTrial.timeOfImpact;
-    maxAngle = [((NSNumber *)[[currentTrial angles] objectAtIndex:[currentTrial.angles count]-2]) floatValue];
+    maxAngle = [((NSNumber *)[[currentTrial angles] objectAtIndex:[currentTrial.angles count]-2]) floatValue]/2.0;
     
     
     // Setup angles display vectors
     anglesDisplayVector = PolyLine2f();
     normalizedAngles = (float*) malloc(sizeof(float) * [currentTrial.angles count]);
-
+    float eightyDeg = 3.14159265359*(80.0/180.0);
     for (int i=0; i < [currentTrial.angles count]-2; i+=2)
     {
+        
+        
+        
         float x1 = [((NSNumber *)[[currentTrial angles] objectAtIndex:i+1]) floatValue]-currentTrial.timeOfImpact;
-        float y1 = [((NSNumber *)[[currentTrial angles] objectAtIndex:i]) floatValue];
+        float y1 = [((NSNumber *)[[currentTrial angles] objectAtIndex:i]) floatValue]/2.0;
+        if(y1>eightyDeg)
+        {
+            y1 = eightyDeg;
+        }
         anglesDisplayVector.push_back(Vec2f(x1,y1));
         normalizedAngles[i] = y1;
         
         
         float x2 = [((NSNumber *)[[currentTrial angles] objectAtIndex:i+3]) floatValue]-currentTrial.timeOfImpact;
-        float y2 = [((NSNumber *)[[currentTrial angles] objectAtIndex:i]) floatValue];
+        float y2 = [((NSNumber *)[[currentTrial angles] objectAtIndex:i]) floatValue]/2.0;
+        if(y2>eightyDeg)
+        {
+            y2 = eightyDeg;
+        }
         anglesDisplayVector.push_back(Vec2f(x2,y2));
         normalizedAngles[i+1] = y2;
     }
@@ -91,7 +102,7 @@
 {
     BBChannel * tempChannel = (BBChannel *)[currentTrial.file.allChannels objectAtIndex:0];
     BBSpikeTrain * tempSpikestrain = (BBSpikeTrain *)[[tempChannel spikeTrains] objectAtIndex:0];
-    spikesCoordinate = [tempSpikestrain makeArrayOfTimestampsWithOffset:currentTrial.startOfRecording];
+    spikesCoordinate = [tempSpikestrain makeArrayOfTimestampsWithOffset:-currentTrial.startOfTrialTimestamp];
     
     
     float lStartTime = [((NSNumber *)[[currentTrial angles] objectAtIndex:1]) floatValue];
@@ -100,7 +111,7 @@
     float timeStep = 0.003f; //3ms
     UInt32 numOfPointsIFR = (lEndTime - lStartTime)/timeStep;
     
-
+    
     int i;
     ifrResults = (float*) malloc(sizeof(float) * numOfPointsIFR);
     vDSP_vclr (ifrResults,
@@ -163,7 +174,7 @@
                 }
             }
             ifrResults[i] = ifr;
-           
+            
             currentTime+= timeStep;
         }
     }
@@ -178,14 +189,14 @@
     resultOfWindowing = (float*) malloc(sizeof(float) * numOfPointsAverage);
     
     vDSP_conv (ifrResults,
-                    1,
-                    gaussKernel,
-                    1,
-                    resultOfWindowing,
-                    1,
-                    numOfPointsAverage,
-                    lengthOfGauss
-                    );
+               1,
+               gaussKernel,
+               1,
+               resultOfWindowing,
+               1,
+               numOfPointsAverage,
+               lengthOfGauss
+               );
     
     
     
@@ -249,7 +260,7 @@
     
     if(spikesCoordinate)
     {
-
+        
         float sizeOfSpike = Y_SIZE_OF_SPIKE*scaleXY.y;
         yOffsetSpikes = 96.0*scaleXY.y;
         
@@ -258,7 +269,7 @@
         yOffsetAngles = yOffsetAverage+1.0 + 20.0*scaleXY.y;
         
         float zoom = 1.0f/maxAverage;
-
+        
         
         vDSP_vsmsa (resultOfWindowing,
                     1,
@@ -268,7 +279,7 @@
                     2,
                     numOfPointsAverage
                     );
-
+        
         zoom = (1.0f/maxAngle)*spaceForAngles;
         
         
@@ -284,7 +295,7 @@
         // Set the line color and width
         glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
         glLineWidth(2.0f);
-
+        
         //------------------- Draw angles ----------------------------
         gl::draw(anglesDisplayVector);
         
@@ -305,9 +316,9 @@
             {
                 gl::drawLine(Vec2f(timestamp, yOffsetSpikes), Vec2f(timestamp, yOffsetSpikes+sizeOfSpike));
             }
-        
+            
         }
-
+        
         
         glLineWidth(2.0f);
         float xPositionOfScale = minXAxis-0.4+10*scaleXY.x;
@@ -315,7 +326,7 @@
         
         //--------------- Draw Y axis for average ------------------
         
-         gl::drawLine(Vec2f(xPositionOfScale, yOffsetAverage), Vec2f(xPositionOfScale, yOffsetAverage+1.0f));
+        gl::drawLine(Vec2f(xPositionOfScale, yOffsetAverage), Vec2f(xPositionOfScale, yOffsetAverage+1.0f));
         gl::drawLine(Vec2f(xPositionOfScale, yOffsetAverage), Vec2f(xPositionOfScale+sizeOfMarkXaxis, yOffsetAverage));
         gl::drawLine(Vec2f(xPositionOfScale, yOffsetAverage+1.0f), Vec2f(xPositionOfScale+sizeOfMarkXaxis, yOffsetAverage+1.0f));
         
@@ -341,7 +352,7 @@
         float yImpactMark;
         float endImpactMark = 3.0f-15.0f*scaleXY.y;
         float sizeOfImpactMark = 6.0f*scaleXY.y;
-
+        
         glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
         glLineWidth(2.0f);
         
@@ -364,7 +375,7 @@
         
         
         //---------------  Draw text for time ------------------------------
- 
+        
         std::stringstream timeString;
         timeString.precision(1);
         Vec2f xScaleTextSize;
@@ -377,7 +388,7 @@
             timeString.str("");
             timeString << fixed << i;
             xScaleTextSize = mScaleFont->measureString(timeString.str());
-
+            
             xScaleTextPosition.x = ( -(minXAxis-0.4)/scaleXY.x + ((float)(i))/scaleXY.x)*retinaCorrection -xScaleTextSize.x*0.5 ;
             xScaleTextPosition.y =self.frame.size.height-33;
             mScaleFont->drawString(timeString.str(), xScaleTextPosition);
@@ -395,7 +406,7 @@
         
         
         //-------------- draw text for angles -----------------
-
+        
         timeString.str("");
         timeString << fixed << "80";
         xScaleTextSize = mScaleFont->measureString(timeString.str());
@@ -433,9 +444,9 @@
         
         xScaleTextPosition.y =13+self.frame.size.height-retinaCorrection*((yOffsetAverage+0.5f)/scaleXY.y);
         mScaleFont->drawString(timeString.str(), xScaleTextPosition);
-    
+        
     }
-
+    
     
 }
 
@@ -454,12 +465,11 @@
     
     float windowHeight = self.frame.size.height;
     float windowWidth = self.frame.size.width;
-    if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] )
+    if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] && [[UIScreen mainScreen] scale]==2.0)
     {
-        float screenScale = [[UIScreen mainScreen] scale];
         //if it is retina
-        windowHeight *=screenScale;
-        windowWidth *=screenScale;
+        windowHeight += windowHeight;
+        windowWidth += windowWidth;
     }
     
     float worldLeft, worldTop, worldRight, worldBottom, worldNear, worldFar;
@@ -489,12 +499,11 @@
     float windowHeight = self.frame.size.height;
     float windowWidth = self.frame.size.width;
     
-    if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] )
+    if([[UIScreen mainScreen] respondsToSelector:@selector(scale)] && [[UIScreen mainScreen] scale]==2.0)
     {
-        float screenScale = [[UIScreen mainScreen] scale];
         //if it is retina
-        windowHeight *= screenScale;
-        windowWidth *= screenScale;
+        windowHeight += windowHeight;
+        windowWidth += windowWidth;
     }
     
     float worldLeft, worldTop, worldRight, worldBottom, worldNear, worldFar;

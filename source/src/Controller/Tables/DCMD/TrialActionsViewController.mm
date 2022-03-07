@@ -21,12 +21,14 @@
 
 #define COPY_SPIKE_SORTING_ALERT 1
 
+#define SEGUE_SHOW_SPIKE_SORTING    @"showSpikeSortingForDCMDSegue"
+#define SEGUE_PLAYBACK_FILE         @"DCMDPlaybackViewSegue"
 @interface TrialActionsViewController ()
 {
     NSArray *actionOptions;
     
 }
-   
+
 @end
 
 @implementation TrialActionsViewController
@@ -37,12 +39,7 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        actionOptions = [[NSArray arrayWithObjects:
-                         ACTION_GRAPH,
-                         ACTION_PLAY,
-                         ACTION_SORT,
-                         ACTION_SHARE,
-                         ACTION_DELETE, nil] retain];
+        
     }
     return self;
 }
@@ -73,15 +70,19 @@
 
 -(void) openShareDialogWithFile:(NSString *) pathToFile
 {
-    
     NSURL *url = [NSURL fileURLWithPath:pathToFile];
     UIActivityViewController * activities = [[[UIActivityViewController alloc]
                                               initWithActivityItems:@[@"New experiment trial",url]
                                               applicationActivities:nil] autorelease];
     
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+    {
+        if([activities respondsToSelector:@selector(popoverPresentationController)])
+        {
+            //iOS8
+            activities.popoverPresentationController.sourceView = self.view;
+        }
         [[[self parentViewController] parentViewController] presentViewController:activities animated:YES completion:nil];
-        
     }
     else
     {
@@ -89,7 +90,6 @@
                            animated:YES
                          completion:nil];
     }
-    
 }
 
 
@@ -97,11 +97,11 @@
 {
     
     NSError *writeError = nil;
-
-    NSDictionary * expDictionary = [currentTrial createTrialDictionary];
+    
+    NSDictionary * expDictionary = [currentTrial createTrialDictionaryWithVersion:YES];
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:expDictionary options:NSJSONWritingPrettyPrinted error:&writeError];
     NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-
+    
     
     NSString* pathToFile = [self writeString:jsonString toTextFileWithName:@"trial.json"];
     [jsonString release];
@@ -175,7 +175,7 @@
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
     }
-
+    
     cell.textLabel.text = (NSString *)[actionOptions objectAtIndex:indexPath.row];
     
     
@@ -192,13 +192,13 @@
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
     
     if ([cell.textLabel.text isEqualToString:ACTION_GRAPH])
-	{
+    {
         if([currentTrial.file.spikesFiltered isEqualToString:FILE_SPIKE_SORTED] )
         {
             GraphDCMDTrialViewController * graphController = [[GraphDCMDTrialViewController alloc] initWithNibName:@"GraphDCMDTrialViewController" bundle:nil] ;
             
             graphController.currentTrial = currentTrial;
-           
+            
             [self.navigationController pushViewController:graphController animated:YES];
             [graphController release];
             
@@ -218,12 +218,14 @@
     {
         if(currentTrial.file)
         {
-            PlaybackViewController * playbackController = [[PlaybackViewController alloc] initWithNibName:@"PlaybackViewController" bundle:nil] ;
+            //SEGUE_PLAYBACK_FILE
+            [self performSegueWithIdentifier:SEGUE_PLAYBACK_FILE sender:self];
+            //PlaybackViewController * playbackController = [[PlaybackViewController alloc] initWithNibName:@"PlaybackViewController" bundle:nil] ;
             
-            playbackController.bbfile = currentTrial.file;
-            playbackController.showNavigationBar = YES;
-            [self.navigationController pushViewController:playbackController animated:YES];
-            [playbackController release];
+            //playbackController.bbfile = currentTrial.file;
+            //playbackController.showNavigationBar = YES;
+            //[self.navigationController pushViewController:playbackController animated:YES];
+            //[playbackController release];
         }
     }
     else if ([cell.textLabel.text isEqualToString:ACTION_SORT])
@@ -237,14 +239,9 @@
                 if([[BBAnalysisManager bbAnalysisManager] findSpikes:currentTrial.file] != -1)
                 {
                     dispatch_async(dispatch_get_main_queue(), ^{
-                        
                         [MBProgressHUD hideHUDForView:self.view animated:YES];
-                        SpikesAnalysisViewController *avc = [[SpikesAnalysisViewController alloc] initWithNibName:@"SpikesViewController" bundle:nil];
-                        avc.bbfile = currentTrial.file;
-                        avc.masterDelegate = self;
-                        [self.navigationController pushViewController:avc animated:YES];
-                        [avc release];
-                        
+                        //SEGUE_SHOW_SPIKE_SORTING
+                        [self performSegueWithIdentifier:SEGUE_SHOW_SPIKE_SORTING sender:self];
                     });
                 }
                 else
@@ -284,6 +281,24 @@
 }
 
 
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([[segue identifier] isEqualToString:SEGUE_SHOW_SPIKE_SORTING])
+    {
+        SpikesAnalysisViewController *avc = (SpikesAnalysisViewController *)segue.destinationViewController;
+        avc.bbfile = currentTrial.file;
+        avc.masterDelegate = self;
+    }
+    if ([[segue identifier] isEqualToString:SEGUE_PLAYBACK_FILE])
+    {
+        PlaybackViewController *avc = (PlaybackViewController *)segue.destinationViewController;
+        avc.bbfile = currentTrial.file;
+        avc.showNavigationBar = YES;
+    }
+}
+
+
 #pragma mark - Alert view delegate
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
@@ -295,11 +310,11 @@
             MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
             hud.labelText = @"Applying...";
             dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-                    //Copy thresholds to all trials
-                    [self.masterDelegate applySameThresholdsToAllTrials:self.currentTrial];
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [MBProgressHUD hideHUDForView:self.view animated:YES];
-                    });
+                //Copy thresholds to all trials
+                [self.masterDelegate applySameThresholdsToAllTrials:self.currentTrial];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [MBProgressHUD hideHUDForView:self.view animated:YES];
+                });
             });
             
             
@@ -311,6 +326,12 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    actionOptions = [[NSArray arrayWithObjects:
+                      ACTION_GRAPH,
+                      ACTION_PLAY,
+                      ACTION_SORT,
+                      // ACTION_SHARE,
+                      ACTION_DELETE, nil] retain];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     

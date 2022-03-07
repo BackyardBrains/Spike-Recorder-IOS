@@ -150,25 +150,27 @@ static Novocaine *audioManager = nil;
 
 -(void) initNovocaine
 {
-    NSLog(@"Init novocaine");
-    self.inData  = (float *)calloc(8192, sizeof(float)); // probably more than we'll need
-    self.outData = (float *)calloc(8192, sizeof(float));
+
+        NSLog(@"Init novocaine");
+        self.inData  = (float *)calloc(8192, sizeof(float)); // probably more than we'll need
+        self.outData = (float *)calloc(8192, sizeof(float));
+        
+        self.inputBlock = nil;
+        self.outputBlock = nil;
+        
+    #if defined ( USING_OSX )
+        self.deviceNames = [[NSMutableArray alloc] initWithCapacity:100]; // more than we'll need
+    #endif
+        
+        self.playing = NO;
+        // self.playThroughEnabled = NO;
+        
+        // Fire up the audio session ( with steady error checking ... )
+        [self setupAudioSession];
+        
+        // start audio units
+        [self setupAudioUnits];
     
-    self.inputBlock = nil;
-    self.outputBlock = nil;
-    
-#if defined ( USING_OSX )
-    self.deviceNames = [[NSMutableArray alloc] initWithCapacity:100]; // more than we'll need
-#endif
-    
-    self.playing = NO;
-    // self.playThroughEnabled = NO;
-    
-    // Fire up the audio session ( with steady error checking ... )
-    [self setupAudioSession];
-    
-    // start audio units
-    [self setupAudioUnits];
 
 }
 
@@ -567,7 +569,7 @@ static Novocaine *audioManager = nil;
     
 	if (_outputFormat.mFormatFlags & kAudioFormatFlagIsNonInterleaved) {
         // The audio is non-interleaved
-        printf("Not interleaved!\n");
+        printf("Not interleaved!");
         self.isInterleaved = NO;
         
         // allocate an AudioBufferList plus enough space for array of AudioBuffers
@@ -647,7 +649,20 @@ static Novocaine *audioManager = nil;
     //AVAudioSessionErrorInsufficientPriority = '!pri', /* 0x21707269, 561017449 */
     //and is described as "The app was not allowed to set the audio category because another app (Phone, etc.) is controlling it."
     //Stanislav
-	CheckError(AudioUnitInitialize(_inputUnit), "Couldn't initialize the input unit");
+    NSLog(@"Check and display error for Novocain");
+    OSStatus tempError;
+    tempError = AudioUnitInitialize(_inputUnit);
+    if (tempError == noErr)
+    {
+        self.shouldReinitializeAudio = false;
+    }
+    else
+    {
+        NSLog(@"Novocain detected error");
+        self.shouldReinitializeAudio = true;
+    }
+    //Stanislav commented out
+	//CheckError(tempError, "Couldn't initialize the input unit. Please relaunch application.");
 #if defined ( USING_OSX )
     CheckError(AudioUnitInitialize(_outputUnit), "Couldn't initialize the output unit");
 #endif
@@ -748,7 +763,9 @@ static Novocaine *audioManager = nil;
 	if ( self.inputAvailable ) {
 		// Set the audio session category for simultaneous play and record
 		if (!self.playing) {
-			CheckError( AudioOutputUnitStart(_inputUnit), "Couldn't start the output unit");
+            AudioOutputUnitStart(_inputUnit);
+            //stanislav commented out
+			//CheckError( AudioOutputUnitStart(_inputUnit), "Couldn't start the output unit");
 #if defined ( USING_OSX )
             CheckError( AudioOutputUnitStart(_outputUnit), "Couldn't start the output unit");
 #endif
@@ -925,6 +942,7 @@ void sessionPropertyListener(void *                  inClientData,
     
     // Determines the reason for the route change, to ensure that it is not
     //      because of a category change.
+    NSLog(@"BYB log - sessionPropertyListener");
     CFNumberRef routeChangeReasonRef = (CFNumberRef)CFDictionaryGetValue ((CFDictionaryRef)inData, CFSTR (kAudioSession_AudioRouteChangeKey_Reason) );
     SInt32 routeChangeReason;
     CFNumberGetValue (routeChangeReasonRef, kCFNumberSInt32Type, &routeChangeReason);

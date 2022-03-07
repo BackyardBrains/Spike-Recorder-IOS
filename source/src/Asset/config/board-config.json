@@ -1,0 +1,484 @@
+{
+    "config": {
+        "version":"1.0",
+        "boards":[
+            {
+                "uniqueName": "SpikerBox",
+                "userFriendlyFullName":"SpikerBox",
+                "userFriendlyShortName":"SpikerBox",
+                "hardwareComProtocolType": "iap2,serial",
+                "bybProtocolType": "BYB1",
+                "bybProtocolVersion": "1.0",
+                "maxSampleRate":"5000",
+                "maxNumberOfChannels":"2",
+                "sampleResolution":14,
+                "supportedPlatforms":"android,win,mac,linux,ios",
+                "productURL":"https://backyardbrains.com/products/heartAndBrainSpikerBox",
+                "helpURL":"https://backyardbrains.com/products/heartAndBrainSpikerBox",
+                "firmwareUpdateUrl":"https://backyardbrains.com/products/firmwares/sbpro/compatibility.xml",
+                "iconURL":"",
+                "defaultTimeScale":"2.0",
+                "defaultAmplitudeScale":"1.0",
+                "sampleRateIsFunctionOfNumberOfChannels":0,
+                "miniOSAppVersion":"3.0.0",
+                "minAndroidAppVersion":"1.0.0",
+                "minWinAppVersion":"1.0.0",
+                "minMacAppVersion":"1.0.0",
+                "minLinuxAppVersion":"1.0.0",
+                "filter":{
+                    "signalType":"eegSignal,ecgSignal",
+                    "lowPassON":1,
+                    "lowPassCutoff":"50.0",
+                    "highPassON":1,
+                    "highPassCutoff":"1.0",
+                    "notchFilterState":"notch60Hz"
+                },
+                "channels":[
+                    {
+                        "userFriendlyFullName":"EEG/ECG/EMG Channel 1",
+                        "userFriendlyShortName":"EEG/ECG/EMG Ch. 1",
+                        "activeByDefault":1,
+                        "filtered":1,
+                        "calibrationCoef":1.0,
+                        "channelIsCalibrated":1,
+                        "defaultVoltageScale":0.3
+                    },
+                    {
+                        "userFriendlyFullName":"EEG/ECG/EMG Channel 2",
+                        "userFriendlyShortName":"EEG/ECG/EMG Ch. 2",
+                        "activeByDefault":0,
+                        "filtered":1,
+                        "calibrationCoef":1.0,
+                        "channelIsCalibrated":1,
+                        "defaultVoltageScale":5.0
+                    }
+                ],
+                "expansionBoards":[
+                    {
+                        "boardType":"0",
+                        "userFriendlyFullName":"Default - events detection expansion board",
+                        "userFriendlyShortName":"Events detection",
+                        "supportedPlatforms":"android,ios,win,mac,linux",
+                        "maxNumberOfChannels":"0"
+                    },
+                    {
+                        "boardType":"1",
+                        "userFriendlyFullName":"Additional analog input channels",
+                        "userFriendlyShortName":"Analog x 2",
+                        "maxSampleRate":"5000",
+                        "supportedPlatforms":"android,ios,win,mac,linux",
+                        "productURL":"",
+                        "helpURL":"",
+                        "iconURL":"",
+                        "maxNumberOfChannels":"2",
+                        "defaultTimeScale":"0.1",
+                        "defaultAmplitudeScale":"1.0",
+                        "channels":[
+                            {
+                                "userFriendlyFullName":"EEG/ECG/EMG Channel 3",
+                                "userFriendlyShortName":"EEG/ECG/EMG Ch. 3",
+                                "activeByDefault":0,
+                                "filtered":1,
+                                "calibrationCoef":1.0,
+                                "channelIsCalibrated":1,
+                                "defaultVoltageScale":0.1
+                            },
+                            {
+                                "userFriendlyFullName":"EEG/ECG/EMG Channel 4",
+                                "userFriendlyShortName":"EEG/ECG/EMG Ch. 4",
+                                "activeByDefault":0,
+                                "filtered":0,
+                                "calibrationCoef":1.0,
+                                "channelIsCalibrated":1,
+                                "defaultVoltageScale":0.1
+                            }
+                        ]
+                    },
+                    {
+                        "boardType":"4",
+                        "userFriendlyFullName":"The Reflex Hammer",
+                        "userFriendlyShortName":"Hammer",
+                        "maxSampleRate":"5000",
+                        "maxNumberOfChannels":"1",
+                        "supportedPlatforms":"android,ios,win,mac,linux",
+                        "productURL":"https://backyardbrains.com/products/ReflexHammer",
+                        "helpURL":"https://backyardbrains.com/products/ReflexHammer",
+                        "iconURL":"",
+                        "defaultTimeScale":"0.1",
+                        "defaultAmplitudeScale":"1.0",
+                        "channels":[
+                            {
+                                "userFriendlyFullName":"Hammer channel",
+                                "userFriendlyShortName":"Hammer ch.",
+                                "activeByDefault":1,
+                                "filtered":1,
+                                "calibrationCoef":1.0,
+                                "channelIsCalibrated":1,
+                                "defaultVoltageScale":0.1
+                            }
+                        ]
+                    },
+                    {
+                        "boardType":"5",
+                        "userFriendlyFullName":"The Joystick control",
+                        "userFriendlyShortName":"Joystick",
+                        "maxSampleRate":"5000",
+                        "maxNumberOfChannels":"1",
+                        "supportedPlatforms":"win",
+                        "productURL":"",
+                        "helpURL":"",
+                        "iconURL":"",
+                        "defaultTimeScale":"0.1",
+                        "defaultAmplitudeScale":"1.0",
+                        "channels":[
+                            {
+                                "userFriendlyFullName":"Joystick EMG channel",
+                                "userFriendlyShortName":"Joystick EMG",
+                                "activeByDefault":1,
+                                "filtered":0,
+                                "calibrationCoef":1.0,
+                                "channelIsCalibrated":1,
+                                "defaultVoltageScale":0.1
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "uniqueName": "MUSCLESB",
+                "userFriendlyFullName":"Muscle SpikerBox Pro",
+                "userFriendlyShortName":"Muscle SpikerBox Pro",
+                "hardwareComProtocolType": "iap2,hid",
+                "bybProtocolType": "BYB1",
+                "bybProtocolVersion": "1.0",
+                "maxSampleRate":"10000",
+                "maxNumberOfChannels":"2",
+                "sampleResolution":10,
+                "defaultTimeScale":"0.1",
+                "supportedPlatforms":"android,ios,win,mac,linux",
+                "productURL":"https://backyardbrains.com/products/musclespikerboxpro",
+                "helpURL":"https://backyardbrains.com/products/musclespikerboxpro",
+                "iconURL":"",
+                "firmwareUpdateUrl":"https://backyardbrains.com/products/firmwares/sbpro/compatibility.xml",
+                "defaultAmplitudeScale":"1.0",
+                "sampleRateIsFunctionOfNumberOfChannels":0,
+                "miniOSAppVersion":"3.0.0",
+                "minAndroidAppVersion":"1.0.0",
+                "minWinAppVersion":"1.0.0",
+                "minMacAppVersion":"1.0.0",
+                "minLinuxAppVersion":"1.0.0",
+                "hid":{
+                    "VID":"0x2E73",
+                    "PID":"0x1"
+                },
+                "filter":{
+                    "signalType":"emgSignal",
+                    "lowPassON":1,
+                    "lowPassCutoff":"2500.0",
+                    "highPassON":1,
+                    "highPassCutoff":"1.0",
+                    "notchFilterState":"notch60Hz"
+                },
+                "channels":[
+                    {
+                        "userFriendlyFullName":"EMG Channel 1",
+                        "userFriendlyShortName":"EMG Ch. 1",
+                        "activeByDefault":1,
+                        "filtered":1,
+                        "calibrationCoef":1.0,
+                        "channelIsCalibrated":1,
+                        "defaultVoltageScale":0.1
+                    },
+                    {
+                        "userFriendlyFullName":"EMG Channel 2",
+                        "userFriendlyShortName":"EMG Ch. 2",
+                        "activeByDefault":0,
+                        "filtered":1,
+                        "calibrationCoef":1.0,
+                        "channelIsCalibrated":1,
+                        "defaultVoltageScale":0.1
+                    }
+                ],
+                "expansionBoards":[
+                    {
+                        "boardType":"0",
+                        "userFriendlyFullName":"Default - events detection expansion board",
+                        "userFriendlyShortName":"Events detection",
+                        "supportedPlatforms":"android,ios,win,mac,linux",
+                        "maxNumberOfChannels":"0"
+                    },
+                    {
+                        "boardType":"1",
+                        "userFriendlyFullName":"Additional analog input channels",
+                        "userFriendlyShortName":"Analog x 2",
+                        "maxSampleRate":"5000",
+                        "supportedPlatforms":"android,ios,win,mac,linux",
+                        "productURL":"",
+                        "helpURL":"",
+                        "iconURL":"",
+                        "maxNumberOfChannels":"2",
+                        "defaultTimeScale":"0.1",
+                        "defaultAmplitudeScale":"1.0",
+                        "channels":[
+                            {
+                                "userFriendlyFullName":"EMG Channel 3",
+                                "userFriendlyShortName":"EMG Ch. 3",
+                                "activeByDefault":1,
+                                "filtered":0,
+                                "calibrationCoef":1.0,
+                                "channelIsCalibrated":1,
+                                "defaultVoltageScale":0.1
+                            },
+                            {
+                                "userFriendlyFullName":"EMG Channel 4",
+                                "userFriendlyShortName":"EMG Ch. 4",
+                                "activeByDefault":0,
+                                "filtered":0,
+                                "calibrationCoef":1.0,
+                                "channelIsCalibrated":1,
+                                "defaultVoltageScale":0.1
+                            }
+                        ]
+                    },
+                    {
+                        "boardType":"4",
+                        "userFriendlyFullName":"The Reflex Hammer",
+                        "userFriendlyShortName":"Hammer",
+                        "maxSampleRate":"5000",
+                        "maxNumberOfChannels":"1",
+                        "supportedPlatforms":"android,ios,win,mac,linux",
+                        "productURL":"https://backyardbrains.com/products/ReflexHammer",
+                        "helpURL":"https://backyardbrains.com/products/ReflexHammer",
+                        "iconURL":"",
+                        "defaultTimeScale":"0.1",
+                        "defaultAmplitudeScale":"1.0",
+                        "channels":[
+                            {
+                                "userFriendlyFullName":"Hammer channel",
+                                "userFriendlyShortName":"Hammer ch.",
+                                "activeByDefault":1,
+                                "filtered":0,
+                                "calibrationCoef":1.0,
+                                "channelIsCalibrated":1,
+                                "defaultVoltageScale":0.1
+                            }
+                        ]
+                    },
+                    {
+                        "boardType":"5",
+                        "userFriendlyFullName":"The Joystick control",
+                        "userFriendlyShortName":"Joystick",
+                        "maxSampleRate":"5000",
+                        "maxNumberOfChannels":"1",
+                        "supportedPlatforms":"win",
+                        "productURL":"",
+                        "helpURL":"",
+                        "iconURL":"",
+                        "defaultTimeScale":"0.1",
+                        "defaultAmplitudeScale":"1.0",
+                        "channels":[
+                            {
+                                "userFriendlyFullName":"Joystick EMG channel",
+                                "userFriendlyShortName":"Joystick EMG",
+                                "activeByDefault":1,
+                                "filtered":0,
+                                "calibrationCoef":1.0,
+                                "channelIsCalibrated":1,
+                                "defaultVoltageScale":0.1
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "uniqueName": "AMMOD",
+                "userFriendlyFullName":"Spiker Box via audio cable",
+                "userFriendlyShortName":"Spiker Box via audio cable",
+                "hardwareComProtocolType": "local",
+                "bybProtocolType": "",
+                "bybProtocolVersion": "",
+                "maxSampleRate":"44100",
+                "maxNumberOfChannels":"1",
+                "sampleResolution":0,
+                "defaultTimeScale":"4",
+                "supportedPlatforms":"android,ios,win,mac,linux",
+                "productURL":"https://backyardbrains.com/",
+                "helpURL":"https://backyardbrains.com/",
+                "iconURL":"",
+                "firmwareUpdateUrl":"",
+                "defaultAmplitudeScale":"1.0",
+                "sampleRateIsFunctionOfNumberOfChannels":0,
+                "miniOSAppVersion":"3.0.0",
+                "minAndroidAppVersion":"1.0.0",
+                "minWinAppVersion":"1.0.0",
+                "minMacAppVersion":"1.0.0",
+                "minLinuxAppVersion":"1.0.0",
+                "filter":{
+                    "signalType":"emgSignal,ekgSignal",
+                    "lowPassON":1,
+                    "lowPassCutoff":"500.0",
+                    "highPassON":0,
+                    "highPassCutoff":"0",
+                    "notchFilterState":"notch60Hz"
+                },
+                "channels":[
+                    {
+                        "userFriendlyFullName":"SpikerBox Channel 1",
+                        "userFriendlyShortName":"SpikerBox Ch. 1",
+                        "activeByDefault":1,
+                        "filtered":1,
+                        "calibrationCoef":1.0,
+                        "channelIsCalibrated":0,
+                        "defaultVoltageScale":0.1
+                    }
+                ],
+                "expansionBoards":[
+                ]
+            },
+            {
+                "uniqueName": "NEURONSB",
+                "userFriendlyFullName":"Neuron SpikerBox Pro",
+                "userFriendlyShortName":"Neuron SpikerBox Pro",
+                "hardwareComProtocolType": "iap2,hid",
+                "bybProtocolType": "BYB1",
+                "bybProtocolVersion": "1.0",
+                "maxSampleRate":"10000",
+                "maxNumberOfChannels":"2",
+                "sampleResolution":10,
+                "supportedPlatforms":"android,ios,win,mac,linux",
+                "productURL":"https://backyardbrains.com/products/neuronspikerboxpro",
+                "helpURL":"https://backyardbrains.com/products/neuronspikerboxpro",
+                "firmwareUpdateUrl":"https://backyardbrains.com/products/firmwares/sbpro/compatibility.xml",
+                "iconURL":"",
+                "defaultTimeScale":"0.1",
+                "defaultAmplitudeScale":"1.0",
+                "sampleRateIsFunctionOfNumberOfChannels":0,
+                "miniOSAppVersion":"3.0.0",
+                "minAndroidAppVersion":"1.0.0",
+                "minWinAppVersion":"1.0.0",
+                "minMacAppVersion":"1.0.0",
+                "minLinuxAppVersion":"1.0.0",
+                "hid":{
+                    "VID":"0x2E73",
+                    "PID":"0x2"
+                },
+                "filter":{
+                    "signalType":"neuronSignal",
+                    "lowPassON":1,
+                    "lowPassCutoff":"2500.0",
+                    "highPassON":1,
+                    "highPassCutoff":"1.0",
+                    "notchFilterState":"notch60Hz"
+                },
+                "channels":[
+                    {
+                        "userFriendlyFullName":"Neuron Channel 1",
+                        "userFriendlyShortName":"Neuron Ch. 1",
+                        "activeByDefault":1,
+                        "filtered":1,
+                        "calibrationCoef":1.0,
+                        "channelIsCalibrated":1,
+                        "defaultVoltageScale":0.1
+                    },
+                    {
+                        "userFriendlyFullName":"Neuron Channel 2",
+                        "userFriendlyShortName":"Neuron Ch. 2",
+                        "activeByDefault":0,
+                        "filtered":1,
+                        "calibrationCoef":1.0,
+                        "channelIsCalibrated":1,
+                        "defaultVoltageScale":0.1
+                    }
+                ],
+                "expansionBoards":[
+                    {
+                        "boardType":"0",
+                        "userFriendlyFullName":"Default - events detection expansion board",
+                        "userFriendlyShortName":"Events detection",
+                        "supportedPlatforms":"android,ios,win,mac,linux",
+                        "maxNumberOfChannels":"0"
+                    },
+                    {
+                        "boardType":"1",
+                        "userFriendlyFullName":"Additional analog input channels",
+                        "userFriendlyShortName":"Analog x 2",
+                        "maxSampleRate":"5000",
+                        "supportedPlatforms":"android,ios,win,mac,linux",
+                        "maxNumberOfChannels":"2",
+                        "defaultTimeScale":"0.1",
+                        "defaultAmplitudeScale":"1.0",
+                        "channels":[
+                            {
+                                "userFriendlyFullName":"Neuron Channel 3",
+                                "userFriendlyShortName":"Neuron Ch. 3",
+                                "activeByDefault":1,
+                                "filtered":0,
+                                "calibrationCoef":1.0,
+                                "channelIsCalibrated":1,
+                                "defaultVoltageScale":0.1
+                            },
+                            {
+                                "userFriendlyFullName":"Neuron Channel 4",
+                                "userFriendlyShortName":"Neuron Ch. 4",
+                                "activeByDefault":0,
+                                "filtered":0,
+                                "calibrationCoef":1.0,
+                                "channelIsCalibrated":1,
+                                "defaultVoltageScale":0.1
+                            }
+                        ]
+                    },
+                    {
+                        "boardType":"4",
+                        "userFriendlyFullName":"The Reflex Hammer",
+                        "userFriendlyShortName":"Hammer",
+                        "maxSampleRate":"5000",
+                        "maxNumberOfChannels":"1",
+                        "supportedPlatforms":"android,ios,win,mac,linux",
+                        "productURL":"https://backyardbrains.com/products/ReflexHammer",
+                        "helpURL":"https://backyardbrains.com/products/ReflexHammer",
+                        "iconURL":"",
+                        "defaultTimeScale":"0.1",
+                        "defaultAmplitudeScale":"1.0",
+                        "channels":[
+                            {
+                                "userFriendlyFullName":"Hammer channel",
+                                "userFriendlyShortName":"Hammer ch.",
+                                "activeByDefault":1,
+                                "filtered":0,
+                                "calibrationCoef":1.0,
+                                "channelIsCalibrated":1,
+                                "defaultVoltageScale":0.1
+                            }
+                        ]
+                    },
+                    {
+                        "boardType":"5",
+                        "userFriendlyFullName":"The Joystick control",
+                        "userFriendlyShortName":"Joystick",
+                        "maxSampleRate":"5000",
+                        "maxNumberOfChannels":"1",
+                        "supportedPlatforms":"win",
+                        "productURL":"",
+                        "helpURL":"",
+                        "iconURL":"",
+                        "defaultTimeScale":"0.1",
+                        "defaultAmplitudeScale":"1.0",
+                        "channels":[
+                            {
+                                "userFriendlyFullName":"Joystick EMG channel",
+                                "userFriendlyShortName":"Joystick EMG.",
+                                "activeByDefault":1,
+                                "filtered":0,
+                                "calibrationCoef":1.0,
+                                "channelIsCalibrated":1,
+                                "defaultVoltageScale":0.1
+                            }
+                        ]
+                    }
+                ]
+            }
+        
+        ]
+    }
+}

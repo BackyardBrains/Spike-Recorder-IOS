@@ -30,5 +30,6 @@
 - (void)queueTxData:(NSData *)data;
 
 - (void)addDebugString:(NSString *)string;
-
+- (void) setupProtocol;
+- (void) reAddExistingAccessory;
 @end

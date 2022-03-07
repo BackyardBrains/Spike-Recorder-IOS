@@ -15,9 +15,22 @@
 #import <Accelerate/Accelerate.h>
 #import "BBECGAnalysis.h"
 #import "MyAppDelegate.h"
+#import "BoardsConfigManager.h"
+#import "InputDeviceConfig.h"
+#import "ChannelConfig.h"
+#import "InputDevice.h"
+
 
 //#define RING_BUFFER_SIZE 524288
 #define LENGTH_OF_EKG_BEEP_IN_SAMPLES 4851//0.11*44100
+#define LOCAL_AUDIO_DEVICE_UNIQUE_NAME @"LOCMIC"
+#define LOCAL_MICROPHONE_SHORT_NAME @"Microphone"
+#define UNIQUE_INSTANCE_ID_OF_MICROPHONE @"localmicrophone"
+#define UNIQUE_NAME_OF_AM_MODULATED_INPUT @"AMMOD"
+#define UNIQUE_INSTANCE_ID_OF_AM_MODULATED_SIGNAL @"ammodulatedsignal"
+
+#define SIZE_OF_MAX_SAMPLES_FOR_ALL_CHANNELS 20000
+
 static BBAudioManager *bbAudioManager = nil;
 
 @interface BBAudioManager ()
@@ -29,6 +42,7 @@ static BBAudioManager *bbAudioManager = nil;
     __block BBAudioFileReader *fileReader;
     DSPThreshold *dspThresholder;
     DSPAnalysis *dspAnalizer;
+    BoardsConfigManager * boardsConfigManager;
     dispatch_queue_t seekingQueue;
     float _threshold;
     float _selectionStartTime;
@@ -49,7 +63,7 @@ static BBAudioManager *bbAudioManager = nil;
 
     UInt32 lastNumberOfSampleDisplayed;//used to find position of selection in trigger view
     
-    int _sourceNumberOfChannels;
+    int _numberOfSourceChannels;
     float _sourceSamplingRate;
     
     int _selectedChannel;
@@ -59,6 +73,7 @@ static BBAudioManager *bbAudioManager = nil;
     float * tempResamplingBuffer;
     float * tempResampledBuffer;
     bool differentFreqInOut;
+    float tempSampleForLinearInterpolation;
     
     //basic stats
     float _currentSTD;
@@ -81,23 +96,30 @@ static BBAudioManager *bbAudioManager = nil;
     NSMutableData *_writeData;
     NSMutableData *_readData;
     */
+    
+    NSMutableArray * availableInputChannels;
+    NSMutableArray * currentDeviceAvailableInputChannels;
+    uint16_t activeChannels;
+    NSMutableArray * currentDeviceActiveInputChannels;
+    float * extractedChannelsBuffer;
+    int activeChannelColorIndex[16];
+    
+    BOOL shouldTurnONAMModulation;
+    dispatch_queue_t serialQueue ;
+
 }
 
 @property BOOL playing;
 
 - (void)loadSettingsFromUserDefaults;
+- (void) initAMDetection;
 
 @end
 
 @implementation BBAudioManager
 
-@synthesize samplingRate;
-//@synthesize sourceSamplingRate;
-//@synthesize sourceNumberOfChannels;
-
-
+@synthesize availableInputDevices;
 @synthesize numTriggersInThresholdHistory;
-
 @synthesize threshold;
 @synthesize thresholdDirection;
 @synthesize recording;
@@ -106,8 +128,6 @@ static BBAudioManager *bbAudioManager = nil;
 @synthesize selecting;
 @synthesize playing;
 @synthesize seeking;
-@synthesize btOn;
-@synthesize externalAccessoryOn;
 @synthesize FFTOn;
 @synthesize ECGOn;
 @synthesize rtSpikeSorting;
@@ -158,209 +178,728 @@ static BBAudioManager *bbAudioManager = nil;
 
 #pragma mark - Initialization
 
+
 - (id)init
 {
-    if (self = [super init])
+    
+    if([[UIApplication sharedApplication] isProtectedDataAvailable])
     {
+        NSLog(@"Device is unlocked! BBaudio manager");
+    }
+    else
+    {
+        NSLog(@"Device is locked! BBaudio manager");
+    }
+    
+    NSLog(@"Init BBAudioManager - start");
+    MyAppDelegate * appDelegate = (MyAppDelegate*)[[UIApplication sharedApplication] delegate];
+    //if ((self = [super init]) && ![appDelegate launchingFromLocked])
+    if (self || (self = [super init]))
+    {
+        NSLog(@"Create local audio devices");
+        bool reinitializeMFi = false;
+        if(appDelegate.shouldReinitializeAudio)
+        {
+            reinitializeMFi= true;
+            NSLog(@"App delegate ssays we sshould reinit audio");
+            [audioManager initNovocaine];
+        }
+        [self createLocalAudioDevice];
+        
+        if([audioManager shouldReinitializeAudio])
+        {
+            NSLog(@"BBAudioManager shouldReinitializeAudio detected");
+            appDelegate.shouldReinitializeAudio = true;
+        }
+        else
+        {
+            appDelegate.shouldReinitializeAudio = false;
+        }
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(resetupAudioInputs) name:@"audioChannelsChanged" object:nil];
+        
+        
+        
+        serialQueue = dispatch_queue_create("com.blah.queue", DISPATCH_QUEUE_SERIAL);
+        boardsConfigManager = [[BoardsConfigManager alloc] init];
         
         eaManager = [MyAppDelegate getEaManager];
+        extractedChannelsBuffer = (float *)calloc(SIZE_OF_MAX_SAMPLES_FOR_ALL_CHANNELS, sizeof(float));
         
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(filterParametersChanged) name:FILTER_PARAMETERS_CHANGED object:nil];
-        
-          [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(resetupAudioInputs) name:@"audioChannelsChanged" object:nil];
+
         
         
-        audioManager = [Novocaine audioManager];
-        maxVoltageVisible = -100;//this negative voltage is sign that it is not set at all
-        _sourceSamplingRate =  audioManager.samplingRate;
-         NSLog(@"Init sampling rate: %f", _sourceSamplingRate);
-        _sourceNumberOfChannels = audioManager.numInputChannels;
+        
+        
+        
+        
+        [self initInputDevices];
+        
+        
+        maxVoltageVisible = MAX_VOLTAGE_NOT_SET;//max voltage on last screen (if not set load default value from config)
+        
         
         _selectedChannel = 0;
         _spikeCountInSelection = [[NSMutableArray alloc] initWithCapacity:0];
         
-        NSDictionary *defaultsDict = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"SettingsDefaults" ofType:@"plist"]];
-        [[NSUserDefaults standardUserDefaults] registerDefaults:defaultsDict];
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         
         tempResamplingIndexes = (Float32 *)calloc(1024, sizeof(Float32));
         tempResamplingBuffer = (float *)calloc(1024, sizeof(float));
         tempResampledBuffer = (float *)calloc(1024, sizeof(float));
         
-        maxNumberOfSamplesToDisplay = [[defaults valueForKey:@"numSamplesMaxNew"] integerValue];
-
-        //Setup initial values for statistics
-        _currentMax = [[defaults valueForKey:@"numVoltsMaxUpdate1"] floatValue]*0.8;
-        _currentMin = -[[defaults valueForKey:@"numVoltsMaxUpdate1"] floatValue]*0.8;
-        _currentMean = 0.0f;
-        _currentSTD = _currentMax/6.0f;
-
-        ringBuffer = new RingBuffer(maxNumberOfSamplesToDisplay, _sourceNumberOfChannels);
-        tempCalculationBuffer = (float *)calloc(maxNumberOfSamplesToDisplay*_sourceNumberOfChannels, sizeof(float));
-
-        lastSeekPosition = -1;
-        newSeekPosition = -1;
-        dspAnalizer = new DSPAnalysis();
-
         
         
-        // Set a default input block acquiring data to a big ring buffer.
-        [audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
-            ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
-        }];
         
         // Initialize parameters to defaults
         [self loadSettingsFromUserDefaults];
         
+        
+        
+        
+        
+
+        ringBuffer = new RingBuffer(maxNumberOfSamplesToDisplay, 1);
+        tempCalculationBuffer = (float *)calloc(maxNumberOfSamplesToDisplay*1, sizeof(float));
+
+        lastSeekPosition = -1;
+        newSeekPosition = -1;
+        
+        
+        
+        dspAnalizer = new DSPAnalysis();
+
+        //init state variables
         recording = false;
         stimulating = false;
         thresholding = false;
         selecting = false;
         FFTOn = false;
         ECGOn = false;
-        btOn = false;
-        externalAccessoryOn = false;
         rtSpikeSorting = false;
+        shouldTurnONAMModulation = false;
         
-        [self filterParametersChanged];
-        
-        
-        
-        amDetectionNotchFilter = [[NVNotchFilter alloc] initWithSamplingRate:_sourceSamplingRate];
-        amDetectionNotchFilter.centerFrequency = AM_CARRIER_FREQUENCY;
-        amDetectionNotchFilter.q = 1.0  ;
-        
-        amDetectionLPFilter= [[NVLowpassFilter alloc] initWithSamplingRate:_sourceSamplingRate];
-        amDetectionLPFilter.cornerFrequency = 6000;
-        amDetectionLPFilter.Q = 0.8f;
-        
-        
-        filterAMStage1= [[NVLowpassFilter alloc] initWithSamplingRate:_sourceSamplingRate];
-        filterAMStage1.cornerFrequency = AM_DEMODULATION_CUTOFF;
-        filterAMStage1.Q = 0.8f;
-        
-        filterAMStage2= [[NVLowpassFilter alloc] initWithSamplingRate:_sourceSamplingRate];
-        filterAMStage2.cornerFrequency = AM_DEMODULATION_CUTOFF;
-        filterAMStage2.Q = 0.8f;
-        
-        filterAMStage3= [[NVLowpassFilter alloc] initWithSamplingRate:_sourceSamplingRate];
-        filterAMStage3.cornerFrequency = AM_DEMODULATION_CUTOFF;
-        filterAMStage3.Q = 0.8f;
-        
-        amDCLevelRemovalCh1 = 0.231;
-        amDCLevelRemovalCh2 = 0.231;
-
-        
-        rmsOfOriginalSignal = 0;
-        rmsOfNotchedSignal = 0;
-        amOffset = 0;
-        
-        ecgAnalysis = [[BBECGAnalysis alloc] init];
-        [ecgAnalysis initECGAnalysisWithSamplingRate:_sourceSamplingRate numOfChannels:_sourceNumberOfChannels];
-
         currentFilterSettings = FILTER_SETTINGS_RAW;
         lpFilterCutoff = FILTER_LP_OFF;
         hpFilterCutoff = FILTER_HP_OFF;
         
+        // init one input device
+        [self activateFirstInstanceOfInputDeviceWithUniqueName:LOCAL_AUDIO_DEVICE_UNIQUE_NAME];
+        [self initAMDetection];
+        
+       
+        
+        ecgAnalysis = [[BBECGAnalysis alloc] init];
+        [ecgAnalysis initECGAnalysisWithSamplingRate:_sourceSamplingRate numOfChannels:[self numberOfActiveChannels]];
+
+        
         rtEvents = [[NSMutableArray alloc] initWithCapacity:0];
         
-        
+        //if(appDelegate.shouldReinitializeAudio)
+        if(reinitializeMFi)
+        {
+            NSLog(@"App delegate ssays we sshould reinit accessory");
+            [eaManager reAddExistingAccessory];
+            
+        }
+        NSLog(@"audio manger play - before");
         [audioManager play];
-        eaManager = [MyAppDelegate getEaManager];
+        NSLog(@"audio manger play - after");
+        
+       
+        
+        
     }
-    
+    NSLog(@"Init BBAudioManager - end");
     return self;
 }
 
-
--(void) filterParametersChanged
+-(void) createLocalAudioDevice
 {
-  /*  NSDictionary *defaultsDict = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"SettingsDefaults" ofType:@"plist"]];
-    [[NSUserDefaults standardUserDefaults] registerDefaults:defaultsDict];
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    
-    float lowFilterValue = [[defaults valueForKey:@"lowFilterFreq"] floatValue];
-    //Check if cut-off freq is too high
-    if(lowFilterValue>(_sourceSamplingRate*0.3f))
-    {
-        lowFilterValue = (_sourceSamplingRate*0.3f);
-        //if cut-off freq is too high change it and save it
-        NSDictionary *defaultsDict = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"SettingsDefaults" ofType:@"plist"]];
-        [[NSUserDefaults standardUserDefaults] registerDefaults:defaultsDict];
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        
-        [defaults setValue:[NSNumber numberWithFloat:lowFilterValue] forKey:@"lowFilterFreq"];
-    }
-    
-    float highFilterValue = [[defaults valueForKey:@"highFilterFreq"] floatValue];
-    
-    
-    //Check if cut-off freq is too high
-    if(highFilterValue>(_sourceSamplingRate*0.3f))
-    {
-        highFilterValue = (_sourceSamplingRate*0.3f);
-        //if cut-off freq is too high change it and save it
-        NSDictionary *defaultsDict = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"SettingsDefaults" ofType:@"plist"]];
-        [[NSUserDefaults standardUserDefaults] registerDefaults:defaultsDict];
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        
-        [defaults setValue:[NSNumber numberWithFloat:highFilterValue] forKey:@"highFilterFreq"];
-    }
-    
-    notchIsOn = [[defaults valueForKey:@"notchFilterOn"] boolValue];
-    
-    NSLog(@" ************     MAKE FILTERS   ******************");
-    NSLog(@"Filter: %f - %f", lowFilterValue, highFilterValue);
-    if(notchIsOn)
-    {
-        NSLog(@"Notch active");
-    }
-    else
-    {
-        NSLog(@"Notch OFF");
-    }
-    
-    LPFilter= [[NVLowpassFilter alloc] initWithSamplingRate:_sourceSamplingRate];
-    LPFilter.cornerFrequency = highFilterValue;
-    LPFilter.Q = 0.8f;
-    
-    //[LPFilter logCoefficients];
-    
-    if(lowFilterValue<1.0)
-    {
-        HPFilter = nil;
-    }
-    else
-    {
-        //patch for instability interval
-        int tempFilterValue = (int)lowFilterValue;
-        lowFilterValue = (float) tempFilterValue;
-        if(tempFilterValue==2)
-        {
-            lowFilterValue = 2.2f;
-        }
-        if(tempFilterValue == 6)
-        {
-            lowFilterValue = 6.2;
-        }
-        if(tempFilterValue == 9)
-        {
-            lowFilterValue = 9.2;
-        }
-        //end of patch
-
-        HPFilter = [[NVHighpassFilter alloc] initWithSamplingRate:_sourceSamplingRate];
-        HPFilter.cornerFrequency = lowFilterValue;
-        HPFilter.Q = 0.51f;
-    }
-    //[HPFilter logCoefficients];
-    
-    NotchFilter = [[NVNotchFilter alloc] initWithSamplingRate:_sourceSamplingRate];
-    NotchFilter.centerFrequency = 60.0f;
-    NotchFilter.q = 1.0  ;
-    //[NotchFilter logCoefficients];*/
+    audioManager = [Novocaine audioManager];
+    _sourceSamplingRate =  audioManager.samplingRate;
+    _numberOfSourceChannels = audioManager.numInputChannels;
 }
 
+
+
+-(void) addLocalInputDeviceToInputDevices
+{
+    InputDeviceConfig * inpDevConf = [[InputDeviceConfig alloc] init];
+    
+    //fill in generic data and data from audio manager
+    inpDevConf.uniqueName = LOCAL_AUDIO_DEVICE_UNIQUE_NAME;
+    
+    NSString * currentInputName = audioManager.inputRoute;
+    if([currentInputName isEqualToString:@"HeadsetInOut"])
+    {
+        currentInputName = @"Smartphone Cable";
+    }
+    
+    if([currentInputName isEqualToString:@"ReceiverAndMicrophone"])
+    {
+        currentInputName = @"Microphone";
+    }
+
+    
+    inpDevConf.userFriendlyShortName = currentInputName;
+    inpDevConf.userFriendlyFullName = currentInputName;
+    inpDevConf.maxSampleRate = audioManager.samplingRate;
+    inpDevConf.currentSampleRate = audioManager.samplingRate;
+    inpDevConf.currentNumOfChannels = 1;
+    inpDevConf.maxNumberOfChannels = audioManager.numInputChannels;
+    inpDevConf.hardwareComProtocolType = HARDWARE_PROTOCOL_TYPE_LOCAL;
+    inpDevConf.inputDevicesSupportedByThisPlatform = YES;
+    inpDevConf.defaultTimeScale = 2.0;
+    inpDevConf.defaultAmplitudeScale = 1.0;
+    inpDevConf.sampleRateIsFunctionOfNumberOfChannels = NO;
+    inpDevConf.minAppVersion = @"1.0.0";
+    
+    inpDevConf.filterSettings.highPassON = NO;
+    inpDevConf.filterSettings.highPassCutoff = 0;
+    inpDevConf.filterSettings.lowPassON = NO;
+    inpDevConf.filterSettings.lowPassCutoff = 0.5*audioManager.samplingRate;
+    inpDevConf.filterSettings.notchFilterState = notchOff;
+    
+    for(int i=0;i<inpDevConf.maxNumberOfChannels;i++)
+    {
+        ChannelConfig * newChannel= [[ChannelConfig alloc] init];
+        newChannel.userFriendlyFullName = [NSString stringWithFormat:@"%@ channel %d",currentInputName, i+1];
+        newChannel.userFriendlyShortName = [NSString stringWithFormat:@"%@ channel %d",currentInputName, i+1];
+        
+        newChannel.activeByDefault = i==0;
+        newChannel.filtered = YES;
+        [inpDevConf.channels addObject:newChannel];
+    }
+    
+    InputDevice * newInputDevice = [[InputDevice alloc] initWithConfig:inpDevConf];
+    newInputDevice.uniqueInstanceID = UNIQUE_INSTANCE_ID_OF_MICROPHONE;
+    //add local microphone to available input devices
+    
+    InputDevice * inputDeviceThatWeFound = nil;
+    for(int i=0;i<[availableInputDevices count];i++)
+    {
+        InputDevice * tempInputDevice  = [availableInputDevices objectAtIndex:i];
+        
+        if([tempInputDevice.config.uniqueName isEqualToString:LOCAL_AUDIO_DEVICE_UNIQUE_NAME] || [tempInputDevice.config.uniqueName isEqualToString:UNIQUE_NAME_OF_AM_MODULATED_INPUT])
+        {
+            inputDeviceThatWeFound = tempInputDevice;
+            [availableInputDevices removeObject:tempInputDevice];
+        }
+    }
+    
+    
+    [availableInputDevices addObject:newInputDevice];
+    [self updateAvailableInputChannels];
+    
+    if(inputDeviceThatWeFound)//if there was already device of same type
+    {
+        if(inputDeviceThatWeFound.currentlyActive)//if that device was active
+        {
+            [self activateFirstInstanceOfInputDeviceWithUniqueName:LOCAL_AUDIO_DEVICE_UNIQUE_NAME];
+        }
+    }
+    
+}
+
+
+
+
+-(void) initInputDevices
+{
+    
+    availableInputDevices = [[NSMutableArray alloc] initWithCapacity:0];
+    availableInputChannels = [[NSMutableArray alloc] initWithCapacity:0];
+    currentDeviceActiveInputChannels = [[NSMutableArray alloc] initWithCapacity:0];
+    currentDeviceAvailableInputChannels = [[NSMutableArray alloc] initWithCapacity:0];
+    //create input device config for standard input (microphone)
+    [self addLocalInputDeviceToInputDevices];
+}
+
+
+
+-(void) addNewInputDevice:(InputDevice *) newInputDevice
+{
+    for(int i=0;i<[availableInputDevices count];i++)
+    {
+        InputDevice * tempInputDevice = (InputDevice *)[availableInputDevices objectAtIndex:i];
+        if([tempInputDevice.config.uniqueName isEqualToString:newInputDevice.config.uniqueName])
+        {
+            [availableInputDevices removeObject:tempInputDevice];
+        }
+    }
+    [availableInputDevices addObject:newInputDevice];
+    [self updateAvailableInputChannels];
+}
+
+-(InputDevice *) getInputDeviceWithUniqueName:(NSString *) uniqueName
+{
+    for(int i=0;i<[availableInputDevices count];i++)
+    {
+        InputDevice * tempInputDevice = (InputDevice *)[availableInputDevices objectAtIndex:i];
+        if([tempInputDevice.config.uniqueName isEqualToString:uniqueName])
+        {
+            return tempInputDevice;
+        }
+    }
+    return nil;
+}
+
+-(void) removeInputDevice:(InputDevice *) inputDeviceToRemove
+{
+    [self deactivateInputDevice:inputDeviceToRemove];
+    [availableInputDevices removeObject:inputDeviceToRemove];
+    [self updateAvailableInputChannels];
+}
+
+-(void) deactivateInputDevice:(InputDevice *) inputDeviceToDeactivate
+{
+    if([inputDeviceToDeactivate currentlyActive])
+    {
+        if(![self activateFirstInstanceOfInputDeviceWithUniqueName:LOCAL_AUDIO_DEVICE_UNIQUE_NAME])
+        {
+            [self activateInputDeviceAtIndex:0];
+        }
+    }
+}
+
+
+-(InputDevice *) findInputDeviceForChannel:(ChannelConfig *) channelConfig
+{
+    for(int inputIndex=0;inputIndex<[availableInputDevices count];inputIndex++)
+    {
+            InputDevice* inputDeviceToActivate = (InputDevice*)[availableInputDevices objectAtIndex:inputIndex];
+            InputDeviceConfig* devConf = (InputDeviceConfig*)[inputDeviceToActivate config];
+            for (int i =0;i<[devConf.channels count];i++)
+            {
+                if(devConf.channels[i] == channelConfig)
+                {
+                    return inputDeviceToActivate;
+                }
+            }
+
+            if(devConf.connectedExpansionBoard)
+            {
+                for (int i =0;i<[devConf.connectedExpansionBoard.channels count];i++)
+                {
+                    if(devConf.connectedExpansionBoard.channels[i] == channelConfig)
+                    {
+                        return inputDeviceToActivate;
+                    }
+                }
+            }
+    }
+    return nil;
+}
+
+
+
+
+
+
+
+-(int) indexOfCurrentlyActiveDevice
+{
+    for (int i=0;i<[availableInputDevices count];i++)
+    {
+        if(((InputDevice*)[availableInputDevices objectAtIndex:i]).currentlyActive==YES)
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+
+
+-(InputDevice*) currentlyActiveInputDevice
+{
+    int index = [self indexOfCurrentlyActiveDevice];
+    if(index !=-1)
+    {
+        return (InputDevice*)[availableInputDevices objectAtIndex:index];
+    }
+    return nil;
+}
+
+//
+// Deactivate all devices, find one with Unique Name that is same as uniqueName
+// and activate it
+//
+-(BOOL) activateFirstInstanceOfInputDeviceWithUniqueName:(NSString *) uniqueName
+{
+    NSLog(@"Activate first instance with name %@", uniqueName);
+    BOOL foundDevice = NO;
+    int indexOfNewDevice = 0;
+    for (int i=0;i<[availableInputDevices count];i++)
+    {
+        if([[[(InputDevice*)[availableInputDevices objectAtIndex:i] config] uniqueName] isEqualToString:uniqueName])
+        {
+            /*
+             IF we have single device and switch OFF last channel (to black) no channels will be active
+             if(((InputDevice*)[availableInputDevices objectAtIndex:i]).currentlyActive)
+            {
+                //already active
+                return YES;
+            }*/
+            foundDevice = YES;
+            indexOfNewDevice = i;
+        }
+        ((InputDevice*)[availableInputDevices objectAtIndex:i]).currentlyActive  = NO;
+    }
+    if(foundDevice)
+    {
+        [self activateInputDeviceAtIndex:indexOfNewDevice];
+    }
+
+    return foundDevice;
+}
+
+//
+//
+//
+-(void) activateInputDeviceAtIndex:(int) indexOfDevice
+{
+    // ------ check if allready active ------
+    
+    /*if([self indexOfCurrentlyActiveDevice]==indexOfDevice)
+    {
+        return;
+    }
+    */
+    NSLog(@"Start activateInputDeviceAtIndex VVVVVVVVVVVVVVVV");
+    // ------ stop all functions ------
+    
+    [self quitAllFunctions];
+    
+    
+    // ------ set all devices and channels to inactive ------
+    
+    for (int i=0;i<[availableInputDevices count];i++)
+    {
+        InputDevice * tempInputDevice = ((InputDevice*)[availableInputDevices objectAtIndex:i]);
+        InputDeviceConfig * tempConfig = tempInputDevice.config;
+        tempInputDevice.currentlyActive  = NO;
+        
+        for (int i =0;i<[tempConfig.channels count];i++)
+        {
+            ((ChannelConfig*) tempConfig.channels[i]).currentlyActive = NO;
+            ((ChannelConfig*) tempConfig.channels[i]).colorIndex = 0;
+        }
+        if(tempConfig.connectedExpansionBoard)
+        {
+            for (int i =0;i<[tempConfig.connectedExpansionBoard.channels count];i++)
+            {
+                ((ChannelConfig*) tempConfig.connectedExpansionBoard.channels[i]).currentlyActive = NO;
+                ((ChannelConfig*) tempConfig.connectedExpansionBoard.channels[i]).colorIndex = 0;
+            }
+        }
+    }
+    
+    // ------ check how many channels we will have to activate ------
+    
+    InputDevice* inputDeviceToActivate = (InputDevice*)[availableInputDevices objectAtIndex:indexOfDevice];
+    InputDeviceConfig* devConf = (InputDeviceConfig*)[inputDeviceToActivate config];
+    inputDeviceToActivate.currentlyActive = YES;
+
+    
+    //----- set color for chanels ------
+    
+    int colorIndex = 1;
+    for (int i =0;i<[devConf.channels count];i++)
+    {
+        if([((ChannelConfig*) devConf.channels[i]) activeByDefault])
+        {
+            ((ChannelConfig*) devConf.channels[i]).colorIndex = colorIndex;
+            colorIndex = colorIndex+1;
+            ((ChannelConfig*) devConf.channels[i]).currentlyActive = YES;
+        }
+        else
+        {
+            //set black and turn OFF the channel
+            ((ChannelConfig*) devConf.channels[i]).colorIndex = 0;
+            ((ChannelConfig*) devConf.channels[i]).currentlyActive = NO;
+        }
+    }
+    
+    if(devConf.connectedExpansionBoard)
+    {
+        for (int i =0;i<[devConf.connectedExpansionBoard.channels count];i++)
+        {
+            if([((ChannelConfig*) devConf.connectedExpansionBoard.channels[i]) activeByDefault])
+            {
+                ((ChannelConfig*) devConf.connectedExpansionBoard.channels[i]).colorIndex = colorIndex;
+                colorIndex = colorIndex+1;
+                ((ChannelConfig*) devConf.connectedExpansionBoard.channels[i]).currentlyActive = YES;
+            }
+            else
+            {
+                //set black and turn OFF the channel
+                ((ChannelConfig*) devConf.connectedExpansionBoard.channels[i]).colorIndex = 0;
+                ((ChannelConfig*) devConf.connectedExpansionBoard.channels[i]).currentlyActive = NO;
+            }
+        }
+    }
+
+    [self updateCurrentDeviceAvailableInputChannels];
+    [self updateCurrentlyActiveChannels];
+   
+    int numOfActiveChannels = 0;
+    int numberOfAvailableChannels = 0;
+    inputDeviceToActivate.currentlyActive = YES;
+    for (int i =0;i<[devConf.channels count];i++)
+    {
+        if([((ChannelConfig*) devConf.channels[i]) activeByDefault])
+        {
+            numOfActiveChannels++;
+        }
+        numberOfAvailableChannels++;
+    }
+    
+    if(devConf.connectedExpansionBoard)
+    {
+        for (int i =0;i<[devConf.connectedExpansionBoard.channels count];i++)
+        {
+            if([((ChannelConfig*) devConf.connectedExpansionBoard.channels[i]) activeByDefault])
+            {
+                numOfActiveChannels++;
+            }
+            numberOfAvailableChannels++;
+        }
+    }
+
+    // ------ find what will be the new sample rate ------
+    
+    float tempSamplingRate = [devConf maxSampleRate];
+    if(devConf.sampleRateIsFunctionOfNumberOfChannels)
+    {
+        tempSamplingRate = (int)(tempSamplingRate/numOfActiveChannels);
+    }
+    
+
+   
+    
+    //if we have different sameple rate or number of channels resize buffers
+    //if(tempSamplingRate != _sourceSamplingRate  || numOfActiveChannels != [self numberOfActiveChannels])
+    //{
+        _sourceSamplingRate = tempSamplingRate;
+        _numberOfSourceChannels = numberOfAvailableChannels;
+        [self resetBuffers];
+  /*  }
+    else
+    {
+        _sourceSamplingRate = tempSamplingRate;
+        _numberOfSourceChannels = numberOfAvailableChannels;
+        rtEvents = [[NSMutableArray alloc] initWithCapacity:0];
+        ringBuffer->Clear();
+    }*/
+    
+    
+    // ------ set filters according to config ------
+    
+    currentFilterSettings = FILTER_SETTINGS_CUSTOM;
+    int tempLowPassCutoff = FILTER_LP_OFF;
+    if(devConf.filterSettings.lowPassON)
+    {
+        tempLowPassCutoff = devConf.filterSettings.lowPassCutoff;
+    }
+    
+    int tempHighPassCutoff = FILTER_HP_OFF;
+    if(devConf.filterSettings.highPassON)
+    {
+        tempHighPassCutoff = devConf.filterSettings.highPassCutoff;
+    }
+    lpFilterCutoff = tempLowPassCutoff;
+    hpFilterCutoff = tempHighPassCutoff;
+    [self updateFilters];
+    
+    // ------ activate inputs and outputs ------
+    [[NSNotificationCenter defaultCenter] postNotificationName:RESETUP_SCREEN_NOTIFICATION object:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:NEW_DEVICE_ACTIVATED object:self];
+    [self startAquiringInputs:inputDeviceToActivate];
+    NSLog(@"END activateInputDeviceAtIndex AAAAAAAAAAAAAAA");
+}
+
+//used when just channel active/inactive change but not a input device
+-(void) updateBufferOnReconfigurationOfChannelsOnActiveDevice
+{
+    [self quitAllFunctions];
+    [self updateCurrentDeviceAvailableInputChannels];
+    [self updateCurrentlyActiveChannels];
+    InputDevice * inputDeviceToActivate = [self currentlyActiveInputDevice];
+    InputDeviceConfig* devConf = (InputDeviceConfig*)[inputDeviceToActivate config];
+    int numOfActiveChannels = 0;
+    int numberOfAvailableChannels = 0;
+    for (int i =0;i<[devConf.channels count];i++)
+    {
+        if([((ChannelConfig*) devConf.channels[i]) currentlyActive])
+        {
+            numOfActiveChannels++;
+        }
+        numberOfAvailableChannels++;
+    }
+    
+    if(devConf.connectedExpansionBoard)
+    {
+        for (int i =0;i<[devConf.connectedExpansionBoard.channels count];i++)
+        {
+            if([((ChannelConfig*) devConf.connectedExpansionBoard.channels[i]) currentlyActive])
+            {
+                numOfActiveChannels++;
+            }
+            numberOfAvailableChannels++;
+        }
+    }
+
+    // ------ find what will be the new sample rate ------
+    
+    float tempSamplingRate = [devConf maxSampleRate];
+    if(devConf.sampleRateIsFunctionOfNumberOfChannels)
+    {
+        tempSamplingRate = (int)(tempSamplingRate/numOfActiveChannels);
+    }
+    
+  
+   
+    _sourceSamplingRate = tempSamplingRate;
+    _numberOfSourceChannels = numberOfAvailableChannels;
+    [self resetBuffers];
+    [self updateFilters];
+   
+    // ------ activate inputs and outputs ------
+    [[NSNotificationCenter defaultCenter] postNotificationName:RESETUP_SCREEN_NOTIFICATION object:self];
+    [self startAquiringInputs:inputDeviceToActivate];
+}
+
+-(BOOL) externalAccessoryIsActive
+{
+    return [[self currentlyActiveInputDevice] isBasedOnCommunicationProtocol:HARDWARE_PROTOCOL_TYPE_MFI];
+}
+
+
+-(void) extractActiveChannelsFormData:(float **) datain withNumberOfFrames:(UInt32) numFrames numberOfChannels:(UInt32) numChannels
+{
+    
+    int goalNumberOfChannels = [self numberOfActiveChannels];
+    float * data = *datain;
+    if(numChannels==goalNumberOfChannels)
+    {
+        return;
+    }
+    int currentlyExtracting = 0;
+    uint16_t indexForChannelBit = 1;
+    float zero = 0.0f;
+    for (int i=0; i < numChannels; ++i)
+    {
+        if(indexForChannelBit & activeChannels)
+        {
+            //channel is active, extract it
+            vDSP_vsadd((float *)&data[i],
+                       numChannels,
+                       &zero,
+                       (float *)&extractedChannelsBuffer[currentlyExtracting],
+                       goalNumberOfChannels,
+                       numFrames);
+            currentlyExtracting++;
+        }
+        indexForChannelBit = indexForChannelBit<<1;
+    }
+    
+    (*datain) = extractedChannelsBuffer;
+}
+
+-(void) startAquiringInputs:(InputDevice *) inputDeviceToActivate
+{
+    NSLog(@"startAquiringInputs %p\n",audioManager);
+    
+    _preciseVirtualTimeNumOfFrames = 0;
+    
+    if([inputDeviceToActivate isBasedOnCommunicationProtocol:HARDWARE_PROTOCOL_TYPE_MFI])
+    {
+        [eaManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
+         {
+             if(numFrames>0)
+             {
+              [self extractActiveChannelsFormData:&data withNumberOfFrames:numFrames numberOfChannels:[self numberOfSourceChannels]];
+             }
+             if([eaManager shouldRestartDevice])
+             {
+                 NSLog(@"inside");
+                 [self updateMfiDeviceParameters];
+                 [eaManager deviceRestarted];
+                 return;
+             }
+             
+             if(ringBuffer == NULL)
+             {
+                 NSLog(@"/n/n ERROR in Input block for Mfi %p/n/n", self);
+                 return;
+             }
+             if(numFrames>0)
+             {
+                 [self additionalProcessingOfInputData:data forNumOfFrames:numFrames andNumChannels:[self numberOfActiveChannels]];
+                 ringBuffer->AddNewInterleavedFloatData(data, numFrames, [self numberOfActiveChannels]);
+                 _preciseVirtualTimeNumOfFrames += numFrames;
+             }
+             
+         }];
+    }
+    else if([inputDeviceToActivate isBasedOnCommunicationProtocol:HARDWARE_PROTOCOL_TYPE_LOCAL])
+    {
+            // Replace the input block with the old input block, where we just save an in-memory copy of the audio.
+            [audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
+            {
+                [self checkIfWeHaveAMModulatedFirstChannelWithData:data numFrames:numFrames numChannels:numChannels];
+                if(self.amDemodulationIsON)
+                {
+                    //demodulate and extract just first channel
+                    [self demodulateAMSignalAndExtractFirstChannelFromData:data numberOfFrames:numFrames numChannels:numChannels];
+                }
+                [self extractActiveChannelsFormData:&data withNumberOfFrames:numFrames numberOfChannels:[self numberOfSourceChannels]];
+                if(ringBuffer == NULL)
+                {
+                    NSLog(@"/n/n ERROR in Input block %p/n/n", self);
+                    return;
+                }
+                [self additionalProcessingOfInputData:data forNumOfFrames:numFrames andNumChannels:[self numberOfActiveChannels]];
+                ringBuffer->AddNewInterleavedFloatData(data, numFrames, [self numberOfActiveChannels]);
+                _preciseVirtualTimeNumOfFrames += numFrames;
+            }];
+    }
+
+     inputDeviceToActivate.currentlyActive  = YES;
+}
+
+-(void) initAMDetection
+{
+    amDetectionNotchFilter = [[NVNotchFilter alloc] initWithSamplingRate:_sourceSamplingRate];
+    amDetectionNotchFilter.centerFrequency = AM_CARRIER_FREQUENCY;
+    amDetectionNotchFilter.q = 1.0  ;
+    
+    amDetectionLPFilter= [[NVLowpassFilter alloc] initWithSamplingRate:_sourceSamplingRate];
+    amDetectionLPFilter.cornerFrequency = 6000;
+    amDetectionLPFilter.Q = 0.8f;
+    
+    
+    filterAMStage1= [[NVLowpassFilter alloc] initWithSamplingRate:_sourceSamplingRate];
+    filterAMStage1.cornerFrequency = AM_DEMODULATION_CUTOFF;
+    filterAMStage1.Q = 0.8f;
+    
+    filterAMStage2= [[NVLowpassFilter alloc] initWithSamplingRate:_sourceSamplingRate];
+    filterAMStage2.cornerFrequency = AM_DEMODULATION_CUTOFF;
+    filterAMStage2.Q = 0.8f;
+    
+    filterAMStage3= [[NVLowpassFilter alloc] initWithSamplingRate:_sourceSamplingRate];
+    filterAMStage3.cornerFrequency = AM_DEMODULATION_CUTOFF;
+    filterAMStage3.Q = 0.8f;
+    
+    amDCLevelRemovalCh1 = 0.231;
+    amDCLevelRemovalCh2 = 0.231;
+    
+    
+    rmsOfOriginalSignal = 0;
+    rmsOfNotchedSignal = 0;
+    amOffset = 0;
+    
+}
 
 
 - (void)loadSettingsFromUserDefaults
@@ -369,13 +908,319 @@ static BBAudioManager *bbAudioManager = nil;
     // Make sure we've got our defaults right, y'know? Important.
     NSDictionary *defaultsDict = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"SettingsDefaults" ofType:@"plist"]];
     [[NSUserDefaults standardUserDefaults] registerDefaults:defaultsDict];
-
-    
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
     _threshold = [[defaults valueForKey:@"threshold"] floatValue];
+    maxNumberOfSamplesToDisplay = [[defaults valueForKey:@"numSamplesMaxNew"] integerValue];
+    
+    //Setup initial values for statistics
+    _currentMax = [[defaults valueForKey:@"numVoltsMaxUpdate1"] floatValue]*0.8;
+    _currentMin = -[[defaults valueForKey:@"numVoltsMaxUpdate1"] floatValue]*0.8;
+    _currentMean = 0.0f;
+    _currentSTD = _currentMax/6.0f;
+
+}
+
+-(float) getDefaultTimeScale
+{
+    InputDevice * tempInputDevice = [self currentlyActiveInputDevice];
+    return tempInputDevice.config.defaultTimeScale;
+}
+
+-(float) getVoltageScaleForChannelIndex:(int)indexOfChannel
+{
+    if(playing)
+    {
+        //since we don't have config for the device that we used to record the file
+        //and file does not contain that information we can take info about voltage scale from current device
+        //the last thing that user set on the device
+        indexOfChannel = 0;
+    }
+    ChannelConfig* tempChannelConfig = [currentDeviceActiveInputChannels objectAtIndex:indexOfChannel];
+    return tempChannelConfig.defaultVoltageScale;
+}
+
+-(void) reactivateCurrentDevice
+{
+    [self stopAllInputOutput];
+    NSLog(@"Reactivate current device");
+    InputDevice * tempInputDevice = ((InputDevice*)[availableInputDevices objectAtIndex:[self indexOfCurrentlyActiveDevice]]);
+    InputDeviceConfig * devConf = tempInputDevice.config;
+
+    float tempSamplingRate = [devConf maxSampleRate];
+    int numOfActiveChannels = 0;
+    int numberOfAvailableChannels = 0;
+
+    for (int i =0;i<[devConf.channels count];i++)
+    {
+        if([((ChannelConfig*) devConf.channels[i]) currentlyActive])
+        {
+            numOfActiveChannels++;
+        }
+        numberOfAvailableChannels++;
+    }
+    
+    if(devConf.connectedExpansionBoard)
+    {
+        for (int i =0;i<[devConf.connectedExpansionBoard.channels count];i++)
+        {
+            if([((ChannelConfig*) devConf.connectedExpansionBoard.channels[i]) currentlyActive])
+            {
+                numOfActiveChannels++;
+            }
+            numberOfAvailableChannels++;
+        }
+    }
+    if(devConf.sampleRateIsFunctionOfNumberOfChannels)
+    {
+        tempSamplingRate = (int)(tempSamplingRate/numOfActiveChannels);
+    }
+
+    _sourceSamplingRate = tempSamplingRate;
+    _numberOfSourceChannels = numberOfAvailableChannels;
+
+    [self updateCurrentlyActiveChannels];
+    [self resetBuffers];
+
+    
+    
+    //[self activateInputDeviceAtIndex: [self indexOfCurrentlyActiveDevice]];
+}
+#pragma mark - Channels code
+
+//Note:
+// Active channels are channels shown on the screen
+// Available channel is any channel that can be activated
+// Available channel can be activate or inactive
+// Inactive channel is channel that is sent by the device but we are not showing it
+
+-(int) numberOfSourceChannels
+{
+    return _numberOfSourceChannels;
+}
+
+-(int) numberOfActiveChannels
+{
+    int activeNumberOfChannels = 0;
+    uint16_t mask = 1;
+    for (int i=0;i<16;i++)
+    {
+        if(activeChannels & mask)
+        {
+            activeNumberOfChannels++;
+        }
+        mask = mask<<1;
+    }
+    return activeNumberOfChannels;
+}
+
+-(NSArray * ) currentlyAvailableInputChannels
+{
+    return availableInputChannels;
+}
+
+-(void) updateAvailableInputChannels
+{
+    [availableInputChannels removeAllObjects];
+    for(int inputIndex=0;inputIndex<[availableInputDevices count];inputIndex++)
+    {
+            InputDevice* inputDeviceToActivate = (InputDevice*)[availableInputDevices objectAtIndex:inputIndex];
+            InputDeviceConfig* devConf = (InputDeviceConfig*)[inputDeviceToActivate config];
+            
+            for (int i =0;i<[devConf.channels count];i++)
+            {
+                [availableInputChannels addObject: devConf.channels[i]];
+            }
+
+            if(devConf.connectedExpansionBoard)
+            {
+                for (int i =0;i<[devConf.connectedExpansionBoard.channels count];i++)
+                {
+                    [availableInputChannels addObject: devConf.connectedExpansionBoard.channels[i]];
+                }
+            }
+    }
+}
 
 
+-(void) updateCurrentDeviceAvailableInputChannels
+{
+    [currentDeviceAvailableInputChannels removeAllObjects];
+    InputDevice * currInputDevice = [self currentlyActiveInputDevice];
+    InputDeviceConfig* devConf = (InputDeviceConfig*)[currInputDevice config];
+   
+    for (int i =0;i<[devConf.channels count];i++)
+    {
+        [currentDeviceAvailableInputChannels addObject: devConf.channels[i]];
+        
+    }
+
+    if(devConf.connectedExpansionBoard)
+    {
+        for (int i =0;i<[devConf.connectedExpansionBoard.channels count];i++)
+        {
+            [currentDeviceAvailableInputChannels addObject: devConf.connectedExpansionBoard.channels[i]];
+        }
+    }
+    
+}
+
+//
+// activeChannels stores info which channel is active in bits of 16bit word
+// 1- channel is active
+// 0 - channel is not active
+//
+-(void) updateCurrentlyActiveChannels
+{
+    activeChannels = 0;
+    uint16_t mask = 1;
+    [currentDeviceActiveInputChannels removeAllObjects];
+    InputDevice * currInputDevice = [self currentlyActiveInputDevice];
+    InputDeviceConfig* devConf = (InputDeviceConfig*)[currInputDevice config];
+    int colorArrayIndex = 0;
+    for (int i =0;i<[devConf.channels count];i++)
+    {
+        ChannelConfig * tempChannel = (ChannelConfig *) devConf.channels[i];
+        if(tempChannel.currentlyActive)
+        {
+            activeChannels = activeChannels | mask;
+            activeChannelColorIndex[colorArrayIndex] = tempChannel.colorIndex;
+            colorArrayIndex++;
+            [currentDeviceActiveInputChannels addObject:tempChannel];
+        }
+        mask = mask<<1;
+    }
+
+    if(devConf.connectedExpansionBoard)
+    {
+        for (int i =0;i<[devConf.connectedExpansionBoard.channels count];i++)
+        {
+            ChannelConfig * tempChannel = (ChannelConfig *) devConf.connectedExpansionBoard.channels[i];
+            if(tempChannel.currentlyActive)
+            {
+                activeChannels = activeChannels | mask;
+                activeChannelColorIndex[colorArrayIndex] = tempChannel.colorIndex;
+                colorArrayIndex++;
+                [currentDeviceActiveInputChannels addObject:tempChannel];
+            }
+            mask = mask<<1;
+        }
+    }
+}
+
+-(void) updateColorOfActiveChannels
+{
+    InputDevice * currInputDevice = [self currentlyActiveInputDevice];
+    InputDeviceConfig* devConf = (InputDeviceConfig*)[currInputDevice config];
+    int colorArrayIndex = 0;
+    for (int i =0;i<[devConf.channels count];i++)
+    {
+        ChannelConfig * tempChannel = (ChannelConfig *) devConf.channels[i];
+        if(tempChannel.currentlyActive)
+        {
+            activeChannelColorIndex[colorArrayIndex] = tempChannel.colorIndex;
+            colorArrayIndex++;
+        }
+    }
+
+    if(devConf.connectedExpansionBoard)
+    {
+        for (int i =0;i<[devConf.connectedExpansionBoard.channels count];i++)
+        {
+            ChannelConfig * tempChannel = (ChannelConfig *) devConf.connectedExpansionBoard.channels[i];
+            if(tempChannel.currentlyActive)
+            {
+                activeChannelColorIndex[colorArrayIndex] = tempChannel.colorIndex;
+                colorArrayIndex++;
+            }
+        }
+    }
+}
+
+-(int) getColorIndexForActiveChannelIndex:(int) indexOfChannel
+{
+    return activeChannelColorIndex[indexOfChannel];
+}
+
+-(BOOL) activateChannelWithConfig:(ChannelConfig *) channelConfigToActivate
+{
+    InputDevice * inputDeviceForChannel = [self findInputDeviceForChannel:channelConfigToActivate];
+    if(inputDeviceForChannel==nil)
+    {
+        return NO;
+    }
+    if(inputDeviceForChannel == [self currentlyActiveInputDevice])
+    {
+        channelConfigToActivate.currentlyActive = YES;
+        [self updateBufferOnReconfigurationOfChannelsOnActiveDevice];
+    }
+    else
+    {
+        //turn off current device and activate another device and its channel
+        [self activateFirstInstanceOfInputDeviceWithUniqueName:inputDeviceForChannel.config.uniqueName];
+        
+        InputDeviceConfig* devConf = (InputDeviceConfig*)[inputDeviceForChannel config];
+        for (int i =0;i<[devConf.channels count];i++)
+        {
+            ((ChannelConfig*) devConf.channels[i]).currentlyActive = NO;
+            ((ChannelConfig*) devConf.channels[i]).colorIndex = 0;
+        }
+        
+        if(devConf.connectedExpansionBoard)
+        {
+            for (int i =0;i<[devConf.connectedExpansionBoard.channels count];i++)
+            {
+                ((ChannelConfig*) devConf.connectedExpansionBoard.channels[i]).currentlyActive = NO;
+                ((ChannelConfig*) devConf.connectedExpansionBoard.channels[i]).colorIndex = 0;
+            }
+        }
+        //deactivate all the channels and activate only selected
+        channelConfigToActivate.currentlyActive = YES;
+        [self updateBufferOnReconfigurationOfChannelsOnActiveDevice];
+    }
+    return YES;
+}
+
+-(BOOL) deactivateChannelWithConfig:(ChannelConfig *) channelConfigToDeactivate
+{
+    InputDevice * inputDeviceForChannel = [self findInputDeviceForChannel:channelConfigToDeactivate];
+    if(inputDeviceForChannel==nil)
+    {
+        return NO;
+    }
+    
+    InputDeviceConfig* devConf = (InputDeviceConfig*)[inputDeviceForChannel config];
+    int numOfActiveChannels = 0;
+    for (int i =0;i<[devConf.channels count];i++)
+    {
+        if(((ChannelConfig*) devConf.channels[i]).currentlyActive)
+        {
+            numOfActiveChannels++;
+        }
+    }
+    
+    if(devConf.connectedExpansionBoard)
+    {
+        for (int i =0;i<[devConf.connectedExpansionBoard.channels count];i++)
+        {
+            if(((ChannelConfig*) devConf.connectedExpansionBoard.channels[i]).currentlyActive)
+            {
+                numOfActiveChannels++;
+            }
+        }
+    }
+    
+    if(numOfActiveChannels<=1)
+    {
+        [self deactivateInputDevice:inputDeviceForChannel];
+        return NO;
+    }
+    else
+    {
+        channelConfigToDeactivate.currentlyActive = NO;
+        [self updateBufferOnReconfigurationOfChannelsOnActiveDevice];
+    }
+    return YES;
 }
 
 #pragma mark - Breakdown
@@ -389,79 +1234,93 @@ static BBAudioManager *bbAudioManager = nil;
     [defaults synchronize];
 }
 
-#pragma mark - Bluetooth
 
--(void) testBluetoothConnection
-{
-   // [[BBBTManager btManager] startBluetooth];
-}
-
--(void) switchToBluetoothWithChannels:(int) channelConfiguration andSampleRate:(int) inSampleRate
-{
-  /*  btOn = YES;
-    [[BBBTManager btManager] configBluetoothWithChannelConfiguration:channelConfiguration andSampleRate:inSampleRate];
-    _sourceSamplingRate=inSampleRate;
-    _sourceNumberOfChannels=[[BBBTManager btManager] numberOfChannels];
-    
-    [self stopAllInputOutput];
-    [self resetBuffers];
-    [self makeInputOutput];*/
-}
-
--(void) closeBluetooth
-{
-    /*[self stopAllInputOutput];
-    [[BBBTManager btManager] stopCurrentBluetoothConnection];
-    _sourceSamplingRate =  audioManager.samplingRate;
-    _sourceNumberOfChannels = audioManager.numInputChannels;
-    btOn = NO;
-    [self resetBuffers];
-    [self makeInputOutput];
-    [[NSNotificationCenter defaultCenter] postNotificationName:RESETUP_SCREEN_NOTIFICATION object:self];*/
-}
-
--(int) numberOfFramesBuffered
-{
-    return 0;//[[BBBTManager btManager] numberOfFramesBuffered];
-}
 
 #pragma mark - External accessory MFi
 
--(void) switchToExternalDeviceWithChannels:(int)numberOfChannels andSampleRate:(int) inSampleRate
+-(void) addMfiDeviceWithModelNumber:(NSString *) modelNumber andSerial:(NSString *) serialNum;
 {
-    [self stopAllInputOutput];
-    externalAccessoryOn = true;
-    NSLog(@"External accessories ON");
-    _sourceSamplingRate=inSampleRate;
-    _sourceNumberOfChannels= numberOfChannels;
+    NSLog(@"Received info about new accesory");
+    //first we have to find if we have model number in our config file
+    InputDeviceConfig* newConfig = [boardsConfigManager getDeviceConfigForUniqueName:modelNumber];
+    if(newConfig==nil)
+    {
+        //show notification to user that we don't support this
+        [[NSNotificationCenter defaultCenter] postNotificationName:CAN_NOT_FIND_CONFIG_FOR_DEVICE object:modelNumber];
+        return;
+    }
     
-    
-    [self resetBuffers];
-    [self makeInputOutput];
-    [[NSNotificationCenter defaultCenter] postNotificationName:RESETUP_SCREEN_NOTIFICATION object:self];
-}
--(void) closeExternalDevice
-{
-    [self stopAllInputOutput];
-    externalAccessoryOn = false;
-    NSLog(@"External accessories OFF");
-    _sourceSamplingRate =  audioManager.samplingRate;
-    _sourceNumberOfChannels = audioManager.numInputChannels;
-    [self resetBuffers];
-    [self makeInputOutput];
+    DemoProtocol * mfiAccessory = [MyAppDelegate getEaManager];
+    newConfig.currentSampleRate = newConfig.maxSampleRate;
+    newConfig.currentNumOfChannels = [newConfig.channels count];
+   
+    [mfiAccessory setSampleRate:newConfig.currentSampleRate numberOfChannels:newConfig.currentNumOfChannels andResolution:newConfig.sampleResolution];
+    //add device to available devices and start emediately
+    InputDevice * newInputDevice = [[InputDevice alloc] initWithConfig:newConfig];
+    newInputDevice.uniqueInstanceID = serialNum;
+    [self addNewInputDevice:newInputDevice];
+    [self activateFirstInstanceOfInputDeviceWithUniqueName:modelNumber];
     [[NSNotificationCenter defaultCenter] postNotificationName:RESETUP_SCREEN_NOTIFICATION object:self];
 }
 
--(void) addNewData:(float*)data frames:(int) numberOfFrames channels:(int) numberOfChannels
+//TODO:implement this function for expansion boards
+//
+// Called when eaManager request restart of device (shouldRestartDevice)
+//
+-(void) updateMfiDeviceParameters
 {
-    if(ringBuffer == NULL)
+    NSLog(@"updateMfiDeviceParameters");
+    //check which expansion board is currently active
+    int currentExpansionBoard = 0;
+    InputDevice* inputDev = [self currentlyActiveInputDevice];
+    if(inputDev)
     {
-        NSLog(@"/n/n ERROR in Input block %p", self);
+        InputDeviceConfig * configForDevice = inputDev.config;
+        if(configForDevice.connectedExpansionBoard)
+        {
+            ExpansionBoardConfig* expConfig = configForDevice.connectedExpansionBoard;
+            currentExpansionBoard = [expConfig.boardType intValue];
+        }
+        //if expansion board changed, add new one
+        if(eaManager.getCurrentExpansionBoard !=  currentExpansionBoard)
+        {
+            NSMutableArray* expBoards = configForDevice.expansionBoards;
+            
+            for(int i=0;i<[expBoards count];i++)
+            {
+                ExpansionBoardConfig * expBoardConf = (ExpansionBoardConfig*)[expBoards objectAtIndex:i];
+                int totalNumberOfChannels = [configForDevice.channels count] + [expBoardConf.channels count];
+                int sampleRate = expBoardConf.maxSampleRate;
+                int resolutionOfData = configForDevice.sampleResolution;
+                if(eaManager.getCurrentExpansionBoard == [expBoardConf.boardType intValue])
+                {
+                    expBoardConf.currentlyActive = YES;
+                    inputDev.config.connectedExpansionBoard = expBoardConf;
+                    //dispatch_async(dispatch_get_main_queue(), ^{
+                            [self updateAvailableInputChannels];
+                            [self activateFirstInstanceOfInputDeviceWithUniqueName:configForDevice.uniqueName];
+                            [eaManager setSampleRate:sampleRate numberOfChannels:totalNumberOfChannels andResolution:resolutionOfData];
+                    //});
+                }
+            }
+        }
+        
+    }
+    else
+    {
         return;
     }
-    [self additionalProcessingOfInputData:data forNumOfFrames:numberOfFrames andNumChannels:numberOfChannels];
-    ringBuffer->AddNewInterleavedFloatData(data, numberOfFrames, numberOfChannels);
 }
+
+-(void) removeMfiDeviceWithModelNumber:(NSString *) modelNumber andSerial:(NSString *) serialNum;
+{
+   // [self stopAllInputOutput];
+    
+    [self removeInputDevice:[self getInputDeviceWithUniqueName:modelNumber]];
+    [[NSNotificationCenter defaultCenter] postNotificationName:RESETUP_SCREEN_NOTIFICATION object:self];
+    
+}
+
 
 - (void) addEvent:(int) eventType withOffset:(int) inOffset
 {
@@ -482,9 +1341,6 @@ static BBAudioManager *bbAudioManager = nil;
 -(void) stopAllInputOutput
 {
     NSLog(@"stopAllInputOutput %p\n", audioManager);
-    //[[BBBTManager btManager] setInputBlock:nil];
-    //audioManager.inputBlock = nil;
-    
     audioManager.outputBlock = nil;
     [audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
     }];
@@ -493,95 +1349,45 @@ static BBAudioManager *bbAudioManager = nil;
     [eaManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
         
     }];
-   // audioManager.inputBlock = nil;
 }
 
--(void) getChannelsConfig
-{
-    if(externalAccessoryOn)
-    {
-     /*   _sourceSamplingRate =  [[BBBTManager btManager] samplingRate];
-        _sourceNumberOfChannels = [[BBBTManager btManager] numberOfChannels];*/
-    }
-    else
-    {
-        _sourceSamplingRate =  audioManager.samplingRate;
-         NSLog(@"Get source channel config sampling rate: %f", _sourceSamplingRate);
-        _sourceNumberOfChannels = audioManager.numInputChannels;
-        NSLog(@"Get source number of channels: %d", _sourceNumberOfChannels);
-    }
-}
 
 -(void) resetupAudioInputs
 {
     NSLog(@"resetupAudioInputs - BBAudioManager\n");
     if(!playing && audioManager)
     {
-        [self stopAllInputOutput];
-        _sourceSamplingRate =  audioManager.samplingRate;
-        NSLog(@"resetup audio inputs sampling rate: %f", _sourceSamplingRate);
-        _sourceNumberOfChannels = audioManager.numInputChannels;
-        btOn = NO;
-        [self resetBuffers];
-        [self makeInputOutput];
-        [[NSNotificationCenter defaultCenter] postNotificationName:RESETUP_SCREEN_NOTIFICATION object:self];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            //dispatch_async(serialQueue, ^{
+                [self addLocalInputDeviceToInputDevices];
+                [self activateFirstInstanceOfInputDeviceWithUniqueName:LOCAL_AUDIO_DEVICE_UNIQUE_NAME];
+                [[NSNotificationCenter defaultCenter] postNotificationName:RESETUP_SCREEN_NOTIFICATION object:self];
+            //});
+        });
+        
     }
 }
 
 -(void) resetBuffers
 {
     NSLog(@"resetBuffers\n");
-    
+
+    if(rtEvents)
+    {
+        [rtEvents release];
+    }
     rtEvents = [[NSMutableArray alloc] initWithCapacity:0];
     
     delete ringBuffer;
     free(tempCalculationBuffer);
     //create new buffers
     
-    ringBuffer = new RingBuffer(maxNumberOfSamplesToDisplay, _sourceNumberOfChannels);
-    tempCalculationBuffer = (float *)calloc(maxNumberOfSamplesToDisplay*_sourceNumberOfChannels, sizeof(float));
-    [self filterParametersChanged];
+    ringBuffer = new RingBuffer(maxNumberOfSamplesToDisplay, [self numberOfActiveChannels]);
+    tempCalculationBuffer = (float *)calloc(maxNumberOfSamplesToDisplay*[self numberOfActiveChannels], sizeof(float));
     if(rtSpikeSorting)
     {
         [[BBAnalysisManager bbAnalysisManager] stopRTSpikeSorting];
         [[BBAnalysisManager bbAnalysisManager] initRTSpikeSorting:_sourceSamplingRate];
-    }
-}
-
--(void) makeInputOutput
-{
-     NSLog(@"makeInputOutput %p\n",audioManager);
-    _preciseVirtualTimeNumOfFrames = 0;
-    
-    if(externalAccessoryOn)
-    {
-        // Replace the input block with the old input block, where we just save an in-memory copy of the audio.
-        [eaManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
-         {
-             if(ringBuffer == NULL)
-             {
-                 NSLog(@"/n/n ERROR in Input block %p", self);
-                 return;
-             }
-             [self additionalProcessingOfInputData:data forNumOfFrames:numFrames andNumChannels:numChannels];
-             ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
-             _preciseVirtualTimeNumOfFrames += numFrames;
-         }];
-    }
-    else
-    {
-            // Replace the input block with the old input block, where we just save an in-memory copy of the audio.
-            [audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
-            {
-                if(ringBuffer == NULL)
-                {
-                    NSLog(@"/n/n ERROR in Input block %p", self);
-                    return;
-                }
-                [self additionalProcessingOfInputData:data forNumOfFrames:numFrames andNumChannels:numChannels];
-                ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
-                _preciseVirtualTimeNumOfFrames += numFrames;
-            }];
     }
 }
 
@@ -591,15 +1397,18 @@ static BBAudioManager *bbAudioManager = nil;
 //
 -(void) additionalProcessingOfInputData:(float *) data forNumOfFrames:(UInt32) numFrames andNumChannels:(UInt32) numChannels
 {
-    [self amDemodulationOfData:data numFrames:numFrames numChannels:numChannels];
+    /*[self amDemodulationOfData:data numFrames:numFrames numChannels:numChannels];
     
-    if(self.amDemodulationIsON)
+    if(self.amDemodulationIsON)//TODO:WHat is this? Just filtering in the same way as normal channels
     {
         [self filterData:data numFrames:numFrames numChannels:numChannels];
     }
+    */
+    [self filterData:data numFrames:numFrames numChannels:numChannels];
     
     if (recording)
     {
+        //TODO: select just active channels
         [fileWriter writeNewAudio:data numFrames:numFrames numChannels:numChannels];
     }
     
@@ -626,9 +1435,149 @@ static BBAudioManager *bbAudioManager = nil;
     {
         [[BBAnalysisManager bbAnalysisManager] findSpikesInRTForData:data numberOfFrames:numFrames numberOfChannel:numChannels selectedChannel:_selectedChannel];
     }
+    
+    
 }
 
 
+-(void) checkIfWeHaveAMModulatedFirstChannelWithData:(float *)inData numFrames:(UInt32) inNumFrames numChannels:(UInt32) inNumChannels
+{
+    //calculate RMS for original signal
+    float zero = 0.0f;
+    //get first channel
+    vDSP_vsadd(inData,
+               inNumChannels,
+               &zero,
+               tempResamplingBuffer,
+               1,
+               inNumFrames);
+    
+    //low pass at 6000Hz
+    [amDetectionLPFilter filterData:tempResamplingBuffer numFrames:inNumFrames numChannels:1];
+    
+    //calc. RMS before demodulation
+    float rms;
+    vDSP_rmsqv(tempResamplingBuffer,1,&rms,inNumFrames);
+    rmsOfOriginalSignal = rmsOfOriginalSignal*0.9+rms*0.1;
+    
+    //Notch out 5000Hz carier
+    [amDetectionNotchFilter filterData:tempResamplingBuffer numFrames:inNumFrames numChannels:1];
+    
+    //calc. RMS after Notch filter
+    vDSP_rmsqv(tempResamplingBuffer,1,&rms,inNumFrames);
+    rmsOfNotchedSignal = rmsOfNotchedSignal*0.9 + rms*0.1;
+    
+    //NSLog(@"a/b: %f",rmsOfOriginalSignal/rmsOfNotchedSignal);
+    //If RMS of the signal without carier is at least 3 times smaller than
+    //with carrier than we have carrier present in original signal
+    if(rmsOfNotchedSignal*3<rmsOfOriginalSignal)
+    {
+       
+        if(!self.amDemodulationIsON)
+        {
+            shouldTurnONAMModulation = true;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                //dispatch_async(serialQueue, ^{
+                    NSLog(@"Start AM modulation!!!!!");
+                    [self turnONAMModulation];
+                //});
+            });
+        }
+    }
+    else
+    {
+        shouldTurnONAMModulation = false;
+        if(self.amDemodulationIsON)
+        {
+            //turn OFF AM modulation
+            dispatch_async(dispatch_get_main_queue(), ^{
+                //dispatch_async(serialQueue, ^{
+                    NSLog(@"Stop AM Modulation!!!!!");
+                    self.amDemodulationIsON = false;
+                    InputDevice * amDevice = [self getInputDeviceWithUniqueName:UNIQUE_NAME_OF_AM_MODULATED_INPUT];
+                    InputDevice * micDevice = [self getInputDeviceWithUniqueName:LOCAL_AUDIO_DEVICE_UNIQUE_NAME];
+                    if(amDevice)
+                    {
+                        if(micDevice==nil)
+                        {
+                            [self addLocalInputDeviceToInputDevices];
+                            [self activateFirstInstanceOfInputDeviceWithUniqueName:LOCAL_AUDIO_DEVICE_UNIQUE_NAME];
+                        }
+                        [self removeInputDevice:amDevice];
+                    }
+                    else
+                    {
+                        if(micDevice)
+                        {
+                            [self activateFirstInstanceOfInputDeviceWithUniqueName:LOCAL_AUDIO_DEVICE_UNIQUE_NAME];
+                        }
+                        else
+                        {
+                            [self addLocalInputDeviceToInputDevices];
+                            [self activateFirstInstanceOfInputDeviceWithUniqueName:LOCAL_AUDIO_DEVICE_UNIQUE_NAME];
+                        }
+                    }
+                    
+                    
+                //});
+            });
+        }
+    }
+}
+
+
+-(void) turnONAMModulation
+{
+    shouldTurnONAMModulation = false;
+    //turn ON AM modulation
+    self.amDemodulationIsON = true;
+    
+    InputDeviceConfig * newDeviceConfig = [boardsConfigManager getDeviceConfigForUniqueName:UNIQUE_NAME_OF_AM_MODULATED_INPUT];
+    newDeviceConfig.maxSampleRate = [self sourceSamplingRate];
+    newDeviceConfig.currentSampleRate = [self sourceSamplingRate];
+    newDeviceConfig.currentNumOfChannels = 1;
+    newDeviceConfig.maxNumberOfChannels = 1;
+    
+    InputDevice * newInputDevice = [[InputDevice alloc] initWithConfig:newDeviceConfig];
+    newInputDevice.uniqueInstanceID = UNIQUE_INSTANCE_ID_OF_AM_MODULATED_SIGNAL;
+    //add AM modulated input to available input devices
+    
+    InputDevice * inputDeviceThatWeFound = nil;
+    for(int i=0;i<[availableInputDevices count];i++)
+    {
+        InputDevice * tempInputDevice  = [availableInputDevices objectAtIndex:i];
+        
+        if([tempInputDevice.config.uniqueName isEqualToString:LOCAL_AUDIO_DEVICE_UNIQUE_NAME])
+        {
+            inputDeviceThatWeFound = tempInputDevice;
+            [availableInputDevices removeObject:tempInputDevice];
+        }
+    }
+    
+    
+    [availableInputDevices addObject:newInputDevice];
+    [self updateAvailableInputChannels];
+    [self activateFirstInstanceOfInputDeviceWithUniqueName:UNIQUE_NAME_OF_AM_MODULATED_INPUT];
+}
+
+
+-(void) demodulateAMSignalAndExtractFirstChannelFromData:(float *) newData numberOfFrames:(UInt32) thisNumFrames numChannels:(UInt32) thisNumChannels
+{
+    vDSP_vabs(newData, 1, newData, 1, thisNumChannels*thisNumFrames);
+
+    float offset = 0;
+    vDSP_vsadd(newData,
+               1,
+               &offset,
+               newData,
+               1,
+               thisNumFrames);
+    //this will filter all channels together?! at 500Hz cutoff
+    [filterAMStage1 filterData:newData numFrames:thisNumFrames numChannels:thisNumChannels];
+    [filterAMStage2 filterData:newData numFrames:thisNumFrames numChannels:thisNumChannels];
+    [filterAMStage3 filterData:newData numFrames:thisNumFrames numChannels:thisNumChannels];
+}
+/*
 -(void) amDemodulationOfData:(float *)newData numFrames:(UInt32) thisNumFrames numChannels:(UInt32) thisNumChannels
 {
     if(thisNumChannels<3)
@@ -642,24 +1591,31 @@ static BBAudioManager *bbAudioManager = nil;
                    tempResamplingBuffer,
                    1,
                    thisNumFrames);
+        
+        //low pass at 6000Hz
         [amDetectionLPFilter filterData:tempResamplingBuffer numFrames:thisNumFrames numChannels:1];
         
+        //calc. RMS before demodulation
         float rms;
         vDSP_rmsqv(tempResamplingBuffer,1,&rms,thisNumFrames);
         rmsOfOriginalSignal = rmsOfOriginalSignal*0.9+rms*0.1;
         
+        //Notch out 5000Hz carier
+        [amDetectionNotchFilter filterData:tempResamplingBuffer numFrames:thisNumFrames numChannels:1];
         
-       [amDetectionNotchFilter filterData:tempResamplingBuffer numFrames:thisNumFrames numChannels:1];
-        //calculate RMS after Notch filter
-       vDSP_rmsqv(tempResamplingBuffer,1,&rms,thisNumFrames);
-       rmsOfNotchedSignal = rmsOfNotchedSignal*0.9 + rms*0.1;
+        //calc. RMS after Notch filter
+        vDSP_rmsqv(tempResamplingBuffer,1,&rms,thisNumFrames);
+        rmsOfNotchedSignal = rmsOfNotchedSignal*0.9 + rms*0.1;
         
         //NSLog(@"a/b: %f",rmsOfOriginalSignal/rmsOfNotchedSignal);
+        //If RMS of the signal without carier is at least 3 times smaller than
+        //with carrier than we have carrier present in original signal
         if(rmsOfNotchedSignal*3<rmsOfOriginalSignal)
         {
             self.amDemodulationIsON = true;
             vDSP_vabs(newData, 1, newData, 1, thisNumChannels*thisNumFrames);
 
+            //this will filter all channels together?! at 500Hz cutoff
             [filterAMStage1 filterData:newData numFrames:thisNumFrames numChannels:thisNumChannels];
             [filterAMStage2 filterData:newData numFrames:thisNumFrames numChannels:thisNumChannels];
             [filterAMStage3 filterData:newData numFrames:thisNumFrames numChannels:thisNumChannels];
@@ -717,94 +1673,101 @@ static BBAudioManager *bbAudioManager = nil;
         }
     }
 }
+*/
+-(BOOL) isNotchON
+{
+    return notch50HzIsOn || notch60HzIsOn;
+}
+-(BOOL) is60HzNotchON
+{
+    return notch60HzIsOn;
+}
 
+-(BOOL) is50HzNotchON
+{
+    return notch50HzIsOn;
+}
+
+-(void) turnON60HzNotch
+{
+    notch50HzIsOn = NO;
+    notch60HzIsOn = YES;
+    notchFilters = [[NSMutableArray alloc] initWithCapacity:0];
+    for(int i=0;i<[self numberOfActiveChannels];i++)
+    {
+        NVNotchFilter * NotchFilter = [[NVNotchFilter alloc] initWithSamplingRate:_sourceSamplingRate];
+        NotchFilter.centerFrequency = 60.0;
+        NotchFilter.q = 1.0  ;
+        [notchFilters addObject:NotchFilter];
+    }
+}
+
+-(void) turnON50HzNotch
+{
+    notch50HzIsOn = YES;
+    notch60HzIsOn = NO;
+    notchFilters = [[NSMutableArray alloc] initWithCapacity:0];
+    for(int i=0;i<[self numberOfActiveChannels];i++)
+    {
+        NVNotchFilter * NotchFilter = [[NVNotchFilter alloc] initWithSamplingRate:_sourceSamplingRate];
+        NotchFilter.centerFrequency = 50.0;
+        NotchFilter.q = 1.0  ;
+        [notchFilters addObject:NotchFilter];
+    }
+}
+
+-(void) turnOFFNotchFilters
+{
+    notch50HzIsOn = NO;
+    notch60HzIsOn = NO;
+    notchFilters = [[NSMutableArray alloc] initWithCapacity:0];
+}
 
 -(void) filterData:(float *)newData numFrames:(UInt32)thisNumFrames numChannels:(UInt32)thisNumChannels
 {
-    
-    if(LPFilter || HPFilter)
+    ChannelConfig * tempChannelConfig;
+    if([lpFilters count]>0 || [hpFilters count]>0 || [notchFilters count]>0)
     {
-            int i;
-            if(thisNumChannels>2)
+            for(int i=0;i<thisNumChannels;i++)
             {
-                for(i=0;i<_sourceNumberOfChannels;i++)
+                
+                tempChannelConfig = (ChannelConfig *)[currentDeviceActiveInputChannels objectAtIndex:i];
+                if(tempChannelConfig.filtered)
                 {
-                    float zero = 0.0f;
-                    //get selected channel
-                    vDSP_vsadd((float *)&newData[i],
-                               thisNumChannels,
-                               &zero,
-                               tempResamplingBuffer,
-                               1,
-                               thisNumFrames);
-                    //
-                    if(HPFilter)
-                    {
-                        [HPFilter filterData:tempResamplingBuffer numFrames:thisNumFrames numChannels:1];
-                    }
-                    if(LPFilter)
-                    {
-                        [LPFilter filterData:tempResamplingBuffer numFrames:thisNumFrames numChannels:1];
-                    }
-                    if(notchIsOn)
-                    {
-                        [NotchFilter filterData:tempResamplingBuffer numFrames:thisNumFrames numChannels:1];
-                    }
-                    
-                    vDSP_vsadd(tempResamplingBuffer,
-                               1,
-                               &zero,
-                               (float *)&newData[i],
-                               thisNumChannels,
-                               thisNumFrames);
-                }
-            }
-            else
-            {
-                if(HPFilter)
-                {
-                    [HPFilter filterData:newData numFrames:thisNumFrames numChannels:thisNumChannels];
-                }
-                if(LPFilter)
-                {
-                    [LPFilter filterData:newData numFrames:thisNumFrames numChannels:thisNumChannels];
-                }
-                if(notchIsOn)
-                {
-                    [NotchFilter filterData:newData numFrames:thisNumFrames numChannels:thisNumChannels];
+                        float zero = 0.0f;
+                        //get selected channel
+                        vDSP_vsadd((float *)&newData[i],
+                                   thisNumChannels,
+                                   &zero,
+                                   tempResamplingBuffer,
+                                   1,
+                                   thisNumFrames);
+                        //
+                        if([hpFilters count]>0)
+                        {
+                           [[hpFilters objectAtIndex:i] filterData:tempResamplingBuffer numFrames:thisNumFrames numChannels:1];
+                        }
+                        if([lpFilters count]>0)
+                        {
+                            [[lpFilters objectAtIndex:i] filterData:tempResamplingBuffer numFrames:thisNumFrames numChannels:1];
+                        }
+                        if([self isNotchON])
+                        {
+                            [[notchFilters objectAtIndex:i] filterData:tempResamplingBuffer numFrames:thisNumFrames numChannels:1];
+                        }
+                        
+                        vDSP_vsadd(tempResamplingBuffer,
+                                   1,
+                                   &zero,
+                                   (float *)&newData[i],
+                                   thisNumChannels,
+                                   thisNumFrames);
+                
                 }
             }
     }
 }
 
-
--(void) setFilterSettings:(int) newFilterSettings
-{
-    switch (newFilterSettings) {
-        case FILTER_SETTINGS_RAW:
-            [self setFilterLPCutoff:FILTER_LP_OFF hpCutoff:FILTER_HP_OFF];
-            break;
-        case FILTER_SETTINGS_EKG:
-            [self setFilterLPCutoff:50 hpCutoff:1];
-           // [self overrideAudioOutput];
-            break;
-        case FILTER_SETTINGS_EEG:
-            [self setFilterLPCutoff:100 hpCutoff:1];
-            break;
-        case FILTER_SETTINGS_PLANT:
-            [self setFilterLPCutoff:5 hpCutoff:FILTER_HP_OFF];
-            break;
-        case FILTER_SETTINGS_CUSTOM:
-            if(currentFilterSettings != FILTER_SETTINGS_CUSTOM)
-            {
-                [self setFilterLPCutoff:FILTER_LP_OFF hpCutoff:FILTER_HP_OFF];
-            }
-            break;
-        default:
-            break;
-    }
-    currentFilterSettings = newFilterSettings;
-}
 
 -(void) overrideAudioOutput
 {
@@ -825,6 +1788,22 @@ static BBAudioManager *bbAudioManager = nil;
 -(int) getLPFilterCutoff {return lpFilterCutoff;}
 -(int) getHPFilterCutoff {return hpFilterCutoff;}
 
+-(void) updateFilters
+{
+    [self setFilterLPCutoff:[self getLPFilterCutoff] hpCutoff:[self getHPFilterCutoff]];
+    if([self is50HzNotchON])
+    {
+        [self turnON50HzNotch];
+    }
+    else if([self is60HzNotchON])
+    {
+        [self turnON60HzNotch];
+    }
+    else
+    {
+        [self turnOFFNotchFilters];
+    }
+}
 
 -(void) setFilterLPCutoff:(int) newLPCuttof hpCutoff:(int)newHPCutoff
 {
@@ -832,29 +1811,48 @@ static BBAudioManager *bbAudioManager = nil;
     lpFilterCutoff = newLPCuttof;
     hpFilterCutoff = newHPCutoff;
 
+    if(hpFilters)
+    {
+        [hpFilters release];
+    }
+    if(lpFilters)
+    {
+        [lpFilters release];
+    }
+    hpFilters = [[NSMutableArray alloc] initWithCapacity:0];
+    lpFilters = [[NSMutableArray alloc] initWithCapacity:0];
     
     if(lpFilterCutoff != FILTER_LP_OFF)
     {
-        LPFilter= [[NVLowpassFilter alloc] initWithSamplingRate:_sourceSamplingRate];
-        LPFilter.cornerFrequency = lpFilterCutoff;
-        LPFilter.Q = 0.4f;
+        for(int i=0;i<[self numberOfActiveChannels];i++)
+        {
+            NVLowpassFilter * LPFilter= [[NVLowpassFilter alloc] initWithSamplingRate:_sourceSamplingRate];
+            LPFilter.cornerFrequency = lpFilterCutoff;
+            LPFilter.Q = 0.4f;
+            [lpFilters addObject:LPFilter];
+            [LPFilter release];
+        }
     }
     else
     {
-        LPFilter = nil;
+        lpFilters = [[NSMutableArray alloc] initWithCapacity:0];
     }
     
     if(hpFilterCutoff != FILTER_HP_OFF)
     {
         float tempFilterValue = newHPCutoff;
-
-        HPFilter = [[NVHighpassFilter alloc] initWithSamplingRate:_sourceSamplingRate];
-        HPFilter.cornerFrequency = tempFilterValue;
-        HPFilter.Q = 0.40f;
+        for(int i=0;i<[self numberOfActiveChannels];i++)
+        {
+            NVHighpassFilter* HPFilter = [[NVHighpassFilter alloc] initWithSamplingRate:_sourceSamplingRate];
+            HPFilter.cornerFrequency = tempFilterValue;
+            HPFilter.Q = 0.40f;
+            [hpFilters addObject:HPFilter];
+            [HPFilter release];
+        }
     }
     else
     {
-        HPFilter = nil;
+        hpFilters = [[NSMutableArray alloc] initWithCapacity:0];
     }
 
 }
@@ -916,30 +1914,9 @@ static BBAudioManager *bbAudioManager = nil;
     {
         [self stopFFT];
     }
-}
-
-
-#pragma mark - Input Methods
-- (void)startMonitoring
-{
-    NSLog(@"Audio manager startMonitoring\n");
-    audioManager=[Novocaine audioManager];
     
-    [self quitAllFunctions];
-    float tempSamplingRate = _sourceSamplingRate;
-    int tempNumberOfChannels = _sourceNumberOfChannels;
-    [self getChannelsConfig];
-    if(tempSamplingRate != _sourceSamplingRate  || tempNumberOfChannels != _sourceNumberOfChannels)
-    {
-        [self resetBuffers];
-    }
-    else
-    {
-        rtEvents = [[NSMutableArray alloc] initWithCapacity:0];
-        ringBuffer->Clear();
-    }
-    [self makeInputOutput];
 }
+
 
 
 #pragma mark - Thresholding
@@ -947,21 +1924,18 @@ static BBAudioManager *bbAudioManager = nil;
 - (void)startThresholding:(UInt32)newNumPointsToSavePerThreshold
 {
     [self quitAllFunctions];
-    [self getChannelsConfig];
-    [self makeInputOutput];
+    [self startAquiringInputs:[self currentlyActiveInputDevice]];
     numPointsToSavePerThreshold = newNumPointsToSavePerThreshold;
 
     if (dspThresholder) {
         NSLog(@"DSP already made");
         dspThresholder->SetRingBuffer(ringBuffer);
-        dspThresholder->SetNumberOfChannels(_sourceNumberOfChannels);
-        
+        dspThresholder->SetNumberOfChannels([self numberOfActiveChannels]);
     }
     else
     {
         NSLog(@"DSP not made");
-        dspThresholder = new DSPThreshold(ringBuffer, numPointsToSavePerThreshold, 50,_sourceNumberOfChannels);
-       
+        dspThresholder = new DSPThreshold(ringBuffer, numPointsToSavePerThreshold, 50,[self numberOfActiveChannels]);
     }
     dspThresholder->SetThreshold(_threshold);
     
@@ -1044,11 +2018,11 @@ static BBAudioManager *bbAudioManager = nil;
         fileWriter = [[BBAudioFileWriter alloc]
                       initWithAudioFileURL:[aFile fileURL]
                       samplingRate:_sourceSamplingRate
-                      numChannels:_sourceNumberOfChannels];
+                      numChannels:[self numberOfActiveChannels]];
         
         // Replace the audio input function
         [self resetVirtualTimeAndEvents];
-        [self makeInputOutput];
+        [self startAquiringInputs:[self currentlyActiveInputDevice]];
         recording = true;
         
     }
@@ -1149,7 +2123,7 @@ static BBAudioManager *bbAudioManager = nil;
     
     //get the data from file into clean ring buffer
    // dispatch_sync(dispatch_get_main_queue(), ^{
-        dspAnalizer->CalculateDynamicFFTDuringSeek(fileReader, targetFrame-startFrame, startFrame, _sourceNumberOfChannels, _selectedChannel);
+        dspAnalizer->CalculateDynamicFFTDuringSeek(fileReader, targetFrame-startFrame, startFrame, [self numberOfActiveChannels], _selectedChannel);
 
     //});
     
@@ -1179,15 +2153,23 @@ static BBAudioManager *bbAudioManager = nil;
     if (avPlayerError)
     {
         NSLog(@"Error opening file: %@", [avPlayerError description]);
-        _sourceNumberOfChannels =1;
+        _numberOfSourceChannels =1;
+         activeChannels = 1;
         _sourceSamplingRate = 44100.0f;
          NSLog(@"start playing 1 inputs sampling rate: %f", _sourceSamplingRate);
     }
     else
     {
-        _sourceNumberOfChannels = [avPlayer numberOfChannels];
+        _numberOfSourceChannels = [avPlayer numberOfChannels];
+        uint16_t mask = 1;
+        activeChannels = 0;
+        for(int i =0;i<_numberOfSourceChannels;i++)
+        {
+            activeChannels = activeChannels | mask;
+            mask = mask<<1;
+        }
         _sourceSamplingRate = [[[avPlayer settings] objectForKey:AVSampleRateKey] floatValue];
-        NSLog(@"Source file num. of channels %d, sampling rate %f", _sourceNumberOfChannels, _sourceSamplingRate);
+        NSLog(@"Source file num. of channels %d, sampling rate %f", [self numberOfSourceChannels], _sourceSamplingRate);
     }
     [avPlayer release];
     avPlayer = nil;
@@ -1204,7 +2186,7 @@ static BBAudioManager *bbAudioManager = nil;
     fileReader = [[BBAudioFileReader alloc]
                   initWithAudioFileURL:[_file fileURL]
                   samplingRate:_sourceSamplingRate
-                  numChannels:_sourceNumberOfChannels];
+                  numChannels:[self numberOfSourceChannels]];
     
     differentFreqInOut = _sourceSamplingRate != audioManager.samplingRate;
     
@@ -1243,11 +2225,11 @@ static BBAudioManager *bbAudioManager = nil;
                     ringBuffer->SeekWriteHeadPosition(0);
                     ringBuffer->SeekReadHeadPosition(0);
                     //NSLog(@"Before raw reading: begining of reading: %f and current file position: %f", ((float)startFrame)/_sourceSamplingRate, fileReader.currentTime);
-                    [fileReader retrieveFreshAudio:tempCalculationBuffer numFrames:(UInt32)(targetFrame-startFrame) numChannels:_sourceNumberOfChannels seek:(UInt32)startFrame];
+                    [fileReader retrieveFreshAudio:tempCalculationBuffer numFrames:(UInt32)(targetFrame-startFrame) numChannels:[self numberOfSourceChannels] seek:(UInt32)startFrame];
                     
                     //NSLog(@"After raw reading:begining of reading: %f and current file position: %f", ((float)startFrame)/_sourceSamplingRate, fileReader.currentTime);
                     
-                    ringBuffer->AddNewInterleavedFloatData(tempCalculationBuffer, targetFrame-startFrame, _sourceNumberOfChannels);
+                    ringBuffer->AddNewInterleavedFloatData(tempCalculationBuffer, targetFrame-startFrame, [self numberOfSourceChannels]);
                     
                     _preciseTimeOfLastData = (float)targetFrame/(float)_sourceSamplingRate;
                     
@@ -1284,12 +2266,11 @@ static BBAudioManager *bbAudioManager = nil;
          //dispatch_sync(dispatch_get_main_queue(), ^{
             
             //get all data (wil get more than 2 cannels in buffer)
-            [fileReader retrieveFreshAudio:tempCalculationBuffer numFrames:realNumberOfFrames numChannels:_sourceNumberOfChannels];
-            
+            [fileReader retrieveFreshAudio:tempCalculationBuffer numFrames:realNumberOfFrames numChannels:[self numberOfSourceChannels]];
             
             
             //FIltering of playback data
-          //  [self filterData:tempCalculationBuffer numFrames:realNumberOfFrames numChannels:_sourceNumberOfChannels];
+          //  [self filterData:tempCalculationBuffer numFrames:realNumberOfFrames numChannels:[self numberOfSourceChannels]];
            
             //move just numChannels in buffer
             float zero = 0.0f;
@@ -1298,13 +2279,21 @@ static BBAudioManager *bbAudioManager = nil;
             {
                 //make interpolation
                 vDSP_vsadd((float *)&tempCalculationBuffer[_selectedChannel],
-                           _sourceNumberOfChannels,
+                           [self numberOfSourceChannels],
                            &zero,
                            &tempResamplingBuffer[1],
                            1,
                            realNumberOfFrames);
-                vDSP_vlint(tempResamplingBuffer, tempResamplingIndexes, 1, tempResampledBuffer, 1, numFrames, realNumberOfFrames);
                 
+                //tempSampleForLinearInterpolation patch explanation:
+                //because interpolation will use elements from zero to (realNumberOfFrames+1). And we are loading only
+                //realNumberOfFrames elements. We need to put into zero element
+                //realNumberOfFrames element from previous batch and load new data (realNumberOfFrames elements)
+                //from first element (above). SO that we end up with (realNumberOfFrames+1) elements
+               
+                tempResamplingBuffer[0] = tempSampleForLinearInterpolation;
+                vDSP_vlint(tempResamplingBuffer, tempResamplingIndexes, 1, tempResampledBuffer, 1, numFrames, realNumberOfFrames);
+ 
                 for (int iChannel = 0; iChannel < numChannels; ++iChannel) {
 
                     vDSP_vsadd(tempResampledBuffer,
@@ -1314,13 +2303,15 @@ static BBAudioManager *bbAudioManager = nil;
                                numChannels,
                                numFrames);
                 }
-                tempResamplingBuffer[0] = tempResamplingBuffer[realNumberOfFrames];
+              
+                
+                tempSampleForLinearInterpolation = tempResamplingBuffer[realNumberOfFrames];
             }
             else
             {
                 for (int iChannel = 0; iChannel < numChannels; ++iChannel) {
                         vDSP_vsadd((float *)&tempCalculationBuffer[_selectedChannel],
-                                   _sourceNumberOfChannels,
+                                   [self numberOfSourceChannels],
                                    &zero,
                                    &data[iChannel],
                                    numChannels,
@@ -1328,9 +2319,9 @@ static BBAudioManager *bbAudioManager = nil;
                 }
             }
           
-            ringBuffer->AddNewInterleavedFloatData(tempCalculationBuffer, realNumberOfFrames, _sourceNumberOfChannels);
+            ringBuffer->AddNewInterleavedFloatData(tempCalculationBuffer, realNumberOfFrames, [self numberOfActiveChannels]);
             _preciseTimeOfLastData = fileReader.currentTime;
-            [self updateBasicStatsOnData:tempCalculationBuffer numFrames:realNumberOfFrames numChannels:_sourceNumberOfChannels];
+            [self updateBasicStatsOnData:tempCalculationBuffer numFrames:realNumberOfFrames numChannels:[self numberOfActiveChannels]];
             if(FFTOn)
             {
                 dspAnalizer->CalculateDynamicFFT(data, realNumberOfFrames, _selectedChannel);
@@ -1410,16 +2401,16 @@ static BBAudioManager *bbAudioManager = nil;
 {
     float maxNumOfSeconds = MAX_NUMBER_OF_FFT_SEC;
     [self quitAllFunctions];
-    [self getChannelsConfig];
+
     //Try to make under 1Hz resolution
     //if it is too much than limit it to samplingRate/2^11
     uint32_t log2n = log2f((float)_sourceSamplingRate);
     
     uint32_t n = 1 << (log2n+2);
     
-    [self makeInputOutput];// here we also create ring buffer so it must be before we set ring buffer
+    [self startAquiringInputs:[self currentlyActiveInputDevice]];// here we also create ring buffer so it must be before we set ring buffer
     
-    dspAnalizer->InitDynamicFFT(ringBuffer, _sourceNumberOfChannels, _sourceSamplingRate, n, 99, maxNumOfSeconds);
+    dspAnalizer->InitDynamicFFT(ringBuffer, [self numberOfActiveChannels], _sourceSamplingRate, n, 99, maxNumOfSeconds);
     
     FFTOn = true;
     
@@ -1434,7 +2425,7 @@ static BBAudioManager *bbAudioManager = nil;
     uint32_t log2n = log2f((float)_sourceSamplingRate);
     uint32_t n = 1 << (log2n+2);
     
-    dspAnalizer->InitDynamicFFT(ringBuffer, _sourceNumberOfChannels, _sourceSamplingRate,n,99, maxNumOfSeconds);
+    dspAnalizer->InitDynamicFFT(ringBuffer, [self numberOfActiveChannels], _sourceSamplingRate,n,99, maxNumOfSeconds);
     
     FFTOn = true;
     
@@ -1447,7 +2438,7 @@ static BBAudioManager *bbAudioManager = nil;
         return;
     
     FFTOn = false;
-    [self makeInputOutput];
+    [self startAquiringInputs:[self currentlyActiveInputDevice]];
 }
 
 -(UInt32) lengthOfFFTData
@@ -1483,7 +2474,7 @@ static BBAudioManager *bbAudioManager = nil;
 - (float)fetchAudio:(float *)data numFrames:(UInt32)numFrames whichChannel:(UInt32)whichChannel stride:(UInt32)stride
 {
     
-    if(whichChannel>=_sourceNumberOfChannels)
+    if(whichChannel>=[self numberOfActiveChannels])
     {
         return 0.0f;
     }
@@ -1559,7 +2550,7 @@ static BBAudioManager *bbAudioManager = nil;
 
 -(float) getVirtualTime
 {
-   if(_file && playing)
+    if(_file && (playing || seeking))
    {
        return _preciseTimeOfLastData;
    }
@@ -1679,7 +2670,7 @@ static BBAudioManager *bbAudioManager = nil;
     
     
     // Aight, now that we've got our ranges correct, let's ask for the audio.
-    memset(tempCalculationBuffer, 0, _sourceNumberOfChannels*maxNumberOfSamplesToDisplay*sizeof(float));
+    memset(tempCalculationBuffer, 0, [self numberOfActiveChannels]*maxNumberOfSamplesToDisplay*sizeof(float));
     
     if (!thresholding) {
         //fetchAudio will put all data (from left time limit to right edge of the screen) at the begining
@@ -1825,20 +2816,7 @@ static BBAudioManager *bbAudioManager = nil;
     {
         return fileReader.duration;
     }
-
-    
     return 0;
-    
-}
-
-- (float)samplingRate
-{
-    return audioManager.samplingRate;
-}
-
--(int) numberOfChannels
-{
-    return audioManager.numInputChannels;
 }
 
 
@@ -1847,10 +2825,6 @@ static BBAudioManager *bbAudioManager = nil;
     return _sourceSamplingRate;
 }
 
--(int) sourceNumberOfChannels
-{
-    return _sourceNumberOfChannels;
-}
 
 - (void)setNumTriggersInThresholdHistory:(UInt32)numTriggersInThresholdHistoryLocal
 {

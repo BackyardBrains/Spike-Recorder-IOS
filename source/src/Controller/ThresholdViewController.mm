@@ -22,6 +22,7 @@
 @synthesize triggerHistoryLabel;
 @synthesize activeHeartImg;
 @synthesize glView;
+@synthesize thresholdSlider;
 
 #pragma mark - View Management
 
@@ -58,10 +59,12 @@
         [self.view sendSubviewToBack:glView];
         [self initConstrainsForGLView];
     }
+    [[BBAudioManager bbAudioManager] reactivateCurrentDevice];
     glView.mode = MultichannelGLViewModeThresholding;
-    [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels ] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
+    [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] numberOfActiveChannels ] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
     [[BBAudioManager bbAudioManager] startThresholding:8192];
-
+    int numberOfThresholdHystory = [[BBAudioManager bbAudioManager]  numTriggersInThresholdHistory];
+    [self setThresholdSliderValue:numberOfThresholdHystory];
     // set our view controller's prop that will hold a pointer to our newly created CCGLTouchView
     [self setGLView:glView];
     [glView loadSettings:TRUE];
@@ -78,7 +81,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-    NSLog(@"\n viewWillDisappear threshold\n");
+    NSLog(@"viewWillDisappear threshold");
     [glView saveSettings:TRUE];
     [[BBAudioManager bbAudioManager] saveSettingsToUserDefaults];
     [[BBAudioManager bbAudioManager] stopThresholding];
@@ -145,7 +148,7 @@
     }
     
     glView.mode = MultichannelGLViewModeThresholding;
-    [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] sourceNumberOfChannels ] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
+    [glView setNumberOfChannels: [[BBAudioManager bbAudioManager] numberOfActiveChannels ] samplingRate:[[BBAudioManager bbAudioManager] sourceSamplingRate] andDataSource:self];
     [[BBAudioManager bbAudioManager] startThresholding:8192];
     
     
@@ -286,6 +289,12 @@
 }
 
 #pragma mark - Thresholding
+
+-(void) setThresholdSliderValue:(int) newValue
+{
+    thresholdSlider.value = newValue;
+    triggerHistoryLabel.text = [NSString stringWithFormat:@"%dx", newValue];
+}
 
 - (IBAction)updateNumTriggersInThresholdHistory:(id)sender
 {
