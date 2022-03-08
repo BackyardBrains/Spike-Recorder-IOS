@@ -34,6 +34,8 @@
 #define FILTER_SETTINGS_EEG 2
 #define FILTER_SETTINGS_PLANT 3
 #define FILTER_SETTINGS_CUSTOM 4
+#define FILTER_SETTINGS_EMG 5
+#define FILTER_SETTINGS_NEURON 6
 
 #define FILTER_LP_OFF 10000000
 #define FILTER_HP_OFF 0
@@ -125,6 +127,7 @@
 @property BOOL amDemodulationIsON;
 @property NSMutableArray* availableInputDevices;
 @property int currentFilterSettings;
+-(void) setCurrentFilterSettingsWithType:(int) filterType;
 
 -(int) getLPFilterCutoff;
 -(int) getHPFilterCutoff;
@@ -134,6 +137,7 @@
 -(void) turnON60HzNotch;
 -(void) turnON50HzNotch;
 -(void) turnOFFNotchFilters;
+-(void) setFilterLPCutoff:(int) newLPCuttof hpCutoff:(int)newHPCutoff;
 
 + (BBAudioManager *) bbAudioManager;
 -(void) quitAllFunctions;
@@ -226,6 +230,5 @@
 
 @property float maxVoltageVisible;
 
--(void) setFilterLPCutoff:(int) newLPCuttof hpCutoff:(int)newHPCutoff;
 
 @end

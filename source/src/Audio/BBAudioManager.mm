@@ -278,7 +278,8 @@ static BBAudioManager *bbAudioManager = nil;
         rtSpikeSorting = false;
         shouldTurnONAMModulation = false;
         
-        currentFilterSettings = FILTER_SETTINGS_RAW;
+        [self setCurrentFilterSettingsWithType:FILTER_SETTINGS_RAW];
+        //currentFilterSettings = FILTER_SETTINGS_RAW;
         lpFilterCutoff = FILTER_LP_OFF;
         hpFilterCutoff = FILTER_HP_OFF;
         
@@ -694,8 +695,8 @@ static BBAudioManager *bbAudioManager = nil;
     
     
     // ------ set filters according to config ------
-    
-    currentFilterSettings = FILTER_SETTINGS_CUSTOM;
+    [self setCurrentFilterSettingsWithType:FILTER_SETTINGS_CUSTOM];
+    //currentFilterSettings = FILTER_SETTINGS_CUSTOM;
     int tempLowPassCutoff = FILTER_LP_OFF;
     if(devConf.filterSettings.lowPassON)
     {
@@ -1857,6 +1858,10 @@ static BBAudioManager *bbAudioManager = nil;
 
 }
 
+-(void) setCurrentFilterSettingsWithType:(int) filterType
+{
+    self.currentFilterSettings = filterType;
+}
 
 -(void) updateBasicStatsOnData:(float *)newData numFrames:(UInt32)thisNumFrames numChannels:(UInt32)thisNumChannels
 {

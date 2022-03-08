@@ -153,32 +153,39 @@
         case ecgPreset:
             [self setLPValue: 100.0 HPValue:1.0 notch:SEGMENTED_NOTCH_60_HZ_INDEX];
             [self setLPValue: 100.0 HPValue:1.0 notch:SEGMENTED_NOTCH_60_HZ_INDEX];
+            [[BBAudioManager bbAudioManager] setCurrentFilterSettingsWithType: FILTER_SETTINGS_EKG];
             break;
         case eegPreset:
             [self setLPValue: 50.0 HPValue:0.0 notch:SEGMENTED_NOTCH_60_HZ_INDEX];
             [self setLPValue: 50.0 HPValue:0.0 notch:SEGMENTED_NOTCH_60_HZ_INDEX];
+            [[BBAudioManager bbAudioManager] setCurrentFilterSettingsWithType: FILTER_SETTINGS_EEG];
             break;
         case emgPreset:
             [self setLPValue: 2500.0 HPValue:70.0 notch:SEGMENTED_NOTCH_60_HZ_INDEX];
             [self setLPValue: 2500.0 HPValue:70.0 notch:SEGMENTED_NOTCH_60_HZ_INDEX];
+            [[BBAudioManager bbAudioManager] setCurrentFilterSettingsWithType: FILTER_SETTINGS_EMG];
             break;
         case plantPreset:
             [self setLPValue: 5.0 HPValue:0.0 notch:SEGMENTED_NOTCH_60_HZ_INDEX];
             [self setLPValue: 5.0 HPValue:0.0 notch:SEGMENTED_NOTCH_60_HZ_INDEX];
+            [[BBAudioManager bbAudioManager] setCurrentFilterSettingsWithType: FILTER_SETTINGS_PLANT];
             break;
         case neuronPreset:
             [self setLPValue: 5000.0 HPValue:1.0 notch:SEGMENTED_NOTCH_60_HZ_INDEX];
             [self setLPValue: 5000.0 HPValue:1.0 notch:SEGMENTED_NOTCH_60_HZ_INDEX];
+            [[BBAudioManager bbAudioManager] setCurrentFilterSettingsWithType: FILTER_SETTINGS_NEURON];
             break;
         default:
             [self setLPValue: 5000.0 HPValue:1.0 notch:SEGMENTED_NOTCH_60_HZ_INDEX];
             [self setLPValue: 5000.0 HPValue:1.0 notch:SEGMENTED_NOTCH_60_HZ_INDEX];
+            [[BBAudioManager bbAudioManager] setCurrentFilterSettingsWithType: FILTER_SETTINGS_CUSTOM];
             break;
     }
 }
 
 -(void) checkFilterValuesAndLightUpButtons
 {
+    
     int lowPass = 0;
     int highPass = 0;
     
@@ -204,26 +211,32 @@
     if((lowPass == 100) && (highPass==1.0))
     {
         [filterPresetSelection lightUpButtonIndex: ecgPreset];
+        [[BBAudioManager bbAudioManager] setCurrentFilterSettingsWithType: FILTER_SETTINGS_EKG];
     }
     else if((lowPass == 50) && (highPass==0))
     {
         [filterPresetSelection lightUpButtonIndex: eegPreset ];
+        [[BBAudioManager bbAudioManager] setCurrentFilterSettingsWithType: FILTER_SETTINGS_EEG];
     }
     else if((lowPass == 2500) && (highPass==70))
     {
         [filterPresetSelection lightUpButtonIndex: emgPreset];
+        [[BBAudioManager bbAudioManager] setCurrentFilterSettingsWithType: FILTER_SETTINGS_EMG];
     }
     else if((lowPass == 5) && (highPass==0))
     {
         [filterPresetSelection lightUpButtonIndex: plantPreset];
+        [[BBAudioManager bbAudioManager] setCurrentFilterSettingsWithType: FILTER_SETTINGS_PLANT];
     }
     else if((lowPass == 5000) && (highPass==1))
     {
         [filterPresetSelection lightUpButtonIndex: neuronPreset];
+        [[BBAudioManager bbAudioManager] setCurrentFilterSettingsWithType: FILTER_SETTINGS_NEURON];
     }
     else
     {
         [filterPresetSelection deselectAll];
+        [[BBAudioManager bbAudioManager] setCurrentFilterSettingsWithType: FILTER_SETTINGS_CUSTOM];
     }
         
     
