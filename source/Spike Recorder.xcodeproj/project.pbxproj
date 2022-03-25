@@ -258,12 +258,11 @@
 		8580C84F241E72660033BF2E /* ConfigViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8580C84D241E72660033BF2E /* ConfigViewController.mm */; };
 		8580C850241E72660033BF2E /* ConfigViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8580C84E241E72660033BF2E /* ConfigViewController.xib */; };
 		8580C856241E77420033BF2E /* SelectFilterPresetView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8580C855241E77420033BF2E /* SelectFilterPresetView.m */; };
-		8586320123BE21A000D6BC5A /* ObjectiveDropboxOfficial.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 858631FD23BE1EC500D6BC5A /* ObjectiveDropboxOfficial.framework */; };
-		8586320223BF4F2000D6BC5A /* ObjectiveDropboxOfficial.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 858631FD23BE1EC500D6BC5A /* ObjectiveDropboxOfficial.framework */; };
-		8586320323BF4F2000D6BC5A /* ObjectiveDropboxOfficial.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 858631FD23BE1EC500D6BC5A /* ObjectiveDropboxOfficial.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		858FACF52463106300EAC87A /* ChannelConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 858FACF42463106300EAC87A /* ChannelConfig.m */; };
 		858FACF8246312E400EAC87A /* board-config.json in Resources */ = {isa = PBXBuildFile; fileRef = 858FACF7246312E400EAC87A /* board-config.json */; };
 		858FACFB2463137B00EAC87A /* BoardsConfigManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 858FACFA2463137B00EAC87A /* BoardsConfigManager.m */; };
+		85BD75FB27EDCC2B000D93F4 /* ObjectiveDropboxOfficial.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85BD75F927EDCA73000D93F4 /* ObjectiveDropboxOfficial.framework */; };
+		85BD75FC27EDCC2B000D93F4 /* ObjectiveDropboxOfficial.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 85BD75F927EDCA73000D93F4 /* ObjectiveDropboxOfficial.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		85CE23EF2137DA650035AEC8 /* DemoAccessory.mm in Sources */ = {isa = PBXBuildFile; fileRef = 85CE23EC2137DA640035AEC8 /* DemoAccessory.mm */; };
 		85CE23F02137DA650035AEC8 /* DemoProtocol.mm in Sources */ = {isa = PBXBuildFile; fileRef = 85CE23EE2137DA640035AEC8 /* DemoProtocol.mm */; };
 		85CE23F22137DAB20035AEC8 /* ExternalAccessory.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85CE23F12137DAB20035AEC8 /* ExternalAccessory.framework */; };
@@ -296,7 +295,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				8586320323BF4F2000D6BC5A /* ObjectiveDropboxOfficial.framework in Embed Frameworks */,
+				85BD75FC27EDCC2B000D93F4 /* ObjectiveDropboxOfficial.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -753,12 +752,12 @@
 		8580C84E241E72660033BF2E /* ConfigViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConfigViewController.xib; sourceTree = "<group>"; };
 		8580C854241E77420033BF2E /* SelectFilterPresetView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SelectFilterPresetView.h; sourceTree = "<group>"; };
 		8580C855241E77420033BF2E /* SelectFilterPresetView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SelectFilterPresetView.m; sourceTree = "<group>"; };
-		858631FD23BE1EC500D6BC5A /* ObjectiveDropboxOfficial.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ObjectiveDropboxOfficial.framework; path = Carthage/Build/IOS/ObjectiveDropboxOfficial.framework; sourceTree = "<group>"; };
 		858FACF32463106300EAC87A /* ChannelConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChannelConfig.h; sourceTree = "<group>"; };
 		858FACF42463106300EAC87A /* ChannelConfig.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChannelConfig.m; sourceTree = "<group>"; };
 		858FACF7246312E400EAC87A /* board-config.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "board-config.json"; sourceTree = "<group>"; };
 		858FACF92463137B00EAC87A /* BoardsConfigManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BoardsConfigManager.h; sourceTree = "<group>"; };
 		858FACFA2463137B00EAC87A /* BoardsConfigManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BoardsConfigManager.m; sourceTree = "<group>"; };
+		85BD75F927EDCA73000D93F4 /* ObjectiveDropboxOfficial.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ObjectiveDropboxOfficial.framework; sourceTree = "<group>"; };
 		85CE23EB2137DA640035AEC8 /* DemoAccessory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoAccessory.h; sourceTree = "<group>"; };
 		85CE23EC2137DA640035AEC8 /* DemoAccessory.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DemoAccessory.mm; sourceTree = "<group>"; };
 		85CE23ED2137DA640035AEC8 /* DemoProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoProtocol.h; sourceTree = "<group>"; };
@@ -796,12 +795,10 @@
 			files = (
 				85CE23F22137DAB20035AEC8 /* ExternalAccessory.framework in Frameworks */,
 				247ED9BE193DEC0800871BAC /* libz.dylib in Frameworks */,
-				8586320123BE21A000D6BC5A /* ObjectiveDropboxOfficial.framework in Frameworks */,
 				248C8EC118E5D90500307C4C /* ImageIO.framework in Frameworks */,
 				248C8EBF18E5D8FC00307C4C /* MobileCoreServices.framework in Frameworks */,
 				FA905A7C15AA8F370013688B /* MessageUI.framework in Frameworks */,
 				FA905A7A15AA8F0C0013688B /* CFNetwork.framework in Frameworks */,
-				8586320223BF4F2000D6BC5A /* ObjectiveDropboxOfficial.framework in Frameworks */,
 				FA905A4815AA8BBA0013688B /* Security.framework in Frameworks */,
 				FA90598A15A9F4E20013688B /* libsqlite3.0.dylib in Frameworks */,
 				FAAC8E7D15A3738D003EB28A /* Accelerate.framework in Frameworks */,
@@ -810,6 +807,7 @@
 				FADF26571596362F006C87BA /* Foundation.framework in Frameworks */,
 				FADF26591596362F006C87BA /* CoreGraphics.framework in Frameworks */,
 				FADF265B1596362F006C87BA /* QuartzCore.framework in Frameworks */,
+				85BD75FB27EDCC2B000D93F4 /* ObjectiveDropboxOfficial.framework in Frameworks */,
 				852AB58A241BD4940010C846 /* StoreKit.framework in Frameworks */,
 				FADF265D1596362F006C87BA /* OpenGLES.framework in Frameworks */,
 				FADF26611596362F006C87BA /* CoreVideo.framework in Frameworks */,
@@ -1594,7 +1592,7 @@
 		FADF26451596362E006C87BA = {
 			isa = PBXGroup;
 			children = (
-				858631FD23BE1EC500D6BC5A /* ObjectiveDropboxOfficial.framework */,
+				85BD75F927EDCA73000D93F4 /* ObjectiveDropboxOfficial.framework */,
 				2418FE5C1A83F4C600662547 /* Asset */,
 				FADF26681596362F006C87BA /* src */,
 				FADF26531596362F006C87BA /* Frameworks */,

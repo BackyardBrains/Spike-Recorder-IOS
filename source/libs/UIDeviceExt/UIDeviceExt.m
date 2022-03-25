@@ -68,7 +68,12 @@ static float _pointsPerInch;
                 }
     }
     
-    NSAssert(_pointsPerCentimeter > 0.0f || _pointsPerInch > 0.0f, @"Unknown device: %s", sysinfo.machine);
+    //NSAssert(_pointsPerCentimeter > 0.0f || _pointsPerInch > 0.0f, @"Unknown device: %s", sysinfo.machine);
+    if(!(_pointsPerCentimeter > 0.0f || _pointsPerInch > 0.0f))
+    {
+        _pointsPerCentimeter =88.58f;
+        _pointsPerInch =225.0f;
+    }
 }
 
 + (float)pointsPerCentimeter { return _pointsPerCentimeter; }
