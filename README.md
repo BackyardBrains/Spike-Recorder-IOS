@@ -12,7 +12,7 @@ directly into your SpikerBox, or any audio device, you need a custom male-to-mal
 (a normal one won't work), available from our website. It has to do with routing an output channel to an input 
 channel. We also have instructions if you want to build one yourself.
 
-In order to run project you will need:
+In order to run the project you will need:
 - macOS 
 - [xCode IDE](https://developer.apple.com/xcode/)
 - [carthage](https://github.com/Carthage/Carthage#installing-carthage) (navigate to "source" folder and run: carthage update --platform iOS)
