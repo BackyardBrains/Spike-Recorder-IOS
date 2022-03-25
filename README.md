@@ -7,14 +7,11 @@ listen to living neurons from insects, and muscles from humans.  With this app, 
 of neurons look like and record it to your iOS device for later analysis. 
 What used to take up a whole room you now have in your hand, and for cheap. Think of it!
 
-Note: The application normally picks up input through your iOS's built-in microphone. If you want to plug 
-directly into your SpikerBox, or any audio device, you need a custom male-to-male headphone cable 
-(a normal one won't work), available from our website. It has to do with routing an output channel to an input 
-channel. We also have instructions if you want to build one yourself.
+This Grasshopper branch is made for [Investigating Grasshopper Vision](https://backyardbrains.com/experiments/grasshoppervision) experiment. 
 
 In order to run the project you will need:
 - macOS 
 - [xCode IDE](https://developer.apple.com/xcode/)
-- [carthage](https://github.com/Carthage/Carthage#installing-carthage) (navigate to "source" folder and run: carthage update --platform iOS)
+
 
 
