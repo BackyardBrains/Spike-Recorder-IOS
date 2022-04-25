@@ -2386,11 +2386,13 @@ static BBAudioManager *bbAudioManager = nil;
 - (void)pausePlaying
 {
     self.playing = false;
+    self.seeking = true;
 }
 
 - (void)resumePlaying
 {
     self.playing = true;
+    self.seeking = false;
 }
 
 
@@ -2519,7 +2521,7 @@ static BBAudioManager *bbAudioManager = nil;
 -(NSMutableArray *) getEvents
 {
     
-    if(_file && playing)
+    if(_file && (playing || seeking))
     {
         return [_file allEvents];
     }
