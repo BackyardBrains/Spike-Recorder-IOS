@@ -713,6 +713,7 @@ static BBAudioManager *bbAudioManager = nil;
     [self updateFilters];
     
     // ------ activate inputs and outputs ------
+    [ecgAnalysis initECGAnalysisWithSamplingRate:_sourceSamplingRate numOfChannels:[self numberOfActiveChannels]];
     [[NSNotificationCenter defaultCenter] postNotificationName:RESETUP_SCREEN_NOTIFICATION object:self];
     [[NSNotificationCenter defaultCenter] postNotificationName:NEW_DEVICE_ACTIVATED object:self];
     [self startAquiringInputs:inputDeviceToActivate];

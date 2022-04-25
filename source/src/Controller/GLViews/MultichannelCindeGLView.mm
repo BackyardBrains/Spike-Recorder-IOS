@@ -156,6 +156,7 @@
     }
     displayVectors =  new PolyLine2f[newNumberOfChannels];
     [self checkIfWeHaveVoltageScale];
+    [self setCurrentVoltageScaleToDefault];
     if(!yOffsets)
     {
         yOffsets = new float[maxNumberOfChannels];//y offset of horizontal axis
@@ -537,6 +538,7 @@
       //  NSLog(@"After - Fetch Data to display");
         float zero = yOffsets[channelIndex];
         float zoom = maxVoltsSpan/ numVoltsVisible[channelIndex];
+        //NSLog(@"%d:%f", channelIndex, zoom);
         //float zoom = 1.0f;
         vDSP_vsmsa (tempDataBuffer,
                     1,
