@@ -1809,7 +1809,10 @@ static BBAudioManager *bbAudioManager = nil;
 
 -(void) setFilterLPCutoff:(int) newLPCuttof hpCutoff:(int)newHPCutoff
 {
+    float oldLpFilterCutoff = lpFilterCutoff;
+    float oldHpFilterCutoff = hpFilterCutoff;
     
+
     lpFilterCutoff = newLPCuttof;
     hpFilterCutoff = newHPCutoff;
 
@@ -1856,7 +1859,43 @@ static BBAudioManager *bbAudioManager = nil;
     {
         hpFilters = [[NSMutableArray alloc] initWithCapacity:0];
     }
-
+    
+    if(eaManager && [self externalAccessoryIsActive])
+    {
+            if(oldLpFilterCutoff>=HARDWARE_GAIN_HUMAN_SB_THRESHOLD)
+            {
+                if(lpFilterCutoff<HARDWARE_GAIN_HUMAN_SB_THRESHOLD)
+                {
+                    //turn ON gain
+                    [eaManager setHardwareHighGainActive:true];
+                }
+            }
+            else
+            {
+                if(lpFilterCutoff>=HARDWARE_GAIN_HUMAN_SB_THRESHOLD)
+                {
+                    //turn OFF gain
+                    [eaManager setHardwareHighGainActive:false];
+                }
+            }
+            
+            if(oldHpFilterCutoff>=HARDWARE_HPF_HUMAN_SB_THRESHOLD)
+            {
+                if(hpFilterCutoff<HARDWARE_HPF_HUMAN_SB_THRESHOLD)
+                {
+                    //turn OFF gain
+                    [eaManager setHardwareHPFActive:false];
+                }
+            }
+            else
+            {
+                if(hpFilterCutoff>=HARDWARE_HPF_HUMAN_SB_THRESHOLD)
+                {
+                    //turn ON gain
+                    [eaManager setHardwareHPFActive:true];
+                }
+            }
+    }
 }
 
 -(void) setCurrentFilterSettingsWithType:(int) filterType

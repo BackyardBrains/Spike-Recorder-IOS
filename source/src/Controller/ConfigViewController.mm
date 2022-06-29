@@ -284,11 +284,6 @@
     
 }
 
-
-
-
-
-
 - (NSUInteger)supportedInterfaceOrientations {
 
     switch ([UIDevice currentDevice].userInterfaceIdiom) {
@@ -304,9 +299,6 @@
             return UIInterfaceOrientationMaskAll;
             break;
         case UIUserInterfaceIdiomCarPlay:
-            return UIInterfaceOrientationMaskAll;
-            break;
-        case UIUserInterfaceIdiomMac:
             return UIInterfaceOrientationMaskAll;
             break;
     }
