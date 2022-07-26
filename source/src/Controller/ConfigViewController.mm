@@ -118,6 +118,8 @@
 
 - (void)viewWillDisappear:(BOOL)animated
 {
+    [self saveFilterValues];
+    [_masterDelegate finishedWithConfiguration];
     
     [_masterDelegate configIsClossing];
     [super viewWillDisappear:animated];
@@ -566,11 +568,12 @@
 
 - (IBAction)closeVIewTap:(id)sender {
     //save all filter values
-    [self saveFilterValues];
+    //[self saveFilterValues];
     
     
     [_masterDelegate finishedWithConfiguration];
 }
+
 
 
 
