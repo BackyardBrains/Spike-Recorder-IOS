@@ -278,7 +278,8 @@ static BBAudioManager *bbAudioManager = nil;
         rtSpikeSorting = false;
         shouldTurnONAMModulation = false;
         
-        currentFilterSettings = FILTER_SETTINGS_RAW;
+        [self setCurrentFilterSettingsWithType:FILTER_SETTINGS_RAW];
+        //currentFilterSettings = FILTER_SETTINGS_RAW;
         lpFilterCutoff = FILTER_LP_OFF;
         hpFilterCutoff = FILTER_HP_OFF;
         
@@ -694,8 +695,8 @@ static BBAudioManager *bbAudioManager = nil;
     
     
     // ------ set filters according to config ------
-    
-    currentFilterSettings = FILTER_SETTINGS_CUSTOM;
+    [self setCurrentFilterSettingsWithType:FILTER_SETTINGS_CUSTOM];
+    //currentFilterSettings = FILTER_SETTINGS_CUSTOM;
     int tempLowPassCutoff = FILTER_LP_OFF;
     if(devConf.filterSettings.lowPassON)
     {
@@ -712,6 +713,7 @@ static BBAudioManager *bbAudioManager = nil;
     [self updateFilters];
     
     // ------ activate inputs and outputs ------
+    [ecgAnalysis initECGAnalysisWithSamplingRate:_sourceSamplingRate numOfChannels:[self numberOfActiveChannels]];
     [[NSNotificationCenter defaultCenter] postNotificationName:RESETUP_SCREEN_NOTIFICATION object:self];
     [[NSNotificationCenter defaultCenter] postNotificationName:NEW_DEVICE_ACTIVATED object:self];
     [self startAquiringInputs:inputDeviceToActivate];
@@ -1807,7 +1809,10 @@ static BBAudioManager *bbAudioManager = nil;
 
 -(void) setFilterLPCutoff:(int) newLPCuttof hpCutoff:(int)newHPCutoff
 {
+    float oldLpFilterCutoff = lpFilterCutoff;
+    float oldHpFilterCutoff = hpFilterCutoff;
     
+
     lpFilterCutoff = newLPCuttof;
     hpFilterCutoff = newHPCutoff;
 
@@ -1854,9 +1859,49 @@ static BBAudioManager *bbAudioManager = nil;
     {
         hpFilters = [[NSMutableArray alloc] initWithCapacity:0];
     }
-
+    
+    if(eaManager && [self externalAccessoryIsActive])
+    {
+            if(oldLpFilterCutoff>=HARDWARE_GAIN_HUMAN_SB_THRESHOLD)
+            {
+                if(lpFilterCutoff<HARDWARE_GAIN_HUMAN_SB_THRESHOLD)
+                {
+                    //turn ON gain
+                    [eaManager setHardwareHighGainActive:true];
+                }
+            }
+            else
+            {
+                if(lpFilterCutoff>=HARDWARE_GAIN_HUMAN_SB_THRESHOLD)
+                {
+                    //turn OFF gain
+                    [eaManager setHardwareHighGainActive:false];
+                }
+            }
+            
+            if(oldHpFilterCutoff>=HARDWARE_HPF_HUMAN_SB_THRESHOLD)
+            {
+                if(hpFilterCutoff<HARDWARE_HPF_HUMAN_SB_THRESHOLD)
+                {
+                    //turn OFF gain
+                    [eaManager setHardwareHPFActive:false];
+                }
+            }
+            else
+            {
+                if(hpFilterCutoff>=HARDWARE_HPF_HUMAN_SB_THRESHOLD)
+                {
+                    //turn ON gain
+                    [eaManager setHardwareHPFActive:true];
+                }
+            }
+    }
 }
 
+-(void) setCurrentFilterSettingsWithType:(int) filterType
+{
+    self.currentFilterSettings = filterType;
+}
 
 -(void) updateBasicStatsOnData:(float *)newData numFrames:(UInt32)thisNumFrames numChannels:(UInt32)thisNumChannels
 {
@@ -2380,11 +2425,13 @@ static BBAudioManager *bbAudioManager = nil;
 - (void)pausePlaying
 {
     self.playing = false;
+    self.seeking = true;
 }
 
 - (void)resumePlaying
 {
     self.playing = true;
+    self.seeking = false;
 }
 
 
@@ -2513,7 +2560,7 @@ static BBAudioManager *bbAudioManager = nil;
 -(NSMutableArray *) getEvents
 {
     
-    if(_file && playing)
+    if(_file && (playing || seeking))
     {
         return [_file allEvents];
     }

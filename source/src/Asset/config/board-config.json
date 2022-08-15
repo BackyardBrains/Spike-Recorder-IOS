@@ -41,7 +41,7 @@
                         "filtered":1,
                         "calibrationCoef":1.0,
                         "channelIsCalibrated":1,
-                        "defaultVoltageScale":0.3
+                        "defaultVoltageScale":3.0
                     },
                     {
                         "userFriendlyFullName":"EEG/ECG/EMG Channel 2",
@@ -50,7 +50,7 @@
                         "filtered":1,
                         "calibrationCoef":1.0,
                         "channelIsCalibrated":1,
-                        "defaultVoltageScale":5.0
+                        "defaultVoltageScale":3.0
                     }
                 ],
                 "expansionBoards":[
@@ -81,7 +81,7 @@
                                 "filtered":1,
                                 "calibrationCoef":1.0,
                                 "channelIsCalibrated":1,
-                                "defaultVoltageScale":0.1
+                                "defaultVoltageScale":3.0
                             },
                             {
                                 "userFriendlyFullName":"EEG/ECG/EMG Channel 4",
@@ -90,7 +90,7 @@
                                 "filtered":0,
                                 "calibrationCoef":1.0,
                                 "channelIsCalibrated":1,
-                                "defaultVoltageScale":0.1
+                                "defaultVoltageScale":3.0
                             }
                         ]
                     },
@@ -114,7 +114,7 @@
                                 "filtered":1,
                                 "calibrationCoef":1.0,
                                 "channelIsCalibrated":1,
-                                "defaultVoltageScale":0.1
+                                "defaultVoltageScale":3.0
                             }
                         ]
                     },
@@ -138,7 +138,7 @@
                                 "filtered":0,
                                 "calibrationCoef":1.0,
                                 "channelIsCalibrated":1,
-                                "defaultVoltageScale":0.1
+                                "defaultVoltageScale":3.0
                             }
                         ]
                     }

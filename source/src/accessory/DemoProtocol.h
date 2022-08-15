@@ -45,5 +45,7 @@ typedef void (^EAInputBlock)(float *data, UInt32 numFrames, UInt32 numChannels);
 - (int) sampleRate;
 - (bool) shouldRestartDevice;
 -(void) deviceRestarted;
+-(void) setHardwareHighGainActive:(BOOL) state;
+-(void) setHardwareHPFActive:(BOOL) state;
 
 @end

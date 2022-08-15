@@ -137,9 +137,10 @@ void DSPThreshold :: ProcessNewAudio(float *incomingAudio, UInt32 numFrames)
             
 			// ... and fill it up with the triggered audio and make sure that triggered sample is
             //at he center of buffer
-            //When we add number of frames to (middlePoint - indexThresholdCrossing) threshold point
-            //will be on middlePoint index
-            UInt32 numSamplesToRequest = middlePoint - indexThresholdCrossing + numFrames;
+            //Since new data is not yet in main circular buffer ask just for  (middlePoint - indexThresholdCrossing) point.
+            //That will center threshold point in the middle after we add new data
+           
+            UInt32 numSamplesToRequest = middlePoint - indexThresholdCrossing;// + numFrames;
 
             for(int chi=0;chi<_numberOfChannels;chi++)
             {

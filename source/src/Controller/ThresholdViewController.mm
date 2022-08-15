@@ -215,7 +215,7 @@
 
 -(void) hideShowHeartIcon
 {
-    if([[BBAudioManager bbAudioManager] currentFilterSettings]==FILTER_SETTINGS_EKG && [[BBAudioManager bbAudioManager] amDemodulationIsON])
+    if([[BBAudioManager bbAudioManager] currentFilterSettings]==FILTER_SETTINGS_EKG )//&& [[BBAudioManager bbAudioManager] amDemodulationIsON])
     {
         self.activeHeartImg.hidden = NO;
     }

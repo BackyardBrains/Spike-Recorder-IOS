@@ -156,6 +156,7 @@
     }
     displayVectors =  new PolyLine2f[newNumberOfChannels];
     [self checkIfWeHaveVoltageScale];
+    [self setCurrentVoltageScaleToDefault];
     if(!yOffsets)
     {
         yOffsets = new float[maxNumberOfChannels];//y offset of horizontal axis
@@ -537,6 +538,7 @@
       //  NSLog(@"After - Fetch Data to display");
         float zero = yOffsets[channelIndex];
         float zoom = maxVoltsSpan/ numVoltsVisible[channelIndex];
+        //NSLog(@"%d:%f", channelIndex, zoom);
         //float zoom = 1.0f;
         vDSP_vsmsa (tempDataBuffer,
                     1,
@@ -591,7 +593,7 @@
                 firstDrawAfterChannelChange = NO;
             }
             currentTimeTextureFont = gl::TextureFont::create( currentTimeFont );
-            //heartBeatTextureFont = gl::TextureFont::create( heartBeatFont );
+            heartBeatTextureFont = gl::TextureFont::create( heartBeatFont );
             mScaleFont = gl::TextureFont::create( mFont );
         }
         
@@ -1347,7 +1349,7 @@
 	gl::enableAlphaBlending();
 
     
-    if(mode == MultichannelGLViewModeThresholding && [[BBAudioManager bbAudioManager] currentFilterSettings]==FILTER_SETTINGS_EKG && [[BBAudioManager bbAudioManager] amDemodulationIsON])
+    if(mode == MultichannelGLViewModeThresholding && [[BBAudioManager bbAudioManager] currentFilterSettings]==FILTER_SETTINGS_EKG )//&& [[BBAudioManager bbAudioManager] amDemodulationIsON])
     {
         std::stringstream hearRateText;
         hearRateText << (int)[[BBAudioManager bbAudioManager] heartRate] << "BPM";
@@ -1365,10 +1367,12 @@
         
         
         gl::color( ColorA( 1.0, 1.0f, 1.0f, 1.0f ) );
+        
         heartBeatTextureFont->drawString(hearRateText.str(), heartTextPosition);
+       
     }
 
-    //[[BBAudioManager bbAudioManager] currentFilterSettings]
+   
 
     float xScale = 0.5*numSamplesVisible*(1/samplingRate)*1000;//1000.0*(xMiddle.x - xFarLeft.x);
 

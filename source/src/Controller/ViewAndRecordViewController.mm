@@ -376,7 +376,7 @@
         // configure the Popover presentation controller
         popControllerIpad = [controller popoverPresentationController];
         
-        popControllerIpad.delegate = self;
+        popControllerIpad.delegate = self;//popoverPresentationControllerDidDismissPopover
         popControllerIpad.permittedArrowDirections = 0;
         CGRect sourceRect = CGRectZero;
         sourceRect.origin.x = CGRectGetMidX(self.view.bounds)-self.view.frame.origin.x/2.0;
@@ -384,7 +384,6 @@
         popControllerIpad.sourceRect =  sourceRect;
         popControllerIpad.sourceView = self.view;
         [self presentViewController:controller animated:YES completion:nil];
-        
     }
     else
     {
@@ -392,8 +391,9 @@
         controller.masterDelegate = self;
         controller.modalPresentationStyle = UIModalPresentationFullScreen;
         [self presentViewController:controller animated:YES completion:nil];
-    }  
+    }
 }
+
 
 
 - (void)popoverPresentationController:(UIPopoverPresentationController *)popoverPresentationController

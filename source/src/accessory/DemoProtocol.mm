@@ -157,6 +157,38 @@ static  EAInputBlock inputBlock;
     
 }
 
+-(void) setHardwareHighGainActive:(BOOL) state
+{
+    if(state)
+    {
+        NSString *s = @"gainon:1;gainon:2;\n";
+        const char *c = [s UTF8String];
+        [self queuePacket:(uint8_t*)c length:[s length]];
+    }
+    else
+    {
+        NSString *s = @"gainoff:1;gainoff:2;\n";
+        const char *c = [s UTF8String];
+        [self queuePacket:(uint8_t*)c length:[s length]];
+    }
+}
+
+-(void) setHardwareHPFActive:(BOOL) state
+{
+    if(state)
+    {
+        NSString *s = @"hpfon:2;hpfon:1;\n";;
+        const char *c = [s UTF8String];
+        [self queuePacket:(uint8_t*)c length:[s length]];
+    }
+    else
+    {
+        NSString *s = @"hpfoff:2;hpfoff:1;\n";;
+        const char *c = [s UTF8String];
+        [self queuePacket:(uint8_t*)c length:[s length]];
+    }
+}
+
 
 // Gathers a complete protocol packet from the input stream
 - (void)processRxBytes:(uint8_t *)bytes length:(NSUInteger)len
