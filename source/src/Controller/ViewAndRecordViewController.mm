@@ -370,7 +370,26 @@
     if([[BBAudioManager bbAudioManager] externalAccessoryIsActive])
     {
         self.p300Button.hidden  = false;
-        self.audioButton.hidden = ![[BBAudioManager bbAudioManager] isP300Active];
+        
+        if([[BBAudioManager bbAudioManager] isP300Active])
+        {
+            self.audioButton.hidden = false;
+            [self.p300Button setImage:[UIImage imageNamed:@"p300-high.png"] forState:UIControlStateNormal];
+            if([[BBAudioManager bbAudioManager] isP300AudioActive])
+            {
+                [self.audioButton setImage:[UIImage imageNamed:@"sound-high.png"] forState:UIControlStateNormal];
+            }
+            else
+            {
+                [self.audioButton setImage:[UIImage imageNamed:@"sound.png"] forState:UIControlStateNormal];
+            }
+        }
+        else
+        {
+            [self.p300Button setImage:[UIImage imageNamed:@"p300.png"] forState:UIControlStateNormal];
+            self.audioButton.hidden = true;
+        }
+       
     }
     else
     {
