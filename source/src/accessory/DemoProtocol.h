@@ -38,14 +38,21 @@ typedef void (^EAInputBlock)(float *data, UInt32 numFrames, UInt32 numChannels);
 
 
 
-- (void)sendCommandGetAdc;
+- (void) sendCommandGetAdc;
 - (void) askForBoardType;
--(int) getCurrentExpansionBoard;
-- (int) numberOfChannels;
-- (int) sampleRate;
+- (void) setP300Active:(bool) active;
+- (void) setP300AudioActive:(bool) active;
+- (void) askForP300AudioState;
+- (void) askForP300State;
+- (void) askForImportantStates;
+- (bool) getP300State;
+- (bool) getP300AudioState;
+- (int)  getCurrentExpansionBoard;
+- (int)  numberOfChannels;
+- (int)  sampleRate;
 - (bool) shouldRestartDevice;
--(void) deviceRestarted;
--(void) setHardwareHighGainActive:(BOOL) state;
--(void) setHardwareHPFActive:(BOOL) state;
+- (void) deviceRestarted;
+- (void) setHardwareHighGainActive:(BOOL) state;
+- (void) setHardwareHPFActive:(BOOL) state;
 
 @end

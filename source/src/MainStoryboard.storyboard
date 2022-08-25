@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="EBf-gS-bmJ">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="EBf-gS-bmJ">
     <device id="retina5_9" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17126"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -64,14 +64,40 @@
                                     <action selector="fftButtonPressed:" destination="pde-FL-esI" eventType="touchUpInside" id="Ol4-cu-aDj"/>
                                 </connections>
                             </button>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eoh-7i-FMr">
+                                <rect key="frame" x="134" y="49" width="58" height="58"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="58" id="Aey-9b-IYJ"/>
+                                    <constraint firstAttribute="width" constant="58" id="FJA-R2-7jj"/>
+                                </constraints>
+                                <state key="normal" image="p300.png"/>
+                                <connections>
+                                    <action selector="p300ButtonPressed:" destination="pde-FL-esI" eventType="touchUpInside" id="rqH-49-q3G"/>
+                                </connections>
+                            </button>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sb2-ta-y6l">
+                                <rect key="frame" x="198" y="49" width="58" height="58"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="58" id="YyH-GY-gjn"/>
+                                    <constraint firstAttribute="height" constant="58" id="ysw-HD-300"/>
+                                </constraints>
+                                <state key="normal" image="sound.png"/>
+                                <connections>
+                                    <action selector="soundButtonPressed:" destination="pde-FL-esI" eventType="touchUpInside" id="Ud2-5A-Yaf"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="zLF-zu-TnF"/>
                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="sb2-ta-y6l" firstAttribute="top" secondItem="eoh-7i-FMr" secondAttribute="top" id="5OP-Sr-9x6"/>
                             <constraint firstItem="ndR-rK-Iub" firstAttribute="top" secondItem="zLF-zu-TnF" secondAttribute="top" constant="5" id="FK9-MC-BDt"/>
+                            <constraint firstItem="eoh-7i-FMr" firstAttribute="top" secondItem="Hcp-Ep-Hyg" secondAttribute="top" id="G3r-ev-wJ8"/>
                             <constraint firstItem="Hcp-Ep-Hyg" firstAttribute="leading" secondItem="ndR-rK-Iub" secondAttribute="trailing" constant="6" id="LPv-h5-737"/>
                             <constraint firstItem="zLF-zu-TnF" firstAttribute="trailing" secondItem="WnN-vn-xXv" secondAttribute="trailing" constant="6" id="Nmk-G6-nnI"/>
                             <constraint firstItem="Hcp-Ep-Hyg" firstAttribute="top" secondItem="zLF-zu-TnF" secondAttribute="top" constant="5" id="YBr-4W-457"/>
+                            <constraint firstItem="sb2-ta-y6l" firstAttribute="leading" secondItem="eoh-7i-FMr" secondAttribute="trailing" constant="6" id="chc-fo-nrF"/>
+                            <constraint firstItem="eoh-7i-FMr" firstAttribute="leading" secondItem="Hcp-Ep-Hyg" secondAttribute="trailing" constant="6" id="fgC-Kh-VsM"/>
                             <constraint firstItem="WnN-vn-xXv" firstAttribute="top" secondItem="zLF-zu-TnF" secondAttribute="top" constant="5" id="lvy-9g-hd5"/>
                             <constraint firstItem="ndR-rK-Iub" firstAttribute="leading" secondItem="zLF-zu-TnF" secondAttribute="leading" constant="6" id="pTz-dX-3pD"/>
                         </constraints>
@@ -80,15 +106,17 @@
                     <tabBarItem key="tabBarItem" title="View / Record" image="WaveImage.png" id="yK5-2T-tMU" userLabel="View / Record"/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics" barStyle="black" translucent="NO"/>
                     <connections>
+                        <outlet property="audioButton" destination="sb2-ta-y6l" id="lEh-r0-6Dl"/>
                         <outlet property="configButton" destination="ndR-rK-Iub" id="FM1-Pw-nvH"/>
                         <outlet property="fftButton" destination="Hcp-Ep-Hyg" id="Wro-vl-vXe"/>
+                        <outlet property="p300Button" destination="eoh-7i-FMr" id="jLL-TN-4Dg"/>
                         <outlet property="recordButton" destination="WnN-vn-xXv" id="UyH-dS-g5S"/>
                         <outlet property="stopButton" destination="I3B-o4-r5A" id="GEP-B2-lPs"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="YO2-om-zHG" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-3452" y="-3711.0944527736133"/>
+            <point key="canvasLocation" x="-3452" y="-3711.576354679803"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="d4B-CN-Ruz">
@@ -232,7 +260,7 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="C9Q-lB-B7c">
-                                <rect key="frame" x="0.0" y="28" width="375" height="43.666667938232422"/>
+                                <rect key="frame" x="0.0" y="44.666666030883789" width="375" height="43.666667938232422"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="C9Q-lB-B7c" id="VW0-N5-nXp">
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="43.666667938232422"/>
@@ -265,7 +293,7 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="ExperimentsCell" id="t3e-pe-mRp">
-                                <rect key="frame" x="0.0" y="28" width="375" height="43.666667938232422"/>
+                                <rect key="frame" x="0.0" y="44.666666030883789" width="375" height="43.666667938232422"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="t3e-pe-mRp" id="4a1-fA-0a6">
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="43.666667938232422"/>
@@ -337,7 +365,7 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="defaultPrototypeCell" id="e39-LW-s3Y">
-                                <rect key="frame" x="0.0" y="28" width="375" height="43.666667938232422"/>
+                                <rect key="frame" x="0.0" y="44.666666030883789" width="375" height="43.666667938232422"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="e39-LW-s3Y" id="uDS-zx-ZY3">
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="43.666667938232422"/>
@@ -376,7 +404,7 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="t23-8M-PQd">
-                                <rect key="frame" x="0.0" y="28" width="375" height="43.666667938232422"/>
+                                <rect key="frame" x="0.0" y="44.666666030883789" width="375" height="43.666667938232422"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="t23-8M-PQd" id="riz-XQ-pg9">
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="43.666667938232422"/>
@@ -1228,7 +1256,9 @@
         <image name="backbtn.png" width="40" height="40"/>
         <image name="configIcon.png" width="58" height="58"/>
         <image name="fft.png" width="58" height="58"/>
+        <image name="p300.png" width="58" height="58"/>
         <image name="settings.png" width="30" height="30"/>
+        <image name="sound.png" width="58" height="58"/>
         <image name="trash.png" width="3.9045553207397461" height="3.9045553207397461"/>
         <systemColor name="darkTextColor">
             <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

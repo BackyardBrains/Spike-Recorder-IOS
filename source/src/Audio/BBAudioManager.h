@@ -70,6 +70,7 @@
     BOOL notch50HzIsOn;
     BOOL notch60HzIsOn;
     
+    
     NVNotchFilter * amDetectionNotchFilter;
     NVLowpassFilter * amDetectionLPFilter;
     NVLowpassFilter * filterAMStage1;
@@ -195,12 +196,12 @@
 //Mfi
 -(void) addMfiDeviceWithModelNumber:(NSString *) modelNumber andSerial:(NSString *) serialNum;
 -(BOOL) externalAccessoryIsActive;
-
 -(void) removeMfiDeviceWithModelNumber:(NSString *) modelNumber andSerial:(NSString *) serialNum;
-
-
 - (void) addEvent:(int) eventType withOffset:(int) inOffset;
-
+- (bool) isP300Active;
+- (bool) isP300AudioActive;
+- (void) setP300State:(bool) active;
+- (void) setP300AudioState:(bool) active;
 
 //FFT
 -(float **) getDynamicFFTResult;

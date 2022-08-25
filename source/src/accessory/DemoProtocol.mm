@@ -56,7 +56,8 @@ const uint8_t kHeaderBytes[] = {0xCA, 0x5C};
     std::string hardwareType;
     int currentAddOnBoard;
     bool _restartDevice;
-
+    bool _p300IsActive;
+    bool _p300AudioIsActive;
     
 }
 static  EAInputBlock inputBlock;
@@ -94,6 +95,8 @@ static  EAInputBlock inputBlock;
         _numberOfChannels = 2;
         currentAddOnBoard = BOARD_WITH_EVENT_INPUTS;
         _restartDevice = false;
+        _p300IsActive = false;
+        _p300AudioIsActive = false;
     }
     return self;
 }
@@ -126,8 +129,8 @@ static  EAInputBlock inputBlock;
 
 - (void) setupProtocol
 {
-    [self askForBoardType];
-    
+    //[self askForBoardType];
+    [self askForImportantStates];
 }
 
 
@@ -150,11 +153,74 @@ static  EAInputBlock inputBlock;
 
 -(void) askForBoardType
 {
-    //uint8_t cmd[PROTOCOL_PAYLOAD_SIZE] = {P1_CMD_GET_ADC, 0, 0, 0, 0, 0};
     NSString *s = @"board:;\n";
     const char *c = [s UTF8String];
     [self queuePacket:(uint8_t*)c length:[s length]];
-    
+}
+
+- (void) askForImportantStates
+{
+    NSString *s = @"board:;p300?:;\n";
+    const char *c = [s UTF8String];
+    [self queuePacket:(uint8_t*)c length:[s length]];
+}
+
+- (bool) getP300State
+{
+    return _p300IsActive;
+}
+
+- (bool) getP300AudioState
+{
+    return _p300AudioIsActive;
+}
+
+- (void) askForP300AudioState
+{
+    NSString *s = @"sound?:;\n";
+    const char *c = [s UTF8String];
+    [self queuePacket:(uint8_t*)c length:[s length]];
+}
+
+- (void) askForP300State
+{
+    NSString *s = @"p300?:;\n";
+    const char *c = [s UTF8String];
+    [self queuePacket:(uint8_t*)c length:[s length]];
+}
+
+- (void) setP300Active:(bool) active
+{
+    if(active)
+    {
+        NSString *s = @"stimon:;\n";
+        const char *c = [s UTF8String];
+        [self queuePacket:(uint8_t*)c length:[s length]];
+    }
+    else
+    {
+        NSString *s = @"stimoff:;\n";
+        const char *c = [s UTF8String];
+        [self queuePacket:(uint8_t*)c length:[s length]];
+    }
+    _p300IsActive = active;
+}
+
+- (void) setP300AudioActive:(bool) active
+{
+    if(active)
+    {
+        NSString *s = @"sounon:;\n";
+        const char *c = [s UTF8String];
+        [self queuePacket:(uint8_t*)c length:[s length]];
+    }
+    else
+    {
+        NSString *s = @"sounoff:;\n";
+        const char *c = [s UTF8String];
+        [self queuePacket:(uint8_t*)c length:[s length]];
+    }
+    _p300AudioIsActive = active;
 }
 
 -(void) setHardwareHighGainActive:(BOOL) state
@@ -575,14 +641,20 @@ static  EAInputBlock inputBlock;
     {
         int mnum = (int)((unsigned int)valueOfMessage[0]-48);
         int64_t offset = 0;
-        /* if(!_manager.fileMode())
-         {
-         offset = _audioView->offset();
-         }*/
-        
-       //[ _manager->addMarker(std::string(1, mnum+'0'), offset+offsetin);]
         [[BBAudioManager bbAudioManager] addEvent:mnum withOffset:offsetin];
         
+    }
+    if(typeOfMessage == "p300")
+    {
+        bool active = (int)((unsigned int)valueOfMessage[0]-48)>0;
+        _p300IsActive = active;
+        [self askForP300AudioState];
+        
+    }
+    if(typeOfMessage == "sound")
+    {
+        bool active = (int)((unsigned int)valueOfMessage[0]-48)>0;
+        _p300AudioIsActive = active;
     }
     if(typeOfMessage == "JOY")
     {

@@ -227,12 +227,6 @@ static BBAudioManager *bbAudioManager = nil;
         extractedChannelsBuffer = (float *)calloc(SIZE_OF_MAX_SAMPLES_FOR_ALL_CHANNELS, sizeof(float));
         
 
-        
-        
-        
-        
-        
-        
         [self initInputDevices];
         
         
@@ -247,15 +241,9 @@ static BBAudioManager *bbAudioManager = nil;
         tempResamplingBuffer = (float *)calloc(1024, sizeof(float));
         tempResampledBuffer = (float *)calloc(1024, sizeof(float));
         
-        
-        
-        
+
         // Initialize parameters to defaults
         [self loadSettingsFromUserDefaults];
-        
-        
-        
-        
         
 
         ringBuffer = new RingBuffer(maxNumberOfSamplesToDisplay, 1);
@@ -305,10 +293,7 @@ static BBAudioManager *bbAudioManager = nil;
         NSLog(@"audio manger play - before");
         [audioManager play];
         NSLog(@"audio manger play - after");
-        
-       
-        
-        
+
     }
     NSLog(@"Init BBAudioManager - end");
     return self;
@@ -1334,9 +1319,28 @@ static BBAudioManager *bbAudioManager = nil;
     }
 
     [rtEvents addObject:tempEvent];
-    
-    
 }
+
+
+- (bool) isP300Active
+{
+    return [eaManager getP300State];
+}
+
+- (bool) isP300AudioActive
+{
+    return [eaManager getP300AudioState];
+}
+
+- (void) setP300State:(bool) active
+{
+    [eaManager setP300Active:active];
+}
+- (void) setP300AudioState:(bool) active
+{
+    [eaManager setP300AudioActive:active];
+}
+
 #pragma mark - Helper functions
 
 

@@ -262,6 +262,14 @@
 		858FACF8246312E400EAC87A /* board-config.json in Resources */ = {isa = PBXBuildFile; fileRef = 858FACF7246312E400EAC87A /* board-config.json */; };
 		858FACFB2463137B00EAC87A /* BoardsConfigManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 858FACFA2463137B00EAC87A /* BoardsConfigManager.m */; };
 		8592F48225533793006DCAA0 /* InputDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 8592F48125533793006DCAA0 /* InputDevice.m */; };
+		85935A5428AA603200F324EA /* sound.png in Resources */ = {isa = PBXBuildFile; fileRef = 85935A5028AA603100F324EA /* sound.png */; };
+		85935A5528AA603200F324EA /* p300@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 85935A5128AA603100F324EA /* p300@2x.png */; };
+		85935A5628AA603200F324EA /* sound@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 85935A5228AA603100F324EA /* sound@2x.png */; };
+		85935A5728AA603200F324EA /* p300.png in Resources */ = {isa = PBXBuildFile; fileRef = 85935A5328AA603100F324EA /* p300.png */; };
+		85935A5C28AB8B8A00F324EA /* p300-high@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 85935A5828AB8B8800F324EA /* p300-high@2x.png */; };
+		85935A5D28AB8B8A00F324EA /* sound-high.png in Resources */ = {isa = PBXBuildFile; fileRef = 85935A5928AB8B8900F324EA /* sound-high.png */; };
+		85935A5E28AB8B8A00F324EA /* sound-high@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 85935A5A28AB8B8900F324EA /* sound-high@2x.png */; };
+		85935A5F28AB8B8A00F324EA /* p300-high.png in Resources */ = {isa = PBXBuildFile; fileRef = 85935A5B28AB8B8A00F324EA /* p300-high.png */; };
 		85CE23EF2137DA650035AEC8 /* DemoAccessory.mm in Sources */ = {isa = PBXBuildFile; fileRef = 85CE23EC2137DA640035AEC8 /* DemoAccessory.mm */; };
 		85CE23F02137DA650035AEC8 /* DemoProtocol.mm in Sources */ = {isa = PBXBuildFile; fileRef = 85CE23EE2137DA640035AEC8 /* DemoProtocol.mm */; };
 		85CE23F22137DAB20035AEC8 /* ExternalAccessory.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85CE23F12137DAB20035AEC8 /* ExternalAccessory.framework */; };
@@ -755,6 +763,14 @@
 		858FACFA2463137B00EAC87A /* BoardsConfigManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BoardsConfigManager.m; sourceTree = "<group>"; };
 		8592F48025533793006DCAA0 /* InputDevice.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = InputDevice.h; sourceTree = "<group>"; };
 		8592F48125533793006DCAA0 /* InputDevice.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = InputDevice.m; sourceTree = "<group>"; };
+		85935A5028AA603100F324EA /* sound.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sound.png; sourceTree = "<group>"; };
+		85935A5128AA603100F324EA /* p300@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "p300@2x.png"; sourceTree = "<group>"; };
+		85935A5228AA603100F324EA /* sound@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sound@2x.png"; sourceTree = "<group>"; };
+		85935A5328AA603100F324EA /* p300.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = p300.png; sourceTree = "<group>"; };
+		85935A5828AB8B8800F324EA /* p300-high@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "p300-high@2x.png"; sourceTree = "<group>"; };
+		85935A5928AB8B8900F324EA /* sound-high.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sound-high.png"; sourceTree = "<group>"; };
+		85935A5A28AB8B8900F324EA /* sound-high@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sound-high@2x.png"; sourceTree = "<group>"; };
+		85935A5B28AB8B8A00F324EA /* p300-high.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "p300-high.png"; sourceTree = "<group>"; };
 		85CE23EB2137DA640035AEC8 /* DemoAccessory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoAccessory.h; sourceTree = "<group>"; };
 		85CE23EC2137DA640035AEC8 /* DemoAccessory.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DemoAccessory.mm; sourceTree = "<group>"; };
 		85CE23ED2137DA640035AEC8 /* DemoProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoProtocol.h; sourceTree = "<group>"; };
@@ -1295,6 +1311,14 @@
 		2418FE881A83F5D700662547 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				85935A5B28AB8B8A00F324EA /* p300-high.png */,
+				85935A5828AB8B8800F324EA /* p300-high@2x.png */,
+				85935A5928AB8B8900F324EA /* sound-high.png */,
+				85935A5A28AB8B8900F324EA /* sound-high@2x.png */,
+				85935A5328AA603100F324EA /* p300.png */,
+				85935A5128AA603100F324EA /* p300@2x.png */,
+				85935A5028AA603100F324EA /* sound.png */,
+				85935A5228AA603100F324EA /* sound@2x.png */,
 				850258BD245C8ABC006F9927 /* close.png */,
 				850258BE245C8ABC006F9927 /* close@2x.png */,
 				2418FE891A83F5D700662547 /* again.png */,
@@ -1761,6 +1785,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2418FEDB1A83F5D700662547 /* Stimulate@2x.png in Resources */,
+				85935A5C28AB8B8A00F324EA /* p300-high@2x.png in Resources */,
 				247087CA1A851774004C6B9B /* Icon@2x.png in Resources */,
 				1CF7DB2E1F7988DF008F303E /* slider-default7-handle.png in Resources */,
 				24D697BA1A6FF3EB00108D78 /* Images.xcassets in Resources */,
@@ -1786,6 +1811,7 @@
 				2418FEE11A83F5D700662547 /* trash@2x.png in Resources */,
 				FA905A4C15AA8CF00013688B /* BBFileTableCell.xib in Resources */,
 				2454D8AA19AD02010056B71B /* GraphDCMDExperimentViewController.xib in Resources */,
+				85935A5628AA603200F324EA /* sound@2x.png in Resources */,
 				2418FFCD1A8406A600662547 /* Default-Landcape@2x.png in Resources */,
 				2418FFD21A8406A600662547 /* Screenshot-1242x2208.png in Resources */,
 				24EBC1B31997DD21001D3392 /* TrialActionsViewController.xib in Resources */,
@@ -1801,6 +1827,7 @@
 				8569F7962421566900EA9990 /* ChannelColorsTableViewCell.xib in Resources */,
 				247087C61A851774004C6B9B /* Icon-Small.png in Resources */,
 				245B1847199172D200943684 /* ExperimentsViewController.xib in Resources */,
+				85935A5D28AB8B8A00F324EA /* sound-high.png in Resources */,
 				247087BA1A851774004C6B9B /* Icon-60.png in Resources */,
 				8526365F241ED2D7000755F6 /* Comic-Book.otf in Resources */,
 				24BB8365199E7D0C00C12932 /* GraphDCMDTrialViewController.xib in Resources */,
@@ -1838,12 +1865,15 @@
 				2418FEE01A83F5D700662547 /* trash.png in Resources */,
 				2418FEDF1A83F5D700662547 /* TickMarksBig.png in Resources */,
 				1CF7DB2F1F7988DF008F303E /* slider-default7-handle@2x.png in Resources */,
+				85935A5528AA603200F324EA /* p300@2x.png in Resources */,
 				2418FECE1A83F5D700662547 /* Pause@2x.png in Resources */,
 				2418FED01A83F5D700662547 /* Play@2x.png in Resources */,
 				247087C81A851774004C6B9B /* Icon-Small@3x.png in Resources */,
 				2418FFD01A8406A600662547 /* Screenshot-568h.png in Resources */,
+				85935A5F28AB8B8A00F324EA /* p300-high.png in Resources */,
 				247087BE1A851774004C6B9B /* Icon-72@2x.png in Resources */,
 				247087C11A851774004C6B9B /* Icon-Small-40.png in Resources */,
+				85935A5E28AB8B8A00F324EA /* sound-high@2x.png in Resources */,
 				850258C0245C8ABC006F9927 /* close@2x.png in Resources */,
 				1CD05BAA1CFD398400A83727 /* BBCommentDetailsCell.xib in Resources */,
 				1CF7DB311F7988DF008F303E /* slider-default7-track@2x.png in Resources */,
@@ -1854,6 +1884,7 @@
 				1C3882BF2018844E00B0388B /* icon83-5@2x.png in Resources */,
 				2418FFCF1A8406A600662547 /* Default-Portrait@2x.png in Resources */,
 				856E3E7622C62D7800103E2A /* logo.png in Resources */,
+				85935A5728AA603200F324EA /* p300.png in Resources */,
 				85263660241ED2D7000755F6 /* Comic-Book-Bold.otf in Resources */,
 				2418FEB71A83F5D700662547 /* again.png in Resources */,
 				1C3882F6201B58D500B0388B /* MainStoryboard.storyboard in Resources */,
@@ -1877,6 +1908,7 @@
 				1CF7DB3B1F7988DF008F303E /* slider-metal-track@2x.png in Resources */,
 				245B1842199135ED00943684 /* ExperimentsMenuTableViewCell.xib in Resources */,
 				2418FEC01A83F5D700662547 /* checkmark@2x.png in Resources */,
+				85935A5428AA603200F324EA /* sound.png in Resources */,
 				2418FED11A83F5D700662547 /* Record.png in Resources */,
 				2418FEBD1A83F5D700662547 /* charticon.png in Resources */,
 				2418FEC51A83F5D700662547 /* FileNeuron.png in Resources */,
@@ -2137,7 +2169,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3.0.28;
+				CURRENT_PROJECT_VERSION = 3.0.29;
 				DEVELOPMENT_TEAM = MLGRKD657P;
 				DEVICE_FAMILY = iPhone/iPad;
 				ENABLE_BITCODE = NO;
@@ -2207,7 +2239,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3.0.28;
+				CURRENT_PROJECT_VERSION = 3.0.29;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = MLGRKD657P;
 				DEVICE_FAMILY = iPhone/iPad;

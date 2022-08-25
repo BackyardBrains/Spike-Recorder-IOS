@@ -29,6 +29,8 @@
 @synthesize configButton;
 @synthesize stopButton;
 @synthesize fftButton;
+@synthesize p300Button;
+@synthesize audioButton;
 
 #pragma mark - View management
 
@@ -95,6 +97,10 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showUnknownMfiDevice:) name:CAN_NOT_FIND_CONFIG_FOR_DEVICE object:nil];
+    
+
+    
+    
     
     [glView startAnimation];
 }
@@ -360,6 +366,36 @@
     {
         self.fftButton.hidden = YES;
     }
+    
+    if([[BBAudioManager bbAudioManager] externalAccessoryIsActive])
+    {
+        self.p300Button.hidden  = false;
+        
+        if([[BBAudioManager bbAudioManager] isP300Active])
+        {
+            self.audioButton.hidden = false;
+            [self.p300Button setImage:[UIImage imageNamed:@"p300-high.png"] forState:UIControlStateNormal];
+            if([[BBAudioManager bbAudioManager] isP300AudioActive])
+            {
+                [self.audioButton setImage:[UIImage imageNamed:@"sound-high.png"] forState:UIControlStateNormal];
+            }
+            else
+            {
+                [self.audioButton setImage:[UIImage imageNamed:@"sound.png"] forState:UIControlStateNormal];
+            }
+        }
+        else
+        {
+            [self.p300Button setImage:[UIImage imageNamed:@"p300.png"] forState:UIControlStateNormal];
+            self.audioButton.hidden = true;
+        }
+       
+    }
+    else
+    {
+        self.p300Button.hidden  = true;
+        self.audioButton.hidden = true;
+    }
     //self.fftButton.hidden = NO;//debug
 }
 
@@ -451,7 +487,22 @@
     popControllerIpad = nil;
 }
 
+#pragma mark - P300 stuff
+- (IBAction)soundButtonPressed:(id)sender
+{
+    [[BBAudioManager bbAudioManager] setP300AudioState:![[BBAudioManager bbAudioManager] isP300AudioActive]];
+   
+    
+}
+
+- (IBAction)p300ButtonPressed:(id)sender
+{
+    [[BBAudioManager bbAudioManager] setP300State:![[BBAudioManager bbAudioManager] isP300Active]];
+    
+}
+
 #pragma mark - FFT stuff
+
 -(IBAction) fftButtonPressed:(id)sender
 {
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
@@ -495,6 +546,8 @@
     [configButton release];
     [glView release];
     [fftButton release];
+    [p300Button release];
+    [audioButton release];
     [super dealloc];
 }
 

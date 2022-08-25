@@ -22,12 +22,16 @@
 @property (retain, nonatomic) IBOutlet UIButton *recordButton;
 @property (retain, nonatomic) IBOutlet UIButton *stopButton;
 @property (retain, nonatomic) IBOutlet UIButton *fftButton;
+@property (retain, nonatomic) IBOutlet UIButton *p300Button;
+@property (retain, nonatomic) IBOutlet UIButton *audioButton;
 
 // view handlers
 - (IBAction)stopRecording:(id)sender;
 - (IBAction)startRecording:(id)sender;
 - (IBAction)configButtonPressed:(id)sender;
 - (IBAction)fftButtonPressed:(id)sender;
+- (IBAction)p300ButtonPressed:(id)sender;
+- (IBAction)soundButtonPressed:(id)sender;
 
 //GL view stuff
 @property (retain, nonatomic) MultichannelCindeGLView *glView;
