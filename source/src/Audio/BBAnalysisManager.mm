@@ -1270,7 +1270,10 @@ static BBAnalysisManager *bbAnalysisManager = nil;
     spikeTrain.secondThreshold = aThresholdSecond;
 }
 
-
+//
+// Eliminate overlap of thresholds. Two sspike trans on the same channel should
+// not have threshold intervals that overlap since then they will contain the same spikes
+//
 -(void) solveOverlapForIndex
 {
     NSMutableArray * trains = (NSMutableArray *)[[[_file allChannels] objectAtIndex:_currentChannel] spikeTrains];

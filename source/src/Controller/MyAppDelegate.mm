@@ -5,7 +5,10 @@
 
 #import "MyAppDelegate.h"
 #import "ZipArchive.h"
+#import "BBSpike.h"
 #import "BBEvent.h"
+#import "BBSpikeTrain.h"
+#import "BBChannel.h"
 #import "BBAudioFileReader.h"
 #import <Fabric/Fabric.h>
 #import <Crashlytics/Crashlytics.h>
@@ -145,9 +148,6 @@ static DemoProtocol *demoProtocol;
             
             if([[[self findExtensionOfFileInUrl:url] lowercaseString] isEqualToString:@"byb"])
             {
-                
-                
-                
                 NSError *error = nil;
                 NSArray *paths =  NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);//NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
                 NSString *zipPath = [url absoluteString];
@@ -157,8 +157,6 @@ static DemoProtocol *demoProtocol;
                 NSData *data = [NSData dataWithContentsOfURL:url options:0 error:&error];
                 [data writeToFile:fullPathOfZip options:0 error:&error];
 
-                      
-                // TODO: Unzip
                 ZipArchive *za = [[ZipArchive alloc] init];
 
                if ([za UnzipOpenFile: fullPathOfZip])
@@ -207,11 +205,189 @@ static DemoProtocol *demoProtocol;
                            //there is a
                            NSString *textString = [NSString stringWithContentsOfFile:eventsFileName encoding:NSASCIIStringEncoding error:nil];
                            NSArray *fileLines = [textString componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
-                           for (int i=2;i<[fileLines count];i++)
+                           for (int i=0;i<[fileLines count];i++)
                            {
+                               NSArray * alphabetArray = [NSArray arrayWithObjects:  @"a", @"b", @"c", @"d", @"e", @"f", @"g", @"h", @"i", @"j", @"k", @"l", @"m", @"n", @"o", @"p", @"q", @"r", @"s", @"t", @"u", @"v", @"w", @"x", @"y", @"z", nil];
+                               
                                NSString* newLineToParse = [fileLines objectAtIndex:i];
                                
+                               if([newLineToParse hasPrefix:@"#"])
+                               {
+                                   //found line with comment
+                                   //# Marker IDs can be arbitrary strings.
+                                   continue;
+                               }
+                               if([newLineToParse hasPrefix:@"_ch"])
+                               {
+                                    //found spike line
+                                    //_ch0_neuron0,    10.5081
+                                    NSString* withoutChPrefix =  [newLineToParse substringFromIndex:3];
+                                    //0_neuron0,    10.5081
+                                    if([withoutChPrefix containsString:@"_neuron"])
+                                    {
+                                        NSArray *threeValuesArray = [withoutChPrefix componentsSeparatedByString:@","];
+                                        if([threeValuesArray count]>1)
+                                        {
+                                            //0_neuron0
+                                            //    10.5081
+                                            
+                                            int channel=0;
+                                            int neuron=0;
+                                            NSString* channelsAndNeuronString = [threeValuesArray objectAtIndex:0];
+                                            NSArray *valuesArray = [channelsAndNeuronString componentsSeparatedByString:@"_neuron"];
+                                            if([valuesArray count]>1)
+                                            {
+                                                //3_neuron2 =>
+                                                //3
+                                                //2
+                                                NSString* channelNumberString = [valuesArray objectAtIndex:0];
+                                                NSString* neuronNumberString = [valuesArray objectAtIndex:1];
+                                                channel = [channelNumberString intValue];
+                                                neuron = [neuronNumberString intValue];
+                                            }
+                                            else
+                                            {
+                                                continue;
+                                            }
+                                            
+                                            NSString* timeString = [threeValuesArray objectAtIndex:1];
+                                            float time = [timeString floatValue];
+                                            
+                                            if([[aFile allChannels] count]<(channel+1))
+                                            {
+                                                continue;
+                                            }
+                                            BBChannel * tempChannel = [[aFile allChannels] objectAtIndex:channel];
+                                            //add spike train to channel if we don't have appropriate number of
+                                            //spike trains on particular channel
+                                            bool foundSpikeTrain = false;
+                                            BBSpikeTrain * spikeTrainWithID;
+                                            for(int i=0;i<[[tempChannel spikeTrains] count];i++)
+                                            {
+                                                spikeTrainWithID = [[tempChannel spikeTrains] objectAtIndex:i];
+                                                if(spikeTrainWithID.spikeTrainID == neuron)
+                                                {
+                                                    foundSpikeTrain = true;
+                                                    break;
+                                                }
+                                            }
+                                            if(!foundSpikeTrain)
+                                            {
+                                                int _currentTrainIndex = [[tempChannel spikeTrains] count];
+                                                NSString * nameOfSpikeTrain = [[NSString stringWithFormat:@"Spike %d%@",(channel+1), [alphabetArray objectAtIndex:_currentTrainIndex] ] autorelease];
+                                                spikeTrainWithID = [[BBSpikeTrain alloc] initWithName:nameOfSpikeTrain];
+                                                [spikeTrainWithID setSpikeTrainID:neuron];
+                                                //add spike train
+                                                [[[[aFile allChannels] objectAtIndex:channel] spikeTrains] addObject:spikeTrainWithID];
+                                                
+                                                NSLog(@"Add new spike train to file.");
+                                            }
+
+                                            //add spike to spike train
+                                            BBSpike * tempSpike = [[BBSpike alloc] initWithValue:0.01 index:(time*aFile.samplingrate) andTime:time];
+                                            [spikeTrainWithID.spikes addObject:tempSpike];//add max of positive peak
+                                            [tempSpike release];
+                                            //[spikeTrainWithID release];
+                                        }
+                                    }
+                                   continue;
+                               }
                                
+                               if([newLineToParse hasPrefix:@"_neuron"])
+                               {
+                                   //found threshold value line
+                                   //_neuron0threshhig1043,    0.0000
+                                   //_neuron0threshlow956,    0.0000
+                                   NSString* withoutNeuronPrefix =  [newLineToParse substringFromIndex:7];
+                                   //0threshlow956,    0.0000
+                                   NSArray *firstSplitArray = [withoutNeuronPrefix componentsSeparatedByString:@","];
+                                   //0threshlow956
+                                   //0.0000
+                                   int neuron;
+                                   int threshold;
+                                   if([firstSplitArray count]>1)
+                                   {
+                                       NSString* firstPartString =  [firstSplitArray objectAtIndex:0];
+                                       //0threshlow956
+                                       if([firstPartString containsString:@"threshhig"])
+                                       {
+                                           NSArray *valuesSplitArray = [firstPartString componentsSeparatedByString:@"threshhig"];
+                                           //0
+                                           //956
+                                           NSString* neuronString = [valuesSplitArray objectAtIndex:0];
+                                           NSString* thresholdString = [valuesSplitArray objectAtIndex:1];
+                                           neuron = [neuronString intValue];
+                                           threshold = [thresholdString floatValue];
+                                           
+                                           bool foundSpikeTrain = false;
+                                           BBSpikeTrain * spikeTrainWithID;
+                                           for(int ch=0;ch<[[aFile allChannels] count];ch++)
+                                           {
+                                               BBChannel * tempChannel = [[aFile allChannels] objectAtIndex:ch];
+                                               for(int i=0;i<[[tempChannel spikeTrains] count];i++)
+                                               {
+                                                   spikeTrainWithID = [[tempChannel spikeTrains] objectAtIndex:i];
+                                                   if(spikeTrainWithID.spikeTrainID == neuron)
+                                                   {
+                                                       foundSpikeTrain = true;
+                                                       break;
+                                                   }
+                                               }
+                                               if(foundSpikeTrain)
+                                               {
+                                                   break;
+                                               }
+                                           }
+                                           if(!foundSpikeTrain)
+                                           {
+                                               continue;
+                                           }
+
+                                           spikeTrainWithID.firstThreshold = ((float)threshold)/32768.0f;
+                                           
+                                       }
+                                       else if([firstPartString containsString:@"threshlow"])
+                                       {
+                                           NSArray *valuesSplitArray = [firstPartString componentsSeparatedByString:@"threshlow"];
+                                           //0
+                                           //956
+                                           NSString* neuronString = [valuesSplitArray objectAtIndex:0];
+                                           NSString* thresholdString = [valuesSplitArray objectAtIndex:1];
+                                           neuron = [neuronString intValue];
+                                           threshold = [thresholdString floatValue];
+                                           
+                                           bool foundSpikeTrain = false;
+                                           BBSpikeTrain * spikeTrainWithID;
+                                           for(int ch=0;ch<[[aFile allChannels] count];ch++)
+                                           {
+                                               BBChannel * tempChannel = [[aFile allChannels] objectAtIndex:ch];
+                                               for(int i=0;i<[[tempChannel spikeTrains] count];i++)
+                                               {
+                                                   spikeTrainWithID = [[tempChannel spikeTrains] objectAtIndex:i];
+                                                   if(spikeTrainWithID.spikeTrainID == neuron)
+                                                   {
+                                                       foundSpikeTrain = true;
+                                                       break;
+                                                   }
+                                               }
+                                               if(foundSpikeTrain)
+                                               {
+                                                   break;
+                                               }
+                                           }
+                                           if(!foundSpikeTrain)
+                                           {
+                                               continue;
+                                           }
+                                          
+                                           spikeTrainWithID.secondThreshold = ((float)threshold)/32768.0f;
+                                       }
+                                   }
+                                   continue;
+                               }
+                               
+                               //parse and add evenets
+                               //currently this can add only events that have integer number name
                                NSArray *items = [newLineToParse componentsSeparatedByString:@",\t"];
                                if([items count]>1)
                                {
@@ -237,6 +413,29 @@ static DemoProtocol *demoProtocol;
                        
                        
                        [fileReader release];
+                       
+                       //remove spike trains with ID == -1
+                       for(int ch=0;ch<[[aFile allChannels] count];ch++)
+                       {
+                           BBChannel * tempChannel = [[aFile allChannels] objectAtIndex:ch];
+                           if([[tempChannel spikeTrains]count]>1)
+                           {
+                               for(int i=[[tempChannel spikeTrains] count]-1;i>=0;i--)
+                               {
+                                   BBSpikeTrain * tempSpikeTrain = [[tempChannel spikeTrains] objectAtIndex:i];
+                                   if(tempSpikeTrain.spikeTrainID == -1)
+                                   {
+                                       if([[tempChannel spikeTrains]count]>1)
+                                       {
+                                           [[tempChannel spikeTrains] removeObjectAtIndex:i];
+                                       }
+                                   }
+                               }
+                           }
+                       }
+                       
+                       
+                       aFile.spikesFiltered = FILE_SPIKE_SORTED;
                        [aFile save];
                        //Flag that indicate that we should open shared file
                        //and show it to user
@@ -256,6 +455,8 @@ static DemoProtocol *demoProtocol;
             }//end of BYB file type processing
             else
             {
+                //if we are importing just a wav file do simple import
+                
                 BBFile * aFile = [[BBFile alloc] initWithUrl:url];
                 if ( [[NSFileManager defaultManager] isReadableFileAtPath:[url path]] )
                 {

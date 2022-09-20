@@ -315,7 +315,8 @@
         else
         {
             //if everything is standard make .m4a file (it has beter compression )
-            aFile = [[BBFile alloc] init];
+            aFile = [[BBFile alloc] initWav];
+            //aFile = [[BBFile alloc] init];
         }
         aFile.numberOfChannels = [bbAudioManager numberOfActiveChannels];
         aFile.samplingrate = [bbAudioManager sourceSamplingRate];

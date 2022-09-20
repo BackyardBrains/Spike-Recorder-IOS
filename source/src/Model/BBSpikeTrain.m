@@ -21,10 +21,12 @@
 @synthesize firstThreshold;
 @synthesize secondThreshold;
 @synthesize nameOfTrain;
+@synthesize spikeTrainID;
 
 -(id) initWithName:(NSString *) inName
 {
     if ((self = [super init])) {
+        spikeTrainID = -1;
         nameOfTrain = [inName copy];
         firstThreshold = 0.0f;
         secondThreshold = 0.0f;

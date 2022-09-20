@@ -354,16 +354,14 @@ using namespace tinyxml2;
     [self renameIfNeeded];
     [super saveWithoutArrays];
     NSString *eventsPath = @"";
+    NSString *headerPath = @"";
     if( [self.spikesFiltered isEqualToString:FILE_SPIKE_SORTED] || [_allEvents count]>0 )
     {
         NSError *error;
         NSMutableString *fileContentString = [NSMutableString stringWithString:@"# Marker IDs can be arbitrary strings.\n# Marker ID,    Time (in s)\n"];
-        
-       
-        //[fileContentString appendFormat:@"Name.... %@\n", accessory.name];
 
-        eventsPath = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject] stringByAppendingPathComponent:[NSString stringWithFormat:@"%@-events.txt",self.shortname]];
-       
+        eventsPath = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject] stringByAppendingPathComponent:[NSString stringWithFormat:@"signal-events.txt"]];
+
         //save events
         if([_allEvents count]>0)
         {
@@ -408,12 +406,38 @@ using namespace tinyxml2;
 
         [fileContentString writeToFile:eventsPath atomically:YES encoding:NSUTF8StringEncoding error:&error];
         
+        
+        NSString *headerFileString = [NSString stringWithFormat:@"<fileheader><headerversion>0</headerversion><samplerate>%d</samplerate><numchannels>%d</numchannels></fileheader>",(int)self.samplingrate, self.numberOfChannels];
+        
+        headerPath = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject] stringByAppendingPathComponent:[NSString stringWithFormat:@"header.xml"]];
+        
+        [headerFileString writeToFile:headerPath atomically:YES encoding:NSUTF8StringEncoding error:&error];
+        
+        NSError *errorCopyFile = nil;
+        NSString * pathOfCurrentFile =[[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingPathComponent:self.filename];
+        NSString * pathOfSignalFile =[[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingPathComponent:[NSString stringWithFormat:@"signal.%@",[self.filename pathExtension]]];
+        //
+        if ([[NSFileManager defaultManager] fileExistsAtPath:pathOfSignalFile])
+        {
+            //removing file
+            error = nil;
+            if (![[NSFileManager defaultManager] removeItemAtPath:pathOfSignalFile error:&error])
+            {
+                NSLog(@"Could not remove old files. Error:%@",error);
+            }
+        }
+        
+        [[NSFileManager defaultManager]  copyItemAtPath:pathOfCurrentFile
+                                                 toPath:pathOfSignalFile
+                                                  error:&errorCopyFile];
+        
         NSMutableArray * arrayOfFiles = [[[NSMutableArray alloc] initWithCapacity:0] autorelease];
-        [arrayOfFiles addObject:[[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingPathComponent:self.filename]];
+        //[arrayOfFiles addObject:[[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingPathComponent:self.filename]];
+        [arrayOfFiles addObject:pathOfSignalFile];
         [arrayOfFiles addObject:eventsPath];
+        [arrayOfFiles addObject:headerPath];
         
-        
-        NSString * pathToReturn =  [self createZipArchiveWithFiles:arrayOfFiles andName:[NSString stringWithFormat:@"%@.zip",self.shortname]];
+        NSString * pathToReturn =  [self createZipArchiveWithFiles:arrayOfFiles andName:[NSString stringWithFormat:@"%@.byb",self.shortname]];
         return pathToReturn;
     }//end of if we have anything to save
     else

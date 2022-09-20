@@ -16,6 +16,7 @@
 @property (nonatomic, retain) NSString * spikesCSV;//spikes in SCV string form
 @property float firstThreshold;
 @property float secondThreshold;
+@property int spikeTrainID;
 
 -(id) initWithName:(NSString *) inName;
 -(void) spikesToCSV;
