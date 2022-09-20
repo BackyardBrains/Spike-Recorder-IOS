@@ -355,8 +355,8 @@ using namespace tinyxml2;
     [super saveWithoutArrays];
     NSString *eventsPath = @"";
     NSString *headerPath = @"";
-    if( [self.spikesFiltered isEqualToString:FILE_SPIKE_SORTED] || [_allEvents count]>0 )
-    {
+   // if( [self.spikesFiltered isEqualToString:FILE_SPIKE_SORTED] || [_allEvents count]>0 )
+   // {
         NSError *error;
         NSMutableString *fileContentString = [NSMutableString stringWithString:@"# Marker IDs can be arbitrary strings.\n# Marker ID,    Time (in s)\n"];
 
@@ -439,11 +439,11 @@ using namespace tinyxml2;
         
         NSString * pathToReturn =  [self createZipArchiveWithFiles:arrayOfFiles andName:[NSString stringWithFormat:@"%@.byb",self.shortname]];
         return pathToReturn;
-    }//end of if we have anything to save
-    else
-    {
-        return [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingPathComponent:self.filename];
-    }
+    //}//end of if we have anything to save
+    //else
+    //{
+    //    return [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingPathComponent:self.filename];
+    //}
 }
 
 - (NSString*) createZipArchiveWithFiles:(NSArray*)files andName:(NSString*)nameOFile
