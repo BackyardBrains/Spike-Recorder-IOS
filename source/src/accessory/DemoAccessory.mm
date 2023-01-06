@@ -145,7 +145,12 @@
             //change audio manager input to external accessory
             cBufHead=0;
             cBufTail=0;
+            
+            
+            //here lastAccessory.modelNumber is "SpikerBox" for Human SpikerBox
             [[BBAudioManager bbAudioManager] addMfiDeviceWithModelNumber:lastAccessory.modelNumber andSerial:lastAccessory.serialNumber];
+            
+            
         }
     }
 }
@@ -173,6 +178,10 @@
             //change audio manager input to external accessory
             cBufHead=0;
             cBufTail=0;
+            
+            
+            
+            //here lastAccessory.modelNumber is "SpikerBox" for Human SpikerBox
             [[BBAudioManager bbAudioManager] addMfiDeviceWithModelNumber:lastAccessory.modelNumber andSerial:lastAccessory.serialNumber];
             
             
