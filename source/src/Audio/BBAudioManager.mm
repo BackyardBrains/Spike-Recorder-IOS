@@ -2418,12 +2418,14 @@ static BBAudioManager *bbAudioManager = nil;
        NSLog(@"Stop Playing - inside\n");
         [self pausePlaying];
         _file = nil;
+        
         _preciseTimeOfLastData = 0.0f;
         // Toss the file reader.
         [fileReader release];
         fileReader = nil;
         ringBuffer->Clear();
     }
+    seeking = false;
 }
 
 - (void)pausePlaying
@@ -2458,7 +2460,7 @@ static BBAudioManager *bbAudioManager = nil;
     uint32_t log2n = log2f((float)_sourceSamplingRate);
     
     uint32_t n = 1 << (log2n+2);
-    
+    [self resetVirtualTimeAndEvents];
     [self startAquiringInputs:[self currentlyActiveInputDevice]];// here we also create ring buffer so it must be before we set ring buffer
     
     dspAnalizer->InitDynamicFFT(ringBuffer, [self numberOfActiveChannels], _sourceSamplingRate, n, 99, maxNumOfSeconds);
@@ -2489,6 +2491,7 @@ static BBAudioManager *bbAudioManager = nil;
         return;
     
     FFTOn = false;
+    [self resetVirtualTimeAndEvents];
     [self startAquiringInputs:[self currentlyActiveInputDevice]];
 }
 
@@ -2561,12 +2564,16 @@ static BBAudioManager *bbAudioManager = nil;
     return [_file allChannels];
 }
 
--(NSMutableArray *) getEvents
+-(NSMutableArray *) getEventsAndUseFile:(BOOL) useFile
 {
     
-    if(_file && (playing || seeking))
+    if(useFile)
     {
-        return [_file allEvents];
+        if(_file && (playing || seeking))
+        {
+            return [_file allEvents];
+        }
+        return nil;
     }
     else
     {

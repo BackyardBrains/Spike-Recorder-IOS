@@ -240,7 +240,7 @@
 
 -(NSMutableArray *) getEvents
 {
-    return [[BBAudioManager bbAudioManager] getEvents];
+    return [[BBAudioManager bbAudioManager] getEventsAndUseFile:NO];
 }
 
 

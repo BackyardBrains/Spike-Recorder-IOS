@@ -1088,6 +1088,7 @@
     
     float currentTime = timeForSincDrawing ;
     
+    //NSLog(@"%f",currentTime);
     NSMutableArray * allEvents = [dataSourceDelegate getEvents];
     
     

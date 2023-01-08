@@ -316,7 +316,7 @@
 {
     [filterPresetSelection deselectAll];
     NSNumber * tempNumber = [[[NSNumber alloc] initWithFloat:0.0f] autorelease];
-    if([self stringIsNumeric:self.lowTI.text andNumber:&tempNumber] && ([tempNumber floatValue] >= 0.0f) && ([tempNumber floatValue]<=REAL_VALUE_MAX))
+    if([self stringIsNumeric:self.lowTI.text andNumber:&tempNumber] && ([tempNumber floatValue] >= 0.0f) && ([tempNumber floatValue]<=((int)REAL_VALUE_MAX+1)))
     {
         
         if([tempNumber floatValue]<1.0)
@@ -334,8 +334,9 @@
         return NO;
     }
     
-    tempNumber = [[[NSNumber alloc] initWithFloat:0.0f] autorelease];
-    if([self stringIsNumeric:self.highTI.text andNumber:&tempNumber]  && ([tempNumber floatValue] >= 0.0f) && ([tempNumber floatValue]<=REAL_VALUE_MAX))
+    //test variables
+
+    if([self stringIsNumeric:self.highTI.text andNumber:&tempNumber]  && ([tempNumber floatValue] >= 0.0f) && ([tempNumber floatValue]<=((int)REAL_VALUE_MAX+1)))
     {
         
         if([tempNumber floatValue]<1.0)
@@ -349,7 +350,7 @@
     }
     else
     {
-        [self validationAlertWithText:[NSString stringWithFormat:@"Enter valid number for low cutoff frequency. (0 - %dHz)",(int)REAL_VALUE_MAX]];
+        [self validationAlertWithText:[NSString stringWithFormat:@"Enter valid number for low cutoff frequency. (0 - %dHz)",((int)REAL_VALUE_MAX+1)]];
         return NO;
     }
     

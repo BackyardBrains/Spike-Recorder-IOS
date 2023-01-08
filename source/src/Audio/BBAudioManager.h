@@ -158,7 +158,7 @@
 - (float)fetchAudio:(float *)data numFrames:(UInt32)numFrames whichChannel:(UInt32)whichChannel stride:(UInt32)stride;
 - (float)fetchAudioForSelectedChannel:(float *)data numFrames:(UInt32)numFrames stride:(UInt32)stride;
 - (NSMutableArray *) getChannels;
-- (NSMutableArray *) getEvents;
+- (NSMutableArray *) getEventsAndUseFile:(BOOL) useFile;
 
 //Selection
 -(void) endSelection;
