@@ -316,7 +316,6 @@
     else {
         popover.contentSize = CGSizeMake(200, 300);
     }
-    
     popover.arrowDirection = FPPopoverArrowDirectionAny;
     [popover presentPopoverFromView:sender];
 }

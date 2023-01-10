@@ -203,9 +203,16 @@
     else {
         popover.contentSize = CGSizeMake(200, 300);
     }
-    
+    //popover. = CGRectMake(0.0, self.view.layer.bounds.height * 0.5,0.0,0.0)
+    //popover.origin =self.view.center;
     popover.arrowDirection = FPPopoverArrowDirectionAny;
-    [popover presentPopoverFromView:sender];
+    //popover.contentView.center = self.view.center;
+    //popover.view.center = self.view.center;
+    [popover presentPopoverFromPoint:self.channelBtn.center];
+    [popover.view removeFromSuperview];
+    [self.view addSubview:popover.view];
+   
+    
 }
 
 
