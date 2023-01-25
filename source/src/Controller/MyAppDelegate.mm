@@ -52,7 +52,10 @@ static DemoProtocol *demoProtocol;
 //
 - (void)launch
 {
-   
+    //------------------------------ MFI ----------------------------------
+         demoProtocol = [[DemoProtocol alloc] init];
+        [demoProtocol initProtocol];
+    //------------------------------ MFI ----------------------------------
     
     //[Fabric with:@[[Crashlytics class]]];
     
@@ -80,10 +83,7 @@ static DemoProtocol *demoProtocol;
     
    
     
-//------------------------------ MFI ----------------------------------
-     demoProtocol = [[DemoProtocol alloc] init];
-    [demoProtocol initProtocol];
-//------------------------------ MFI ----------------------------------
+
     
 }
 

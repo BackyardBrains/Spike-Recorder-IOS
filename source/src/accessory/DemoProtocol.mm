@@ -97,6 +97,7 @@ static  EAInputBlock inputBlock;
         _restartDevice = false;
         _p300IsActive = false;
         _p300AudioIsActive = false;
+        _halfTheSampleVoltageRange = 512;
     }
     return self;
 }
@@ -109,7 +110,6 @@ static  EAInputBlock inputBlock;
     escapeSequenceDetectorIndex = 0;
     _samplingRate = 10000;
     _numberOfChannels = 2; //TODO:Make this dynamic from config file
-    _halfTheSampleVoltageRange = 512;
     
 }
 
