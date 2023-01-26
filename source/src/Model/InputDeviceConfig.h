@@ -33,6 +33,7 @@ NS_ASSUME_NONNULL_BEGIN
     @property int maxNumberOfChannels;
     @property int currentSampleRate;
     @property int currentNumOfChannels;
+    @property bool p300CapabilityPresent;
     @property float defaultTimeScale;
     @property float defaultAmplitudeScale;
     @property int sampleResolution;

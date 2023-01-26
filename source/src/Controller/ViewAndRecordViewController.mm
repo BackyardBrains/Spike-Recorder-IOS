@@ -367,7 +367,7 @@
         self.fftButton.hidden = YES;
     }
     
-    if([[BBAudioManager bbAudioManager] externalAccessoryIsActive])
+    if([[BBAudioManager bbAudioManager] externalAccessoryIsActive] && [[BBAudioManager bbAudioManager] isP300EnabledForDevice])
     {
         self.p300Button.hidden  = false;
         

@@ -187,6 +187,7 @@
 -(int) getColorIndexForActiveChannelIndex:(int) indexOfChannel;
 -(void) updateColorOfActiveChannels;
 -(float) getDefaultTimeScale;
+-(bool) isP300EnabledForDevice;
 -(float) getVoltageScaleForChannelIndex:(int)indexOfChannel;
 //select which one is selected on UI
 -(void) selectChannel:(int) selectedChannel;

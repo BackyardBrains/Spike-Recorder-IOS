@@ -178,7 +178,7 @@
             newBoard.helpURL = [oneBoardJSON valueForKey:@"helpURL"];
             newBoard.firmwareUpdateUrl = [oneBoardJSON valueForKey:@"firmwareUpdateUrl"];
             newBoard.iconURL = [oneBoardJSON valueForKey:@"iconURL"];
-            
+            newBoard.p300CapabilityPresent = [[oneBoardJSON valueForKey:@"p300CapabilityPresent"] boolValue];
             //"supportedPlatforms":"android,win,mac,linux",
             NSString *supportedPlatforms = [oneBoardJSON valueForKey:@"supportedPlatforms"];
             newBoard.inputDevicesSupportedByThisPlatform = [[supportedPlatforms lowercaseString] containsString:@"ios"];

@@ -914,6 +914,12 @@ static BBAudioManager *bbAudioManager = nil;
     return tempInputDevice.config.defaultTimeScale;
 }
 
+-(bool) isP300EnabledForDevice
+{
+    InputDevice * tempInputDevice = [self currentlyActiveInputDevice];
+    return tempInputDevice.config.p300CapabilityPresent;
+}
+
 -(float) getVoltageScaleForChannelIndex:(int)indexOfChannel
 {
     if(playing)
