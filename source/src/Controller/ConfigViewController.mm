@@ -153,8 +153,8 @@
 {
     switch (filterType) {
         case ecgPreset:
-            [self setLPValue: 100.0 HPValue:1.0 notch:SEGMENTED_NOTCH_60_HZ_INDEX];
-            [self setLPValue: 100.0 HPValue:1.0 notch:SEGMENTED_NOTCH_60_HZ_INDEX];
+            [self setLPValue: 100.0 HPValue:2.0 notch:SEGMENTED_NOTCH_60_HZ_INDEX];
+            [self setLPValue: 100.0 HPValue:2.0 notch:SEGMENTED_NOTCH_60_HZ_INDEX];
             [[BBAudioManager bbAudioManager] setCurrentFilterSettingsWithType: FILTER_SETTINGS_EKG];
             break;
         case eegPreset:
@@ -173,13 +173,13 @@
             [[BBAudioManager bbAudioManager] setCurrentFilterSettingsWithType: FILTER_SETTINGS_PLANT];
             break;
         case neuronPreset:
-            [self setLPValue: 5000.0 HPValue:1.0 notch:SEGMENTED_NOTCH_60_HZ_INDEX];
-            [self setLPValue: 5000.0 HPValue:1.0 notch:SEGMENTED_NOTCH_60_HZ_INDEX];
+            [self setLPValue: 5000.0 HPValue:70.0 notch:SEGMENTED_NOTCH_60_HZ_INDEX];
+            [self setLPValue: 5000.0 HPValue:70.0 notch:SEGMENTED_NOTCH_60_HZ_INDEX];
             [[BBAudioManager bbAudioManager] setCurrentFilterSettingsWithType: FILTER_SETTINGS_NEURON];
             break;
         default:
-            [self setLPValue: 5000.0 HPValue:1.0 notch:SEGMENTED_NOTCH_60_HZ_INDEX];
-            [self setLPValue: 5000.0 HPValue:1.0 notch:SEGMENTED_NOTCH_60_HZ_INDEX];
+            [self setLPValue: 5000.0 HPValue:70.0 notch:SEGMENTED_NOTCH_60_HZ_INDEX];
+            [self setLPValue: 5000.0 HPValue:70.0 notch:SEGMENTED_NOTCH_60_HZ_INDEX];
             [[BBAudioManager bbAudioManager] setCurrentFilterSettingsWithType: FILTER_SETTINGS_CUSTOM];
             break;
     }
@@ -210,7 +210,7 @@
     }
     
     
-    if((lowPass == 100) && (highPass==1.0))
+    if((lowPass == 100) && (highPass==2.0))
     {
         [filterPresetSelection lightUpButtonIndex: ecgPreset];
         [[BBAudioManager bbAudioManager] setCurrentFilterSettingsWithType: FILTER_SETTINGS_EKG];
@@ -230,7 +230,7 @@
         [filterPresetSelection lightUpButtonIndex: plantPreset];
         [[BBAudioManager bbAudioManager] setCurrentFilterSettingsWithType: FILTER_SETTINGS_PLANT];
     }
-    else if((lowPass == 5000) && (highPass==1))
+    else if((lowPass == 5000) && (highPass==70))
     {
         [filterPresetSelection lightUpButtonIndex: neuronPreset];
         [[BBAudioManager bbAudioManager] setCurrentFilterSettingsWithType: FILTER_SETTINGS_NEURON];

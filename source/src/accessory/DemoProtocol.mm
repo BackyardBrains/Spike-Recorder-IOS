@@ -34,6 +34,15 @@
 #define SIZE_OF_MESSAGES_BUFFER 64
 #define ESCAPE_SEQUENCE_LENGTH 6
 
+
+#define PRESET_MESSAGE_VALUE_EEG @"EEG"
+#define PRESET_MESSAGE_VALUE_EMG @"EMG"
+#define PRESET_MESSAGE_VALUE_ECG @"ECG"
+#define PRESET_MESSAGE_VALUE_INTNEUR @"INTNEUR"
+#define PRESET_MESSAGE_VALUE_EXTNEUR @"EXTNEUR"
+#define PRESET_MESSAGE_VALUE_CUSTOM @"CUSTOM"
+#define PRESET_MESSAGE_VALUE_PLANT @"PLANT"
+
 const uint8_t kHeaderBytes[] = {0xCA, 0x5C};
 
 @implementation DemoProtocol {
@@ -643,6 +652,54 @@ static  EAInputBlock inputBlock;
         int64_t offset = 0;
         [[BBAudioManager bbAudioManager] addEvent:mnum withOffset:offsetin];
         
+    }
+    if(typeOfMessage == "preset")
+    {
+        NSString *valueOfMessageNS = [NSString stringWithUTF8String:valueOfMessage.c_str()];
+        NSRange underscoreRange = [valueOfMessageNS rangeOfString:@"_"];
+
+        if (underscoreRange.location != NSNotFound) {
+            // Extract the channel and value substrings
+            NSString *channelStr = [valueOfMessageNS substringToIndex:underscoreRange.location];
+            NSString *valueStr = [valueOfMessageNS substringFromIndex:underscoreRange.location + 1];
+            int preset = FILTER_SETTINGS_CUSTOM;
+            if ([valueStr isEqualToString:PRESET_MESSAGE_VALUE_EEG])
+            {
+                preset = FILTER_SETTINGS_EEG;
+            }
+            else if ([valueStr isEqualToString:PRESET_MESSAGE_VALUE_ECG])
+            {
+                preset = FILTER_SETTINGS_EKG;
+            }
+            else if ([valueStr isEqualToString:PRESET_MESSAGE_VALUE_CUSTOM])
+            {
+                preset = FILTER_SETTINGS_CUSTOM;
+            }
+            else if ([valueStr isEqualToString:PRESET_MESSAGE_VALUE_EXTNEUR])
+            {
+                preset = FILTER_SETTINGS_NEURON;
+            }
+            else if ([valueStr isEqualToString:PRESET_MESSAGE_VALUE_INTNEUR])
+            {
+                preset = FILTER_SETTINGS_NEURON;
+            }
+            else if ([valueStr isEqualToString:PRESET_MESSAGE_VALUE_EMG])
+            {
+                preset = FILTER_SETTINGS_EMG;
+            }
+            else if ([valueStr isEqualToString:PRESET_MESSAGE_VALUE_PLANT])
+            {
+                preset = FILTER_SETTINGS_PLANT;
+            }
+            
+            // Convert channel and value substrings to integer and float
+            @try {
+                int channel = [channelStr intValue];
+                [[BBAudioManager bbAudioManager] setFromExternalSourcePresetType:preset onChannel: channel];
+            } @catch (NSException *exception) {
+                NSLog(@"Failed to parse the input string: %@", [exception reason]);
+            }
+        }
     }
     if(typeOfMessage == "p300")
     {

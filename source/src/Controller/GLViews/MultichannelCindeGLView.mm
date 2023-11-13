@@ -670,6 +670,11 @@
             [self drawEvents];
         }
         
+        if([dataSourceDelegate respondsToSelector:@selector(checkIfFiltersChangedExternaly)])
+        {
+            [dataSourceDelegate checkIfFiltersChangedExternaly];
+        }
+        
         //Draw handlws for movement of axis
         if(multichannel || self.mode == MultichannelGLViewModeView)
         {

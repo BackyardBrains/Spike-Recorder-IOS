@@ -45,4 +45,5 @@
 -(void) setVisibilityForConfigButton:(BOOL) setVisible;
 -(void) finishedWithConfiguration;//delegate for custom filter
 -(void) configIsClossing;//delegate for custom filter
+-(void) checkIfFiltersChangedExternaly;
 @end

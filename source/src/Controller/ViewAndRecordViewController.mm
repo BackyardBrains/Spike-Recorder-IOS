@@ -17,6 +17,7 @@
     BBFile *aFile;
     dispatch_source_t _timer;
     float recordingTime;
+    ConfigViewController *configController;
 }
 @end
 
@@ -404,13 +405,13 @@
 
     if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad )
     {
-        ConfigViewController *controller = [[ConfigViewController alloc] initWithNibName:@"ConfigViewController" bundle:nil];
-        controller.masterDelegate = self;
-        controller.modalPresentationStyle = UIModalPresentationPopover;
-        controller.preferredContentSize = CGSizeMake(500, 700);
+        ConfigViewController *configController = [[ConfigViewController alloc] initWithNibName:@"ConfigViewController" bundle:nil];
+        configController.masterDelegate = self;
+        configController.modalPresentationStyle = UIModalPresentationPopover;
+        configController.preferredContentSize = CGSizeMake(500, 700);
         
         // configure the Popover presentation controller
-        popControllerIpad = [controller popoverPresentationController];
+        popControllerIpad = [configController popoverPresentationController];
         
         popControllerIpad.delegate = self;//popoverPresentationControllerDidDismissPopover
         popControllerIpad.permittedArrowDirections = 0;
@@ -419,14 +420,14 @@
         sourceRect.origin.y = CGRectGetMidY(self.view.bounds)-self.view.frame.origin.y/2.0;
         popControllerIpad.sourceRect =  sourceRect;
         popControllerIpad.sourceView = self.view;
-        [self presentViewController:controller animated:YES completion:nil];
+        [self presentViewController:configController animated:YES completion:nil];
     }
     else
     {
-        ConfigViewController *controller = [[ConfigViewController alloc] initWithNibName:@"ConfigViewController" bundle:nil];
-        controller.masterDelegate = self;
-        controller.modalPresentationStyle = UIModalPresentationFullScreen;
-        [self presentViewController:controller animated:YES completion:nil];
+        ConfigViewController *configController = [[ConfigViewController alloc] initWithNibName:@"ConfigViewController" bundle:nil];
+        configController.masterDelegate = self;
+        configController.modalPresentationStyle = UIModalPresentationFullScreen;
+        [self presentViewController:configController animated:YES completion:nil];
     }
 }
 
@@ -485,6 +486,40 @@
 -(void) configIsClossing
 {
     popControllerIpad = nil;
+}
+
+-(void) checkIfFiltersChangedExternaly
+{
+    if([[BBAudioManager bbAudioManager] areFiltersChangedExternaly])
+    {
+
+        
+        switch ([[BBAudioManager bbAudioManager] currentFilterSettings]) {
+            case FILTER_SETTINGS_EEG:
+                [configController endSelectionOfFilterPreset: eegPreset];
+                break;
+            case FILTER_SETTINGS_EMG:
+                [configController endSelectionOfFilterPreset: emgPreset];
+                break;
+            case FILTER_SETTINGS_EKG:
+                [configController endSelectionOfFilterPreset: ecgPreset];
+                break;
+            case FILTER_SETTINGS_CUSTOM:
+                 
+                break;
+            case FILTER_SETTINGS_PLANT:
+                [configController endSelectionOfFilterPreset: plantPreset];
+                break;
+            case FILTER_SETTINGS_NEURON:
+                [configController endSelectionOfFilterPreset: neuronPreset];
+                break;
+            
+        }
+        
+        
+        //[configController endSelectionOfFilterPreset: ];
+        [[BBAudioManager bbAudioManager] resetFlagForExternalSetOfFilters];
+    }
 }
 
 #pragma mark - P300 stuff

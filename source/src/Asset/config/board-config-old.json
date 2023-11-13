@@ -9,7 +9,7 @@
               "hardwareComProtocolType": "iap2",
               "bybProtocolType": "BYB1",
               "bybProtocolVersion": "1.0",
-              "maxSampleRate":"20000",
+              "maxSampleRate":"10000",
               "maxNumberOfChannels":"2",
               "sampleResolution":14,
               "supportedPlatforms":"ios",
@@ -31,7 +31,7 @@
                   "lowPassON":1,
                   "lowPassCutoff":"5000.0",
                   "highPassON":1,
-                  "highPassCutoff":"200.0",
+                  "highPassCutoff":"1.0",
                   "notchFilterState":"notch60Hz"
               },
               "channels":[
@@ -66,7 +66,7 @@
                       "boardType":"1",
                       "userFriendlyFullName":"Additional analog input channels",
                       "userFriendlyShortName":"Analog x 2",
-                      "maxSampleRate":"20000",
+                      "maxSampleRate":"5000",
                       "supportedPlatforms":"ios",
                       "productURL":"",
                       "helpURL":"",
@@ -92,14 +92,14 @@
                               "calibrationCoef":1.0,
                               "channelIsCalibrated":1,
                               "defaultVoltageScale":3.0
-                          }
+                          }s
                       ]
                   },
                   {
                       "boardType":"4",
                       "userFriendlyFullName":"The Reflex Hammer",
                       "userFriendlyShortName":"Hammer",
-                      "maxSampleRate":"20000",
+                      "maxSampleRate":"5000",
                       "maxNumberOfChannels":"1",
                       "supportedPlatforms":"ios",
                       "productURL":"https://backyardbrains.com/products/ReflexHammer",
@@ -123,7 +123,7 @@
                       "boardType":"5",
                       "userFriendlyFullName":"The Joystick control",
                       "userFriendlyShortName":"Joystick",
-                      "maxSampleRate":"20000",
+                      "maxSampleRate":"5000",
                       "maxNumberOfChannels":"1",
                       "supportedPlatforms":"win",
                       "productURL":"",
@@ -145,151 +145,6 @@
                   }
               ]
           },
-
-          {
-            "uniqueName": "UniBox",
-            "userFriendlyFullName":"Uni Box",
-            "userFriendlyShortName":"Uni Box",
-            "hardwareComProtocolType": "iap2",
-            "bybProtocolType": "BYB1",
-            "bybProtocolVersion": "1.0",
-            "maxSampleRate":"42661",
-            "maxNumberOfChannels":"2",
-            "sampleResolution":14,
-            "supportedPlatforms":"ios",
-            "productURL":"https://backyardbrains.com/products/heartAndBrainSpikerBox",
-            "helpURL":"https://backyardbrains.com/products/heartAndBrainSpikerBox",
-            "firmwareUpdateUrl":"",
-            "iconURL":"",
-            "defaultTimeScale":"2.0",
-            "defaultAmplitudeScale":"1.0",
-            "sampleRateIsFunctionOfNumberOfChannels":0,
-            "miniOSAppVersion":"3.0.0",
-            "minAndroidAppVersion":"1.0.0",
-            "minWinAppVersion":"1.0.0",
-            "minMacAppVersion":"1.0.0",
-            "minLinuxAppVersion":"1.0.0",
-            "p300CapabilityPresent":0,
-            "filter":{
-                "signalType":"eegSignal,ecgSignal",
-                "lowPassON":1,
-                "lowPassCutoff":"20000.0",
-                "highPassON":0,
-                "highPassCutoff":"0.0",
-                "notchFilterState":"notch60Hz"
-            },
-            "channels":[
-                {
-                    "userFriendlyFullName":"Uni Channel 1",
-                    "userFriendlyShortName":"Uni Ch. 1",
-                    "activeByDefault":1,
-                    "filtered":1,
-                    "calibrationCoef":1.0,
-                    "channelIsCalibrated":1,
-                    "defaultVoltageScale":3.0
-                },
-                {
-                    "userFriendlyFullName":"Uni Channel 2",
-                    "userFriendlyShortName":"Uni Ch. 2",
-                    "activeByDefault":0,
-                    "filtered":1,
-                    "calibrationCoef":1.0,
-                    "channelIsCalibrated":1,
-                    "defaultVoltageScale":3.0
-                }
-            ],
-            "expansionBoards":[
-                {
-                    "boardType":"0",
-                    "userFriendlyFullName":"Default - events detection expansion board",
-                    "userFriendlyShortName":"Events detection",
-                    "supportedPlatforms":"android,ios,win,mac,linux",
-                    "maxNumberOfChannels":"0"
-                },
-                {
-                    "boardType":"1",
-                    "userFriendlyFullName":"Additional analog input channels",
-                    "userFriendlyShortName":"Analog x 2",
-                    "maxSampleRate":"42661",
-                    "supportedPlatforms":"ios",
-                    "productURL":"",
-                    "helpURL":"",
-                    "iconURL":"",
-                    "maxNumberOfChannels":"2",
-                    "defaultTimeScale":"0.1",
-                    "defaultAmplitudeScale":"1.0",
-                    "channels":[
-                        {
-                            "userFriendlyFullName":"Uni Channel 3",
-                            "userFriendlyShortName":"Uni Ch. 3",
-                            "activeByDefault":0,
-                            "filtered":1,
-                            "calibrationCoef":1.0,
-                            "channelIsCalibrated":1,
-                            "defaultVoltageScale":3.0
-                        },
-                        {
-                            "userFriendlyFullName":"Uni Channel 4",
-                            "userFriendlyShortName":"Uni Ch. 4",
-                            "activeByDefault":0,
-                            "filtered":0,
-                            "calibrationCoef":1.0,
-                            "channelIsCalibrated":1,
-                            "defaultVoltageScale":3.0
-                        }
-                    ]
-                },
-                {
-                    "boardType":"4",
-                    "userFriendlyFullName":"The Reflex Hammer",
-                    "userFriendlyShortName":"Hammer",
-                    "maxSampleRate":"42661",
-                    "maxNumberOfChannels":"1",
-                    "supportedPlatforms":"ios",
-                    "productURL":"https://backyardbrains.com/products/ReflexHammer",
-                    "helpURL":"https://backyardbrains.com/products/ReflexHammer",
-                    "iconURL":"",
-                    "defaultTimeScale":"0.1",
-                    "defaultAmplitudeScale":"1.0",
-                    "channels":[
-                        {
-                            "userFriendlyFullName":"Hammer channel",
-                            "userFriendlyShortName":"Hammer ch.",
-                            "activeByDefault":1,
-                            "filtered":1,
-                            "calibrationCoef":1.0,
-                            "channelIsCalibrated":1,
-                            "defaultVoltageScale":3.0
-                        }
-                    ]
-                },
-                {
-                    "boardType":"5",
-                    "userFriendlyFullName":"The Joystick control",
-                    "userFriendlyShortName":"Joystick",
-                    "maxSampleRate":"42661",
-                    "maxNumberOfChannels":"1",
-                    "supportedPlatforms":"win",
-                    "productURL":"",
-                    "helpURL":"",
-                    "iconURL":"",
-                    "defaultTimeScale":"0.1",
-                    "defaultAmplitudeScale":"1.0",
-                    "channels":[
-                        {
-                            "userFriendlyFullName":"Joystick EMG channel",
-                            "userFriendlyShortName":"Joystick EMG",
-                            "activeByDefault":1,
-                            "filtered":0,
-                            "calibrationCoef":1.0,
-                            "channelIsCalibrated":1,
-                            "defaultVoltageScale":3.0
-                        }
-                    ]
-                }
-            ]
-        },
-
             {
                 "uniqueName": "SpikerBox",
                 "userFriendlyFullName":"Human SpikerBox",

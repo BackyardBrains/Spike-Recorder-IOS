@@ -132,6 +132,7 @@
 @property NSMutableArray* availableInputDevices;
 @property int currentFilterSettings;
 -(void) setCurrentFilterSettingsWithType:(int) filterType;
+-(void) setFromExternalSourcePresetType:(int) filterType onChannel:(int) channel;
 
 -(int) getLPFilterCutoff;
 -(int) getHPFilterCutoff;
@@ -142,6 +143,8 @@
 -(void) turnON50HzNotch;
 -(void) turnOFFNotchFilters;
 -(void) setFilterLPCutoff:(int) newLPCuttof hpCutoff:(int)newHPCutoff;
+-(BOOL) areFiltersChangedExternaly;
+-(void) resetFlagForExternalSetOfFilters;
 
 + (BBAudioManager *) bbAudioManager;
 -(void) quitAllFunctions;
@@ -203,6 +206,7 @@
 - (bool) isP300AudioActive;
 - (void) setP300State:(bool) active;
 - (void) setP300AudioState:(bool) active;
+
 
 //FFT
 -(float **) getDynamicFFTResult;

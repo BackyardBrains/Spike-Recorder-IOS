@@ -259,7 +259,7 @@
 		858B1CD92614D15E0094EF17 /* ObjectiveDropboxOfficial.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 858B1CD82614D15E0094EF17 /* ObjectiveDropboxOfficial.framework */; };
 		858B1CDA2614D2E00094EF17 /* ObjectiveDropboxOfficial.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 858B1CD82614D15E0094EF17 /* ObjectiveDropboxOfficial.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		858FACF52463106300EAC87A /* ChannelConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 858FACF42463106300EAC87A /* ChannelConfig.m */; };
-		858FACF8246312E400EAC87A /* board-config.json in Resources */ = {isa = PBXBuildFile; fileRef = 858FACF7246312E400EAC87A /* board-config.json */; };
+		858FACF8246312E400EAC87A /* board-config-old.json in Resources */ = {isa = PBXBuildFile; fileRef = 858FACF7246312E400EAC87A /* board-config-old.json */; };
 		858FACFB2463137B00EAC87A /* BoardsConfigManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 858FACFA2463137B00EAC87A /* BoardsConfigManager.m */; };
 		8592F48225533793006DCAA0 /* InputDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 8592F48125533793006DCAA0 /* InputDevice.m */; };
 		85935A5428AA603200F324EA /* sound.png in Resources */ = {isa = PBXBuildFile; fileRef = 85935A5028AA603100F324EA /* sound.png */; };
@@ -270,6 +270,7 @@
 		85935A5D28AB8B8A00F324EA /* sound-high.png in Resources */ = {isa = PBXBuildFile; fileRef = 85935A5928AB8B8900F324EA /* sound-high.png */; };
 		85935A5E28AB8B8A00F324EA /* sound-high@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 85935A5A28AB8B8900F324EA /* sound-high@2x.png */; };
 		85935A5F28AB8B8A00F324EA /* p300-high.png in Resources */ = {isa = PBXBuildFile; fileRef = 85935A5B28AB8B8A00F324EA /* p300-high.png */; };
+		85BA27DF2B026DC70068B1F5 /* board-config.json in Resources */ = {isa = PBXBuildFile; fileRef = 85BA27DE2B026DC70068B1F5 /* board-config.json */; };
 		85CE23EF2137DA650035AEC8 /* DemoAccessory.mm in Sources */ = {isa = PBXBuildFile; fileRef = 85CE23EC2137DA640035AEC8 /* DemoAccessory.mm */; };
 		85CE23F02137DA650035AEC8 /* DemoProtocol.mm in Sources */ = {isa = PBXBuildFile; fileRef = 85CE23EE2137DA640035AEC8 /* DemoProtocol.mm */; };
 		85CE23F22137DAB20035AEC8 /* ExternalAccessory.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85CE23F12137DAB20035AEC8 /* ExternalAccessory.framework */; };
@@ -758,7 +759,7 @@
 		858B1CD82614D15E0094EF17 /* ObjectiveDropboxOfficial.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ObjectiveDropboxOfficial.framework; sourceTree = SOURCE_ROOT; };
 		858FACF32463106300EAC87A /* ChannelConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ChannelConfig.h; sourceTree = "<group>"; };
 		858FACF42463106300EAC87A /* ChannelConfig.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ChannelConfig.m; sourceTree = "<group>"; };
-		858FACF7246312E400EAC87A /* board-config.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "board-config.json"; sourceTree = "<group>"; };
+		858FACF7246312E400EAC87A /* board-config-old.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "board-config-old.json"; sourceTree = "<group>"; };
 		858FACF92463137B00EAC87A /* BoardsConfigManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BoardsConfigManager.h; sourceTree = "<group>"; };
 		858FACFA2463137B00EAC87A /* BoardsConfigManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BoardsConfigManager.m; sourceTree = "<group>"; };
 		8592F48025533793006DCAA0 /* InputDevice.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = InputDevice.h; sourceTree = "<group>"; };
@@ -771,6 +772,7 @@
 		85935A5928AB8B8900F324EA /* sound-high.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sound-high.png"; sourceTree = "<group>"; };
 		85935A5A28AB8B8900F324EA /* sound-high@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sound-high@2x.png"; sourceTree = "<group>"; };
 		85935A5B28AB8B8A00F324EA /* p300-high.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "p300-high.png"; sourceTree = "<group>"; };
+		85BA27DE2B026DC70068B1F5 /* board-config.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "board-config.json"; sourceTree = "<group>"; };
 		85CE23EB2137DA640035AEC8 /* DemoAccessory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoAccessory.h; sourceTree = "<group>"; };
 		85CE23EC2137DA640035AEC8 /* DemoAccessory.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DemoAccessory.mm; sourceTree = "<group>"; };
 		85CE23ED2137DA640035AEC8 /* DemoProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoProtocol.h; sourceTree = "<group>"; };
@@ -1593,7 +1595,8 @@
 		858FACF62463126000EAC87A /* config */ = {
 			isa = PBXGroup;
 			children = (
-				858FACF7246312E400EAC87A /* board-config.json */,
+				85BA27DE2B026DC70068B1F5 /* board-config.json */,
+				858FACF7246312E400EAC87A /* board-config-old.json */,
 				85274D0C2464743D003561CE /* readme-config.txt */,
 			);
 			path = config;
@@ -1792,6 +1795,7 @@
 				2418FED31A83F5D700662547 /* RecordButton.png in Resources */,
 				FADF266D1596362F006C87BA /* InfoPlist.strings in Resources */,
 				2418FED51A83F5D700662547 /* settings@2x.png in Resources */,
+				85BA27DF2B026DC70068B1F5 /* board-config.json in Resources */,
 				2418FEDE1A83F5D700662547 /* TickMarks.png in Resources */,
 				247087BC1A851774004C6B9B /* Icon-60@3x.png in Resources */,
 				2418FED81A83F5D700662547 /* StimSettings.png in Resources */,
@@ -1898,7 +1902,7 @@
 				2418FEC21A83F5D700662547 /* dropbox@2x.png in Resources */,
 				2418FED61A83F5D700662547 /* spectrum.png in Resources */,
 				2418FEB91A83F5D700662547 /* backbtn.png in Resources */,
-				858FACF8246312E400EAC87A /* board-config.json in Resources */,
+				858FACF8246312E400EAC87A /* board-config-old.json in Resources */,
 				2418FECF1A83F5D700662547 /* Play.png in Resources */,
 				2418FEBE1A83F5D700662547 /* charticon@2x.png in Resources */,
 				2489D8201992284500C00A9C /* ExperimentSetupViewController.xib in Resources */,
@@ -2169,7 +2173,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3.0.32;
+				CURRENT_PROJECT_VERSION = 3.0.34;
 				DEVELOPMENT_TEAM = MLGRKD657P;
 				DEVICE_FAMILY = iPhone/iPad;
 				ENABLE_BITCODE = NO;
@@ -2203,7 +2207,7 @@
 					"$(PROJECT_DIR)",
 					"$(PROJECT_DIR)/libs/CorePlot",
 				);
-				MARKETING_VERSION = 3.0.3;
+				MARKETING_VERSION = 3.0.4;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
@@ -2239,7 +2243,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3.0.32;
+				CURRENT_PROJECT_VERSION = 3.0.34;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = MLGRKD657P;
 				DEVICE_FAMILY = iPhone/iPad;
@@ -2275,7 +2279,7 @@
 					"$(PROJECT_DIR)",
 					"$(PROJECT_DIR)/libs/CorePlot",
 				);
-				MARKETING_VERSION = 3.0.3;
+				MARKETING_VERSION = 3.0.4;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",

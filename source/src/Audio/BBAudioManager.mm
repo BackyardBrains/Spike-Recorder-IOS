@@ -106,6 +106,7 @@ static BBAudioManager *bbAudioManager = nil;
     
     BOOL shouldTurnONAMModulation;
     dispatch_queue_t serialQueue ;
+    BOOL filtersSetExternaly;
 
 }
 
@@ -265,6 +266,7 @@ static BBAudioManager *bbAudioManager = nil;
         ECGOn = false;
         rtSpikeSorting = false;
         shouldTurnONAMModulation = false;
+        filtersSetExternaly = false;
         
         [self setCurrentFilterSettingsWithType:FILTER_SETTINGS_RAW];
         //currentFilterSettings = FILTER_SETTINGS_RAW;
@@ -1911,6 +1913,43 @@ static BBAudioManager *bbAudioManager = nil;
 -(void) setCurrentFilterSettingsWithType:(int) filterType
 {
     self.currentFilterSettings = filterType;
+}
+
+-(BOOL) areFiltersChangedExternaly
+{
+    return filtersSetExternaly;
+}
+-(void) resetFlagForExternalSetOfFilters
+{
+    filtersSetExternaly = FALSE;
+}
+
+-(void) setFromExternalSourcePresetType:(int) filterType onChannel:(int) channel
+{
+    [self setCurrentFilterSettingsWithType:filterType];
+    switch (filterType) {
+        case FILTER_SETTINGS_EEG:
+            [self setFilterLPCutoff:50.0 hpCutoff:0];
+            break;
+        case FILTER_SETTINGS_EMG:
+            [self setFilterLPCutoff: 2500 hpCutoff:70.0];
+            break;
+        case FILTER_SETTINGS_EKG:
+            [self setFilterLPCutoff:100.0 hpCutoff:2];
+            break;
+        case FILTER_SETTINGS_CUSTOM:
+            [self setFilterLPCutoff:50.0 hpCutoff:0];
+            break;
+        case FILTER_SETTINGS_PLANT:
+            [self setFilterLPCutoff:5.0 hpCutoff:0];
+            break;
+        case FILTER_SETTINGS_NEURON:
+            [self setFilterLPCutoff:5000.0 hpCutoff:70];
+            break;
+        default:
+            break;
+    }
+    filtersSetExternaly = TRUE;
 }
 
 -(void) updateBasicStatsOnData:(float *)newData numFrames:(UInt32)thisNumFrames numChannels:(UInt32)thisNumChannels
