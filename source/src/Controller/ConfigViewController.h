@@ -24,6 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
         - (IBAction)closeVIewTap:(id)sender;
         - (IBAction)rangeSelectrorValueChanged:(id)sender;
         -(void) setupFilters;
+        -(void) updateFilters;
 @end
 @protocol ConfigViewControllerDelegate <NSObject>
         -(void) finishedWithConfiguration;

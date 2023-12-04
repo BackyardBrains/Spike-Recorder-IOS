@@ -30,7 +30,7 @@
 #import "Novocaine.h"
 
 
-@interface AudioFileWriter : NSObject
+@interface AudioFileWriterNC : NSObject
 
 // ----- Read-write ------
 @property (nonatomic, copy) NovocaineInputBlock writerBlock;

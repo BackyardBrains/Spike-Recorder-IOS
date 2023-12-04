@@ -24,6 +24,7 @@
 #define RESETUP_SCREEN_NOTIFICATION @"resetupScreenNotification"
 #define CAN_NOT_FIND_CONFIG_FOR_DEVICE @"canNotFindConfigForDevice"
 #define NEW_DEVICE_ACTIVATED @"newDeviceActivated"
+#define NEW_EXTERNAL_FILTER_CONFIG_ARRIVED @"newExternalFilterConfigArrived"
 #define MAX_NUMBER_OF_FFT_SEC 6.0f
 
 #define AM_CARRIER_FREQUENCY 5000.0
@@ -133,6 +134,9 @@
 @property int currentFilterSettings;
 -(void) setCurrentFilterSettingsWithType:(int) filterType;
 -(void) setFromExternalSourcePresetType:(int) filterType onChannel:(int) channel;
+-(void) setFromExternalSourceHPF:(float) hpfValue andLPF:(float) lpfValue;
+-(void) setFromExternalSourceHPF:(float) hpfValue;
+-(void) setFromExternalSourceLPF:(float) lpfValue;
 
 -(int) getLPFilterCutoff;
 -(int) getHPFilterCutoff;
@@ -143,8 +147,7 @@
 -(void) turnON50HzNotch;
 -(void) turnOFFNotchFilters;
 -(void) setFilterLPCutoff:(int) newLPCuttof hpCutoff:(int)newHPCutoff;
--(BOOL) areFiltersChangedExternaly;
--(void) resetFlagForExternalSetOfFilters;
+
 
 + (BBAudioManager *) bbAudioManager;
 -(void) quitAllFunctions;

@@ -66,27 +66,55 @@
     self.rangeSelector.stepValueContinuously = YES;
     self.rangeSelector.continuous = YES;
     
-    if([[BBAudioManager bbAudioManager] getLPFilterCutoff]<1)
+    // Decide in which order the values for HPF and LPF will be set
+    // if the current HPF value is greater than new LPF value
+    // the LPF value will be set to current HPF value
+    // in that case we have first to set new HPF and than to set new LPF
+    if(self.rangeSelector.lowerValue>log([[BBAudioManager bbAudioManager] getLPFilterCutoff]))
     {
-        self.rangeSelector.upperValue = self.rangeSelector.minimumValue;
+        if([[BBAudioManager bbAudioManager] getHPFilterCutoff]<1)
+        {
+            self.rangeSelector.lowerValue = self.rangeSelector.minimumValue;
+        }
+        else
+        {
+            float value =[[BBAudioManager bbAudioManager] getHPFilterCutoff] ;
+            float logValue = log(value);
+            self.rangeSelector.lowerValue = logValue;//log([[BBAudioManager bbAudioManager] getHPFilterCutoff]);
+        }
+        
+        if([[BBAudioManager bbAudioManager] getLPFilterCutoff]<1)
+        {
+            self.rangeSelector.upperValue = self.rangeSelector.minimumValue;
+        }
+        else
+        {
+            self.rangeSelector.upperValue = log([[BBAudioManager bbAudioManager] getLPFilterCutoff]);
+        }
     }
     else
     {
-        self.rangeSelector.upperValue = log([[BBAudioManager bbAudioManager] getLPFilterCutoff]);
+        if([[BBAudioManager bbAudioManager] getLPFilterCutoff]<1)
+        {
+            self.rangeSelector.upperValue = self.rangeSelector.minimumValue;
+        }
+        else
+        {
+            self.rangeSelector.upperValue = log([[BBAudioManager bbAudioManager] getLPFilterCutoff]);
+        }
+        
+        
+        if([[BBAudioManager bbAudioManager] getHPFilterCutoff]<1)
+        {
+            self.rangeSelector.lowerValue = self.rangeSelector.minimumValue;
+        }
+        else
+        {
+            float value =[[BBAudioManager bbAudioManager] getHPFilterCutoff] ;
+            float logValue = log(value);
+            self.rangeSelector.lowerValue = logValue;//log([[BBAudioManager bbAudioManager] getHPFilterCutoff]);
+        }
     }
-    
-    
-    if([[BBAudioManager bbAudioManager] getHPFilterCutoff]<1)
-    {
-        self.rangeSelector.lowerValue = self.rangeSelector.minimumValue;
-    }
-    else
-    {
-        float value =[[BBAudioManager bbAudioManager] getHPFilterCutoff] ;
-        float logValue = log(value);
-        self.rangeSelector.lowerValue = logValue;//log([[BBAudioManager bbAudioManager] getHPFilterCutoff]);
-    }
-    
     
     
     [self rangeSelectrorValueChanged:self.rangeSelector];
@@ -113,6 +141,7 @@
 {
     [super viewWillAppear:animated];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshScreen) name:RESETUP_SCREEN_NOTIFICATION object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateFilters) name:NEW_EXTERNAL_FILTER_CONFIG_ARRIVED object:nil];
     
 }
 
@@ -183,6 +212,11 @@
             [[BBAudioManager bbAudioManager] setCurrentFilterSettingsWithType: FILTER_SETTINGS_CUSTOM];
             break;
     }
+}
+
+-(void) updateFilters
+{
+    [self setupFilters];
 }
 
 -(void) checkFilterValuesAndLightUpButtons

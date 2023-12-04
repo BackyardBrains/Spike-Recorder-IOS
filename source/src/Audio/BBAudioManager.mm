@@ -1915,13 +1915,55 @@ static BBAudioManager *bbAudioManager = nil;
     self.currentFilterSettings = filterType;
 }
 
--(BOOL) areFiltersChangedExternaly
+-(void) setFromExternalSourceHPF:(float) hpfValue
 {
-    return filtersSetExternaly;
+    
+    float newHPFValue = hpfValue;
+
+    if(newHPFValue<0)
+    {
+        newHPFValue = FILTER_HP_OFF;
+    }
+
+    
+    [self setFilterLPCutoff:lpFilterCutoff hpCutoff:newHPFValue];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:NEW_EXTERNAL_FILTER_CONFIG_ARRIVED object:self];
 }
--(void) resetFlagForExternalSetOfFilters
+
+
+-(void) setFromExternalSourceLPF:(float) lpfValue
 {
-    filtersSetExternaly = FALSE;
+    float newLPFValue = lpfValue;
+    
+    if(newLPFValue<0)
+    {
+        newLPFValue = FILTER_LP_OFF;
+    }
+    
+    [self setFilterLPCutoff:newLPFValue hpCutoff:hpFilterCutoff];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:NEW_EXTERNAL_FILTER_CONFIG_ARRIVED object:self];
+}
+
+
+-(void) setFromExternalSourceHPF:(float) hpfValue andLPF:(float) lpfValue
+{
+    
+    float newHPFValue = hpfValue;
+    float newLPFValue = lpfValue;
+    if(newHPFValue<0)
+    {
+        newHPFValue = FILTER_HP_OFF;
+    }
+    if(newLPFValue<0)
+    {
+        newLPFValue = FILTER_LP_OFF;
+    }
+    
+    [self setFilterLPCutoff:newLPFValue hpCutoff:newHPFValue];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:NEW_EXTERNAL_FILTER_CONFIG_ARRIVED object:self];
 }
 
 -(void) setFromExternalSourcePresetType:(int) filterType onChannel:(int) channel
@@ -1949,7 +1991,9 @@ static BBAudioManager *bbAudioManager = nil;
         default:
             break;
     }
-    filtersSetExternaly = TRUE;
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:NEW_EXTERNAL_FILTER_CONFIG_ARRIVED object:self];
+
 }
 
 -(void) updateBasicStatsOnData:(float *)newData numFrames:(UInt32)thisNumFrames numChannels:(UInt32)thisNumChannels

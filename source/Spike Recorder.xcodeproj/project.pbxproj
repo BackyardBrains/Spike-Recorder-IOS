@@ -162,7 +162,7 @@
 		247087031A850FF6004C6B9B /* CCGLTouchView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FDA61A83F14700662547 /* CCGLTouchView.mm */; };
 		247087051A850FF6004C6B9B /* CCGLTouchViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FDA81A83F14700662547 /* CCGLTouchViewController.mm */; };
 		247087551A851025004C6B9B /* AudioFileReader.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FDFC1A83F14700662547 /* AudioFileReader.mm */; };
-		247087571A851025004C6B9B /* AudioFileWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 2418FDFE1A83F14700662547 /* AudioFileWriter.m */; };
+		247087571A851025004C6B9B /* AudioFileWriterNC.m in Sources */ = {isa = PBXBuildFile; fileRef = 2418FDFE1A83F14700662547 /* AudioFileWriterNC.m */; };
 		247087591A851026004C6B9B /* Novocaine.m in Sources */ = {isa = PBXBuildFile; fileRef = 2418FE001A83F14700662547 /* Novocaine.m */; };
 		2470875B1A851026004C6B9B /* RingBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2418FE021A83F14700662547 /* RingBuffer.mm */; };
 		2470875D1A85102F004C6B9B /* NVAllpassFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 2418FE061A83F14700662547 /* NVAllpassFilter.m */; };
@@ -444,8 +444,8 @@
 		2418FDF81A83F14700662547 /* NSNumberExtensions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSNumberExtensions.h; sourceTree = "<group>"; };
 		2418FDFB1A83F14700662547 /* AudioFileReader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AudioFileReader.h; sourceTree = "<group>"; };
 		2418FDFC1A83F14700662547 /* AudioFileReader.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AudioFileReader.mm; sourceTree = "<group>"; };
-		2418FDFD1A83F14700662547 /* AudioFileWriter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AudioFileWriter.h; sourceTree = "<group>"; };
-		2418FDFE1A83F14700662547 /* AudioFileWriter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AudioFileWriter.m; sourceTree = "<group>"; };
+		2418FDFD1A83F14700662547 /* AudioFileWriterNC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AudioFileWriterNC.h; sourceTree = "<group>"; };
+		2418FDFE1A83F14700662547 /* AudioFileWriterNC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AudioFileWriterNC.m; sourceTree = "<group>"; };
 		2418FDFF1A83F14700662547 /* Novocaine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Novocaine.h; sourceTree = "<group>"; };
 		2418FE001A83F14700662547 /* Novocaine.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Novocaine.m; sourceTree = "<group>"; };
 		2418FE011A83F14700662547 /* RingBuffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RingBuffer.h; sourceTree = "<group>"; };
@@ -1094,8 +1094,8 @@
 			children = (
 				2418FDFB1A83F14700662547 /* AudioFileReader.h */,
 				2418FDFC1A83F14700662547 /* AudioFileReader.mm */,
-				2418FDFD1A83F14700662547 /* AudioFileWriter.h */,
-				2418FDFE1A83F14700662547 /* AudioFileWriter.m */,
+				2418FDFD1A83F14700662547 /* AudioFileWriterNC.h */,
+				2418FDFE1A83F14700662547 /* AudioFileWriterNC.m */,
 				2418FDFF1A83F14700662547 /* Novocaine.h */,
 				2418FE001A83F14700662547 /* Novocaine.m */,
 				2418FE011A83F14700662547 /* RingBuffer.h */,
@@ -1721,10 +1721,10 @@
 				FADF264C1596362F006C87BA /* Sources */,
 				FADF264D1596362F006C87BA /* Frameworks */,
 				FADF264E1596362F006C87BA /* Resources */,
+				8586320423BF4F2100D6BC5A /* Embed Frameworks */,
 				1CBD16141E72E71400F59AEF /* ShellScript */,
 				1CB126581F86C91200247389 /* ShellScript */,
 				1CB1265F1F8BE20700247389 /* ShellScript */,
-				8586320423BF4F2100D6BC5A /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -2073,7 +2073,7 @@
 				2470876B1A85102F004C6B9B /* NVNotchFilter.m in Sources */,
 				2470876D1A85102F004C6B9B /* NVPeakingEQFilter.m in Sources */,
 				247087551A851025004C6B9B /* AudioFileReader.mm in Sources */,
-				247087571A851025004C6B9B /* AudioFileWriter.m in Sources */,
+				247087571A851025004C6B9B /* AudioFileWriterNC.m in Sources */,
 				247087591A851026004C6B9B /* Novocaine.m in Sources */,
 				1CD05B9D1CFCFEF700A83727 /* BBFileDetailsTableViewController.mm in Sources */,
 				2470875B1A851026004C6B9B /* RingBuffer.mm in Sources */,
@@ -2173,7 +2173,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3.0.34;
+				CURRENT_PROJECT_VERSION = 3.0.35;
 				DEVELOPMENT_TEAM = MLGRKD657P;
 				DEVICE_FAMILY = iPhone/iPad;
 				ENABLE_BITCODE = NO;
@@ -2218,6 +2218,7 @@
 					"$(CINDER_PATH)/lib/libcinder-iphone_d.a",
 					"-ObjC",
 					"$(CINDER_PATH)/lib/libcinder-iphone-sim_d.a",
+					"-lboost_system",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.backyardbrains.Backyard-Brains";
 				PRODUCT_NAME = "Spike Recorder";
@@ -2243,7 +2244,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3.0.34;
+				CURRENT_PROJECT_VERSION = 3.0.35;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = MLGRKD657P;
 				DEVICE_FAMILY = iPhone/iPad;
@@ -2290,6 +2291,7 @@
 					"$(CINDER_PATH)/lib/libcinder-iphone.a",
 					"-ObjC",
 					"$(CINDER_PATH)/lib/libcinder-iphone-sim.a",
+					"-lboost_system",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.backyardbrains.Backyard-Brains";
 				PRODUCT_NAME = "Spike Recorder";

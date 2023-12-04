@@ -24,10 +24,10 @@
 // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 // OTHER DEALINGS IN THE SOFTWARE.
-#import "AudioFileWriter.h"
+#import "AudioFileWriterNC.h"
 #import <pthread.h>
 
-@interface AudioFileWriter()
+@interface AudioFileWriterNC()
 
 // redeclare as readwrite in class continuation
 @property (nonatomic, assign, getter=getDuration, readwrite) float currentTime;
@@ -49,7 +49,7 @@
 @end
 
 
-@implementation AudioFileWriter
+@implementation AudioFileWriterNC
 
 static pthread_mutex_t outputAudioFileLock;
 
