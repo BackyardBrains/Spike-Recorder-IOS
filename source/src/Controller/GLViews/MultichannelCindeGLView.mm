@@ -728,7 +728,7 @@
         float radiusYAxis = retinaScaling* HANDLE_RADIUS*scaleXY.y;
         
         
-        if(![[BBAudioManager bbAudioManager] isThresholdTriggered])
+        if(![[BBAudioManager bbAudioManager] isThresholdTriggered] && !(multichannel))
         {
             //draw small mark so that user knows where is zero
             glColor4f(0.9, 0.9, 0.9, 1.0);
@@ -1063,7 +1063,7 @@
             int colorIndex2 = [[BBAudioManager bbAudioManager] getColorIndexForActiveChannelIndex:indexOfChannel];
             [self setColorWithIndex:colorIndex2 transparency:transparencyForAxis];
             glLineWidth(2.0f);
-            gl::drawLine(Vec2f(centerOfCircleX, yOffsets[indexOfChannel]), Vec2f(0.0f, yOffsets[indexOfChannel]));
+            //gl::drawLine(Vec2f(centerOfCircleX, yOffsets[indexOfChannel]), Vec2f(0.0f, yOffsets[indexOfChannel]));
     
             glLineWidth(1.0f);
             

@@ -233,6 +233,7 @@
 
 -(void) dbButtonPressed
 {
+#ifdef USE_DROPBOX
     DBUserClient *client = [DBClientsManager authorizedClient];
     
     if (client)
@@ -281,6 +282,7 @@
     {
         [self pushDropboxSettings];
     }
+#endif
 }
 
 
@@ -295,24 +297,28 @@
 
 -(void) pushDropboxSettings
 {
+#ifdef USE_DROPBOX
     [DBClientsManager authorizeFromController:[UIApplication sharedApplication]
                                    controller:[[self class] topMostController]
                                       openURL:^(NSURL *url) {
                                           [[UIApplication sharedApplication] openURL:url];
                                       }];
+#endif
 }
 
 -(void) dbDisconnect
 {
+#ifdef USE_DROPBOX
     [self setStatus:@"Disconnected from Dropbox"];
     [DBClientsManager unlinkAndResetClients];
     [NSTimer scheduledTimerWithTimeInterval:1.0f target:self selector:@selector(clearStatus) userInfo:nil repeats:NO];
+#endif
 }
 
 
 -(void) dbUpdate
 {
-    
+#ifdef USE_DROPBOX
     DBUserClient *client = [DBClientsManager authorizedClient];
     if (client)
     {
@@ -358,12 +364,13 @@
              }];
     
     }//if client exists and is connected
+#endif
 }
 
 
 -(void) listFolderContinueWithClient:(DBUserClient *)client cursor:(NSString *)cursor
 {
-    
+#ifdef USE_DROPBOX
     [[client.filesRoutes listFolderContinue:cursor]
      setResponseBlock:^(DBFILESListFolderResult *response, DBFILESListFolderContinueError *routeError,
                         DBRequestError *networkError) {
@@ -398,11 +405,14 @@
              [NSTimer scheduledTimerWithTimeInterval:1.0f target:self selector:@selector(clearStatus) userInfo:nil repeats:NO];
          }
      }];
+#endif
 }
 
 
 - (void)setStatus:(NSString *)theStatus
-{ //setter
+{
+#ifdef USE_DROPBOX
+    //setter
     [self.dbStatusBar setTitle:theStatus forState:UIControlStateNormal];
     if ([theStatus isEqualToString:@""])
     {
@@ -428,6 +438,7 @@
             [UIView commitAnimations];
         }
     }
+#endif
 }
 
 
@@ -438,9 +449,9 @@
 
 - (void)compareBBFilesToNewFilePaths:(NSArray *)newPaths
 {
-    
+#ifdef USE_DROPBOX
     //Check if we have already the same files on DropBox
-   NSMutableArray *filesNeedingUpload   = [NSMutableArray arrayWithCapacity:[self.allFiles count]];
+    NSMutableArray *filesNeedingUpload   = [NSMutableArray arrayWithCapacity:[self.allFiles count]];
     for (int i = 0; i < [self.allFiles count]; ++i)
         [filesNeedingUpload addObject:[NSNumber numberWithBool:YES]];  //assume all uploads
     
@@ -479,12 +490,12 @@
             NSLog(@"Uploading %@ from %@", theFile, theFilePath);
             DBFILESCommitInfo *commitInfo = [[[DBFILESCommitInfo alloc] initWithPath:theFilePath] autorelease];
             [uploadFilesUrlsToCommitInfo setObject:commitInfo forKey:[[self.allFiles objectAtIndex:m] fileURL]];
-
+            
             ++count;
         }
     }
     
-
+    
     //Now batch upload files that are not already there on DropBox
     if(count>0)
     {
@@ -502,54 +513,54 @@
         [client.filesRoutes batchUploadFiles:uploadFilesUrlsToCommitInfo
                                        queue:nil
                                progressBlock:^(int64_t uploaded, int64_t uploadedTotal, int64_t expectedToUploadTotal) {
-                                   NSLog(@"Uploaded: %lld  UploadedTotal: %lld  ExpectedToUploadTotal: %lld", uploaded, uploadedTotal,
-                                         expectedToUploadTotal);
-                               }
+            NSLog(@"Uploaded: %lld  UploadedTotal: %lld  ExpectedToUploadTotal: %lld", uploaded, uploadedTotal,
+                  expectedToUploadTotal);
+        }
                                responseBlock:^(NSDictionary<NSURL *, DBFILESUploadSessionFinishBatchResultEntry *> *fileUrlsToBatchResultEntries,
                                                DBASYNCPollError *finishBatchRouteError, DBRequestError *finishBatchRequestError,
                                                NSDictionary<NSURL *, DBRequestError *> *fileUrlsToRequestErrors) {
-                                   
-                                   NSString *uploadStatus = @"";
-                                   if (fileUrlsToBatchResultEntries) {
-                                       NSLog(@"Call to `/upload_session/finish_batch/check` succeeded");
-                                       for (NSURL *clientSideFileUrl in fileUrlsToBatchResultEntries) {
-                                           DBFILESUploadSessionFinishBatchResultEntry *resultEntry = fileUrlsToBatchResultEntries[clientSideFileUrl];
-                                           if ([resultEntry isSuccess]) {
-                                               NSString *dropboxFilePath = resultEntry.success.pathDisplay;
-                                               NSLog(@"File successfully uploaded from %@ on local machine to %@ in Dropbox.",
-                                                     [clientSideFileUrl path], dropboxFilePath);
-                                               uploadStatus = @"Files uploaded";
-                                           } else if ([resultEntry isFailure]) {
-                                               // This particular file was not uploaded successfully, although the other
-                                               // files may have been uploaded successfully. Perhaps implement some retry
-                                               // logic here based on `uploadNetworkError` or `uploadSessionFinishError`
-                                               //DBRequestError *uploadNetworkError = fileUrlsToRequestErrors[clientSideFileUrl];
-                                               //DBFILESUploadSessionFinishError *uploadSessionFinishError = resultEntry.failure;
-                                               
-                                               // implement appropriate retry logic
-                                               uploadStatus = @"Upload failed (#1)";
-                                           }
-                                       }
-                                   }
-                                   
-                                   if (finishBatchRouteError) {
-                                       NSLog(@"Either bug in SDK code, or transient error on Dropbox server");
-                                       NSLog(@"%@", finishBatchRouteError);
-                                       uploadStatus = @"Upload failed (#2)";
-                                   } else if (finishBatchRequestError) {
-                                       NSLog(@"Request error from calling `/upload_session/finish_batch/check`");
-                                       NSLog(@"%@", finishBatchRequestError);
-                                       uploadStatus = @"Upload failed (#3)";
-                                   } else if ([fileUrlsToRequestErrors count] > 0) {
-                                       NSLog(@"Other additional errors (e.g. file doesn't exist client-side, etc.).");
-                                       NSLog(@"%@", fileUrlsToRequestErrors);
-                                       uploadStatus = @"Upload failed (#4)";
-                                   }
-                                   
-                                   
-                                   [self setStatus:uploadStatus];
-                                   [NSTimer scheduledTimerWithTimeInterval:1.0f target:self selector:@selector(clearStatus) userInfo:nil repeats:NO];
-                               }];
+            
+            NSString *uploadStatus = @"";
+            if (fileUrlsToBatchResultEntries) {
+                NSLog(@"Call to `/upload_session/finish_batch/check` succeeded");
+                for (NSURL *clientSideFileUrl in fileUrlsToBatchResultEntries) {
+                    DBFILESUploadSessionFinishBatchResultEntry *resultEntry = fileUrlsToBatchResultEntries[clientSideFileUrl];
+                    if ([resultEntry isSuccess]) {
+                        NSString *dropboxFilePath = resultEntry.success.pathDisplay;
+                        NSLog(@"File successfully uploaded from %@ on local machine to %@ in Dropbox.",
+                              [clientSideFileUrl path], dropboxFilePath);
+                        uploadStatus = @"Files uploaded";
+                    } else if ([resultEntry isFailure]) {
+                        // This particular file was not uploaded successfully, although the other
+                        // files may have been uploaded successfully. Perhaps implement some retry
+                        // logic here based on `uploadNetworkError` or `uploadSessionFinishError`
+                        //DBRequestError *uploadNetworkError = fileUrlsToRequestErrors[clientSideFileUrl];
+                        //DBFILESUploadSessionFinishError *uploadSessionFinishError = resultEntry.failure;
+                        
+                        // implement appropriate retry logic
+                        uploadStatus = @"Upload failed (#1)";
+                    }
+                }
+            }
+            
+            if (finishBatchRouteError) {
+                NSLog(@"Either bug in SDK code, or transient error on Dropbox server");
+                NSLog(@"%@", finishBatchRouteError);
+                uploadStatus = @"Upload failed (#2)";
+            } else if (finishBatchRequestError) {
+                NSLog(@"Request error from calling `/upload_session/finish_batch/check`");
+                NSLog(@"%@", finishBatchRequestError);
+                uploadStatus = @"Upload failed (#3)";
+            } else if ([fileUrlsToRequestErrors count] > 0) {
+                NSLog(@"Other additional errors (e.g. file doesn't exist client-side, etc.).");
+                NSLog(@"%@", fileUrlsToRequestErrors);
+                uploadStatus = @"Upload failed (#4)";
+            }
+            
+            
+            [self setStatus:uploadStatus];
+            [NSTimer scheduledTimerWithTimeInterval:1.0f target:self selector:@selector(clearStatus) userInfo:nil repeats:NO];
+        }];
         
     }
     else
@@ -558,6 +569,7 @@
         [NSTimer scheduledTimerWithTimeInterval:2.0f target:self selector:@selector(clearStatus) userInfo:nil repeats:NO];
     }
     [uploadFilesUrlsToCommitInfo release];
+#endif
 }
 
 

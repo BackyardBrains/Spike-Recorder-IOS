@@ -17,6 +17,8 @@
 #define kRecordingsTabBarIndex  2
 #define kFFTTabBarIndex         3
 
+#define USE_DROPBOX
+
 @implementation MyAppDelegate
 
 @synthesize tabBarController;
@@ -75,11 +77,15 @@ static DemoProtocol *demoProtocol;
         tabBarController.selectedIndex = selectThisIndex;
     }
     
-    //DropBox V2
-    [DBClientsManager setupWithAppKey:@"r3clmvcekkjiams"];
     
-    [UIApplication sharedApplication].idleTimerDisabled = YES;
     
+    
+    #ifdef USE_DROPBOX
+        //DropBox V2
+        [DBClientsManager setupWithAppKey:@"r3clmvcekkjiams"];
+        
+        [UIApplication sharedApplication].idleTimerDisabled = YES;
+    #endif
     
    
     
