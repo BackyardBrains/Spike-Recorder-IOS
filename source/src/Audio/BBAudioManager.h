@@ -137,6 +137,7 @@
 -(void) setFromExternalSourceHPF:(float) hpfValue andLPF:(float) lpfValue;
 -(void) setFromExternalSourceHPF:(float) hpfValue;
 -(void) setFromExternalSourceLPF:(float) lpfValue;
+-(void) setFromExternalSourceNotch:(int) notchFrequency;
 
 -(int) getLPFilterCutoff;
 -(int) getHPFilterCutoff;

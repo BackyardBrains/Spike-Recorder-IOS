@@ -682,6 +682,30 @@ static  EAInputBlock inputBlock;
         }
     }
     
+    if(typeOfMessage == "notch" )
+    {
+        NSString *valueOfMessageNS = [NSString stringWithUTF8String:valueOfMessage.c_str()];
+        NSRange underscoreRange = [valueOfMessageNS rangeOfString:@"_"];
+
+        if (underscoreRange.location != NSNotFound)
+        {
+            // Extract the channel and value substrings
+            NSString *channelStr = [valueOfMessageNS substringToIndex:underscoreRange.location];
+            NSString *valueStr = [valueOfMessageNS substringFromIndex:underscoreRange.location + 1];
+            
+            @try {
+                // Convert NSString to int
+                int intValueExt = [valueStr intValue];
+
+                [[BBAudioManager bbAudioManager] setFromExternalSourceNotch:intValueExt];
+                
+            }
+            @catch (NSException *exception) {
+                NSLog(@"Exception occurred: %@", exception);
+            }
+        }
+    }
+    
     if(typeOfMessage == "preset")
     {
         NSString *valueOfMessageNS = [NSString stringWithUTF8String:valueOfMessage.c_str()];

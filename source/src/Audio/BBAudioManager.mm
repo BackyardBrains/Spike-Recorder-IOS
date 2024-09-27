@@ -1915,6 +1915,38 @@ static BBAudioManager *bbAudioManager = nil;
     self.currentFilterSettings = filterType;
 }
 
+
+-(void) setFromExternalSourceNotch:(int) notchFrequency
+{
+    //            if([self is50HzNotchON])
+    //            {
+    //                [self turnON50HzNotch];
+    //            }
+    //            else if([self is60HzNotchON])
+    //            {
+    //                [self turnON60HzNotch];
+    //            }
+    //            else
+    //            {
+    switch (notchFrequency) {
+        case -1:
+                [self turnOFFNotchFilters];
+            break;
+            
+        case 50:
+                [self turnON50HzNotch];
+            break;
+        case 60:
+                [self turnON60HzNotch];
+            break;
+            
+        default:
+            [self turnOFFNotchFilters];
+            break;
+    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:NEW_EXTERNAL_FILTER_CONFIG_ARRIVED object:self];
+}
+
 -(void) setFromExternalSourceHPF:(float) hpfValue
 {
     

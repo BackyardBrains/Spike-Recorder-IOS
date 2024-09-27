@@ -2173,7 +2173,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3.0.36;
+				CURRENT_PROJECT_VERSION = 3.0.37;
 				DEVELOPMENT_TEAM = MLGRKD657P;
 				DEVICE_FAMILY = iPhone/iPad;
 				ENABLE_BITCODE = NO;
@@ -2244,7 +2244,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3.0.36;
+				CURRENT_PROJECT_VERSION = 3.0.37;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = MLGRKD657P;
 				DEVICE_FAMILY = iPhone/iPad;
