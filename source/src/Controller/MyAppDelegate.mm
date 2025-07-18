@@ -63,6 +63,18 @@ static DemoProtocol *demoProtocol;
     
     tabBarController = (UITabBarController *)self.window.rootViewController;
     tabBarController.delegate = self;
+    if ([UITabBarAppearance class]) {
+        UITabBarAppearance *appearance = [[UITabBarAppearance alloc] init];
+        [appearance configureWithOpaqueBackground];
+        appearance.backgroundColor = [UIColor blackColor]; // Set background color
+
+        self.tabBarController.tabBar.standardAppearance = appearance;
+
+        // Check if scrollEdgeAppearance property exists
+        if ([self.tabBarController.tabBar respondsToSelector:@selector(setScrollEdgeAppearance:)]) {
+            self.tabBarController.tabBar.scrollEdgeAppearance = self.tabBarController.tabBar.standardAppearance;
+        }
+    }
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     if(sharedFileIsWaiting)
     {

@@ -31,6 +31,12 @@
     
     self.tableView.rowHeight = 54;
 
+    if ([self.view respondsToSelector:@selector(setOverrideUserInterfaceStyle:)]) {
+        self.view.overrideUserInterfaceStyle = UIUserInterfaceStyleLight;
+    } else {
+        NSLog(@"Property 'overrideUserInterfaceStyle' is not available.");
+    }
+    
     //create the status bar
     if (self.dbStatusBar==nil)
     {

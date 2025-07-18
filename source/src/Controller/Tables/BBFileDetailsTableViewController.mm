@@ -25,6 +25,14 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    
+    if ([self.view respondsToSelector:@selector(setOverrideUserInterfaceStyle:)]) {
+        self.view.overrideUserInterfaceStyle = UIUserInterfaceStyleLight;
+    } else {
+        NSLog(@"Property 'overrideUserInterfaceStyle' is not available.");
+    }
+    
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
                                                                           action:@selector(dismissKeyboard)];
     [self.view addGestureRecognizer:tap];

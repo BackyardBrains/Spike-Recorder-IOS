@@ -148,8 +148,8 @@
 
           {
             "uniqueName": "UniBox",
-            "userFriendlyFullName":"Uni Box",
-            "userFriendlyShortName":"Uni Box",
+            "userFriendlyFullName":"Spike Station",
+            "userFriendlyShortName":"Spike Station",
             "hardwareComProtocolType": "iap2",
             "bybProtocolType": "BYB1",
             "bybProtocolVersion": "1.0",
@@ -180,8 +180,8 @@
             },
             "channels":[
                 {
-                    "userFriendlyFullName":"Uni Channel 1",
-                    "userFriendlyShortName":"Uni Ch. 1",
+                    "userFriendlyFullName":"Spike Station Channel 1",
+                    "userFriendlyShortName":"Spike Ch. 1",
                     "activeByDefault":1,
                     "filtered":1,
                     "calibrationCoef":1.0,
@@ -189,8 +189,8 @@
                     "defaultVoltageScale":3.0
                 },
                 {
-                    "userFriendlyFullName":"Uni Channel 2",
-                    "userFriendlyShortName":"Uni Ch. 2",
+                    "userFriendlyFullName":"Spike Station Channel 2",
+                    "userFriendlyShortName":"Spike Ch. 2",
                     "activeByDefault":0,
                     "filtered":1,
                     "calibrationCoef":1.0,
@@ -220,8 +220,8 @@
                     "defaultAmplitudeScale":"1.0",
                     "channels":[
                         {
-                            "userFriendlyFullName":"Uni Channel 3",
-                            "userFriendlyShortName":"Uni Ch. 3",
+                            "userFriendlyFullName":"Spike Station Channel 3",
+                            "userFriendlyShortName":"Spike Ch. 3",
                             "activeByDefault":0,
                             "filtered":1,
                             "calibrationCoef":1.0,
@@ -229,8 +229,8 @@
                             "defaultVoltageScale":3.0
                         },
                         {
-                            "userFriendlyFullName":"Uni Channel 4",
-                            "userFriendlyShortName":"Uni Ch. 4",
+                            "userFriendlyFullName":"Spike Station Channel 4",
+                            "userFriendlyShortName":"Spike Ch. 4",
                             "activeByDefault":0,
                             "filtered":0,
                             "calibrationCoef":1.0,

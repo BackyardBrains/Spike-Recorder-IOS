@@ -51,6 +51,12 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    if ([self.view respondsToSelector:@selector(setOverrideUserInterfaceStyle:)]) {
+        self.view.overrideUserInterfaceStyle = UIUserInterfaceStyleLight;
+    } else {
+        NSLog(@"Property 'overrideUserInterfaceStyle' is not available.");
+    }
     // Do any additional setup after loading the view from its nib.
 }
 
@@ -268,12 +274,33 @@
         
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
             
+            
+            // Presenting the activity view controller
+            UIViewController *presentingViewController = [self parentViewController];
+            activities.popoverPresentationController.sourceView = self.view;
+            
             if([activities respondsToSelector:@selector(popoverPresentationController)])
             {
                     //iOS8
                     activities.popoverPresentationController.sourceView = self.view;
             }
-            [[[self parentViewController] parentViewController] presentViewController:activities animated:YES completion:nil];
+     
+
+
+
+            
+            activities.popoverPresentationController.sourceRect = CGRectMake(1,
+                                                                              1,
+                                                                             1,
+                                                                            1);
+
+            // Present the activity view controller
+            [presentingViewController presentViewController:activities animated:YES completion:nil];
+
+            
+            
+            
+           
 
         }
         else

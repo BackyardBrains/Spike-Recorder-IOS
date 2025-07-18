@@ -41,7 +41,11 @@
     channelsTableView.dataSource = self;
     channelsTableView.delegate = self;
     channelsTableView.allowsSelection = false;
-
+    if ([self.view respondsToSelector:@selector(setOverrideUserInterfaceStyle:)]) {
+        self.view.overrideUserInterfaceStyle = UIUserInterfaceStyleLight;
+    } else {
+        NSLog(@"Property 'overrideUserInterfaceStyle' is not available.");
+    }
     filterPresetSelection.delegate = self;
     
     [self setupFilters];
